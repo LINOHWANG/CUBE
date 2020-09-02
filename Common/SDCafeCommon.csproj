@@ -64,6 +64,9 @@
     <Compile Include="Model\POS_OrdersModel.cs" />
     <Compile Include="Model\POS_ProductModel.cs" />
     <Compile Include="Model\POS_ProductTypeModel.cs" />
+    <Compile Include="Model\POS_PromoProductsModel.cs" />
+    <Compile Include="Model\POS_PromotionModel.cs" />
+    <Compile Include="Model\POS_PromoTypelkupModel.cs" />
     <Compile Include="Model\POS_RFIDTagsModel.cs" />
     <Compile Include="Model\POS_SavedOrdersModel.cs" />
     <Compile Include="Model\POS_StationModel.cs" />

@@ -42,11 +42,68 @@ namespace SDCafeCommon.DataAccess
             }
         }
 
+        public List<POS_PromotionModel> Get_Promotion_By_ID(int iPromoId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_PromotionModel>($"select * from Promotion where id = {iPromoId}").ToList();
+                return output;
+            }
+        }
+
+        public List<POS_PromoTypelkupModel> Get_All_PromoTypelkups()
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_PromoTypelkupModel>($"select * from PromoTypelkup").ToList();
+                return output;
+            }
+        }
+
+        public List<POS_PromoTypelkupModel> Get_PromoTypelkup_By_ID(int iPromoTypeId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_PromoTypelkupModel>($"select * from PromoTypelkup where id = {iPromoTypeId}").ToList();
+                return output;
+            }
+        }
+        public string Get_PromoTypelkupName_By_Id(int iPromoTypeId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_PromoTypelkupModel>($"SELECT * FROM PromoTypelkup WHERE id= {iPromoTypeId} ").ToList();
+                if (output.Count > 0)
+                {
+                    return output[0].PromoTypeName;
+                }
+                return "";
+            }
+        }
+
+        public List<POS_PromoProductsModel> Get_PromoProducts_By_PromoId(int iPromoId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_PromoProductsModel>($"select * from PromoProducts where PromoId = {iPromoId}").ToList();
+                return output;
+            }
+        }
+
         public List<POS_ProductTypeModel> Get_ProductType_By_ID(int iTypeID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 var output = connection.Query<POS_ProductTypeModel>($"select * from ProductType where id = {iTypeID}").ToList();
+                return output;
+            }
+        }
+
+        public List<POS_PromoTypelkupModel> Get_PromoTypelkup_By_PromoTypeName(string strPromoTypeName)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_PromoTypelkupModel>($"select * from PromoTypelkup where PromoTypeName = '{strPromoTypeName}'").ToList();
                 return output;
             }
         }
@@ -57,6 +114,18 @@ namespace SDCafeCommon.DataAccess
             {
                 var output = connection.Query<POS_LoginUserModel>($"select * from LoginUser where id = {iLoginUserID}").ToList();
                 return output;
+            }
+        }
+
+        public int Update_Promotion(POS_PromotionModel pOS_PromotionModel)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "UPDATE Promotion SET PromoName = @PromoName, PromoType=@PromoType, PromoValue=@PromoValue, " +
+                                "PromoQTY=@PromoQTY, PromoStartDttm=@PromoStartDttm, PromoEndDttm = @PromoEndDttm " +
+                                "WHERE Id=@Id";
+                var count = connection.Execute(query, pOS_PromotionModel);
+                return count;
             }
         }
 
@@ -84,6 +153,27 @@ namespace SDCafeCommon.DataAccess
             {
                 var output = connection.Query<POS_SysConfigModel>($"select configValue from SysConfig where ConfigName = '{strName}'").ToList();
                 return output;
+            }
+        }
+
+        public int Insert_Promotion(POS_PromotionModel pOS_PromotionModel)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "INSERT INTO Promotion (PromoName, PromoType, PromoValue, PromoQTY, PromoStartDttm, PromoEndDttm) " +
+                                    "VALUES (@PromoName, @PromoType, @PromoValue, @PromoQTY, @PromoStartDttm, @PromoEndDttm)";
+                var count = connection.Execute(query, pOS_PromotionModel);
+                return count;
+            }
+        }
+
+        public int Delete_Promotion_By_Id(int iSelectedPromoId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "DELETE from Promotion WHERE id=" + iSelectedPromoId;
+                var count = connection.Execute(query);
+                return count;
             }
         }
 
@@ -130,6 +220,17 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
+
+        public int Delete_PromoProducts_By_PromoId(int iSelectedPromoId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "DELETE from PromoProducts WHERE Promoid=" + iSelectedPromoId;
+                var count = connection.Execute(query);
+                return count;
+            }
+        }
+
         public List<POS_ProductModel> Get_All_Products_OrderBy_Type_ProdName()
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -252,6 +353,29 @@ namespace SDCafeCommon.DataAccess
             }
         }
 
+        public bool Check_PromoProducts(POS_PromoProductsModel pPromoProd)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_RFIDTagsModel>($"select * from PromoProducts where PromoId = {pPromoProd.PromoId} and ProdId = {pPromoProd.ProdId}").ToList();
+                if (output.Count > 0)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
+        public int Insert_PromoProduct(POS_PromoProductsModel pOS_PromoProductsModel)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "INSERT INTO PromoProducts (PromoId, ProdId) " +
+                                "VALUES (@PromoId, @ProdId)";
+                var count = connection.Execute(query, pOS_PromoProductsModel);
+                return count;
+            }
+        }
+
         public int Delete_Product_By_Id(int iSelectedProdId)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -267,6 +391,16 @@ namespace SDCafeCommon.DataAccess
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 string query = "DELETE from ProductType WHERE id=" + iSelectedProdTypeId;
+                var count = connection.Execute(query);
+                return count;
+            }
+        }
+
+        public int Delete_PromoProducts(POS_PromoProductsModel pPromoProd)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "DELETE from PromoProducts WHERE PromoId=" + pPromoProd.PromoId + " And ProdId=" + pPromoProd.ProdId;
                 var count = connection.Execute(query);
                 return count;
             }
@@ -780,6 +914,15 @@ namespace SDCafeCommon.DataAccess
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 var output = connection.Query<POS_ProductModel>($"select * from Product WHERE ProductTypeId = {iSelectedProdTypeID}").ToList();
+                return output;
+            }
+        }
+
+        public List<POS_PromotionModel> Get_All_Promotions()
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_PromotionModel>($"select * from Promotion").ToList();
                 return output;
             }
         }

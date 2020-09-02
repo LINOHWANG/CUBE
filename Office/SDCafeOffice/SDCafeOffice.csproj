@@ -96,6 +96,12 @@
     <Compile Include="Views\frmProduct.Designer.cs">
       <DependentUpon>frmProduct.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\frmPromotion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\frmPromotion.Designer.cs">
+      <DependentUpon>frmPromotion.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\frmRFIDTags.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -140,6 +146,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\frmProduct.resx">
       <DependentUpon>frmProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\frmPromotion.resx">
+      <DependentUpon>frmPromotion.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\frmSalesReport.resx">
       <DependentUpon>frmSalesReport.cs</DependentUpon>

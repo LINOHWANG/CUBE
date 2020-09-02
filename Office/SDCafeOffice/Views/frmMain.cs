@@ -25,6 +25,7 @@ namespace SDCafeOffice
         List<POS_SysConfigModel> sysconfs = new List<POS_SysConfigModel>();
         List<POS_TaxModel> taxs = new List<POS_TaxModel>();
         List<POS_StationModel> stations = new List<POS_StationModel>();
+        List<POS_PromotionModel> promos = new List<POS_PromotionModel>();
 
         Utility util = new Utility();
         private bool isProduct = false;
@@ -34,12 +35,14 @@ namespace SDCafeOffice
         private bool isSysConfig = false;
         private bool isTax = false;
         private bool isStation = false;
+        private bool isPromotion = false;
 
         public frmProduct FrmProd;
         public frmProdType FrmProdType;
         public frmSysConfig FrmSysConfig;
         public frmLoginUser FrmLoginUser;
         public frmStations FrmStations;
+        public frmPromotion FrmPromotion;
 
         public frmSalesReport FrmSalesReport;
 
@@ -146,6 +149,7 @@ namespace SDCafeOffice
             isSysConfig = false;
             isTax = false;
             isStation = false;
+            isPromotion = false;
 
             dgvData_Prod_Initialize();
             if (prods.Count > 0)
@@ -290,6 +294,7 @@ namespace SDCafeOffice
             isSysConfig = false;
             isTax = false;
             isStation = false;
+            isPromotion = false;
 
             dgvData_LoginUser_Initialize();
             if (loginUsers.Count > 0)
@@ -334,6 +339,7 @@ namespace SDCafeOffice
             isSysConfig = false;
             isTax = false;
             isStation = false;
+            isPromotion = false;
 
             dgvData_ProdType_Initialize();
             if (ptypes.Count > 0)
@@ -414,6 +420,9 @@ namespace SDCafeOffice
             isPType = false;
             isRFIDTag = false;
             isSysConfig = true;
+            isStation = true;
+            isPromotion = false;
+
             dgvData_SysConfig_Initialize();
             if (sysconfs.Count > 0)
             {
@@ -486,6 +495,7 @@ namespace SDCafeOffice
             isSysConfig = false;
             isTax = false;
             isStation = false;
+            isPromotion = false;
 
             dgvData_RFIDTags_Initialize();
             if (rfids.Count > 0)
@@ -628,6 +638,7 @@ namespace SDCafeOffice
             isSysConfig = false;
             isTax = true;
             isStation = false;
+            isPromotion = true;
 
             dgvData_Tax_Initialize();
             if (taxs.Count > 0)
@@ -685,6 +696,7 @@ namespace SDCafeOffice
             String strSelLoginId = String.Empty;
             String strTypeId = String.Empty;
             String strHostName = String.Empty;
+            String strPromoId = String.Empty;
 
             Int32 selectedRowCount =
                 dgvData.Rows.GetRowCount(DataGridViewElementStates.Selected);
@@ -773,6 +785,20 @@ namespace SDCafeOffice
                 FrmStations.ShowDialog();
                 bt_Station.PerformClick();
             }
+            if (isPromotion)
+            {
+                if (dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value == null)
+                {
+                    strPromoId = String.Empty;
+                }
+                else
+                {
+                    strPromoId = dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value.ToString();
+                }
+                FrmPromotion = new frmPromotion(strPromoId);
+                FrmPromotion.ShowDialog();
+                bt_Promotion.PerformClick();
+            }
         }
 
         private void bt_Exit_Click(object sender, EventArgs e)
@@ -825,6 +851,95 @@ namespace SDCafeOffice
         {
             FrmSalesReport = new frmSalesReport();
             FrmSalesReport.ShowDialog();
+        }
+
+        private void bt_Promotion_Click(object sender, EventArgs e)
+        {
+            //pnl_Product.Show();
+            //pnl_User.Hide();
+            bt_Product.BackColor = Color.Yellow;
+            bt_LoginUser.BackColor = Color.Khaki;
+            bt_ProdType.BackColor = Color.LightGreen;
+            bt_RFIDTags.BackColor = Color.LightGreen;
+            bt_Tax.BackColor = Color.DarkOrange;
+            bt_SysConfig.BackColor = Color.Orchid;
+
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            promos = dbPOS.Get_All_Promotions();
+            isProduct = false;
+            isLoginUser = false;
+            isPType = false;
+            isRFIDTag = false;
+            isSysConfig = false;
+            isTax = false;
+            isStation = false;
+            isPromotion = true;
+
+            dgvData_Promo_Initialize();
+            if (promos.Count > 0)
+            {
+                foreach (var promo in promos)
+                {
+                    this.dgvData.Rows.Add(new String[] { promo.Id.ToString(),
+                                                         promo.PromoName,
+                                                         promo.PromoType.ToString(),
+                                                         promo.PromoValue.ToString(),
+                                                         promo.PromoQTY.ToString(),
+                                                         promo.PromoStartDttm.ToString(),
+                                                         promo.PromoEndDttm.ToString()
+                    });
+
+
+                    this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
+                }
+            }
+        }
+        private void dgvData_Promo_Initialize()
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+
+            this.dgvData.AutoSize = false;
+            dgvData.Rows.Clear();
+            //this.dataGridActivity.AutoGenerateColumns = false;
+            //this.dataGridActivity.RowHeadersVisible = false;
+            //this.dataGridActivity.MultiSelect = false;
+            this.dgvData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            this.dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            this.dgvData.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            this.dgvData.ColumnCount = 7;
+            this.dgvData.Columns[0].Name = "Id";
+            this.dgvData.Columns[0].Width = 50;
+            this.dgvData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            this.dgvData.Columns[1].Name = "Promotion Name";
+            this.dgvData.Columns[1].Width = 200;
+            this.dgvData.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            this.dgvData.Columns[2].Name = "Promotion Type";
+            this.dgvData.Columns[2].Width = 120;
+            this.dgvData.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            this.dgvData.Columns[3].Name = "Value";
+            this.dgvData.Columns[3].Width = 120;
+            this.dgvData.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.dgvData.Columns[4].Name = "QTY";
+            this.dgvData.Columns[4].Width = 50;
+            this.dgvData.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.Columns[5].Name = "Start Date Time";
+            this.dgvData.Columns[5].Width = 200;
+            this.dgvData.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.Columns[6].Name = "End Date Time";
+            this.dgvData.Columns[6].Width = 200;
+            this.dgvData.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            this.dgvData.DefaultCellStyle.Font = new Font("Arial", 16F, GraphicsUnit.Pixel);
+
+            this.dgvData.EnableHeadersVisualStyles = false;
+            this.dgvData.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 18F, GraphicsUnit.Pixel);
+            this.dgvData.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.ColumnHeadersDefaultCellStyle.BackColor = Color.LightBlue;
+            // fix the row height
+            dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            dgvData.AllowUserToResizeRows = false;
+            dgvData.RowTemplate.Resizable = DataGridViewTriState.True;
+            dgvData.RowTemplate.MinimumHeight = 40;
         }
     }
 }

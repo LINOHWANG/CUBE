@@ -39,6 +39,7 @@
             this.bt_Product = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Station = new SDCafeCommon.Utilities.CustomButton();
             this.bt_SalesReport = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_Promotion = new SDCafeCommon.Utilities.CustomButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -194,11 +195,26 @@
             this.bt_SalesReport.Text = "Sales Report";
             this.bt_SalesReport.Click += new System.EventHandler(this.bt_SalesReport_Click);
             // 
+            // bt_Promotion
+            // 
+            this.bt_Promotion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.bt_Promotion.CornerRadius = 30;
+            this.bt_Promotion.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_Promotion.Location = new System.Drawing.Point(12, 589);
+            this.bt_Promotion.Name = "bt_Promotion";
+            this.bt_Promotion.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Promotion.Size = new System.Drawing.Size(142, 47);
+            this.bt_Promotion.TabIndex = 37;
+            this.bt_Promotion.Text = "Promotions";
+            this.bt_Promotion.Click += new System.EventHandler(this.bt_Promotion_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.bt_Promotion);
             this.Controls.Add(this.bt_SalesReport);
             this.Controls.Add(this.bt_Station);
             this.Controls.Add(this.txtMessage);
@@ -234,5 +250,6 @@
         private System.Windows.Forms.TextBox txtMessage;
         private SDCafeCommon.Utilities.CustomButton bt_Station;
         private SDCafeCommon.Utilities.CustomButton bt_SalesReport;
+        private SDCafeCommon.Utilities.CustomButton bt_Promotion;
     }
 }
