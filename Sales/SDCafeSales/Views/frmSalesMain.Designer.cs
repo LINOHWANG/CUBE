@@ -59,10 +59,10 @@
             this.textNow = new System.Windows.Forms.TextBox();
             this.timerSetTime = new System.Windows.Forms.Timer(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
-            this.customButton11 = new SDCafeCommon.Utilities.CustomButton();
-            this.customButton12 = new SDCafeCommon.Utilities.CustomButton();
-            this.customButton13 = new SDCafeCommon.Utilities.CustomButton();
-            this.customButton9 = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_SetIOneDollarDiscount = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_SetITwoDollarDiscount = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_SetIThreeDollarDiscount = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_EditPrice = new SDCafeCommon.Utilities.CustomButton();
             this.customButton7 = new SDCafeCommon.Utilities.CustomButton();
             this.customButton8 = new SDCafeCommon.Utilities.CustomButton();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -339,10 +339,10 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(64)))));
-            this.panel1.Controls.Add(this.customButton11);
-            this.panel1.Controls.Add(this.customButton12);
-            this.panel1.Controls.Add(this.customButton13);
-            this.panel1.Controls.Add(this.customButton9);
+            this.panel1.Controls.Add(this.bt_SetIOneDollarDiscount);
+            this.panel1.Controls.Add(this.bt_SetITwoDollarDiscount);
+            this.panel1.Controls.Add(this.bt_SetIThreeDollarDiscount);
+            this.panel1.Controls.Add(this.bt_EditPrice);
             this.panel1.Controls.Add(this.customButton7);
             this.panel1.Controls.Add(this.customButton8);
             this.panel1.Location = new System.Drawing.Point(227, 484);
@@ -350,69 +350,69 @@
             this.panel1.Size = new System.Drawing.Size(164, 157);
             this.panel1.TabIndex = 49;
             // 
-            // customButton11
+            // bt_SetIOneDollarDiscount
             // 
-            this.customButton11.BackColor = System.Drawing.Color.White;
-            this.customButton11.CornerRadius = 20;
-            this.customButton11.Enabled = false;
-            this.customButton11.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.customButton11.ForeColor = System.Drawing.Color.Black;
-            this.customButton11.Location = new System.Drawing.Point(5, 4);
-            this.customButton11.Name = "customButton11";
-            this.customButton11.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            this.bt_SetIOneDollarDiscount.BackColor = System.Drawing.Color.White;
+            this.bt_SetIOneDollarDiscount.CornerRadius = 20;
+            this.bt_SetIOneDollarDiscount.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_SetIOneDollarDiscount.ForeColor = System.Drawing.Color.DarkRed;
+            this.bt_SetIOneDollarDiscount.Location = new System.Drawing.Point(5, 4);
+            this.bt_SetIOneDollarDiscount.Name = "bt_SetIOneDollarDiscount";
+            this.bt_SetIOneDollarDiscount.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.customButton11.Size = new System.Drawing.Size(75, 47);
-            this.customButton11.TabIndex = 47;
-            this.customButton11.Text = "N/A";
+            this.bt_SetIOneDollarDiscount.Size = new System.Drawing.Size(75, 47);
+            this.bt_SetIOneDollarDiscount.TabIndex = 47;
+            this.bt_SetIOneDollarDiscount.Text = "$1 Disc";
+            this.bt_SetIOneDollarDiscount.Click += new System.EventHandler(this.bt_SetIOneDollarDiscount_Click);
             // 
-            // customButton12
+            // bt_SetITwoDollarDiscount
             // 
-            this.customButton12.BackColor = System.Drawing.Color.White;
-            this.customButton12.CornerRadius = 20;
-            this.customButton12.Enabled = false;
-            this.customButton12.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.customButton12.ForeColor = System.Drawing.Color.Black;
-            this.customButton12.Location = new System.Drawing.Point(5, 54);
-            this.customButton12.Name = "customButton12";
-            this.customButton12.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            this.bt_SetITwoDollarDiscount.BackColor = System.Drawing.Color.White;
+            this.bt_SetITwoDollarDiscount.CornerRadius = 20;
+            this.bt_SetITwoDollarDiscount.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_SetITwoDollarDiscount.ForeColor = System.Drawing.Color.DarkRed;
+            this.bt_SetITwoDollarDiscount.Location = new System.Drawing.Point(5, 54);
+            this.bt_SetITwoDollarDiscount.Name = "bt_SetITwoDollarDiscount";
+            this.bt_SetITwoDollarDiscount.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.customButton12.Size = new System.Drawing.Size(75, 47);
-            this.customButton12.TabIndex = 46;
-            this.customButton12.Text = "N/A";
+            this.bt_SetITwoDollarDiscount.Size = new System.Drawing.Size(75, 47);
+            this.bt_SetITwoDollarDiscount.TabIndex = 46;
+            this.bt_SetITwoDollarDiscount.Text = "$2 Disc";
+            this.bt_SetITwoDollarDiscount.Click += new System.EventHandler(this.bt_SetITwoDollarDiscount_Click);
             // 
-            // customButton13
+            // bt_SetIThreeDollarDiscount
             // 
-            this.customButton13.BackColor = System.Drawing.Color.White;
-            this.customButton13.CornerRadius = 20;
-            this.customButton13.Enabled = false;
-            this.customButton13.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.customButton13.ForeColor = System.Drawing.Color.Black;
-            this.customButton13.Location = new System.Drawing.Point(5, 104);
-            this.customButton13.Name = "customButton13";
-            this.customButton13.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            this.bt_SetIThreeDollarDiscount.BackColor = System.Drawing.Color.White;
+            this.bt_SetIThreeDollarDiscount.CornerRadius = 20;
+            this.bt_SetIThreeDollarDiscount.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_SetIThreeDollarDiscount.ForeColor = System.Drawing.Color.DarkRed;
+            this.bt_SetIThreeDollarDiscount.Location = new System.Drawing.Point(5, 104);
+            this.bt_SetIThreeDollarDiscount.Name = "bt_SetIThreeDollarDiscount";
+            this.bt_SetIThreeDollarDiscount.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.customButton13.Size = new System.Drawing.Size(75, 47);
-            this.customButton13.TabIndex = 45;
-            this.customButton13.Text = "N/A";
+            this.bt_SetIThreeDollarDiscount.Size = new System.Drawing.Size(75, 47);
+            this.bt_SetIThreeDollarDiscount.TabIndex = 45;
+            this.bt_SetIThreeDollarDiscount.Text = "$3 Disc";
+            this.bt_SetIThreeDollarDiscount.Click += new System.EventHandler(this.bt_SetIThreeDollarDiscount_Click);
             // 
-            // customButton9
+            // bt_EditPrice
             // 
-            this.customButton9.BackColor = System.Drawing.Color.White;
-            this.customButton9.CornerRadius = 20;
-            this.customButton9.Enabled = false;
-            this.customButton9.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.customButton9.ForeColor = System.Drawing.Color.Black;
-            this.customButton9.Location = new System.Drawing.Point(84, 4);
-            this.customButton9.Name = "customButton9";
-            this.customButton9.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            this.bt_EditPrice.BackColor = System.Drawing.Color.White;
+            this.bt_EditPrice.CornerRadius = 20;
+            this.bt_EditPrice.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_EditPrice.ForeColor = System.Drawing.Color.Black;
+            this.bt_EditPrice.Location = new System.Drawing.Point(84, 4);
+            this.bt_EditPrice.Name = "bt_EditPrice";
+            this.bt_EditPrice.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.customButton9.Size = new System.Drawing.Size(75, 47);
-            this.customButton9.TabIndex = 42;
-            this.customButton9.Text = "Edit Price";
+            this.bt_EditPrice.Size = new System.Drawing.Size(75, 47);
+            this.bt_EditPrice.TabIndex = 42;
+            this.bt_EditPrice.Text = "Edit Amount";
+            this.bt_EditPrice.Click += new System.EventHandler(this.bt_EditPrice_Click);
             // 
             // customButton7
             // 
@@ -428,7 +428,7 @@
             | SDCafeCommon.Utilities.Corners.BottomRight)));
             this.customButton7.Size = new System.Drawing.Size(75, 47);
             this.customButton7.TabIndex = 40;
-            this.customButton7.Text = "Memo";
+            this.customButton7.Text = "N/A";
             // 
             // customButton8
             // 
@@ -444,7 +444,7 @@
             | SDCafeCommon.Utilities.Corners.BottomRight)));
             this.customButton8.Size = new System.Drawing.Size(75, 47);
             this.customButton8.TabIndex = 41;
-            this.customButton8.Text = "Split";
+            this.customButton8.Text = "N/A";
             // 
             // panel2
             // 
@@ -978,11 +978,11 @@
         private System.Windows.Forms.TextBox txtAmtEach;
         private SDCafeCommon.Utilities.CustomButton customButton7;
         private SDCafeCommon.Utilities.CustomButton customButton8;
-        private SDCafeCommon.Utilities.CustomButton customButton9;
+        private SDCafeCommon.Utilities.CustomButton bt_EditPrice;
         private SDCafeCommon.Utilities.CustomButton bt_SetDiscount;
-        private SDCafeCommon.Utilities.CustomButton customButton11;
-        private SDCafeCommon.Utilities.CustomButton customButton12;
-        private SDCafeCommon.Utilities.CustomButton customButton13;
+        private SDCafeCommon.Utilities.CustomButton bt_SetIOneDollarDiscount;
+        private SDCafeCommon.Utilities.CustomButton bt_SetITwoDollarDiscount;
+        private SDCafeCommon.Utilities.CustomButton bt_SetIThreeDollarDiscount;
         private System.Windows.Forms.TextBox textNow;
         private System.Windows.Forms.Timer timerSetTime;
         private System.Windows.Forms.Panel panel1;

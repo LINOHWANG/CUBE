@@ -266,16 +266,16 @@ namespace SDCafeOffice.Views
             this.dgvDataFrom.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             this.dgvDataFrom.ColumnCount = 4;
             this.dgvDataFrom.Columns[0].Name = "Id";
-            //this.dgvDataFrom.Columns[0].Width = 190;
+            this.dgvDataFrom.Columns[0].Width = 60;
             this.dgvDataFrom.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataFrom.Columns[1].Name = "Type Name";
             this.dgvDataFrom.Columns[1].Width = 100;
             this.dgvDataFrom.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataFrom.Columns[2].Name = "Product Name";
-            this.dgvDataFrom.Columns[2].Width = 200;
+            this.dgvDataFrom.Columns[2].Width = 150;
             this.dgvDataFrom.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataFrom.Columns[3].Name = "Price";
-            this.dgvDataFrom.Columns[3].Width = 100;
+            this.dgvDataFrom.Columns[3].Width = 70;
             this.dgvDataFrom.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             this.dgvDataFrom.DefaultCellStyle.Font = new Font("Arial", 14F, GraphicsUnit.Pixel);
@@ -302,17 +302,17 @@ namespace SDCafeOffice.Views
             this.dgvDataTo.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             this.dgvDataTo.ColumnCount =4;
             this.dgvDataTo.Columns[0].Name = "Id";
-            //this.dgvDataTo.Columns[0].Width = 190;
+            this.dgvDataTo.Columns[0].Width = 60;
             this.dgvDataTo.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataTo.Columns[1].Name = "Type Name";
             this.dgvDataTo.Columns[1].Width = 100;
             this.dgvDataTo.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataTo.Columns[2].Name = "Product Name";
-            this.dgvDataTo.Columns[2].Width = 200;
+            this.dgvDataTo.Columns[2].Width = 150;
             this.dgvDataTo.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvDataTo.Columns[2].Name = "Price";
-            this.dgvDataTo.Columns[2].Width = 100;
-            this.dgvDataTo.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvDataTo.Columns[3].Name = "Price";
+            this.dgvDataTo.Columns[3].Width = 70;
+            this.dgvDataTo.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             this.dgvDataTo.DefaultCellStyle.Font = new Font("Arial", 14F, GraphicsUnit.Pixel);
             this.dgvDataTo.EnableHeadersVisualStyles = false;
@@ -334,7 +334,8 @@ namespace SDCafeOffice.Views
         private void bt_AddOne_Click(object sender, EventArgs e)
         {
             String strSelProdId = String.Empty;
-            
+            String strSelProdPrice = String.Empty;
+
 
             Int32 selectedRowCount = dgvDataFrom.Rows.GetRowCount(DataGridViewElementStates.Selected);
 
@@ -361,7 +362,8 @@ namespace SDCafeOffice.Views
                     else
                     {
                         strSelProdId = dgvDataFrom.Rows[dgvDataFrom.SelectedRows[i].Index].Cells[0].Value.ToString();
-                        Move_dgvDataFrom_dgvDataTo(strSelProdId, i);
+                        strSelProdPrice = dgvDataFrom.Rows[dgvDataFrom.SelectedRows[i].Index].Cells[3].Value.ToString();
+                        Move_dgvDataFrom_dgvDataTo(strSelProdId, Convert.ToDouble(strSelProdPrice));
                     }
                 }
 
@@ -369,10 +371,21 @@ namespace SDCafeOffice.Views
             }
         }
 
-        private void Move_dgvDataFrom_dgvDataTo(string strSelProdId, int i)
+        private void Move_dgvDataFrom_dgvDataTo(string strSelProdId, double dblProdPrice)
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
             int iSelectedPromoId = Convert.ToInt32(txt_PromoID.Text);
+            int iSelectedProdId = Convert.ToInt32(strSelProdId);
+
+            double dblFirstProdPrice = dbPOS.Get_The_First_Product_Price_From_PromoProduct(iSelectedPromoId);
+            if (dblFirstProdPrice > 0)
+            {
+                if (dblFirstProdPrice != dblProdPrice)
+                {
+                    MessageBox.Show("Unit Price Should be the same! " + dblProdPrice.ToString() + " is Not Equal to " + dblFirstProdPrice.ToString());
+                    return;
+                }
+            }
             pprods.Clear();
             pprods.Add(new POS_PromoProductsModel()
             {

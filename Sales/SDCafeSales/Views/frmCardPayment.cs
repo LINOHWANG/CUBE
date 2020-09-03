@@ -507,7 +507,7 @@ namespace SDCafeSales.Views
             }
             if (bPaymentComplete)
             {
-                util.Logger("Exiting ... with PaymentComplete");
+                util.Logger("frmCardPayment Exiting ... with PaymentComplete");
             }
             this.Close();
             //Application.ExitThread();

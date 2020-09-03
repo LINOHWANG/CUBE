@@ -85,6 +85,12 @@
     <Compile Include="Views\frmDiscount.Designer.cs">
       <DependentUpon>frmDiscount.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\frmEditOrderPrice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\frmEditOrderPrice.Designer.cs">
+      <DependentUpon>frmEditOrderPrice.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\frmLogOn.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -132,6 +138,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\frmDiscount.resx">
       <DependentUpon>frmDiscount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\frmEditOrderPrice.resx">
+      <DependentUpon>frmEditOrderPrice.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\frmLogOn.resx">
       <DependentUpon>frmLogOn.cs</DependentUpon>

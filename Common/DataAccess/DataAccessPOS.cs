@@ -365,6 +365,21 @@ namespace SDCafeCommon.DataAccess
             }
         }
 
+        public double Get_The_First_Product_Price_From_PromoProduct(int iSelectedPromoId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                double dblUnitPrice = 0;
+                string query = "SELECT * FROM PRODUCT WHERE Id = (Select top 1 ProdId from PromoProducts where promoid="+ iSelectedPromoId+")";
+                var output = connection.Query<POS_ProductModel>(query).ToList();
+                if (output.Count > 0)
+                {
+                    dblUnitPrice = (double)output[0].OutUnitPrice;
+                }
+                return dblUnitPrice;
+            }
+        }
+
         public int Insert_PromoProduct(POS_PromoProductsModel pOS_PromoProductsModel)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -1093,6 +1108,16 @@ namespace SDCafeCommon.DataAccess
                 string query = "DELETE from Orders WHERE OrderCategoryId=4 And IsDiscounted=1 And CreateStation = '" + strStation + "'";
                 var count = connection.Execute(query);
                 return count;
+            }
+        }
+
+        public List<POS_OrdersModel> Get_Order_By_OrderId(int iSelectedOrderId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "SELECT * from Orders WHERE Id = " + iSelectedOrderId.ToString();
+                var output = connection.Query<POS_OrdersModel>(query).ToList();
+                return output;
             }
         }
     }

@@ -76,7 +76,7 @@ namespace SDCafeSales.Views
 
         private void txt_SubTotal_TextChanged(object sender, EventArgs e)
         {
-            util.Logger("Total has changed : " + txt_SubTotal.Text);
+            util.Logger("frmSalesCustomer : Total has changed : " + txt_SubTotal.Text);
             Load_Existing_Orders();
         }
 
@@ -147,7 +147,8 @@ namespace SDCafeSales.Views
                                                                                    order.ProductName,
                                                                                    order.Quantity.ToString(),
                                                                                    order.OutUnitPrice.ToString("0.00"),
-                                                                                   iAmount.ToString("0.00")
+                                                                                   //iAmount.ToString("0.00")
+                                                                                   order.Amount.ToString("0.00")
                                 });
                     }
                     else if (order.OrderCategoryId > 0) // Discount
@@ -157,7 +158,8 @@ namespace SDCafeSales.Views
                                                                                    order.ProductName,
                                                                                    order.Quantity.ToString(),
                                                                                    order.Amount.ToString("0.00"),
-                                                                                   iAmount.ToString("0.00")
+                                                                                   //iAmount.ToString("0.00")
+                                                                                   order.Amount.ToString("0.00")
                                 });
                     }
                     if (order.RFTagId > 0)

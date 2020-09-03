@@ -1281,6 +1281,11 @@ namespace SDCafeSales.Views
 
         private void bt_SetVoid_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(strSelInvNo))
+            {
+                MessageBox.Show("Please select one transaction to Void!");
+                return;
+            }
             if (strSelInvNo.Length > 0)
             {
                 iSelInvNo = System.Convert.ToInt32(strSelInvNo);

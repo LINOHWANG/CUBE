@@ -52,6 +52,7 @@ namespace SDCafeSales.Views
         public frmSalesCustomer FrmSalesCustomer;
         public frmSalesHistory FrmSalesHist;
         public frmDiscount FrmDiscount;
+        public frmEditOrderPrice FrmEditOrderPrice;
         public frmYesNo FrmYesNo;
         public frmRecallOrder FrmRecallOrder;
         //public frmRegisterMain FrmRegister;
@@ -288,6 +289,7 @@ namespace SDCafeSales.Views
         {
             dgv_Orders_Initialize();
             DataAccessPOS dbPOS = new DataAccessPOS();
+            orders.Clear();
             orders = dbPOS.Get_Orders_by_Station(strStation);
             if (orders.Count > 0)
             {
@@ -306,7 +308,8 @@ namespace SDCafeSales.Views
                                                                                    order.ProductName,
                                                                                    order.Quantity.ToString(),
                                                                                    order.OutUnitPrice.ToString("0.00"),
-                                                                                   iAmount.ToString("0.00"),
+                                                                                   //iAmount.ToString("0.00"),
+                                                                                   order.Amount.ToString("0.00"),
                                                                                    order.Id.ToString()
                                 });
                     }else if (order.OrderCategoryId > 0) // Discount
@@ -316,7 +319,8 @@ namespace SDCafeSales.Views
                                                                                    order.ProductName,
                                                                                    order.Quantity.ToString(),
                                                                                    order.Amount.ToString("0.00"),
-                                                                                   iAmount.ToString("0.00"),
+                                                                                   //iAmount.ToString("0.00"),
+                                                                                   order.Amount.ToString("0.00"),
                                                                                    order.Id.ToString()
                                 });
                     }
@@ -1062,6 +1066,7 @@ namespace SDCafeSales.Views
                 {
                     iNewInvNo = iSavedOrderInvNo;
                 }
+                util.Logger(" Add_RFIDTag_Into_Order Get_New_InvoiceNo : InvoiceNo = " + iNewInvNo.ToString());
                 isNewInvoice = true;
             }
             rfids.Clear();
@@ -1492,9 +1497,9 @@ namespace SDCafeSales.Views
 
             //double iTotalAmount = 0;
 			double iAverageAmount = 0;
-            //double iTotalTax1 = 0;
-            //double iTotalTax2 = 0;
-            //double iTotalTax3 = 0;
+            double iTotalTax1 = 0;
+            double iTotalTax2 = 0;
+            double iTotalTax3 = 0;
             dbPOS.Delete_Promotion_Discount_Orders(strStation);
             //iTotalAmount = dbPOS.Get_Orders_Amount_By_MultipleProdId(strSQLWhere);
 			iAverageAmount = dbPOS.Get_Orders_Average_Amount_By_MultipleProdId(strStation, strSQLWhere);
@@ -1521,7 +1526,7 @@ namespace SDCafeSales.Views
                         ProductTypeId = 0,
                         InUnitPrice = 0,
                         OutUnitPrice = 0,
-                        IsTax1 = false,
+                        IsTax1 = true,
                         IsTax2 = false,
                         IsTax3 = false,
                         Quantity = iDiscountTimes,
@@ -1529,7 +1534,7 @@ namespace SDCafeSales.Views
                         Tax1Rate = TaxRate1,
                         Tax2Rate = TaxRate2,
                         Tax3Rate = TaxRate3,
-                        Tax1 = 0, // (float)(-iTotalTax1 * (iDiscountRate / 100)),
+                        Tax1 = (float)(-(iAverageAmount * iPromoQTY * iDiscountTimes) * (iDiscountRate / 100) * TaxRate1),
                         Tax2 = 0, // (float)(-iTotalTax2 * (iDiscountRate / 100)),
                         Tax3 = 0, // (float)(-iTotalTax3 * (iDiscountRate / 100)),
                         InvoiceNo = iNewInvNo,
@@ -1553,6 +1558,7 @@ namespace SDCafeSales.Views
                         IsDiscounted = true     // Promotion
                     });
                     int iNewOrderId = dbPOS.Insert_Order(orders[0]);
+                    util.Logger(" ## Discount_Orders_By_Promotion : " + orders[0].Id.ToString() + ", PROD=" + orders[0].ProductName + ", New Amount = " + orders[0].Amount.ToString());
                     if (iNewOrderId > 0)
                     {
                         ////////////////////////////////////////////////
@@ -1981,6 +1987,7 @@ namespace SDCafeSales.Views
                 {
                     iNewInvNo = iSavedOrderInvNo;
                 }
+                util.Logger(" Add_Order_Manually Get_New_InvoiceNo : InvoiceNo = " + iNewInvNo.ToString());
                 isNewInvoice = true;
             }
 
@@ -2407,7 +2414,7 @@ namespace SDCafeSales.Views
                         // Add collection table
                         Process_Tran_Collection(iNewInvNo, FrmCardPay.p_TenderAmt, 0, FrmCardPay.p_TipAmt, FrmCardPay.strPaymentType, true);
                         Process_Receipt(false, true);
-
+                        util.Logger("--------------- Card Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString());
                         txtSelectedMenu.Text = "Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString();
 
                         Initialize_Local_Variables();
@@ -2418,7 +2425,7 @@ namespace SDCafeSales.Views
                     }
                     else
                     {
-                        txtSelectedMenu.Text = "Payment is not yet completed : Invoice# " + iNewInvNo.ToString();
+                        txtSelectedMenu.Text = "######### Payment is not yet completed : Invoice# " + iNewInvNo.ToString();
                         util.Logger("Payment is not done yet!");
 
                     }
@@ -2443,6 +2450,7 @@ namespace SDCafeSales.Views
                             Process_Tran_Collection(iNewInvNo, FrmCashPay.p_CashAmt, FrmCashPay.p_ChangeAmt, FrmCashPay.p_TipAmt, FrmCashPay.strPaymentType,false);
                             Process_Receipt(false, true);
 
+                            util.Logger("--------------- Cash Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString());
                             txtSelectedMenu.Text = "Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString();
 
                             Initialize_Local_Variables();
@@ -2467,6 +2475,7 @@ namespace SDCafeSales.Views
 
         private void Initialize_Local_Variables()
         {
+            util.Logger("---------------- Initialize_Local_Variables : Old InvNo : " + iNewInvNo.ToString());
             iNewInvNo = 0;
             iPpleCount = 0;
             isNewInvoice = false;
@@ -2475,7 +2484,14 @@ namespace SDCafeSales.Views
             txtAmtEach.Text = "";
             txtQTY.Text = "";
             fTotDue = 0;
-       }
+            //// Set the flag for the new customer
+            isNewInvoice = false;
+            iNewInvNo = 0;
+            txt_SubTotal.Text = String.Empty;
+            txt_TaxTotal.Text = String.Empty;
+            txt_TotalDue.Text = String.Empty;
+            txtCount.Text = String.Empty;
+        }
 
        private void Process_Order_Complete(int iNewInvNo)
        {
@@ -2529,9 +2545,10 @@ namespace SDCafeSales.Views
                     ordercomp.OrderCategoryId = order.OrderCategoryId;
                     ordercomp.IsDiscounted = order.IsDiscounted;
 
-                    dbPOS1.Insert_OrderComplete(ordercomp);
-                    dbPOS.Delete_Order_By_OrderId(order.InvoiceNo,order.Id);
-
+                    int iCount = dbPOS1.Insert_OrderComplete(ordercomp);
+                    util.Logger("Insert_OrderComplete ! InvNo :" + order.InvoiceNo + " OrdId :" + order.Id.ToString() + " Result : " + iCount.ToString());
+                    iCount = dbPOS.Delete_Order_By_OrderId(order.InvoiceNo,order.Id);
+                    util.Logger("Delete_Order_By_OrderId ! InvNo :" + order.InvoiceNo + " OrdId :" + order.Id.ToString() + " Result : " + iCount.ToString());
                 }
             }
        }
@@ -2641,7 +2658,8 @@ namespace SDCafeSales.Views
                 col.InvoiceNo = iInvNo;
                 //col.Change = fChangeAmt;
 
-                dbPOS1.Insert_TranCollection(col);
+                int iCount = dbPOS1.Insert_TranCollection(col);
+                util.Logger("Insert_TranCollection ! InvNo :" + col.InvoiceNo + " ReceiptNo :" + col.ReceiptNo + " PaymentType :" + col.CollectionType + " Result : " + iCount.ToString());
 
             }
 
@@ -4260,6 +4278,8 @@ namespace SDCafeSales.Views
                 {
                     Print_SavedOrders(iNewInvNo);
                     txtSelectedMenu.Text = "Order Save Completed !";
+                    
+                    util.Logger("Order Save Completed ! : Invoice# " + iNewInvNo.ToString());
 
                     Initialize_Local_Variables();
                     dgv_Orders_Initialize();
@@ -4269,11 +4289,13 @@ namespace SDCafeSales.Views
                 else
                 {
                     txtSelectedMenu.Text = "Order Save failed ! : " + iNewInvNo.ToString();
+                    util.Logger("Order Save failed !  : Invoice# " + iNewInvNo.ToString());
                 }
             }
             else
             {
                 txtSelectedMenu.Text = "No invoice was selected : " + iNewInvNo.ToString();
+                util.Logger("No invoice was selected to save order  : Invoice# " + iNewInvNo.ToString());
             }
 
         }
@@ -4542,10 +4564,12 @@ namespace SDCafeSales.Views
                             bt_Stop.PerformClick();
                         }
                         txtSelectedMenu.Text = "Recall order successed ! " + iRecallInvoiceNo.ToString();
+                        util.Logger("Recall order successed ! " + iRecallInvoiceNo.ToString());
                     }
                     else
                     {
                         txtSelectedMenu.Text = "Recall canceled ! ";
+                        util.Logger("Recall canceled ! " + FrmRecallOrder.strInvoiceNo);
                     }
 
                 }
@@ -4642,7 +4666,7 @@ namespace SDCafeSales.Views
                         ProductTypeId = 0,
                         InUnitPrice = 0,
                         OutUnitPrice = 0,
-                        IsTax1 = false,
+                        IsTax1 = true,
                         IsTax2 = false,
                         IsTax3 = false,
                         Quantity = 1,
@@ -4672,6 +4696,7 @@ namespace SDCafeSales.Views
                         OrderCategoryId = 4     // Discount
                     });
                     int iNewOrderId = dbPOS.Insert_Order(orders[0]);
+                    util.Logger(" ## _Discount_Orders_Item : " + orders[0].Id.ToString() + ", PROD=" + orders[0].ProductName + ", New Amount = " + orders[0].Amount.ToString());
                     if (iNewOrderId > 0)
                     {
                         ////////////////////////////////////////////////
@@ -4697,6 +4722,169 @@ namespace SDCafeSales.Views
                 }
             }
             return true;
+        }
+        private bool Add_Amount_Discount_Orders_Item(string strDescription, Double dblAmount)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+
+            double iTotalAmount = dblAmount;
+            double iTotalTax1 = 0;
+            double iTotalTax2 = 0;
+            double iTotalTax3 = 0;
+
+            orders.Clear();
+
+            ////////////////////////////////////////////////
+            // Add the ordered item into Orders table
+            ////////////////////////////////////////////////
+            orders.Add(new POS_OrdersModel()
+            {
+                TranType = "20",
+                ProductId = 0,
+                ProductName = strDescription,
+                SecondName = strDescription,
+                ProductTypeId = 0,
+                InUnitPrice = 0,
+                OutUnitPrice = 0,
+                IsTax1 = true,
+                IsTax2 = false,
+                IsTax3 = false,
+                Quantity = 1,
+                Amount = (float)(-dblAmount),
+                Tax1Rate = TaxRate1,
+                Tax2Rate = TaxRate2,
+                Tax3Rate = TaxRate3,
+                Tax1 = (float)(-dblAmount * TaxRate1),
+                Tax2 = 0, // (float)(-iTotalTax2 * (iDiscountRate / 100)),
+                Tax3 = 0, // (float)(-iTotalTax3 * (iDiscountRate / 100)),
+                InvoiceNo = iNewInvNo,
+                IsPaidComplete = false,
+                CompleteDate = "",
+                CompleteTime = "",
+                CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), //DateTime.Now.ToShortDateString(),
+                CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
+                CreateUserId = System.Convert.ToInt32(strUserID),
+                CreateUserName = strUserName,
+                CreateStation = strStation,
+                LastModDate = "",
+                LastModTime = "",
+                LastModUserId = System.Convert.ToInt32(strUserID),
+                LastModUserName = "",
+                LastModStation = "",
+                RFTagId = 0,
+                ParentId = 0,
+                OrderCategoryId = 4     // Discount
+            });
+            int iNewOrderId = dbPOS.Insert_Order(orders[0]);
+            util.Logger(" ## Discount : " + orders[0].Id.ToString() + ", PRODID=" + orders[0].ProductId + ", Discount Amount = " + orders[0].Amount.ToString("C2"));
+            if (iNewOrderId > 0)
+            {
+                ////////////////////////////////////////////////
+                // Add the ordered item into datagrid view
+                ////////////////////////////////////////////////
+                float iAmount = orders[0].Amount;
+                this.dgv_Orders.Rows.Add(new String[] { prods[0].Id.ToString(),
+                                                                       orders[0].ProductName,
+                                                                       "1",
+                                                                       orders[0].OutUnitPrice.ToString("0.00"),
+                                                                       iAmount.ToString("0.00"),
+                                                                       iNewOrderId.ToString()
+                    });
+                this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = 0;
+                DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
+                row.DefaultCellStyle.ForeColor = Color.Red;
+                //this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView_By_RFTagID(rfids[0].Id);
+            }
+
+            dgv_Orders_Initialize();
+            Load_Existing_Orders();
+            Calculate_Total_Due();
+            return true;
+        }
+
+        private void bt_SetIOneDollarDiscount_Click(object sender, EventArgs e)
+        {
+            Add_Amount_Discount_Orders_Item("$1 Discount", 1);
+        }
+
+        private void bt_EditPrice_Click(object sender, EventArgs e)
+        {
+            if (dgv_Orders.Rows.Count > 0)
+            {
+                int iRowCount = dgv_Orders.Rows.Count;
+                //for (int i = 0; i < iRowCount; iRowCount++)
+                foreach (DataGridViewRow row in dgv_Orders.Rows)
+                {
+                    if (row.Selected)
+                    {
+                        int iSelectedProdId = System.Convert.ToInt32(row.Cells[0].Value.ToString());
+                        int iSelectedOrderId = System.Convert.ToInt32(row.Cells[5].Value.ToString());
+
+                        DataAccessPOS dbPOS = new DataAccessPOS();
+                        Double dblDueAmount = dbPOS.Get_Order_Amount_By_OrderId(iNewInvNo, iSelectedOrderId);
+
+                        if (Edit_Order_Price(dblDueAmount, iSelectedOrderId, iSelectedProdId))
+                        {
+                            txtSelectedMenu.Text = "Item Edit Completed !";
+                            dgv_Orders_Initialize();
+                            Load_Existing_Orders();
+                            Calculate_Total_Due();
+                        }
+                        return;
+                    }
+                }
+            }
+
+        }
+
+        private bool Edit_Order_Price(double dblDueAmount, int iSelectedOrderId, int iSelectedProdId)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            
+            using (var FrmEditOrderPrice = new frmEditOrderPrice(this))
+            {
+                FrmEditOrderPrice.Set_ProductName(dbPOS.Get_ProductName_By_Id(iSelectedProdId));
+                FrmEditOrderPrice.Set_Amount(dblDueAmount);
+                FrmEditOrderPrice.ShowDialog();
+
+                double dblNewAmount = FrmEditOrderPrice.dblNewAmount;
+
+                if (dblNewAmount > 0)
+                {
+                    orders.Clear();
+                    //orders = dbPOS.Get_Order_By_ProdId(iNewInvNo, rfids[0].ProductId);
+                    orders = dbPOS.Get_Order_By_OrderId(iSelectedOrderId);
+                    if (orders.Count == 1)
+                    {
+                        orders[0].Amount = (float)dblNewAmount;
+                        if (orders[0].IsTax1)
+                        {
+                            orders[0].Tax1 = (float)(dblNewAmount * orders[0].Tax1Rate);
+                        }
+                        if (orders[0].IsTax2)
+                        {
+                            orders[0].Tax2 = (float)(dblNewAmount * orders[0].Tax2Rate);
+                        }
+                        if (orders[0].IsTax3)
+                        {
+                            orders[0].Tax3 = (float)(dblNewAmount * orders[0].Tax3Rate);
+                        }
+                        dbPOS.Update_Orders_Amount_Qty(orders[0]);
+                        util.Logger(" ## Edit Price : " + orders[0].Id.ToString() + ", PRODID=" + orders[0].ProductId + ", New Amount = " + dblNewAmount.ToString());
+                    }
+                }
+            }
+            return true;
+        }
+
+        private void bt_SetITwoDollarDiscount_Click(object sender, EventArgs e)
+        {
+            Add_Amount_Discount_Orders_Item("$2 Discount", 2);
+        }
+
+        private void bt_SetIThreeDollarDiscount_Click(object sender, EventArgs e)
+        {
+            Add_Amount_Discount_Orders_Item("$3 Discount", 3);
         }
     }
 
