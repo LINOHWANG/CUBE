@@ -23,14 +23,14 @@ namespace SDCafeCommon.DataAccess
                                 "IsManualPrice,IsTaxInverseCalculation,Tare,Quantity,Amount,Tax1Rate,Tax2Rate,Tax3Rate," +
                                 "Tax1,Tax2,Tax3,InvoiceNo,IsPaidComplete,CompleteDate,CompleteTime,CreateDate,CreateTime,"+
                                 "CreateUserId,CreateUserName,CreateStation,LastModDate,LastModTime,LastModUserId,LastModUserName,LastModStation, RFTagID," +
-                                "ParentId, OrderCategoryId) " +
+                                "ParentId, OrderCategoryId, IsDiscounted) " +
                                 "VALUES (" +
                                 "@OrderId, @TranType, @ProductId, @ProductName, @SecondName, @ProductTypeId, CAST(@InUnitPrice as decimal(10,2)), CAST(@OutUnitPrice as decimal(10,2))," +
                                 "@IsTax1, @IsTax2, @IsTax3, @UnitCategoryId, @Deposit, @RecyclingFee, @ChillCharge, @IsPointException,"+
                                 "@IsManualPrice, @IsTaxInverseCalculation, @Tare, @Quantity, CAST(@Amount as decimal(10,2)), CAST(@Tax1Rate as decimal(10,2)), CAST(@Tax2Rate as decimal(10,2)), CAST(@Tax3Rate as decimal(10,2))," +
                                 "CAST(@Tax1 as decimal(10,2)),CAST(@Tax2 as decimal(10,2)),CAST(@Tax3 as decimal(10,2)), @InvoiceNo, @IsPaidComplete, @CompleteDate, @CompleteTime, @CreateDate, @CreateTime," +
                                 "@CreateUserId, @CreateUserName, @CreateStation, @LastModDate, @LastModTime, @LastModUserId, @LastModUserName, @LastModStation, @RFTagID,"+
-                                "@ParentId, @OrderCategoryId)";
+                                "@ParentId, @OrderCategoryId, @IsDiscounted)";
                 var count = connection.Execute(query, pos1_OrderCompleteModel);
                 return count;
             }

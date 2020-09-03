@@ -62,6 +62,7 @@
     <Compile Include="Model\POS1_TranCollectionModel.cs" />
     <Compile Include="Model\POS_LoginUserModel.cs" />
     <Compile Include="Model\POS_OrdersModel.cs" />
+    <Compile Include="Model\POS_ProdOrdersModel.cs" />
     <Compile Include="Model\POS_ProductModel.cs" />
     <Compile Include="Model\POS_ProductTypeModel.cs" />
     <Compile Include="Model\POS_PromoProductsModel.cs" />

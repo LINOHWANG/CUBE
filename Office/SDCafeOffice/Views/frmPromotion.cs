@@ -62,7 +62,8 @@ namespace SDCafeOffice.Views
                 {
                     this.dgvDataFrom.Rows.Add(new String[] { prod.Id.ToString(),
                                                          dbPOS.Get_ProductTypeName_By_Id(prod.ProductTypeId),
-                                                         prod.ProductName
+                                                         prod.ProductName,
+                                                         prod.OutUnitPrice.ToString()
                     });
                    /* if (ptype.IsBatchDonation)
                     {
@@ -98,7 +99,8 @@ namespace SDCafeOffice.Views
                         {
                             this.dgvDataTo.Rows.Add(new String[] { prods[0].Id.ToString(),
                                                              dbPOS.Get_ProductTypeName_By_Id(prods[0].ProductTypeId),
-                                                             prods[0].ProductName
+                                                             prods[0].ProductName,
+                                                             prods[0].OutUnitPrice.ToString()
                             });
                             /* if (ptype.IsBatchDonation)
                              {
@@ -262,7 +264,7 @@ namespace SDCafeOffice.Views
             this.dgvDataFrom.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgvDataFrom.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvDataFrom.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            this.dgvDataFrom.ColumnCount = 3;
+            this.dgvDataFrom.ColumnCount = 4;
             this.dgvDataFrom.Columns[0].Name = "Id";
             //this.dgvDataFrom.Columns[0].Width = 190;
             this.dgvDataFrom.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -272,6 +274,9 @@ namespace SDCafeOffice.Views
             this.dgvDataFrom.Columns[2].Name = "Product Name";
             this.dgvDataFrom.Columns[2].Width = 200;
             this.dgvDataFrom.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvDataFrom.Columns[3].Name = "Price";
+            this.dgvDataFrom.Columns[3].Width = 100;
+            this.dgvDataFrom.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             this.dgvDataFrom.DefaultCellStyle.Font = new Font("Arial", 14F, GraphicsUnit.Pixel);
             this.dgvDataFrom.EnableHeadersVisualStyles = false;
@@ -295,7 +300,7 @@ namespace SDCafeOffice.Views
             this.dgvDataTo.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgvDataTo.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvDataTo.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            this.dgvDataTo.ColumnCount = 3;
+            this.dgvDataTo.ColumnCount =4;
             this.dgvDataTo.Columns[0].Name = "Id";
             //this.dgvDataTo.Columns[0].Width = 190;
             this.dgvDataTo.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -304,6 +309,9 @@ namespace SDCafeOffice.Views
             this.dgvDataTo.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataTo.Columns[2].Name = "Product Name";
             this.dgvDataTo.Columns[2].Width = 200;
+            this.dgvDataTo.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvDataTo.Columns[2].Name = "Price";
+            this.dgvDataTo.Columns[2].Width = 100;
             this.dgvDataTo.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             this.dgvDataTo.DefaultCellStyle.Font = new Font("Arial", 14F, GraphicsUnit.Pixel);

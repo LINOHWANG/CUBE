@@ -673,7 +673,7 @@ namespace SDCafeCommon.DataAccess
                                 "Tax3Rate	,Tax1	,Tax2	,Tax3	,InvoiceNo	,IsPaidComplete	,CompleteDate	, " +
                                 "CompleteTime	,CreateDate	,CreateTime	,CreateUserId	,CreateUserName	,CreateStation	, " +
                                 "LastModDate	,LastModTime	,LastModUserId	,LastModUserName	,LastModStation, RFTagID, " +
-                                "ParentId, OrderCategoryId ) " +
+                                "ParentId, OrderCategoryId, IsDiscounted ) " +
                                 " OUTPUT INSERTED.[Id] " +
                                 "VALUES (@TranType	,@ProductId	,@ProductName	,@SecondName	,@ProductTypeId	,  " +
                                 "CAST(@InUnitPrice as decimal(10,2)), CAST(@OutUnitPrice as decimal(10,2))	,@IsTax1	,@IsTax2	,@IsTax3	,@UnitCategoryId	, " +
@@ -682,7 +682,7 @@ namespace SDCafeCommon.DataAccess
                                 "CAST(@Tax3Rate as decimal(10,2))	,CAST(@Tax1 as decimal(10,2))	,CAST(@Tax2 as decimal(10,2))	,CAST(@Tax3 as decimal(10,2))	,@InvoiceNo	,@IsPaidComplete	,@CompleteDate	, " +
                                 "@CompleteTime	,@CreateDate	,@CreateTime	,@CreateUserId	,@CreateUserName	,@CreateStation	, " +
                                 "@LastModDate	,@LastModTime	,@LastModUserId	,@LastModUserName	,@LastModStation, @RFTagID, " +
-                                "@ParentId, @OrderCategoryId ) ";
+                                "@ParentId, @OrderCategoryId, @IsDiscounted ) ";
                 //var count = connection.Execute(query, pos_OrdersModel);
                 //if (count == 1) return true;
                 //return false;
@@ -1002,14 +1002,14 @@ namespace SDCafeCommon.DataAccess
                                 "IsManualPrice,IsTaxInverseCalculation,Tare,Quantity,Amount,Tax1Rate,Tax2Rate,Tax3Rate," +
                                 "Tax1,Tax2,Tax3,InvoiceNo,IsPaidComplete,CompleteDate,CompleteTime,CreateDate,CreateTime," +
                                 "CreateUserId,CreateUserName,CreateStation,LastModDate,LastModTime,LastModUserId,LastModUserName,LastModStation, RFTagID," +
-                                "ParentId, OrderCategoryId) " +
+                                "ParentId, OrderCategoryId, IsDiscounted) " +
                                 "VALUES (" +
                                 "@TranType, @ProductId, @ProductName, @SecondName, @ProductTypeId, CAST(@InUnitPrice as decimal(10,2)), CAST(@OutUnitPrice as decimal(10,2))," +
                                 "@IsTax1, @IsTax2, @IsTax3, @UnitCategoryId, @Deposit, @RecyclingFee, @ChillCharge, @IsPointException," +
                                 "@IsManualPrice, @IsTaxInverseCalculation, @Tare, @Quantity, CAST(@Amount as decimal(10,2)), CAST(@Tax1Rate as decimal(10,2)), CAST(@Tax2Rate as decimal(10,2)), CAST(@Tax3Rate as decimal(10,2))," +
                                 "CAST(@Tax1 as decimal(10,2)),CAST(@Tax2 as decimal(10,2)),CAST(@Tax3 as decimal(10,2)), @InvoiceNo, @IsPaidComplete, @CompleteDate, @CompleteTime, @CreateDate, @CreateTime," +
                                 "@CreateUserId, @CreateUserName, @CreateStation, @LastModDate, @LastModTime, @LastModUserId, @LastModUserName, @LastModStation, @RFTagID," +
-                                "@ParentId, @OrderCategoryId)";
+                                "@ParentId, @OrderCategoryId, @IsDiscounted)";
                 var count = connection.Execute(query, pos_SavedOrdersModel);
                 return count;
             }
@@ -1043,6 +1043,54 @@ namespace SDCafeCommon.DataAccess
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 string query = "DELETE from SavedOrders WHERE id=" + OrderId + " and InvoiceNo = " + invoiceNo;
+                var count = connection.Execute(query);
+                return count;
+            }
+        }
+        public List<POS_PromotionModel> Get_All_Effective_Promotions()
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_PromotionModel>($"SELECT *  FROM [dbCube].[dbo].[Promotion] where PromoStartDttm <= GETDATE() And PromoEndDttm >= GETDATE()").ToList();
+                return output;
+            }
+        }
+
+        public int Get_Order_QTY_By_MutipleProductIds(string strStation, string strSQLWhere)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                float iQTYSUM = 0;
+                string query = "SELECT Sum(Quantity) AS Quantity from Orders WHERE OrderCategoryId = 0 And ProductId in (" + strSQLWhere + ") And CreateStation = '" + strStation + "'";
+                var output = connection.Query<POS_OrdersModel>(query).ToList();
+                if (output.Count > 0)
+                {
+                    iQTYSUM = output[0].Quantity;
+                }
+                return (int)iQTYSUM;
+            }
+        }
+
+        public double Get_Orders_Average_Amount_By_MultipleProdId(string strStation, string strSQLWhere)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                double dblAverageAmt = 0;
+                string query = "SELECT Sum(Amount)/Sum(Quantity) As Amount from Orders WHERE OrderCategoryId = 0 And ProductId in (" + strSQLWhere + ") And CreateStation = '" + strStation + "'";
+                var output = connection.Query<POS_OrdersModel>(query).ToList();
+                if (output.Count > 0)
+                {
+                    dblAverageAmt = output[0].Amount;
+                }
+                return dblAverageAmt;
+            }
+        }
+
+        public int Delete_Promotion_Discount_Orders(string strStation)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "DELETE from Orders WHERE OrderCategoryId=4 And IsDiscounted=1 And CreateStation = '" + strStation + "'";
                 var count = connection.Execute(query);
                 return count;
             }
