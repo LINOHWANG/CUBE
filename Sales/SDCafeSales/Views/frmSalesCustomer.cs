@@ -47,7 +47,9 @@ namespace SDCafeSales.Views
             //dgv_Orders_Initialize();
             Load_Existing_Orders();
             bt_Start.Enabled = false;
+            bt_Start.Visible = false;
             bt_Payment.Enabled = true;
+            bt_Payment.Visible = true;
         }
 
         private void bt_Payment_Click(object sender, EventArgs e)
@@ -64,6 +66,9 @@ namespace SDCafeSales.Views
                 txtMessages.Text = "Payment is canceled or aborted !";
             }
             bt_Start.Enabled = true;
+            bt_Start.Visible = true;
+            bt_Payment.Enabled = false;
+            bt_Payment.Visible = false;
         }
 
         private void timer1_Tick(object sender, EventArgs e)

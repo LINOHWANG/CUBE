@@ -1120,5 +1120,18 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
+
+        public int Get_ProductId_By_ProdName(string strProdName)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_ProductModel>($"SELECT * FROM Product WHERE ProductName= '{strProdName}' ").ToList();
+                if (output.Count > 0)
+                {
+                    return output[0].Id;
+                }
+                return 0;
+            }
+        }
     }
 }

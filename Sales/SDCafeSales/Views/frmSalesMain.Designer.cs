@@ -64,7 +64,7 @@
             this.bt_SetIThreeDollarDiscount = new SDCafeCommon.Utilities.CustomButton();
             this.bt_EditPrice = new SDCafeCommon.Utilities.CustomButton();
             this.customButton7 = new SDCafeCommon.Utilities.CustomButton();
-            this.customButton8 = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_ManualPrice = new SDCafeCommon.Utilities.CustomButton();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lbl_TypePages = new System.Windows.Forms.Label();
             this.pnlSideBar = new System.Windows.Forms.Panel();
@@ -344,7 +344,7 @@
             this.panel1.Controls.Add(this.bt_SetIThreeDollarDiscount);
             this.panel1.Controls.Add(this.bt_EditPrice);
             this.panel1.Controls.Add(this.customButton7);
-            this.panel1.Controls.Add(this.customButton8);
+            this.panel1.Controls.Add(this.bt_ManualPrice);
             this.panel1.Location = new System.Drawing.Point(227, 484);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(164, 157);
@@ -430,21 +430,21 @@
             this.customButton7.TabIndex = 40;
             this.customButton7.Text = "N/A";
             // 
-            // customButton8
+            // bt_ManualPrice
             // 
-            this.customButton8.BackColor = System.Drawing.Color.White;
-            this.customButton8.CornerRadius = 20;
-            this.customButton8.Enabled = false;
-            this.customButton8.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.customButton8.ForeColor = System.Drawing.Color.Black;
-            this.customButton8.Location = new System.Drawing.Point(83, 54);
-            this.customButton8.Name = "customButton8";
-            this.customButton8.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            this.bt_ManualPrice.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.bt_ManualPrice.CornerRadius = 20;
+            this.bt_ManualPrice.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Bold);
+            this.bt_ManualPrice.ForeColor = System.Drawing.Color.Black;
+            this.bt_ManualPrice.Location = new System.Drawing.Point(83, 54);
+            this.bt_ManualPrice.Name = "bt_ManualPrice";
+            this.bt_ManualPrice.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.customButton8.Size = new System.Drawing.Size(75, 47);
-            this.customButton8.TabIndex = 41;
-            this.customButton8.Text = "N/A";
+            this.bt_ManualPrice.Size = new System.Drawing.Size(75, 47);
+            this.bt_ManualPrice.TabIndex = 41;
+            this.bt_ManualPrice.Text = "Open Food";
+            this.bt_ManualPrice.Click += new System.EventHandler(this.bt_ManualPrice_Click);
             // 
             // panel2
             // 
@@ -977,7 +977,7 @@
         private SDCafeCommon.Utilities.CustomButton bt_SetPPL;
         private System.Windows.Forms.TextBox txtAmtEach;
         private SDCafeCommon.Utilities.CustomButton customButton7;
-        private SDCafeCommon.Utilities.CustomButton customButton8;
+        private SDCafeCommon.Utilities.CustomButton bt_ManualPrice;
         private SDCafeCommon.Utilities.CustomButton bt_EditPrice;
         private SDCafeCommon.Utilities.CustomButton bt_SetDiscount;
         private SDCafeCommon.Utilities.CustomButton bt_SetIOneDollarDiscount;

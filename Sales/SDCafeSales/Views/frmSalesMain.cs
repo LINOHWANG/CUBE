@@ -1128,6 +1128,8 @@ namespace SDCafeSales.Views
                         ////////////////////////////////////////////////
                         // Add the ordered item into Orders table
                         ////////////////////////////////////////////////
+                        ///
+                        orders.Clear();
                         orders.Add(new POS_OrdersModel()
                         {
                             TranType = "20",
@@ -4886,6 +4888,137 @@ namespace SDCafeSales.Views
         {
             Add_Amount_Discount_Orders_Item("$3 Discount", 3);
         }
+
+        private void bt_ManualPrice_Click(object sender, EventArgs e)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            int iManualProdId = dbPOS.Get_ProductId_By_ProdName("Manual Item");
+            if (iManualProdId > 0)
+            {
+                Add_Order_ManualItem(iManualProdId);
+            }
+            else
+            {
+                MessageBox.Show("Manual Item is not registered! Please add first!");
+            }
+            
+        }
+
+        private bool Add_Order_ManualItem(int pProdID)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+
+            if (!isNewInvoice)   // Set when start button is pressed
+            {
+                iNewInvNo = dbPOS1.Get_New_InvoiceNo();
+                int iSavedOrderInvNo = dbPOS.Get_SavedOrders_NextInvoiceNo();
+
+                if (iNewInvNo < iSavedOrderInvNo)
+                {
+                    iNewInvNo = iSavedOrderInvNo;
+                }
+                util.Logger(" Add_Order_Manually Get_New_InvoiceNo : InvoiceNo = " + iNewInvNo.ToString());
+                isNewInvoice = true;
+            }
+
+            using (var FrmManualPrice = new frmManualPrice(this))
+            {
+                FrmManualPrice.Set_ProductName(dbPOS.Get_ProductName_By_Id(pProdID));
+                FrmManualPrice.Set_Amount(0);
+                FrmManualPrice.ShowDialog();
+
+                string strManualName = FrmManualPrice.strManualName;
+                double dblManualPrice = FrmManualPrice.dblManualPrice;
+                bool bManualTax1 = FrmManualPrice.bTax1;
+                bool bManualTax2 = FrmManualPrice.bTax2;
+                bool bManualTax3 = FrmManualPrice.bTax3;
+
+                if (dblManualPrice > 0)
+                {
+                    ////////////////////////////////////////////////
+                    // Add the ordered item into Orders table
+                    ////////////////////////////////////////////////
+
+                    orders.Clear();
+                    orders.Add(new POS_OrdersModel()
+                    {
+                        TranType = "20",
+                        ProductId = pProdID,
+                        ProductName = strManualName,
+                        SecondName = strManualName,
+                        ProductTypeId = pProdID,
+                        InUnitPrice = 0,
+                        OutUnitPrice = (float)dblManualPrice,
+                        IsTax1 = bManualTax1,
+                        IsTax2 = bManualTax2,
+                        IsTax3 = bManualTax3,
+                        Quantity = 1,
+                        Amount = (float)dblManualPrice,
+                        Tax1Rate = TaxRate1,
+                        Tax2Rate = TaxRate2,
+                        Tax3Rate = TaxRate3,
+                        Tax1 = bManualTax1 ? TaxRate1 * (float)dblManualPrice : 0,
+                        Tax2 = bManualTax2 ? TaxRate2 * (float)dblManualPrice : 0,
+                        Tax3 = bManualTax3 ? TaxRate3 * (float)dblManualPrice : 0,
+                        Deposit = 0,
+                        RecyclingFee = 0,
+                        ChillCharge = 0,
+                        InvoiceNo = iNewInvNo,
+                        IsPaidComplete = false,
+                        CompleteDate = "",
+                        CompleteTime = "",
+                        CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), // DateTime.Now.ToShortDateString(),
+                        CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
+                        CreateUserId = System.Convert.ToInt32(strUserID),
+                        CreateUserName = strUserName,
+                        CreateStation = strStation,
+                        LastModDate = "",
+                        LastModTime = "",
+                        LastModUserId = System.Convert.ToInt32(strUserID),
+                        LastModUserName = "",
+                        LastModStation = "",
+                        RFTagId = 0,
+                        ParentId = 0,
+                        OrderCategoryId = 0,
+                        IsDiscounted = false
+                    });
+                    //if (dbPOS.Insert_Order(orders[0]))
+                    int iNewOrderId = dbPOS.Insert_Order(orders[0]);
+                    if (iNewOrderId > 0)
+                    {
+                        ////////////////////////////////////////////////
+                        // Add the ordered item into datagrid view
+                        ////////////////////////////////////////////////
+                        float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
+                        this.dgv_Orders.Rows.Add(new String[] { orders[0].ProductId.ToString(),
+                                                                               strManualName,
+                                                                               "1",
+                                                                               orders[0].OutUnitPrice.ToString("0.00"),
+                                                                               iAmount.ToString("0.00"),
+                                                                               iNewOrderId.ToString()
+                            });
+                        this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView_By_ProdID(pProdID);
+                        this.dgv_Orders.Rows[Get_OrderedItem_Index_of_GridView_By_ProdID(pProdID)].Selected = true;
+
+                    }
+                    else
+                    {
+                        //Error insert order
+                        util.Logger("Error insert order : InvNo = " + iNewInvNo.ToString() + ", ProdId = " + pProdID);
+                        MessageBox.Show("Error insert order : InvNo = " + iNewInvNo.ToString() + ", ProdId = " + pProdID);
+                        return false;
+                    }
+                }
+
+            }
+
+            Check_Promotions();
+            Calculate_Total_Due();
+            return true;
+
+        }
+
     }
 
     public class TagReportEvent : Object

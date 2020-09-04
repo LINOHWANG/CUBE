@@ -282,7 +282,7 @@
             this.bt_Start.Name = "bt_Start";
             this.bt_Start.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Start.Size = new System.Drawing.Size(300, 257);
+            this.bt_Start.Size = new System.Drawing.Size(600, 257);
             this.bt_Start.TabIndex = 79;
             this.bt_Start.Text = "Start";
             this.bt_Start.Click += new System.EventHandler(this.bt_Start_Click);
@@ -294,11 +294,11 @@
             this.bt_Payment.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold);
             this.bt_Payment.ForeColor = System.Drawing.Color.White;
             this.bt_Payment.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bt_Payment.Location = new System.Drawing.Point(698, 438);
+            this.bt_Payment.Location = new System.Drawing.Point(398, 438);
             this.bt_Payment.Name = "bt_Payment";
             this.bt_Payment.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Payment.Size = new System.Drawing.Size(300, 257);
+            this.bt_Payment.Size = new System.Drawing.Size(600, 257);
             this.bt_Payment.TabIndex = 77;
             this.bt_Payment.Text = "Confirm / Payment";
             this.bt_Payment.Click += new System.EventHandler(this.bt_Payment_Click);
