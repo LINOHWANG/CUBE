@@ -82,37 +82,39 @@ namespace SDCafeOffice.Views
         {
             dgvDataTo_Initialize();
 
-
-            DataAccessPOS dbPOS = new DataAccessPOS();
-            int iSelectedPromoId = Convert.ToInt32(txt_PromoID.Text);
-            if (iSelectedPromoId > 0)
+            if (txt_PromoID.Text != "")
             {
-                pprods = dbPOS.Get_PromoProducts_By_PromoId(iSelectedPromoId);
-
-                lbl_SelectedProds.Text = "Selected Products ( " + pprods.Count.ToString() + " )";
-                if (pprods.Count > 0)
+                DataAccessPOS dbPOS = new DataAccessPOS();
+                int iSelectedPromoId = Convert.ToInt32(txt_PromoID.Text);
+                if (iSelectedPromoId > 0)
                 {
-                    foreach (var pprod in pprods)
+                    pprods = dbPOS.Get_PromoProducts_By_PromoId(iSelectedPromoId);
+
+                    lbl_SelectedProds.Text = "Selected Products ( " + pprods.Count.ToString() + " )";
+                    if (pprods.Count > 0)
                     {
-                        prods = dbPOS.Get_Product_By_ID(pprod.ProdId);
-                        if (prods.Count > 0)
+                        foreach (var pprod in pprods)
                         {
-                            this.dgvDataTo.Rows.Add(new String[] { prods[0].Id.ToString(),
+                            prods = dbPOS.Get_Product_By_ID(pprod.ProdId);
+                            if (prods.Count > 0)
+                            {
+                                this.dgvDataTo.Rows.Add(new String[] { prods[0].Id.ToString(),
                                                              dbPOS.Get_ProductTypeName_By_Id(prods[0].ProductTypeId),
                                                              prods[0].ProductName,
                                                              prods[0].OutUnitPrice.ToString()
                             });
-                            /* if (ptype.IsBatchDonation)
-                             {
-                                 this.dgvData.Rows[dgvData.RowCount - 2].Cells[3].Style.BackColor = Color.Green;
-                             }
-                             if (ptype.IsBatchDiscount)
-                             {
-                                 this.dgvData.Rows[dgvData.RowCount - 2].Cells[4].Style.BackColor = Color.Green;
-                             }*/
-                            this.dgvDataTo.FirstDisplayedScrollingRowIndex = dgvDataTo.RowCount - 1;
-                        }
+                                /* if (ptype.IsBatchDonation)
+                                 {
+                                     this.dgvData.Rows[dgvData.RowCount - 2].Cells[3].Style.BackColor = Color.Green;
+                                 }
+                                 if (ptype.IsBatchDiscount)
+                                 {
+                                     this.dgvData.Rows[dgvData.RowCount - 2].Cells[4].Style.BackColor = Color.Green;
+                                 }*/
+                                this.dgvDataTo.FirstDisplayedScrollingRowIndex = dgvDataTo.RowCount - 1;
+                            }
 
+                        }
                     }
                 }
             }
@@ -374,27 +376,31 @@ namespace SDCafeOffice.Views
         private void Move_dgvDataFrom_dgvDataTo(string strSelProdId, double dblProdPrice)
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
-            int iSelectedPromoId = Convert.ToInt32(txt_PromoID.Text);
-            int iSelectedProdId = Convert.ToInt32(strSelProdId);
 
-            double dblFirstProdPrice = dbPOS.Get_The_First_Product_Price_From_PromoProduct(iSelectedPromoId);
-            if (dblFirstProdPrice > 0)
+            if (txt_PromoID.Text != "")
             {
-                if (dblFirstProdPrice != dblProdPrice)
+                int iSelectedPromoId = Convert.ToInt32(txt_PromoID.Text);
+                int iSelectedProdId = Convert.ToInt32(strSelProdId);
+
+                double dblFirstProdPrice = dbPOS.Get_The_First_Product_Price_From_PromoProduct(iSelectedPromoId);
+                if (dblFirstProdPrice > 0)
                 {
-                    MessageBox.Show("Unit Price Should be the same! " + dblProdPrice.ToString() + " is Not Equal to " + dblFirstProdPrice.ToString());
-                    return;
+                    if (dblFirstProdPrice != dblProdPrice)
+                    {
+                        MessageBox.Show("Unit Price Should be the same! " + dblProdPrice.ToString() + " is Not Equal to " + dblFirstProdPrice.ToString());
+                        return;
+                    }
                 }
-            }
-            pprods.Clear();
-            pprods.Add(new POS_PromoProductsModel()
-            {
-                PromoId = iSelectedPromoId,
-                ProdId = Convert.ToInt32(strSelProdId)
-            });
-            if (!dbPOS.Check_PromoProducts(pprods[0]))
-            {
-                dbPOS.Insert_PromoProduct(pprods[0]);
+                pprods.Clear();
+                pprods.Add(new POS_PromoProductsModel()
+                {
+                    PromoId = iSelectedPromoId,
+                    ProdId = Convert.ToInt32(strSelProdId)
+                });
+                if (!dbPOS.Check_PromoProducts(pprods[0]))
+                {
+                    dbPOS.Insert_PromoProduct(pprods[0]);
+                }
             }
             //dgvDataFrom.Rows.RemoveAt(dgvDataFrom.SelectedRows[i].Index);
         }
