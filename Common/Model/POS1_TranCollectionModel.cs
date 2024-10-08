@@ -28,7 +28,7 @@ namespace SDCafeCommon.Model
         public float Master { get; set; }
         public float Amex { get; set; }
         public float GiftCard { get; set; }
-        public float Online { get; set; }
+        public float Others { get; set; }
         public float CashTip { get; set; }
         public float DebitTip { get; set; }
         public float VisaTip { get; set; }
@@ -62,7 +62,7 @@ namespace SDCafeCommon.Model
         public bool IsOnline2 { get; set; }
         public float Online2 { get; set; }
         public float GiftCardTip { get; set; }
-        public float OnlineCash { get; set; }
+        public float OthersTip { get; set; }
         public float Online2Cash { get; set; }
         public int CardTranId { get; set; }
 

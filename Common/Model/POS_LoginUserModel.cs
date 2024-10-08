@@ -22,5 +22,6 @@ namespace SDCafeCommon.Model
         public DateTime DateTimeCreated { get; set; }
         public DateTime DateTimeUpdated { get; set; }
         public bool IsActive { get; set; }
+        public bool IsInOut { get; set; } // 20211108
     }
 }

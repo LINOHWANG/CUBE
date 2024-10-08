@@ -44,6 +44,16 @@
             this.txt_StationNo = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txt_IPS_Port = new System.Windows.Forms.TextBox();
+            this.check_IsPaymentree = new System.Windows.Forms.CheckBox();
+            this.gb_Paymentree = new System.Windows.Forms.GroupBox();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txt_Client_Id = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.txt_Location = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txt_Register = new System.Windows.Forms.TextBox();
+            this.gb_Paymentree.SuspendLayout();
             this.SuspendLayout();
             // 
             // bt_Exit
@@ -175,7 +185,7 @@
             this.txtMessage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.txtMessage.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMessage.ForeColor = System.Drawing.SystemColors.Info;
-            this.txtMessage.Location = new System.Drawing.Point(-2, 382);
+            this.txtMessage.Location = new System.Drawing.Point(11, 509);
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.Size = new System.Drawing.Size(790, 32);
             this.txtMessage.TabIndex = 46;
@@ -223,11 +233,107 @@
             this.txt_IPS_Port.TabIndex = 49;
             this.txt_IPS_Port.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // check_IsPaymentree
+            // 
+            this.check_IsPaymentree.AutoSize = true;
+            this.check_IsPaymentree.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.check_IsPaymentree.Location = new System.Drawing.Point(191, 296);
+            this.check_IsPaymentree.Name = "check_IsPaymentree";
+            this.check_IsPaymentree.Size = new System.Drawing.Size(152, 26);
+            this.check_IsPaymentree.TabIndex = 51;
+            this.check_IsPaymentree.Text = "Is Paymentree";
+            this.check_IsPaymentree.UseVisualStyleBackColor = true;
+            this.check_IsPaymentree.CheckedChanged += new System.EventHandler(this.check_IsPaymentree_CheckedChanged);
+            // 
+            // gb_Paymentree
+            // 
+            this.gb_Paymentree.BackColor = System.Drawing.Color.Transparent;
+            this.gb_Paymentree.Controls.Add(this.label8);
+            this.gb_Paymentree.Controls.Add(this.txt_Register);
+            this.gb_Paymentree.Controls.Add(this.label7);
+            this.gb_Paymentree.Controls.Add(this.txt_Location);
+            this.gb_Paymentree.Controls.Add(this.label6);
+            this.gb_Paymentree.Controls.Add(this.txt_Client_Id);
+            this.gb_Paymentree.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.gb_Paymentree.Font = new System.Drawing.Font("Arial", 14.25F);
+            this.gb_Paymentree.ForeColor = System.Drawing.Color.Blue;
+            this.gb_Paymentree.Location = new System.Drawing.Point(12, 341);
+            this.gb_Paymentree.Name = "gb_Paymentree";
+            this.gb_Paymentree.Size = new System.Drawing.Size(789, 162);
+            this.gb_Paymentree.TabIndex = 52;
+            this.gb_Paymentree.TabStop = false;
+            this.gb_Paymentree.Text = "Paymenree Info";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(59, 47);
+            this.label6.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(83, 22);
+            this.label6.TabIndex = 44;
+            this.label6.Text = "Client ID";
+            // 
+            // txt_Client_Id
+            // 
+            this.txt_Client_Id.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Client_Id.Location = new System.Drawing.Point(179, 44);
+            this.txt_Client_Id.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_Client_Id.Name = "txt_Client_Id";
+            this.txt_Client_Id.Size = new System.Drawing.Size(249, 29);
+            this.txt_Client_Id.TabIndex = 43;
+            this.txt_Client_Id.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(59, 86);
+            this.label7.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(82, 22);
+            this.label7.TabIndex = 46;
+            this.label7.Text = "Location";
+            // 
+            // txt_Location
+            // 
+            this.txt_Location.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Location.Location = new System.Drawing.Point(179, 83);
+            this.txt_Location.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_Location.Name = "txt_Location";
+            this.txt_Location.Size = new System.Drawing.Size(249, 29);
+            this.txt_Location.TabIndex = 45;
+            this.txt_Location.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(59, 128);
+            this.label8.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(82, 22);
+            this.label8.TabIndex = 48;
+            this.label8.Text = "Register";
+            // 
+            // txt_Register
+            // 
+            this.txt_Register.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Register.Location = new System.Drawing.Point(179, 125);
+            this.txt_Register.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_Register.Name = "txt_Register";
+            this.txt_Register.Size = new System.Drawing.Size(249, 29);
+            this.txt_Register.TabIndex = 47;
+            this.txt_Register.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // frmStations
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 411);
+            this.ClientSize = new System.Drawing.Size(815, 538);
+            this.Controls.Add(this.gb_Paymentree);
+            this.Controls.Add(this.check_IsPaymentree);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.txt_IPS_Port);
             this.Controls.Add(this.label4);
@@ -246,6 +352,8 @@
             this.Controls.Add(this.bt_Save);
             this.Name = "frmStations";
             this.Text = "frmSysConfig";
+            this.gb_Paymentree.ResumeLayout(false);
+            this.gb_Paymentree.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -269,5 +377,14 @@
         private System.Windows.Forms.TextBox txt_StationNo;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txt_IPS_Port;
+        private System.Windows.Forms.CheckBox check_IsPaymentree;
+        private System.Windows.Forms.GroupBox gb_Paymentree;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txt_Register;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox txt_Location;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox txt_Client_Id;
     }
 }

@@ -23,5 +23,10 @@ namespace SDCafeCommon.Model
         public string CAS_Init_Char { get; set; }
         public string CAS_Req_Char { get; set; }
         public bool Enabled { get; set; }
+        //* Paymentree is a flag to indicate if this station is a paymentree station -----------------
+        public bool IsPaymentree { get; set; }
+        public string Client_Id { get; set; }
+        public string Location { get; set; }
+        public string Register { get; set; }
     }
 }

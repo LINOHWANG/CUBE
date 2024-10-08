@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Drawing.Printing;
 using System.Reflection;
 using System.Runtime.Remoting.Proxies;
+using System.Net.Sockets;
 
 namespace SDCafeSales.Views
 {
@@ -31,6 +32,7 @@ namespace SDCafeSales.Views
         List<POS_TaxModel> taxs = new List<POS_TaxModel>();
         List<POS_StationModel> stations = new List<POS_StationModel>();
         List<POS_OrdersModel> orders = new List<POS_OrdersModel>();
+        List<POS_OrdersModel> childOrders = new List<POS_OrdersModel>();
         List<POS1_OrderCompleteModel> compOrders = new List<POS1_OrderCompleteModel>();
         List<POS1_ProductPopModel> prodPops = new List<POS1_ProductPopModel>();
         List<POS_SavedOrdersModel> savedorders = new List<POS_SavedOrdersModel>();
@@ -38,12 +40,13 @@ namespace SDCafeSales.Views
         List<POS_PromotionModel> promos = new List<POS_PromotionModel>();
         List<POS_PromoProductsModel> pprods = new List<POS_PromoProductsModel>();
         List<POS_ProdOrdersModel> prodOrders = new List<POS_ProdOrdersModel>();
+        List<POS_SysConfigModel> sysConfs = new List<POS_SysConfigModel>();
 
 
         ToolTip tTip = new ToolTip();
 
-        private CustomButton[] btnArray = new CustomButton[300];
-        private CustomButton[] btnTypeArray = new CustomButton[300];
+        private CustomButton[] btnArray = new CustomButton[10000];
+        private CustomButton[] btnTypeArray = new CustomButton[1000];
 
         Utility util = new Utility();
         RawPrinterHelper rawPrt = new RawPrinterHelper();
@@ -115,23 +118,35 @@ namespace SDCafeSales.Views
         const string t2 = "\u0250";
         const string openTillCommand = ESC + p + m + t1 + t2;
 
+        private string strBarCode = "";
+
+        private bool bAutoReceipt = false;
+        private Color[] btTypeColor =
+        {
+            Color.MediumSlateBlue,
+            Color.MediumVioletRed,
+            Color.DarkGreen,
+            Color.DarkSlateGray,            
+            Color.DimGray,           
+            Color.Firebrick,
+            Color.ForestGreen,
+            Color.DarkSlateGray
+        };
         private Color[] btColor =
         {
-            Color.Crimson,
-            Color.SeaGreen,
-            Color.DeepSkyBlue,
-            Color.OrangeRed,
-            Color.MediumPurple,
-            Color.SaddleBrown,
-            Color.LimeGreen,
-            Color.LimeGreen,
-            Color.LimeGreen,
-            Color.LimeGreen,
-            Color.LimeGreen,
-            Color.LimeGreen,
-            Color.LimeGreen,
-            Color.LimeGreen,
-            Color.LimeGreen,
+            Color.LightBlue,
+            Color.LightCoral,
+            Color.LightCyan,
+            Color.LightGoldenrodYellow,
+            Color.LightGreen,
+            Color.LightGray,
+            Color.LightPink,
+            Color.LightSalmon,
+            Color.LightSeaGreen,
+            Color.LightSkyBlue,
+            Color.LightSlateGray,
+            Color.LightSteelBlue,
+            Color.LightYellow,
             Color.LimeGreen,
             Color.LimeGreen,
             Color.LimeGreen,
@@ -180,6 +195,18 @@ namespace SDCafeSales.Views
         public bool bPaymentSuccess;
         public bool bCashPayment;
 
+        private Random rdm = new Random();
+        private Form FrmLogOn = null;
+
+        private ImageList m_ImageList;
+        private bool m_blnPinPadAvailable = false;
+        TcpClient tcpClient;
+        public bool m_blnPaymentree { get; set; }
+
+        public frmSalesMain(Form callingForm) :this()
+        {
+            FrmLogOn = callingForm;
+        }
         public frmSalesMain()
         {
             InitializeComponent();
@@ -190,7 +217,8 @@ namespace SDCafeSales.Views
 
         private void frmSalesMain_Load(object sender, EventArgs e)
         {
-
+            util.Logger("################### frmSalesMain_Load #########################");
+            Kill_If_SalesCustomer_Opened();
             if (Screen.AllScreens.Length > 1)
             {
                 frmSalesCustomer FrmSalesCustomer = new frmSalesCustomer(this);
@@ -202,6 +230,8 @@ namespace SDCafeSales.Views
 
                 // set the location to the top left of the second screen
                 FrmSalesCustomer.Location = screen.WorkingArea.Location;
+                FrmSalesCustomer.Width = screen.WorkingArea.Width;
+                FrmSalesCustomer.Height = screen.WorkingArea.Height;
 
                 // set it fullscreen
                 //FrmSalesCustomer.Size = new Size(screen.WorkingArea.Width, screen.WorkingArea.Height);
@@ -224,11 +254,12 @@ namespace SDCafeSales.Views
             if (Get_Tax_Rates())
             {
                 Load_System_Info();
+                Load_ImageList();
                 Load_Existing_Orders();
                 PopulateMenuTypeButtons();
                 PopulateMenuButtons();
-                Load_RFID_Drivers();
-                Open_RFID_Connection();
+                //Load_RFID_Drivers();
+                //Open_RFID_Connection();
             }
             else
             {
@@ -237,6 +268,87 @@ namespace SDCafeSales.Views
                 this.Close();
             }
 
+            strBarCode = string.Empty;
+            BarCode_Get_Focus();
+        }
+
+        private void Load_ImageList()
+        {
+            m_ImageList = new ImageList();
+            m_ImageList.ImageSize = new Size(40, 40);
+            m_ImageList.ColorDepth = ColorDepth.Depth32Bit;
+            m_ImageList.Images.Add(Properties.Resources.Card_Terminal_POS_100x100); //0
+            m_ImageList.Images.Add(Properties.Resources.logout_40dp);               //1
+            m_ImageList.Images.Add(Properties.Resources.receipt_long_40dp);         //2
+            m_ImageList.Images.Add(Properties.Resources.receipt_long_off_40dp);     //3
+            m_ImageList.Images.Add(Properties.Resources.plus_circle_40dp);          //4
+            m_ImageList.Images.Add(Properties.Resources.minus_circle_40dp);         //5
+            m_ImageList.Images.Add(Properties.Resources.cd_open_40dp);              //6
+            m_ImageList.Images.Add(Properties.Resources.Invoice_40dp);              //7
+            m_ImageList.Images.Add(Properties.Resources.payments_40dp);             //8
+
+            bt_Exit.ImageList = m_ImageList;
+            bt_Exit.ImageIndex = 1;
+
+            bt_Payment.Text = "Card" + System.Environment.NewLine + "Pay";
+            bt_Payment.TextAlign = ContentAlignment.MiddleRight;
+            bt_Payment.ImageList = m_ImageList;
+            bt_Payment.ImageIndex = 0;
+            bt_Payment.ImageAlign = ContentAlignment.MiddleLeft;
+            if (m_blnPinPadAvailable)
+            {
+                bt_Payment.Enabled = true;
+            }
+            else
+            {
+                bt_Payment.Enabled = false;
+            }
+
+            bt_cashPayment.ImageList = m_ImageList;
+            bt_cashPayment.ImageIndex = 8;
+            bt_cashPayment.ImageAlign = ContentAlignment.MiddleLeft;
+            //bt_cashPayment.Text = "Cash /" + System.Environment.NewLine + "Manual" + System.Environment.NewLine + "Pay";
+            bt_cashPayment.Text = "Cash /" + System.Environment.NewLine + "Manual Pay";
+            bt_cashPayment.TextAlign = ContentAlignment.MiddleRight;
+
+            bt_Plus.ImageList = m_ImageList;
+            bt_Plus.ImageIndex = 4;
+            bt_Plus.ImageAlign = ContentAlignment.MiddleCenter;
+            bt_Plus.Text = "";
+            bt_Minus.ImageList = m_ImageList;
+            bt_Minus.ImageIndex = 5;
+            bt_Minus.ImageAlign = ContentAlignment.MiddleCenter;
+            bt_Minus.Text = "";
+
+            bt_PrintInvoice.ImageList = m_ImageList;
+            bt_PrintInvoice.ImageIndex = 7;
+            bt_PrintInvoice.ImageAlign = ContentAlignment.MiddleLeft;
+            bt_PrintInvoice.Text = "Invoice";
+            bt_PrintInvoice.TextAlign = ContentAlignment.MiddleRight;
+
+            bt_OpenCashDrawer1.ImageList = m_ImageList;
+            bt_OpenCashDrawer1.ImageIndex = 6;
+            bt_OpenCashDrawer1.ImageAlign = ContentAlignment.MiddleLeft;
+            bt_OpenCashDrawer1.Text = "Open" + System.Environment.NewLine + "C/D";
+            bt_OpenCashDrawer1.TextAlign = ContentAlignment.MiddleRight;
+
+            Check_AutoReceipt();
+            Show_AutoReceipt_Button();
+
+        }
+
+        private void Kill_If_SalesCustomer_Opened()
+        {
+            List<Form> formsToClose = new List<Form>();
+            foreach (Form form in Application.OpenForms)
+            {
+                if ((form != this) && (form.Name != "frmLogOn"))
+                {
+                    formsToClose.Add(form);
+                }
+            }
+
+            formsToClose.ForEach(f => f.Close());
         }
 
         private void Load_System_Info()
@@ -248,6 +360,8 @@ namespace SDCafeSales.Views
             {
                 strStation = stations[0].Station;
                 strHostName = stations[0].ComputerName;
+                util.Logger("Load_System_Info strStation : " + strStation);
+                util.Logger("Load_System_Info strHostName : " + strHostName);
             }
             else
             {
@@ -263,6 +377,7 @@ namespace SDCafeSales.Views
                 strUserID = loginUsers[0].Id.ToString();
                 strUserName = loginUsers[0].FirstName + " " + loginUsers[0].LastName;
                 strUserPass = loginUsers[0].PassWord;
+                util.Logger("Load_System_Info strUserID : " + strUserID + "," + strUserName);
             }
             else
             {
@@ -272,6 +387,73 @@ namespace SDCafeSales.Views
             }
             this.Text = "Sales Main ( Terminal : " + strHostName + " / " + strStation + " ) Login User : " + strUserName;
 
+            Show_AutoReceipt_Button();
+            m_blnPinPadAvailable = Get_PinPad_Information();
+
+        }
+        private bool Get_PinPad_Information()
+        {
+            string strIPAddress = "";
+            string strPortNo = "";
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            stations.Clear();
+            stations = dbPOS.Get_Station_By_Station(strStation);
+            //bPaymentree = false;
+            if (stations.Count > 0)
+            {
+                strIPAddress = stations[0].IP_Addr;
+                strPortNo = stations[0].IPS_Port.ToString();
+                if (
+                    (stations[0].IsPaymentree)
+                    && (!string.IsNullOrEmpty(stations[0].Client_Id))
+                    && (!string.IsNullOrEmpty(stations[0].Location))
+                    && (!string.IsNullOrEmpty(stations[0].Register))
+                    )
+                {
+                    m_blnPaymentree = true;
+                }
+                return Check_PinPad_Connectivity(strIPAddress, strPortNo);
+            }
+            else
+            {
+                //text_IPADDR.Text = "192.168.1.189";
+                //text_PortNo.Text = "7788";
+            }
+            return false;
+        }
+        private bool Check_PinPad_Connectivity(string p_strIPAddr, string p_strPortNo)
+        {
+            int portNo = 0;
+            portNo = int.Parse(p_strPortNo);
+
+            if (string.IsNullOrEmpty(p_strIPAddr))
+            {
+                //MessageBox.Show("Please check database : Station data empty");
+                util.Logger("Please check PinPad : " + p_strIPAddr + "," + p_strPortNo);
+                return false;
+            }
+
+            //clientSocket.Connect(text_IPADDR.Text, portNo);
+            try
+            {
+                if (tcpClient != null)
+                {
+                    if (tcpClient.Connected)
+                    {
+                        tcpClient.Close();
+                    }
+                }
+                tcpClient = new TcpClient(p_strIPAddr, portNo);
+                tcpClient.SendTimeout = 5000;
+                tcpClient.ReceiveTimeout = 5000;
+            }
+            catch (SocketException e)
+            {
+                util.Logger("Unable to connect to PinPad : " + e.ErrorCode + " , " + e.Message + " : " + p_strIPAddr + "," + p_strPortNo);
+                return false;
+            }
+            util.Logger("PinPad connected : " + p_strIPAddr + "," + p_strPortNo);
+            return true;
         }
         public void Set_PassCode(string pPassCode)
         {
@@ -287,10 +469,13 @@ namespace SDCafeSales.Views
         //Public Const CON_TRAN_CATEGORY_NAME_6 As String = "Rounding"    'by FK 20170823
         private void Load_Existing_Orders()
         {
+            int iSeq = 0;
+
             dgv_Orders_Initialize();
             DataAccessPOS dbPOS = new DataAccessPOS();
             orders.Clear();
-            orders = dbPOS.Get_Orders_by_Station(strStation);
+            orders = dbPOS.Get_ParentOrders_by_Station(strStation);
+            util.Logger("Load_Existing_Orders strStation : " + strStation);
             if (orders.Count > 0)
             {
                 ////////////////////////////////////////////////
@@ -301,28 +486,86 @@ namespace SDCafeSales.Views
                 foreach (var order in orders)
                 {
                     float iAmount = 0;
+                    if (order.ParentId == 0)
+                    {
+                        iSeq++;
+                    }
                     if (order.OrderCategoryId == 0)
                     {
                         iAmount = order.Quantity * order.OutUnitPrice;
-                        this.dgv_Orders.Rows.Add(new String[] { order.ProductId.ToString(),
+                        this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                    order.ProductName,
                                                                                    order.Quantity.ToString(),
                                                                                    order.OutUnitPrice.ToString("0.00"),
                                                                                    //iAmount.ToString("0.00"),
                                                                                    order.Amount.ToString("0.00"),
-                                                                                   order.Id.ToString()
+                                                                                   order.Id.ToString(),
+                                                                                   order.ProductId.ToString(),
+                                                                                   order.BarCode
                                 });
-                    }else if (order.OrderCategoryId > 0) // Discount
+                        childOrders.Clear();
+                        childOrders = dbPOS.Get_ChildOrders_by_Station(strStation,  order.Id);
+                        foreach (var corder in childOrders)
+                        {
+                            if (corder.OrderCategoryId == 0)
+                            {
+                                iAmount = corder.Quantity * corder.OutUnitPrice;
+                                this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
+                                                                                   corder.ProductName,
+                                                                                   corder.Quantity.ToString(),
+                                                                                   corder.OutUnitPrice.ToString("0.00"),
+                                                                                   //iAmount.ToString("0.00"),
+                                                                                   corder.Amount.ToString("0.00"),
+                                                                                   corder.Id.ToString(),
+                                                                                   corder.ProductId.ToString(),
+                                                                                   corder.BarCode
+                                });
+                            }
+                            else if (corder.OrderCategoryId > 0) // Discount
+                            {
+                                iAmount = corder.Amount;
+                                this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
+                                                                                   corder.ProductName,
+                                                                                   corder.Quantity.ToString(),
+                                                                                   corder.Amount.ToString("0.00"),
+                                                                                   //iAmount.ToString("0.00"),
+                                                                                   corder.Amount.ToString("0.00"),
+                                                                                   corder.Id.ToString(),
+                                                                                   corder.ProductId.ToString(),
+                                                                                   corder.BarCode
+                                });
+                                this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = corder.RFTagId;
+                                DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
+                                row.DefaultCellStyle.ForeColor = Color.Red;
+                            }
+                            if (corder.RFTagId > 0)
+                            {
+                                this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = corder.RFTagId;
+                                DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
+                                row.DefaultCellStyle.ForeColor = Color.Blue;
+                            }
+                            else
+                            {
+                                this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = null;
+                            }
+                            this.dgv_Orders.FirstDisplayedScrollingRowIndex = dgv_Orders.RowCount - 1;
+
+                        }
+                    }
+                    else if (order.OrderCategoryId > 0) // Discount
                     {
                         iAmount = order.Amount;
-                        this.dgv_Orders.Rows.Add(new String[] { order.ProductId.ToString(),
+                        this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                    order.ProductName,
                                                                                    order.Quantity.ToString(),
                                                                                    order.Amount.ToString("0.00"),
                                                                                    //iAmount.ToString("0.00"),
                                                                                    order.Amount.ToString("0.00"),
-                                                                                   order.Id.ToString()
+                                                                                   order.Id.ToString(),
+                                                                                   order.ProductId.ToString(),
+                                                                                   order.BarCode
                                 });
+
                     }
                     if (order.RFTagId > 0)
                     {
@@ -466,6 +709,7 @@ namespace SDCafeSales.Views
         }
         private void Load_RFID_Drivers()
         {
+            util.Logger("Load_RFID_Drivers");
             /// ///////////////////////////////////////////////
             /// <Rfid variables init>
             hreader = (UIntPtr)0;
@@ -1054,8 +1298,11 @@ namespace SDCafeSales.Views
         // Add tags into order
         private bool Add_RFIDTag_Into_Order(string strUid)
         {
+            int iSeq = 0;
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+
+            util.Logger(" Add_RFIDTag_Into_Order : strUid = " + strUid + " InvNo = " + iNewInvNo.ToString());
 
             if (!isNewInvoice)   // Set when start button is pressed
             {
@@ -1170,7 +1417,8 @@ namespace SDCafeSales.Views
                             RFTagId = rfids[0].Id,
                             ParentId = 0,
                             OrderCategoryId = 0,
-                            IsDiscounted = false
+                            IsDiscounted = false,
+                            BarCode = prods[0].BarCode
                         });
                         int iNewOrderId = dbPOS.Insert_Order(orders[0]);
                         if (iNewOrderId > 0)
@@ -1179,12 +1427,15 @@ namespace SDCafeSales.Views
                             // Add the ordered item into datagrid view
                             ////////////////////////////////////////////////
                             float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
-                            this.dgv_Orders.Rows.Add(new String[] { prods[0].Id.ToString(),
+                            iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                            this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                prods[0].ProductName,
                                                                                "1",
                                                                                prods[0].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
-                                                                               iNewOrderId.ToString()
+                                                                               iNewOrderId.ToString(),
+                                                                               prods[0].Id.ToString(),
+                                                                               prods[0].BarCode
                             });
                             this.dgv_Orders.Rows[this.dgv_Orders.RowCount-1].Tag = rfids[0].Id;
                             DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
@@ -1243,7 +1494,8 @@ namespace SDCafeSales.Views
                                     RFTagId = rfids[0].Id,
                                     ParentId = iParentId,
                                     OrderCategoryId = 4,
-                                    IsDiscounted = false
+                                    IsDiscounted = false,
+                                    BarCode = prods[0].BarCode
                                 });
                                 int iNewDiscOrderId = dbPOS.Insert_Order(orders[orders.Count-1]);
                                 if (iNewDiscOrderId > 0) //if (dbPOS.Insert_Order(orders[1]))
@@ -1252,12 +1504,15 @@ namespace SDCafeSales.Views
                                     // Add the ordered item into datagrid view
                                     ////////////////////////////////////////////////
                                     iAmount = orders[orders.Count - 1].Amount; //Quantity * orders[1].OutUnitPrice;
-                                    this.dgv_Orders.Rows.Add(new String[] { orders[orders.Count-1].Id.ToString(),
+                                    iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                                    this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
                                                                                "1",
                                                                                orders[orders.Count-1].Amount.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
-                                                                               iNewDiscOrderId.ToString()
+                                                                               iNewDiscOrderId.ToString(),
+                                                                               orders[orders.Count-1].Id.ToString(),
+                                                                               orders[orders.Count-1].BarCode
                                     });
                                     this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = rfids[0].Id;
                                     row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
@@ -1318,7 +1573,8 @@ namespace SDCafeSales.Views
                                     ParentId = iParentId,
                                     OrderCategoryId = 1 // Deposit
                                     ,
-                                    IsDiscounted = false
+                                    IsDiscounted = false,
+                                    BarCode = ""
                                 });
                                 int iNewDepOrderId = dbPOS.Insert_Order(orders[orders.Count-1]);
                                 if (iNewDepOrderId > 0) //if (dbPOS.Insert_Order(orders[1]))
@@ -1327,12 +1583,15 @@ namespace SDCafeSales.Views
                                     // Add the ordered item into datagrid view
                                     ////////////////////////////////////////////////
                                     iAmount = orders[orders.Count - 1].Amount; //Quantity * orders[1].OutUnitPrice;
-                                    this.dgv_Orders.Rows.Add(new String[] { orders[orders.Count-1].Id.ToString(),
+                                    iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                                    this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
                                                                                "1",
                                                                                orders[orders.Count-1].Amount.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
-                                                                               iNewDepOrderId.ToString()
+                                                                               iNewDepOrderId.ToString(),
+                                                                               orders[orders.Count-1].Id.ToString(),
+                                                                               orders[orders.Count-1].BarCode
                                     });
                                     this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = rfids[0].Id;
                                     row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
@@ -1393,6 +1652,7 @@ namespace SDCafeSales.Views
                                     ParentId = iParentId,
                                     OrderCategoryId = 2 // RecyclingFee
                                     ,IsDiscounted = false
+                                    ,BarCode = ""
                                 });
                                 int iNewRecyOrderId = dbPOS.Insert_Order(orders[orders.Count-1]);
                                 if (iNewRecyOrderId > 0) //if (dbPOS.Insert_Order(orders[1]))
@@ -1401,12 +1661,15 @@ namespace SDCafeSales.Views
                                     // Add the ordered item into datagrid view
                                     ////////////////////////////////////////////////
                                     iAmount = orders[orders.Count - 1].Amount; //Quantity * orders[1].OutUnitPrice;
-                                    this.dgv_Orders.Rows.Add(new String[] { orders[orders.Count-1].Id.ToString(),
+                                    iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                                    this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
                                                                                "1",
                                                                                orders[orders.Count-1].Amount.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
-                                                                               iNewRecyOrderId.ToString()
+                                                                               iNewRecyOrderId.ToString(),
+                                                                               orders[orders.Count-1].Id.ToString(),
+                                                                               orders[orders.Count-1].BarCode
                                     });
                                     this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = rfids[0].Id;
                                     row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
@@ -1455,7 +1718,7 @@ namespace SDCafeSales.Views
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
             //orders = dbPOS.Get_Orders_by_InvoiceNo(iNewInvNo);
-
+            util.Logger("Check_Promotions");
             promos = dbPOS.Get_All_Effective_Promotions();
 
             if (promos.Count > 0)
@@ -1495,10 +1758,12 @@ namespace SDCafeSales.Views
         }
         private bool Add_Discount_Orders_By_Promotion(string strPromoName, int iPromoType, float fPromoValue, int iPromoQTY, int iOrderedQTY, int iDiscountTimes, string strSQLWhere)
         {
-            DataAccessPOS dbPOS = new DataAccessPOS();
+            int iSeq = 0;
 
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            util.Logger("Add_Discount_Orders_By_Promotion");
             //double iTotalAmount = 0;
-			double iAverageAmount = 0;
+            double iAverageAmount = 0;
             double iTotalTax1 = 0;
             double iTotalTax2 = 0;
             double iTotalTax3 = 0;
@@ -1558,6 +1823,7 @@ namespace SDCafeSales.Views
                         OrderCategoryId = 4     // Discount
                         ,
                         IsDiscounted = true     // Promotion
+                        ,BarCode = ""
                     });
                     int iNewOrderId = dbPOS.Insert_Order(orders[0]);
                     util.Logger(" ## Discount_Orders_By_Promotion : " + orders[0].Id.ToString() + ", PROD=" + orders[0].ProductName + ", New Amount = " + orders[0].Amount.ToString());
@@ -1567,12 +1833,15 @@ namespace SDCafeSales.Views
                         // Add the ordered item into datagrid view
                         ////////////////////////////////////////////////
                         float iAmount = orders[0].Amount;
-                        this.dgv_Orders.Rows.Add(new String[] { prods[0].Id.ToString(),
+                        iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                        this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[0].ProductName,
                                                                                "1",
                                                                                orders[0].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
-                                                                               iNewOrderId.ToString()
+                                                                               iNewOrderId.ToString(),
+                                                                               prods[0].Id.ToString(),
+                                                                               prods[0].BarCode
                             });
                         this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = 0;
                         DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
@@ -1591,8 +1860,8 @@ namespace SDCafeSales.Views
             iTotalItems = 0;
             DataAccessPOS dbPOS = new DataAccessPOS();
             //orders = dbPOS.Get_Orders_by_InvoiceNo(iNewInvNo);
-            orders = dbPOS.Get_Orders_by_Station(strStation);
-
+            orders = dbPOS.Get_All_Orders_by_Station(strStation);
+            util.Logger("Calculate_Total_Due # of Orders : " + orders.Count.ToString());
             if (orders.Count > 0)
             {
                 foreach (var order in orders)
@@ -1612,6 +1881,7 @@ namespace SDCafeSales.Views
                     //}
                 }
             }
+            iTotalItems = dbPOS.Get_ParentOrders_by_Station(strStation).Count;
             fTotDue = iTotalItems;
             txtCount.Text = iTotalItems.ToString("0");
             txt_SubTotal.Text = iSubTotal.ToString("c2");
@@ -1656,10 +1926,32 @@ namespace SDCafeSales.Views
             {
                 foreach (DataGridViewRow row in dgv_Orders.Rows)
                 {
-                    if (row.Cells[0].Value != null)
+                    if (row.Cells[6].Value != null)
                     { 
                         row.Selected = false;
-                        if (row.Cells[0].Value.ToString() == iProdId.ToString() && row.Tag == null)
+                        if (row.Cells[6].Value.ToString() == iProdId.ToString() && row.Tag == null)
+                        {
+                            row.Selected = true;
+                            this.dgv_Orders.FirstDisplayedScrollingRowIndex = row.Index;
+                            rowIndex = row.Index;
+                            //return rowIndex;
+                        }
+                    }
+                }
+            }
+            return rowIndex;
+        }
+        private int Get_OrderedItem_Index_of_GridView_By_BarCode(string strBarCode)
+        {
+            int rowIndex = 0;
+            if (dgv_Orders.Rows.Count > 0)
+            {
+                foreach (DataGridViewRow row in dgv_Orders.Rows)
+                {
+                    if (row.Cells[7].Value != null)
+                    {
+                        row.Selected = false;
+                        if (row.Cells[7].Value.ToString() == strBarCode && row.Tag == null)
                         {
                             row.Selected = true;
                             this.dgv_Orders.FirstDisplayedScrollingRowIndex = row.Index;
@@ -1681,8 +1973,8 @@ namespace SDCafeSales.Views
             this.dgv_Orders.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgv_Orders.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgv_Orders.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            this.dgv_Orders.ColumnCount = 6;
-            this.dgv_Orders.Columns[0].Name = "Prod Id";
+            this.dgv_Orders.ColumnCount = 8;
+            this.dgv_Orders.Columns[0].Name = "Seq";
             this.dgv_Orders.Columns[0].Width = 50;
             this.dgv_Orders.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgv_Orders.Columns[1].Name = "Product Name";
@@ -1700,17 +1992,23 @@ namespace SDCafeSales.Views
             this.dgv_Orders.Columns[5].Name = "OrderId";
             this.dgv_Orders.Columns[5].Width = 0;
             this.dgv_Orders.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.dgv_Orders.Columns[6].Name = "Prod Id";
+            this.dgv_Orders.Columns[6].Width = 0;
+            this.dgv_Orders.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgv_Orders.Columns[7].Name = "BarCode";
+            this.dgv_Orders.Columns[7].Width = 0;
+            this.dgv_Orders.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            this.dgv_Orders.DefaultCellStyle.Font = new Font("Arial Narrow", 14F, FontStyle.Bold);
+            this.dgv_Orders.DefaultCellStyle.Font = new Font("Arial Narrow", 12F, FontStyle.Bold);
             this.dgv_Orders.EnableHeadersVisualStyles = false;
-            this.dgv_Orders.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 12F, FontStyle.Bold);
+            this.dgv_Orders.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 11F, FontStyle.Bold);
             this.dgv_Orders.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgv_Orders.ColumnHeadersDefaultCellStyle.BackColor = Color.LightBlue;
             // fix the row height
             dgv_Orders.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             dgv_Orders.AllowUserToResizeRows = false;
             dgv_Orders.RowTemplate.Resizable = DataGridViewTriState.True;
-            dgv_Orders.RowTemplate.MinimumHeight = 50;
+            dgv_Orders.RowTemplate.MinimumHeight = 40;
             dgv_Orders.AllowUserToAddRows = false;
         }
         private void PopulateMenuTypeButtons()
@@ -1728,7 +2026,7 @@ namespace SDCafeSales.Views
             //System.Windows.Forms.Button[] btnArray = new System.Windows.Forms.Button[30];
             //////////////////////////////////////////////////////
             // Create (20) Buttons: 
-            for (int i = 0; i < 300; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 // Initialize one variable 
                 //btnArray[i] = new System.Windows.Forms.Button();
@@ -1736,7 +2034,7 @@ namespace SDCafeSales.Views
                 btnTypeArray[i].Click -= new System.EventHandler(ClickMenuTypeButton);
             }
 
-            //pnlPType.Controls.Clear();
+            pnlPType.Controls.Clear();
 
             DataAccessPOS dbPOS = new DataAccessPOS();
             ptypes = dbPOS.Get_All_ProductTypes();
@@ -1751,7 +2049,7 @@ namespace SDCafeSales.Views
                     btnTypeArray[n].Height = (pnlPType.Height / 3) - 5; // ((pnlPType.Height - 35) / 2) - 5; // Height of button
                     btnTypeArray[n].Font = new Font("Arial", 11, FontStyle.Bold);
                     //btnArray[n].BackColor = Color.LightSteelBlue;
-                    btnTypeArray[n].ForeColor = Color.WhiteSmoke;
+                    btnTypeArray[n].ForeColor = Color.AntiqueWhite;
                     btnTypeArray[n].CornerRadius = 30;
                     btnTypeArray[n].RoundCorners = Corners.TopLeft | Corners.TopRight | Corners.BottomLeft;
                     //btnArray[n].RoundCorners = Corners.All;
@@ -1776,7 +2074,7 @@ namespace SDCafeSales.Views
                     {
                         iLines = 1;
                     }
-                    btnTypeArray[n].BackColor = btColor[iLines];
+                    btnTypeArray[n].BackColor = btTypeColor[iLines];
                     // Location of button: 
                     btnTypeArray[n].Left = xPos;
                     btnTypeArray[n].Top = yPos;
@@ -1825,8 +2123,8 @@ namespace SDCafeSales.Views
             {
                 iButtonLine = (iSelectedType_btnArray_Index / 4);
 
-                selectedBTN.BackColor = btColor[iButtonLine]; // Color.LightGray;
-                selectedBTN.ForeColor = Color.Black;
+                selectedBTN.BackColor = btTypeColor[iButtonLine]; // Color.LightGray;
+                selectedBTN.ForeColor = Color.FloralWhite;
             }
             //selectedBTN = (Button)sender;
             selectedBTN = (CustomButton)sender;
@@ -1835,6 +2133,7 @@ namespace SDCafeSales.Views
             iSelectedProdTypeID = int.Parse(string.Format("{0}", btn.Tag));
 
             PopulateMenuButtons();
+            BarCode_Get_Focus();
 
         }
 
@@ -1853,7 +2152,7 @@ namespace SDCafeSales.Views
             //CustomButton[] btnArray = new CustomButton[35];
             //////////////////////////////////////////////////////
             // Create (20) Buttons: 
-            for (int i = 0; i < 300; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 // Initialize one variable 
                 //btnArray[i] = new System.Windows.Forms.Button();
@@ -1866,7 +2165,7 @@ namespace SDCafeSales.Views
             DataAccessPOS dbPOS = new DataAccessPOS();
             if (iSelectedProdTypeID > 0)
             {
-                prods = dbPOS.Get_All_Products_By_ProdType(iSelectedProdTypeID);
+                prods = dbPOS.Get_All_Products_By_ProdType_Sortby_Price(iSelectedProdTypeID);
             }
             else
             {
@@ -1881,9 +2180,9 @@ namespace SDCafeSales.Views
                     btnArray[n].Tag = n + 1; // Tag of button 
                     btnArray[n].Width = (pnlMenu.Width / 5) - 5; // Width of button 
                     btnArray[n].Height = (pnlMenu.Height / 5) - 5; // Height of button
-                    btnArray[n].Font = new Font("Arial", 11, FontStyle.Bold);
+                    btnArray[n].Font = new Font("Arial", 9, FontStyle.Bold);
                     //btnArray[n].BackColor = Color.LightSteelBlue;
-                    btnArray[n].ForeColor = Color.WhiteSmoke;
+                    btnArray[n].ForeColor = Color.Black;
                     btnArray[n].CornerRadius = 30;
                     btnArray[n].RoundCorners = Corners.TopLeft | Corners.TopRight | Corners.BottomLeft;
                     //btnArray[n].RoundCorners = Corners.All;
@@ -1963,6 +2262,7 @@ namespace SDCafeSales.Views
             selectedBTN = (CustomButton)sender;
 
             txtSelectedMenu.Text = "You have now selected menu item [ " + btn.Text + ", " + btn.Tag + " ]";
+            util.Logger("ClickMenuButton "+ btn.Tag.ToString());
             ////////////////////////////////////////////////////////////////
             // save variables about selected button values
             iSelected_btnArray_Index = Array.IndexOf(btnArray, (CustomButton)sender);
@@ -1973,13 +2273,16 @@ namespace SDCafeSales.Views
             }
             //bt_Stop.PerformClick();
             //bt_Start.PerformClick();
+            BarCode_Get_Focus();
         }
 
         private bool Add_Order_Manually(int pProdID)
         {
+            int iSeq = 0;
+
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
-
+            util.Logger("Add_Order_Manually ProdId = "+ pProdID + ", InvoiceNo" + iNewInvNo.ToString());
             if (!isNewInvoice)   // Set when start button is pressed
             {
                 iNewInvNo = dbPOS1.Get_New_InvoiceNo();
@@ -1997,6 +2300,12 @@ namespace SDCafeSales.Views
             prods = dbPOS.Get_Product_By_ID(pProdID);
             if (prods.Count > 0)
             {
+                if (prods[0].IsManualItem)
+                { 
+                    Add_Order_ManualItem(pProdID);
+                    return true;
+                }
+
                 orders.Clear();
                 //Get_Order_By_ProdId(iNewInvNo, pProdID);
                 orders = dbPOS.Get_NonRFID_Order_By_ProdId(iNewInvNo, pProdID);
@@ -2019,6 +2328,34 @@ namespace SDCafeSales.Views
                         orders[0].LastModDate = DateTime.Now.ToString("yyyy-MM-dd");
                         orders[0].LastModTime = DateTime.Now.ToString("HH:mm:ss");
                         dbPOS.Update_Orders_Amount_Qty(orders[0]);
+
+                        // --------------------- Child Orders such as Deposit, Chill charge, Recycling fee
+                        childOrders.Clear();
+                        childOrders = dbPOS.Get_Child_Order_By_OrderId(iNewInvNo, orders[0].Id);
+                        if (childOrders.Count > 0)
+                        {
+                            foreach (var childOrder in childOrders)
+                            {
+                                rowIndex = Get_OrderedItem_Index_of_GridView_By_OrderId(childOrder.Id);
+                                if (rowIndex > -1) // found the product
+                                {
+                                    // update datagrid veiw
+                                    childOrder.Quantity++;
+                                    dgv_Orders.Rows[rowIndex].Cells[2].Value = childOrder.Quantity.ToString();
+                                    iAmount = childOrder.Quantity * childOrder.OutUnitPrice;
+                                    dgv_Orders.Rows[rowIndex].Cells[4].Value = iAmount.ToString("0.00");
+                                    // update orders table
+                                    childOrder.Amount = childOrder.OutUnitPrice * childOrder.Quantity;
+                                    if (childOrder.IsTax1) childOrder.Tax1 = childOrder.Amount * childOrder.Tax1Rate;
+                                    if (childOrder.IsTax2) childOrder.Tax2 = childOrder.Amount * childOrder.Tax2Rate;
+                                    if (childOrder.IsTax3) childOrder.Tax3 = childOrder.Amount * childOrder.Tax3Rate;
+                                    childOrder.LastModDate = DateTime.Now.ToString("yyyy-MM-dd");
+                                    childOrder.LastModTime = DateTime.Now.ToString("HH:mm:ss");
+                                    dbPOS.Update_Orders_Amount_Qty(childOrder);
+                                }
+                            }
+                        }
+                        // --------------------- Child Orders such as Deposit, Chill charge, Recycling fee
                     }
                 }
                 else if (orders.Count > 1)
@@ -2072,7 +2409,8 @@ namespace SDCafeSales.Views
                         RFTagId = 0,
                         ParentId = 0,
                         OrderCategoryId = 0,
-                        IsDiscounted = false
+                        IsDiscounted = false,
+                        BarCode = prods[0].BarCode
                     });
                     //if (dbPOS.Insert_Order(orders[0]))
                     int iNewOrderId = dbPOS.Insert_Order(orders[0]);
@@ -2082,12 +2420,15 @@ namespace SDCafeSales.Views
                         // Add the ordered item into datagrid view
                         ////////////////////////////////////////////////
                         float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
-                        this.dgv_Orders.Rows.Add(new String[] { prods[0].Id.ToString(),
+                        iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                        this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                prods[0].ProductName,
                                                                                "1",
                                                                                prods[0].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
-                                                                               iNewOrderId.ToString()
+                                                                               iNewOrderId.ToString(),
+                                                                               prods[0].Id.ToString(),
+                                                                               prods[0].BarCode
                             });
                         /////////////////////////////////////////////////
                         // Deposit ?
@@ -2103,11 +2444,11 @@ namespace SDCafeSales.Views
                             {
                                 TranType = "20",
                                 ProductId = 0,
-                                ProductName = ">Deposit",
-                                SecondName = ">Deposit",
+                                ProductName = "> Deposit",
+                                SecondName = "> Deposit",
                                 ProductTypeId = 0,
                                 InUnitPrice = 0,
-                                OutUnitPrice = 0,
+                                OutUnitPrice = prods[0].Deposit,
                                 IsTax1 = prods[0].IsTax1,
                                 IsTax2 = prods[0].IsTax2,
                                 IsTax3 = prods[0].IsTax3,
@@ -2141,6 +2482,7 @@ namespace SDCafeSales.Views
                                 OrderCategoryId = 1 // Deposit
                                 ,
                                 IsDiscounted = false
+                                ,BarCode = ""
                             });
                             int iNewDepOrderId = dbPOS.Insert_Order(orders[orders.Count-1]);
                             if (iNewDepOrderId > 0) //if (dbPOS.Insert_Order(orders[1]))
@@ -2149,12 +2491,15 @@ namespace SDCafeSales.Views
                                 // Add the ordered item into datagrid view
                                 ////////////////////////////////////////////////
                                 iAmount = orders[orders.Count - 1].Amount; //Quantity * orders[1].OutUnitPrice;
-                                this.dgv_Orders.Rows.Add(new String[] { orders[orders.Count-1].Id.ToString(),
+                                iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                                this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
                                                                                "1",
                                                                                orders[orders.Count-1].Amount.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
-                                                                               iNewDepOrderId.ToString()
+                                                                               iNewDepOrderId.ToString(),
+                                                                               orders[orders.Count-1].Id.ToString(),
+                                                                               orders[orders.Count-1].BarCode
                                     });
 
                             }
@@ -2173,11 +2518,11 @@ namespace SDCafeSales.Views
                             {
                                 TranType = "20",
                                 ProductId = 0,
-                                ProductName = ">Recycling Fee",
-                                SecondName = ">Recycling Fee",
+                                ProductName = "> Recycling Fee",
+                                SecondName = "> Recycling Fee",
                                 ProductTypeId = 0,
                                 InUnitPrice = 0,
-                                OutUnitPrice = 0,
+                                OutUnitPrice = prods[0].RecyclingFee,
                                 IsTax1 = prods[0].IsTax1,
                                 IsTax2 = prods[0].IsTax2,
                                 IsTax3 = prods[0].IsTax3,
@@ -2211,6 +2556,7 @@ namespace SDCafeSales.Views
                                 OrderCategoryId = 2 // RecyclingFee
                                 ,
                                 IsDiscounted = false
+                                ,BarCode = ""
                             });
                             int iNewRecyOrderId = dbPOS.Insert_Order(orders[orders.Count-1]);
                             if (iNewRecyOrderId > 0) //if (dbPOS.Insert_Order(orders[1]))
@@ -2219,12 +2565,15 @@ namespace SDCafeSales.Views
                                 // Add the ordered item into datagrid view
                                 ////////////////////////////////////////////////
                                 iAmount = orders[orders.Count - 1].Amount; //Quantity * orders[1].OutUnitPrice;
-                                this.dgv_Orders.Rows.Add(new String[] { orders[orders.Count-1].Id.ToString(),
+                                iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                                this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
                                                                                "1",
                                                                                orders[orders.Count-1].Amount.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
-                                                                               iNewRecyOrderId.ToString()
+                                                                               iNewRecyOrderId.ToString(),
+                                                                               orders[orders.Count-1].Id.ToString(),
+                                                                               orders[orders.Count-1].BarCode
                                     });
 
                             }
@@ -2253,6 +2602,330 @@ namespace SDCafeSales.Views
             return true;
         }
 
+        private bool Add_Order_BarCode(string strBarCode)
+        {
+            int iSeq = 0;
+
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+            util.Logger("Add_Order_BarCode strBarCode = " + strBarCode + ", InvoiceNo" + iNewInvNo.ToString());
+            if (!isNewInvoice)   // Set when start button is pressed
+            {
+                iNewInvNo = dbPOS1.Get_New_InvoiceNo();
+                int iSavedOrderInvNo = dbPOS.Get_SavedOrders_NextInvoiceNo();
+
+                if (iNewInvNo < iSavedOrderInvNo)
+                {
+                    iNewInvNo = iSavedOrderInvNo;
+                }
+                util.Logger(" Add_Order_BarCode Get_New_InvoiceNo : InvoiceNo = " + iNewInvNo.ToString());
+                isNewInvoice = true;
+            }
+
+            prods.Clear();
+            prods = dbPOS.Get_Product_By_BarCode(strBarCode);
+            if (prods.Count > 0)
+            {
+                orders.Clear();
+                //Get_Order_By_ProdId(iNewInvNo, pProdID);
+                orders = dbPOS.Get_NonRFID_Order_By_BarCode(iNewInvNo, strBarCode);
+                if (orders.Count == 1)
+                {
+                    orders[0].Quantity++;
+                    //int rowIndex = Get_OrderedItem_Index_of_GridView(pProdID);
+                    int rowIndex = Get_OrderedItem_Index_of_GridView_By_BarCode(strBarCode);
+                    if (rowIndex > -1) // found the product
+                    {
+                        // update datagrid veiw
+                        dgv_Orders.Rows[rowIndex].Cells[2].Value = orders[0].Quantity.ToString();
+                        float iAmount = orders[0].Quantity * prods[0].OutUnitPrice;
+                        dgv_Orders.Rows[rowIndex].Cells[4].Value = iAmount.ToString("0.00");
+                        // update orders table
+                        orders[0].Amount = orders[0].OutUnitPrice * orders[0].Quantity;
+                        if (orders[0].IsTax1) orders[0].Tax1 = orders[0].Amount * orders[0].Tax1Rate;
+                        if (orders[0].IsTax2) orders[0].Tax2 = orders[0].Amount * orders[0].Tax2Rate;
+                        if (orders[0].IsTax3) orders[0].Tax3 = orders[0].Amount * orders[0].Tax3Rate;
+                        orders[0].LastModDate = DateTime.Now.ToString("yyyy-MM-dd");
+                        orders[0].LastModTime = DateTime.Now.ToString("HH:mm:ss");
+                        dbPOS.Update_Orders_Amount_Qty(orders[0]);
+
+                        // --------------------- Child Orders such as Deposit, Chill charge, Recycling fee
+                        childOrders.Clear();
+                        childOrders = dbPOS.Get_Child_Order_By_OrderId(iNewInvNo, orders[0].Id);
+                        if (childOrders.Count > 0)
+                        {
+                            foreach (var childOrder in childOrders)
+                            {
+                                rowIndex = Get_OrderedItem_Index_of_GridView_By_OrderId(childOrder.Id);
+                                if (rowIndex > -1) // found the product
+                                {
+                                    // update datagrid veiw
+                                    childOrder.Quantity++;
+                                    dgv_Orders.Rows[rowIndex].Cells[2].Value = childOrder.Quantity.ToString();
+                                    iAmount = childOrder.Quantity * childOrder.OutUnitPrice;
+                                    dgv_Orders.Rows[rowIndex].Cells[4].Value = iAmount.ToString("0.00");
+                                    // update orders table
+                                    childOrder.Amount = childOrder.OutUnitPrice * childOrder.Quantity;
+                                    if (childOrder.IsTax1) childOrder.Tax1 = childOrder.Amount * childOrder.Tax1Rate;
+                                    if (childOrder.IsTax2) childOrder.Tax2 = childOrder.Amount * childOrder.Tax2Rate;
+                                    if (childOrder.IsTax3) childOrder.Tax3 = childOrder.Amount * childOrder.Tax3Rate;
+                                    childOrder.LastModDate = DateTime.Now.ToString("yyyy-MM-dd");
+                                    childOrder.LastModTime = DateTime.Now.ToString("HH:mm:ss");
+                                    dbPOS.Update_Orders_Amount_Qty(childOrder);
+                                }
+                            }
+                        }
+                        // --------------------- Child Orders such as Deposit, Chill charge, Recycling fee
+                    }   // if
+                }
+                else if (orders.Count > 1)
+                {
+                    // Error on duplicated data exists
+                    util.Logger("Error on duplicated data exists : InvoiceNo = " + iNewInvNo.ToString());
+                    MessageBox.Show("Error on duplicated data exists : InvoiceNo = " + iNewInvNo.ToString());
+                }
+                else //  (orders.Count == 0)
+                {
+                    ////////////////////////////////////////////////
+                    // Add the ordered item into Orders table
+                    ////////////////////////////////////////////////
+                    orders.Add(new POS_OrdersModel()
+                    {
+                        TranType = "20",
+                        ProductId = prods[0].Id,
+                        ProductName = prods[0].ProductName,
+                        SecondName = prods[0].SecondName,
+                        ProductTypeId = prods[0].ProductTypeId,
+                        InUnitPrice = prods[0].InUnitPrice,
+                        OutUnitPrice = prods[0].OutUnitPrice,
+                        IsTax1 = prods[0].IsTax1,
+                        IsTax2 = prods[0].IsTax2,
+                        IsTax3 = prods[0].IsTax3,
+                        Quantity = 1,
+                        Amount = prods[0].OutUnitPrice * 1,
+                        Tax1Rate = TaxRate1,
+                        Tax2Rate = TaxRate2,
+                        Tax3Rate = TaxRate3,
+                        Tax1 = prods[0].IsTax1 ? TaxRate1 * prods[0].OutUnitPrice : 0,
+                        Tax2 = prods[0].IsTax2 ? TaxRate2 * prods[0].OutUnitPrice : 0,
+                        Tax3 = prods[0].IsTax3 ? TaxRate3 * prods[0].OutUnitPrice : 0,
+                        Deposit = prods[0].Deposit,
+                        RecyclingFee = prods[0].RecyclingFee,
+                        ChillCharge = prods[0].ChillCharge,
+                        InvoiceNo = iNewInvNo,
+                        IsPaidComplete = false,
+                        CompleteDate = "",
+                        CompleteTime = "",
+                        CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), // DateTime.Now.ToShortDateString(),
+                        CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
+                        CreateUserId = System.Convert.ToInt32(strUserID),
+                        CreateUserName = strUserName,
+                        CreateStation = strStation,
+                        LastModDate = "",
+                        LastModTime = "",
+                        LastModUserId = System.Convert.ToInt32(strUserID),
+                        LastModUserName = "",
+                        LastModStation = "",
+                        RFTagId = 0,
+                        ParentId = 0,
+                        OrderCategoryId = 0,
+                        IsDiscounted = false,
+                        BarCode = prods[0].BarCode
+                    });
+                    //if (dbPOS.Insert_Order(orders[0]))
+                    int iNewOrderId = dbPOS.Insert_Order(orders[0]);
+                    if (iNewOrderId > 0)
+                    {
+                        ////////////////////////////////////////////////
+                        // Add the ordered item into datagrid view
+                        ////////////////////////////////////////////////
+                        float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
+                        iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                        this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
+                                                                               prods[0].ProductName,
+                                                                               "1",
+                                                                               prods[0].OutUnitPrice.ToString("0.00"),
+                                                                               iAmount.ToString("0.00"),
+                                                                               iNewOrderId.ToString(),
+                                                                               prods[0].Id.ToString(),
+                                                                               prods[0].BarCode
+                            });
+                        /////////////////////////////////////////////////
+                        // Deposit ?
+                        /////////////////////////////////////////////////
+                        if (orders[0].Deposit > 0)
+                        {
+                            // Get Parent Order Id
+                            int iParentId = iNewOrderId; // dbPOS.Get_Latest_OrderId_by_InvoiceNo_ProductId(orders[0].InvoiceNo, orders[0].ProductId);
+                                                         ////////////////////////////////////////////////
+                                                         // Add the Discount order item into Orders table
+                                                         ////////////////////////////////////////////////
+                            orders.Add(new POS_OrdersModel()
+                            {
+                                TranType = "20",
+                                ProductId = 0,
+                                ProductName = "> Deposit",
+                                SecondName = "> Deposit",
+                                ProductTypeId = 0,
+                                InUnitPrice = 0,
+                                OutUnitPrice = prods[0].Deposit,
+                                IsTax1 = prods[0].IsTax1,
+                                IsTax2 = prods[0].IsTax2,
+                                IsTax3 = prods[0].IsTax3,
+                                Quantity = 1,
+                                Amount = prods[0].Deposit,
+                                Tax1Rate = TaxRate1,
+                                Tax2Rate = TaxRate2,
+                                Tax3Rate = TaxRate3,
+                                Tax1 = 0,
+                                Tax2 = 0,
+                                Tax3 = 0,
+                                Deposit = 0,
+                                RecyclingFee = 0,
+                                ChillCharge = 0,
+                                InvoiceNo = iNewInvNo,
+                                IsPaidComplete = false,
+                                CompleteDate = "",
+                                CompleteTime = "",
+                                CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), // DateTime.Now.ToShortDateString(),
+                                CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
+                                CreateUserId = System.Convert.ToInt32(strUserID),
+                                CreateUserName = strUserName,
+                                CreateStation = strStation,
+                                LastModDate = "",
+                                LastModTime = "",
+                                LastModUserId = System.Convert.ToInt32(strUserID),
+                                LastModUserName = "",
+                                LastModStation = "",
+                                RFTagId = 0,
+                                ParentId = iParentId,
+                                OrderCategoryId = 1 // Deposit
+                                ,
+                                IsDiscounted = false
+                                ,
+                                BarCode = ""
+                            });
+                            int iNewDepOrderId = dbPOS.Insert_Order(orders[orders.Count - 1]);
+                            if (iNewDepOrderId > 0) //if (dbPOS.Insert_Order(orders[1]))
+                            {
+                                ////////////////////////////////////////////////
+                                // Add the ordered item into datagrid view
+                                ////////////////////////////////////////////////
+                                iAmount = orders[orders.Count - 1].Amount; //Quantity * orders[1].OutUnitPrice;
+                                iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                                this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
+                                                                               orders[orders.Count-1].ProductName,
+                                                                               "1",
+                                                                               orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                               iAmount.ToString("0.00"),
+                                                                               iNewDepOrderId.ToString(),
+                                                                               orders[orders.Count-1].Id.ToString(),
+                                                                               orders[orders.Count-1].BarCode
+                                    });
+
+                            }
+                        } //if (orders[0].Deposit > 0)
+                        /////////////////////////////////////////////////
+                        // Recycling Fee ?
+                        /////////////////////////////////////////////////
+                        if (orders[0].RecyclingFee > 0)
+                        {
+                            // Get Parent Order Id
+                            int iParentId = iNewOrderId; // dbPOS.Get_Latest_OrderId_by_InvoiceNo_ProductId(orders[0].InvoiceNo, orders[0].ProductId);
+                                                         ////////////////////////////////////////////////
+                                                         // Add the Discount order item into Orders table
+                                                         ////////////////////////////////////////////////
+                            orders.Add(new POS_OrdersModel()
+                            {
+                                TranType = "20",
+                                ProductId = 0,
+                                ProductName = "> Recycling Fee",
+                                SecondName = "> Recycling Fee",
+                                ProductTypeId = 0,
+                                InUnitPrice = 0,
+                                OutUnitPrice = prods[0].RecyclingFee,
+                                IsTax1 = prods[0].IsTax1,
+                                IsTax2 = prods[0].IsTax2,
+                                IsTax3 = prods[0].IsTax3,
+                                Quantity = 1,
+                                Amount = prods[0].RecyclingFee,
+                                Tax1Rate = TaxRate1,
+                                Tax2Rate = TaxRate2,
+                                Tax3Rate = TaxRate3,
+                                Tax1 = 0,
+                                Tax2 = 0,
+                                Tax3 = 0,
+                                Deposit = 0,
+                                RecyclingFee = 0,
+                                ChillCharge = 0,
+                                InvoiceNo = iNewInvNo,
+                                IsPaidComplete = false,
+                                CompleteDate = "",
+                                CompleteTime = "",
+                                CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), // DateTime.Now.ToShortDateString(),
+                                CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
+                                CreateUserId = System.Convert.ToInt32(strUserID),
+                                CreateUserName = strUserName,
+                                CreateStation = strStation,
+                                LastModDate = "",
+                                LastModTime = "",
+                                LastModUserId = System.Convert.ToInt32(strUserID),
+                                LastModUserName = "",
+                                LastModStation = "",
+                                RFTagId = 0,
+                                ParentId = iParentId,
+                                OrderCategoryId = 2 // RecyclingFee
+                                ,
+                                IsDiscounted = false
+                                ,
+                                BarCode = ""
+                            });
+                            int iNewRecyOrderId = dbPOS.Insert_Order(orders[orders.Count - 1]);
+                            if (iNewRecyOrderId > 0) //if (dbPOS.Insert_Order(orders[1]))
+                            {
+                                ////////////////////////////////////////////////
+                                // Add the ordered item into datagrid view
+                                ////////////////////////////////////////////////
+                                iAmount = orders[orders.Count - 1].Amount; //Quantity * orders[1].OutUnitPrice;
+                                iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                                this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
+                                                                               orders[orders.Count-1].ProductName,
+                                                                               "1",
+                                                                               orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                               iAmount.ToString("0.00"),
+                                                                               iNewRecyOrderId.ToString(),
+                                                                               orders[orders.Count-1].Id.ToString(),
+                                                                               orders[orders.Count-1].BarCode
+                                    });
+
+                            }
+                        } //if (orders[0].RecyclingFee > 0)
+                    }
+                    else
+                    {
+                        //Error insert order
+                        util.Logger("Error insert order : InvNo = " + iNewInvNo.ToString() + ", barCode = " + strBarCode);
+                        MessageBox.Show("Error insert order : InvNo = " + iNewInvNo.ToString() + ", barCode = " + strBarCode);
+                        return false;
+                    }
+                    this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView_By_BarCode(strBarCode);
+                    this.dgv_Orders.Rows[Get_OrderedItem_Index_of_GridView_By_BarCode(strBarCode)].Selected = true;
+                }
+            }
+            else // Product for the tag not exits
+            {
+                // Error 
+                util.Logger("Product does not exits : barCode = " + strBarCode);
+                MessageBox.Show("Product does not exits : barCode = " + strBarCode);
+                strBarCode = "";
+                txtBarCode.Text = "";   //Bug #2551
+                return false;
+            }
+            Check_Promotions();
+            Calculate_Total_Due();
+            return true;
+        }
+
         private void bt_Start_Click(object sender, EventArgs e)
         {
             //            if (selectedBTN == null)
@@ -2261,7 +2934,7 @@ namespace SDCafeSales.Views
             //                return;
             //            }
             _shouldStop = false;
-            
+            util.Logger("bt_Start_Click : InvoiceNo = " + iNewInvNo.ToString());
             bPaymentSuccess = false;    // global variable used by another form
             bCashPayment = false;
 
@@ -2307,6 +2980,9 @@ namespace SDCafeSales.Views
             /*
              * Exit the inventory quickly
              */
+
+            util.Logger("bt_Stop_Click : InvoiceNo = " + iNewInvNo.ToString());
+
             RFIDLIB.rfidlib_reader.RDR_SetCommuImmeTimeout(hreader);
             ////////////////////////////////////////
             // Abort Inventory Scan thread
@@ -2329,6 +3005,7 @@ namespace SDCafeSales.Views
 
         private void bt_Exit_Click(object sender, EventArgs e)
         {
+            util.Logger("bt_Exit_Click : InvoiceNo = " + iNewInvNo.ToString());
             this.Close();
             Environment.Exit(0);
             Application.Exit();
@@ -2389,11 +3066,20 @@ namespace SDCafeSales.Views
 
         private void bt_Payment_Click(object sender, EventArgs e)
         {
+            float fCash = 0;
+            float fDebit = 0;
+            float fVisa = 0;
+            float fMaster = 0;
+            float fAmex = 0;
+            float fOthers = 0;
+
+            util.Logger("bt_Payment_Click : InvoiceNo = " + iNewInvNo.ToString());
             if ((String.IsNullOrEmpty(txt_TotalDue.Text)) | (txt_TotalDue.Text.Contains("$0.00")) & (txtCount.Text.Contains("0")))
             {
                 //MessageBox.Show("Nothing to pay yet! Please check Total Amount.");
                 txtSelectedMenu.Text = "Nothing was ordered! Please check Total Amount.";
                 txtSelectedMenu.BackColor = Color.DarkRed;
+                util.Logger(txtSelectedMenu.Text);
             }
             else
             {
@@ -2403,6 +3089,8 @@ namespace SDCafeSales.Views
                     FrmCardPay.Set_InvoiceNo(iNewInvNo);
                     FrmCardPay.Set_Station(strStation);
                     FrmCardPay.Set_UserName(strUserName);
+                    FrmCardPay.Set_UserPassCode(strUserPass);
+                    FrmCardPay.p_strTranType = "Purchase";
                     FrmCardPay.ShowDialog();
                     
                     bPaymentSuccess = FrmCardPay.bPaymentComplete;
@@ -2410,11 +3098,45 @@ namespace SDCafeSales.Views
 
                     if (FrmCardPay.bPaymentComplete)
                     {
+                        FrmCardPay.strPaymentType = FrmCardPay.strPaymentType.ToUpper();
                         util.Logger("Card Payment completed !" + FrmCardPay.strPaymentType);
                         // Move Orders to OrderComplete
                         Process_Order_Complete(iNewInvNo);
                         // Add collection table
-                        Process_Tran_Collection(iNewInvNo, FrmCardPay.p_TenderAmt, 0, FrmCardPay.p_TipAmt, FrmCardPay.strPaymentType, true);
+                        switch (FrmCardPay.strPaymentType)
+                        {
+                            case "Cash":
+                            case "CASH":
+                                fCash = FrmCardPay.p_TenderAmt;
+                                break;
+                            case "Debit":
+                            case "DEBIT":
+                                fDebit = FrmCardPay.p_TenderAmt;
+                                break;
+                            case "Visa":
+                            case "VISA":
+                                fVisa = FrmCardPay.p_TenderAmt;
+                                break;
+                            case "Master":
+                            case "MASTER":
+                            case "M/C":
+                            case "MasterCard":
+                            case "MASTERCARD":
+                                FrmCardPay.strPaymentType = "MASTER";
+                                fMaster = FrmCardPay.p_TenderAmt;
+                                break;
+                            case "Amex":
+                            case "AMEX":
+                                fAmex = FrmCardPay.p_TenderAmt;
+                                break;
+                            default:
+                                fOthers = FrmCardPay.p_TenderAmt;
+                                util.Logger("Unknown Card Type !" + FrmCardPay.strPaymentType);
+                                break;
+                        }
+                        //Process_Tran_Collection(iNewInvNo, FrmCardPay.p_TenderAmt, 
+                        Process_Tran_Collection(iNewInvNo, fCash,fDebit,fVisa,fMaster,fAmex,fOthers,
+                                                            0, FrmCardPay.p_TipAmt, FrmCardPay.strPaymentType, true);
                         Process_Receipt(false, true);
                         util.Logger("--------------- Card Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString());
                         txtSelectedMenu.Text = "Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString();
@@ -2435,6 +3157,7 @@ namespace SDCafeSales.Views
                 if (bCashPayment)
                 {
                     txtSelectedMenu.Text = "Cash Payment is selected : Invoice# " + iNewInvNo.ToString();
+                    util.Logger(txtSelectedMenu.Text);
                     using (var FrmCashPay = new frmCashPayment(this))
                     {
                         FrmCashPay.Set_TenderAmt(Convert.ToDouble(txt_TotalDue.Text.Replace("$", "")));
@@ -2445,11 +3168,38 @@ namespace SDCafeSales.Views
 
                         if (FrmCashPay.bPaymentComplete)
                         {
+                            FrmCashPay.strPaymentType = FrmCashPay.strPaymentType.ToUpper();
                             util.Logger("Cash/Manual Payment completed !" + FrmCashPay.strPaymentType);
                             // Move Orders to OrderComplete
                             Process_Order_Complete(iNewInvNo);
                             // Add collection table
-                            Process_Tran_Collection(iNewInvNo, FrmCashPay.p_CashAmt, FrmCashPay.p_ChangeAmt, FrmCashPay.p_TipAmt, FrmCashPay.strPaymentType,false);
+                            switch (FrmCashPay.strPaymentType)
+                            {
+                                case "CASH":
+                                    fCash = FrmCashPay.p_CashAmt;
+                                    break;
+                                case "DEBIT":
+                                    fDebit = FrmCashPay.p_DebitAmt;
+                                    break;
+                                case "VISA":
+                                    fVisa = FrmCashPay.p_VisaAmt;
+                                    break;
+                                case "MASTER":
+                                case "MASTERCARD":
+                                case "M/C":
+                                    fMaster = FrmCashPay.p_MasterAmt;
+                                    break;
+                                case "AMEX":
+                                    fAmex = FrmCashPay.p_AmexAmt;
+                                    break;
+                                default:
+                                    fOthers = FrmCashPay.p_AmexAmt;
+                                    util.Logger("Unknown Card Type !" + FrmCashPay.strPaymentType);
+                                    break;
+                            }
+                            Process_Tran_Collection(iNewInvNo, fCash, fDebit, fVisa, fMaster, fAmex,fOthers,
+                                                                0, FrmCashPay.p_TipAmt, FrmCashPay.strPaymentType, true);
+                            //Process_Tran_Collection(iNewInvNo, FrmCashPay.p_CashAmt, FrmCashPay.p_ChangeAmt, FrmCashPay.p_TipAmt, FrmCashPay.strPaymentType,false);
                             Process_Receipt(false, true);
 
                             util.Logger("--------------- Cash Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString());
@@ -2472,15 +3222,14 @@ namespace SDCafeSales.Views
                 }
 
             }
+            BarCode_Get_Focus();
 
         }
 
         private void Initialize_Local_Variables()
         {
             util.Logger("---------------- Initialize_Local_Variables : Old InvNo : " + iNewInvNo.ToString());
-            iNewInvNo = 0;
             iPpleCount = 0;
-            isNewInvoice = false;
             iPpleCount = 0;
             bt_SetPPL.Tag = 0;
             txtAmtEach.Text = "";
@@ -2546,33 +3295,59 @@ namespace SDCafeSales.Views
                     ordercomp.ParentId = order.ParentId;
                     ordercomp.OrderCategoryId = order.OrderCategoryId;
                     ordercomp.IsDiscounted = order.IsDiscounted;
+                    ordercomp.BarCode = order.BarCode;
+
 
                     int iCount = dbPOS1.Insert_OrderComplete(ordercomp);
                     util.Logger("Insert_OrderComplete ! InvNo :" + order.InvoiceNo + " OrdId :" + order.Id.ToString() + " Result : " + iCount.ToString());
                     iCount = dbPOS.Delete_Order_By_OrderId(order.InvoiceNo,order.Id);
                     util.Logger("Delete_Order_By_OrderId ! InvNo :" + order.InvoiceNo + " OrdId :" + order.Id.ToString() + " Result : " + iCount.ToString());
+
+                    //////////////////////////////////////////////////////////
+                    // Product Balance Update Should be done here
+                    // order.ProductId
+                    // order.Quantity
+                    prods = dbPOS.Get_Product_By_ID(order.ProductId);
+                    if (prods.Count == 1)
+                    {
+                        prods[0].Balance = prods[0].Balance - order.Quantity;
+                        dbPOS.Update_Product_Balance(prods[0]);
+                    }
+                    //////////////////////////////////////////////////////////
                 }
             }
        }
-       private void Process_Tran_Collection(int iInvNo, float fTenderAmt, float fChangeAmt, float fTips, string strPaymentType, bool bIsIPSPayment)
-       {
+       //private void Process_Tran_Collection(int iInvNo, float fTenderAmt, float fChangeAmt, float fTips, string strPaymentType, bool bIsIPSPayment)
+        private void Process_Tran_Collection(int iInvNo, float fCashAmt,
+                                                         float fDebitAmt,
+                                                         float fVisaAmt,
+                                                         float fMasterAmt,
+                                                         float fAmexAmt,
+                                                         float fOthersAmt,
+                                                         float fChangeAmt, float fTips, string strPaymentType, bool bIsIPSPayment)
+        {
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
             DataAccessCard dbCard = new DataAccessCard();
             POS1_TranCollectionModel col = new POS1_TranCollectionModel();
             CCardReceipt cardReceipt = new CCardReceipt();
 
             util.Logger("Process_Tran_Collection iInvNo : " + iInvNo);
-            util.Logger("Process_Tran_Collection fTenderAmt : " + fTenderAmt);
+            util.Logger("Process_Tran_Collection fCashAmt : " + fCashAmt);
+            util.Logger("Process_Tran_Collection fDebitAmt : " + fDebitAmt);
+            util.Logger("Process_Tran_Collection fVisaAmt : " + fVisaAmt);
+            util.Logger("Process_Tran_Collection fMasterAmt : " + fMasterAmt);
+            util.Logger("Process_Tran_Collection fAmexAmt : " + fAmexAmt);
+            util.Logger("Process_Tran_Collection fOthersAmt : " + fOthersAmt);
             util.Logger("Process_Tran_Collection fChangeAmt : " + fChangeAmt);
             util.Logger("Process_Tran_Collection fTips : " + fTips);
             util.Logger("Process_Tran_Collection strPaymentType : " + strPaymentType);
 
             compOrders = dbPOS1.Get_OrderComplete_by_InvoiceNo(iInvNo);
 
-            if ((strPaymentType != "Cash") & (bIsIPSPayment))
+            if ((strPaymentType.Contains("CASH")) & (bIsIPSPayment))
             {
                 util.Logger("Process_Tran_Collection IPS Payment : " + strPaymentType);
-                fTenderAmt = dbCard.Get_TenderAmount(iInvNo);
+                fCashAmt = dbCard.Get_TenderAmount(iInvNo);
                 fTips = dbCard.Get_TipAmount(iInvNo);
             }
             else
@@ -2604,44 +3379,53 @@ namespace SDCafeSales.Views
                 col.Tax3 = fTax3;
 
 
-                if (strPaymentType == "Cash")
+                if (strPaymentType.Contains("CASH"))
                 {
+                    if (fCashAmt == 0)
+                    {
+                        fCashAmt = fTotalDueAmt;
+                    }
                     //col.Cash = fTenderAmt;
-                    col.Cash = fTenderAmt + fChangeAmt - fTips;
+                    col.Cash = fCashAmt + fChangeAmt - fTips;
                     col.CashTip = fTips;
                 }
-                else if (strPaymentType == "Debit") 
+                else if (strPaymentType.Contains("DEBIT"))
                 {
-                    col.Debit = fTenderAmt;
+                    col.Debit = fDebitAmt;
                     col.DebitTip = fTips;
                 }
-                else if ((strPaymentType == "Visa")|(strPaymentType == "DiscoverCard")|(strPaymentType == "DinersClub")|
-                        (strPaymentType == "JCB")|(strPaymentType == "UnionPayCard")|(strPaymentType == "OtherCreditCard"))
+                else if (strPaymentType.Contains("VISA"))
                 {
-                    col.Visa = fTenderAmt;
+                    col.Visa = fVisaAmt;
                     col.VisaTip = fTips;
                 }
-                else if ((strPaymentType == "MasterCard")| (strPaymentType == "Master"))
+                else if (strPaymentType.Contains("MASTER"))
                 {
-                    col.Master = fTenderAmt;
+                    col.Master = fMasterAmt;
                     col.MasterTip = fTips;
                 }
-                else if (strPaymentType == "Amex")
+                else if (strPaymentType.Contains("AMEX"))
                 {
-                    col.Amex = fTenderAmt;
+                    col.Amex = fAmexAmt;
                     col.AmexTip = fTips;
                 }
-                else if (strPaymentType == "GiftCard")
+                else if (strPaymentType.Contains("GIFTCARD"))
                 {
-                    col.GiftCard = fTenderAmt;
+                    col.GiftCard = fCashAmt;
                     col.GiftCardTip = fTips;
+                }
+                else
+                {
+                    col.Others = fOthersAmt;
+                    col.OthersTip = fTips;
                 }
                 col.CollectionType = strPaymentType;
 
-                col.TotalPaid = col.Cash + col.Visa + col.Debit + col.Master + col.Amex + col.GiftCard + col.Online;
+                col.TotalPaid = col.Cash + col.Visa + col.Debit + col.Master + col.Amex + col.GiftCard + col.Others;
                 col.TotalDue = fTotalDueAmt;
                 col.Change = fChangeAmt;
-                col.TotalTip = col.CashTip + col.VisaTip + col.DebitTip + col.MasterTip + col.AmexTip + col.GiftCardTip;
+                col.TotalTip = col.CashTip + col.VisaTip + col.DebitTip + col.MasterTip + col.AmexTip + col.GiftCardTip + col.OthersTip;
+                col.TotalPaid += col.TotalTip;
 
                 col.CreateDate = DateTime.Now.ToString("yyyy-MM-dd");
                 col.CreateTime = DateTime.Now.ToString("HH:mm:ss");
@@ -2672,6 +3456,8 @@ namespace SDCafeSales.Views
             //DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
             POS_SavedOrdersModel savedorder = new POS_SavedOrdersModel();
             orders = dbPOS.Get_Orders_by_InvoiceNo(iNewInvNo);
+
+            util.Logger("Process_Save_Order ! InvNo :" + iInvNo.ToString());
             
             int iSavedCount = 0;
 
@@ -2719,6 +3505,7 @@ namespace SDCafeSales.Views
                     savedorder.ParentId = order.ParentId;
                     savedorder.OrderCategoryId = order.OrderCategoryId;
                     savedorder.IsDiscounted = order.IsDiscounted;
+                    savedorder.BarCode = order.BarCode;
 
                     if (dbPOS.Insert_SavedOrders(savedorder) > 0)
                     {
@@ -2739,7 +3526,17 @@ namespace SDCafeSales.Views
             //DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
             POS_SavedOrdersModel savedorder = new POS_SavedOrdersModel();
             POS_OrdersModel recallorder = new POS_OrdersModel();
+
+            orders = dbPOS.Get_Orders_by_InvoiceNo(iNewInvNo);
+
+            if (orders.Count > 0)
+            {
+                MessageBox.Show("Unable to Recall due to there is on going order items!");
+                return false;
+            }
             savedorders = dbPOS.Get_SavedOrders_by_InvoiceNo(iInvNo);
+
+            util.Logger("Process_Recall_Saved_Order ! InvNo :" + iInvNo.ToString());
 
             int iRecallCount = 0;
 
@@ -2786,6 +3583,7 @@ namespace SDCafeSales.Views
                     recallorder.ParentId = order.ParentId;
                     recallorder.OrderCategoryId = order.OrderCategoryId;
                     recallorder.IsDiscounted = order.IsDiscounted;
+                    recallorder.BarCode = order.BarCode;
 
                     if (dbPOS.Insert_Order(recallorder) > 0)
                     {
@@ -2795,13 +3593,20 @@ namespace SDCafeSales.Views
                 }
                 if (iRecallCount == savedorders.Count)
                 {
+                    util.Logger("Process_Recall_Saved_Order ! iRecallCount :" + iRecallCount.ToString());
                     return true;
                 }
             }
+            util.Logger("Process_Recall_Saved_Order ! failed ");
             return false;
+        }
+        public void BarCode_Get_Focus()
+        {
+            txtBarCode.Focus();
         }
         private void bt_Void_Click(object sender, EventArgs e)
        {
+            util.Logger("bt_Void_Click InvNo :" + iNewInvNo.ToString());
             if (dgv_Orders.Rows.Count > 0)
             {
                 int iRowCount = dgv_Orders.Rows.Count;
@@ -2823,8 +3628,9 @@ namespace SDCafeSales.Views
                             if (Void_Product_Item_byTagId(iSelectedTagId))
                             {
                                 dgv_Orders.Rows.RemoveAt(row.Index);
-                                txtSelectedMenu.Text = "Void completed : " + row.Cells[1].Value.ToString();
+                                txtSelectedMenu.Text = "Item Void completed : " + row.Cells[1].Value.ToString();
                                 Calculate_Total_Due();
+                                BarCode_Get_Focus();
                                 return;
                             }
                         }
@@ -2833,15 +3639,17 @@ namespace SDCafeSales.Views
                             if (Void_Product_Item(iSelectedProdId, iSelectedOrderId))
                             {
                                 dgv_Orders.Rows.RemoveAt(row.Index);
-                                txtSelectedMenu.Text = "Void completed : " + row.Cells[1].Value.ToString();
+                                txtSelectedMenu.Text = "Item Void completed : " + row.Cells[1].Value.ToString();
                                 Calculate_Total_Due();
+                                BarCode_Get_Focus();
                                 return;
                             }
                         }
                     }
                 }
             }
-       }
+            BarCode_Get_Focus();
+        }
 
        private bool Void_Product_Item(int iSelectedProdId, int iSelectedOrderId)
        {
@@ -2849,16 +3657,21 @@ namespace SDCafeSales.Views
             DataAccessPOS dbPOS = new DataAccessPOS();
             orders.Clear();
             orders = dbPOS.Get_NonRFID_Order_By_OrderId(iNewInvNo, iSelectedOrderId);
+
+            util.Logger("Void_Product_Item InvNo :" + iNewInvNo.ToString() + ", iSelectedProdId = " + iSelectedProdId.ToString());
+
             if (orders.Count == 1)
             {
                 foreach (var order in orders)
                 {
                     if (dbPOS.Delete_Order_By_OrderId(iNewInvNo, order.Id) == 1)
                     {
+                        util.Logger("Void_Product_Item Success InvNo  :" + iNewInvNo.ToString() + ", iSelectedProdId = " + iSelectedProdId.ToString());
                         return true;
                     }
                 }
             }
+            util.Logger("Void_Product_Item Failed InvNo  :" + iNewInvNo.ToString() + ", iSelectedProdId = " + iSelectedProdId.ToString());
             return false;
         }
         private bool Void_Product_Item_byTagId(int iSelectedTagId)
@@ -2867,6 +3680,9 @@ namespace SDCafeSales.Views
             DataAccessPOS dbPOS = new DataAccessPOS();
             orders.Clear();
             orders = dbPOS.Get_Order_By_Invoice_RFTagId(iNewInvNo, iSelectedTagId);
+
+            util.Logger("Void_Product_Item_byTagId InvNo  :" + iNewInvNo.ToString() + ", iSelectedTagId = " + iSelectedTagId.ToString());
+
             if (orders.Count == 1)
             {
                 foreach (var order in orders)
@@ -2901,6 +3717,9 @@ namespace SDCafeSales.Views
             DataAccessPOS dbPOS = new DataAccessPOS();
             orders.Clear();
             orders = dbPOS.Get_Orders_by_InvoiceNo(iNewInvNo);
+
+            util.Logger("bt_VoidAll_Click InvNo  :" + iNewInvNo.ToString() + ", orders.Count = " + orders.Count.ToString());
+
             if (orders.Count > 0)
             {
                 foreach (var order in orders)
@@ -2922,13 +3741,26 @@ namespace SDCafeSales.Views
                     }
                     if (dbPOS.Delete_Order_By_OrderId(iNewInvNo, order.Id) == 1)
                     {
-                        util.Logger("Order removed = " + order.RFTagId);
+                        util.Logger("Order removed = (Invoice#,Prod,Amount,Qty) " + iNewInvNo + "," + order.ProductName + "," + order.Amount + "," + order.Quantity);
                     }
                 }
 
             }
             dgv_Orders_Initialize();
+            
+            Initialize_Local_Variables();
+            Load_Existing_Orders();
+
+            if (isRFIDConnected)
+            {
+                this.bt_Stop.PerformClick();
+                this.bt_Start.PerformClick();
+            }
+            bt_Start.Enabled = false;
+            bt_Payment.Enabled = true;
+
             Calculate_Total_Due();
+            BarCode_Get_Focus();
         }
         private void bt_SetQTY_Click(object sender, EventArgs e)
         {
@@ -2969,7 +3801,7 @@ namespace SDCafeSales.Views
                         
                         if (row.Selected)
                         {
-                            int iSelectedProdId = System.Convert.ToInt32(row.Cells[0].Value.ToString());
+                            int iSelectedProdId = System.Convert.ToInt32(row.Cells[6].Value.ToString()); // Cells[6] product id
                             int iSelectedTagId = 0;
                             if (row.Tag != null)
                             {
@@ -3032,7 +3864,9 @@ namespace SDCafeSales.Views
                 {
                     txtSelectedMenu.Text = "QTY is not set or No ordered items to update!";
                 }
+                //txtBarCode.Focus();
             }
+            BarCode_Get_Focus();
         }
 
         private void txtQTY_Click(object sender, EventArgs e)
@@ -3053,6 +3887,7 @@ namespace SDCafeSales.Views
             {
                 txtSelectedMenu.Text = "Invoice Printing is not possible : " + iNewInvNo.ToString();
             }
+            BarCode_Get_Focus();
         }
         public string StringCentering(string s, int desiredLength)
         {
@@ -3062,28 +3897,32 @@ namespace SDCafeSales.Views
         }
         private void Process_Receipt(bool IsInvoice, bool IsCustomerCopy)
         {
+            util.Logger("Process_Receipt InvNo  :" + iNewInvNo.ToString());
             if (!IsInvoice)
             {
                 //Print_Receipt(IsInvoice, false);
                 Print_Receipt(IsInvoice, IsCustomerCopy);
             }
             //DialogResult dialogResult = MessageBox.Show("Print Customer Copy ?", "Receipt Print", MessageBoxButtons.YesNo);
-            using (var FrmYesNo = new frmYesNo(this))
+            if (bAutoReceipt)
             {
-                FrmYesNo.Set_Title("Receipt Print");
-                FrmYesNo.Set_Message("Print Customer Copy ?");
-                FrmYesNo.StartPosition =  FormStartPosition.Manual; // FormStartPosition.CenterScreen; //
-                FrmYesNo.Location = new Point((Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2,
-                          (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2); //Screen.PrimaryScreen.Bounds.Location;
-                FrmYesNo.ShowDialog();
-
-                if (FrmYesNo.bYesNo)
+                /*using (var FrmYesNo = new frmYesNo(this))
                 {
-                    if (IsCustomerCopy)
+                    FrmYesNo.Set_Title("Receipt Print");
+                    FrmYesNo.Set_Message("Print Customer Copy ?");
+                    FrmYesNo.StartPosition = FormStartPosition.Manual; // FormStartPosition.CenterScreen; //
+                    FrmYesNo.Location = new Point((Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2,
+                              (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2); //Screen.PrimaryScreen.Bounds.Location;
+                    FrmYesNo.ShowDialog();
+
+                    if (FrmYesNo.bYesNo)
                     {
-                        Print_Receipt(IsInvoice, IsCustomerCopy);
+                        if (IsCustomerCopy)
+                        {*/
+                Print_Receipt(IsInvoice, bAutoReceipt);//IsCustomerCopy);
+                        /*}
                     }
-                }
+                }*/
             }
 
         }
@@ -3133,17 +3972,22 @@ namespace SDCafeSales.Views
                 int ititleHeight = 17;
                 //////////////////////////////////////////////////////////////////////////
                 // Print Logo ------------------------------------------------------
-                strImageFile = dbPOS.Get_SysConfig_By_Name("RECEIPT_LOGO_IMAGE")[0].ConfigValue;
-                if (strImageFile.Length > 0)
+                strImageFile = dbPOS.Get_SysConfig_By_Name("IS_RECEIPT_LOGO_PRINT")[0].ConfigValue.Trim();
+                if (strImageFile.Contains("TRUE"))
                 {
-                    Image logoImg = Image.FromFile(strImageFile);
-                    Rectangle logoRect = new Rectangle(new Point(0, 0), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iLogoHeight));
-                    //e1.Graphics.DrawRectangle(Pens.Black, logoRect);
-                    e1.Graphics.DrawImage(logoImg, logoRect, new Rectangle(0, 0, logoImg.Width, logoImg.Height), GraphicsUnit.Pixel);
+                    strImageFile = dbPOS.Get_SysConfig_By_Name("RECEIPT_LOGO_IMAGE")[0].ConfigValue.Trim();
+                    if (strImageFile.Length > 0)
+                    {
+                        Image logoImg = Image.FromFile(strImageFile);
+                        Rectangle logoRect = new Rectangle(new Point(0, 0), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iLogoHeight));
+                        //e1.Graphics.DrawRectangle(Pens.Black, logoRect);
+                        e1.Graphics.DrawImage(logoImg, logoRect, new Rectangle(0, 0, logoImg.Width, logoImg.Height), GraphicsUnit.Pixel);
+                    }
+                    iNextLineYPoint = iNextLineYPoint + iLogoHeight;
                 }
                 //////////////////////////////////////////////////////////////////////////
                 // Print Header ------------------------------------------------------
-                iNextLineYPoint = iNextLineYPoint + iLogoHeight;
+                
                 Rectangle txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, ititleHeight));
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, ititleHeight));
                 //e1.Graphics.DrawRectangle(Pens.Black, txtRect);
@@ -3232,7 +4076,7 @@ namespace SDCafeSales.Views
                                     strContent = String.Format("{0,-20}", strProd) + String.Format("{0,5}", order.Quantity.ToString()) +
                                                  String.Format("{0,7}", order.OutUnitPrice.ToString("0.00")) + String.Format("{0,8}", iAmount.ToString("0.00"));
                                 }
-                                else if (order.OrderCategoryId > 0) // Discount, Deposit
+                                else if (order.OrderCategoryId > 0) // Discount = 4, Deposit, Return = 5
                                 {
                                     iAmount = order.Amount;
                                     iSubTot = iSubTot + iAmount;
@@ -3419,7 +4263,8 @@ namespace SDCafeSales.Views
                             {
                                 foreach (var col in cols)
                                 {
-                                    if (col.CollectionType == "Cash")
+                                    col.CollectionType = col.CollectionType.ToUpper();
+                                    if (col.CollectionType.Contains("CASH"))
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -3438,7 +4283,7 @@ namespace SDCafeSales.Views
                                         }
 
                                     }
-                                    if (col.CollectionType == "Debit")
+                                    else if (col.CollectionType.Contains("DEBIT"))
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -3456,8 +4301,7 @@ namespace SDCafeSales.Views
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
                                     }
-                                    if ((col.CollectionType == "Visa") | (col.CollectionType == "DinersClub") | (col.CollectionType == "DiscoverCard")
-                                        | (col.CollectionType == "JCB") | (col.CollectionType == "UnionPayCard") | (col.CollectionType == "OtherCreditCard"))
+                                    else if (col.CollectionType.Contains("VISA"))
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -3476,7 +4320,7 @@ namespace SDCafeSales.Views
                                         }
 
                                     }
-                                    if (col.CollectionType == "MasterCard")
+                                    else if (col.CollectionType.Contains("MASTER"))
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -3494,7 +4338,7 @@ namespace SDCafeSales.Views
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
                                     }
-                                    if (col.CollectionType == "Amex")
+                                    else if (col.CollectionType.Contains("AMEX"))
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -3512,6 +4356,25 @@ namespace SDCafeSales.Views
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
                                     }
+                                    else
+                                    {
+                                        //////////////////////////////////////////////////////////////////////////
+                                        // Print a Line ------------------------------------------------------
+                                        strContent = String.Format("{0,25}", col.CollectionType + " Paid :") + String.Format("{0,15}", col.Amex.ToString("0.00"));
+                                        iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                        txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                        e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                                        if (col.AmexTip > 0)
+                                        {
+                                            //////////////////////////////////////////////////////////////////////////
+                                            // Print a Line ------------------------------------------------------
+                                            strContent = String.Format("{0,25}", "Tip :") + String.Format("{0,15}", col.AmexTip.ToString("0.00"));
+                                            iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                            txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                            e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                                        }
+                                    }
+
 
                                     fTenderAmt = fTenderAmt + col.Cash + col.Debit + col.Visa + col.Master + col.Amex + col.GiftCard;
                                     fTotalPaid = fTotalPaid + col.TotalPaid;
@@ -3581,30 +4444,34 @@ namespace SDCafeSales.Views
                         strTemp1 = " > PURCHASED AMOUNT";
                         fCurrency = (float)System.Convert.ToDouble(receipt.TransactionAmount)/100;
                         strContent = String.Format("{0,-23}", strTemp1) + String.Format("{0,20}", String.Format("{0:C}", fCurrency));
-                        iNextLineYPoint = iNextLineYPoint + (itxtHeight * 2);
+                        iNextLineYPoint = iNextLineYPoint + (itxtHeight * 1);
                         txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                         e1.Graphics.DrawString(strContent, fntCard, brsBlack, (RectangleF)txtRect, format2);
                         //////////////////////////////////////////////////////////////////////////
                         // Print a Line ------------------------------------------------------
                         strTemp1 = " + TIP ADDED";
                         fCurrency = (float)System.Convert.ToDouble(receipt.TipAmount) / 100;
-                        strContent = String.Format("{0,-23}", strTemp1) + String.Format("{0,20}", String.Format("{0:C}", fCurrency));
-                        iNextLineYPoint = iNextLineYPoint + iheaderHeight;
-                        txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
-                        e1.Graphics.DrawString(strContent, fntCard, brsBlack, (RectangleF)txtRect, format2);
-                        //////////////////////////////////////////////////////////////////////////
-                        // Print a Line ------------------------------------------------------
-                        strTemp1 = " = TOTAL PAID";
-                        fCurrency = (float)System.Convert.ToDouble(receipt.TotalAmount) / 100;
-                        strContent = String.Format("{0,-23}", strTemp1) + String.Format("{0,20}", String.Format("{0:C}", fCurrency));
-                        iNextLineYPoint = iNextLineYPoint + iheaderHeight;
-                        txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
-                        e1.Graphics.DrawString(strContent, fntCard, brsBlack, (RectangleF)txtRect, format2);
+                        if (fCurrency > 0)
+                        {
+                            strContent = String.Format("{0,-23}", strTemp1) + String.Format("{0,20}", String.Format("{0:C}", fCurrency));
+                            iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                            txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                            e1.Graphics.DrawString(strContent, fntCard, brsBlack, (RectangleF)txtRect, format2);
+
+                            //////////////////////////////////////////////////////////////////////////
+                            // Print a Line ------------------------------------------------------
+                            strTemp1 = " = TOTAL PAID";
+                            fCurrency = (float)System.Convert.ToDouble(receipt.TotalAmount) / 100;
+                            strContent = String.Format("{0,-23}", strTemp1) + String.Format("{0,20}", String.Format("{0:C}", fCurrency));
+                            iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                            txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                            e1.Graphics.DrawString(strContent, fntCard, brsBlack, (RectangleF)txtRect, format2);
+                        }
                         //////////////////////////////////////////////////////////////////////////
                         // Print a Line ------------------------------------------------------
                         strTemp1 = receipt.EMVApplicationLabel + " ACCN No : " + receipt.CustomerAccountNumber;
                         strContent = String.Format("{0,-40}", strTemp1);
-                        iNextLineYPoint = iNextLineYPoint + (itxtHeight*2);
+                        iNextLineYPoint = iNextLineYPoint + (itxtHeight*1);
                         txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                         e1.Graphics.DrawString(strContent, fntCard, brsBlack, (RectangleF)txtRect, format2);
                         //////////////////////////////////////////////////////////////////////////
@@ -3648,13 +4515,13 @@ namespace SDCafeSales.Views
                         txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight));
                         e1.Graphics.DrawString(receipt.HostResponseText, fntCard, brsBlack, (RectangleF)txtRect, format1);
                         // Print Header ------------------------------------------------------
-                        iNextLineYPoint = iNextLineYPoint + (iheaderHeight * 1);
-                        txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight));
-                        e1.Graphics.DrawString("SIGNATURE NOT REQUIRED", fntCard, brsBlack, (RectangleF)txtRect, format1);
+                        //iNextLineYPoint = iNextLineYPoint + (iheaderHeight * 1);
+                        //txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight));
+                        //e1.Graphics.DrawString("SIGNATURE NOT REQUIRED", fntCard, brsBlack, (RectangleF)txtRect, format1);
                         // Print Header ------------------------------------------------------
-                        iNextLineYPoint = iNextLineYPoint + (iheaderHeight * 1);
-                        txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight));
-                        e1.Graphics.DrawString("IMPORTANT", fntCard, brsBlack, (RectangleF)txtRect, format1);
+                        //iNextLineYPoint = iNextLineYPoint + (iheaderHeight * 1);
+                        //txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight));
+                        //e1.Graphics.DrawString("IMPORTANT", fntCard, brsBlack, (RectangleF)txtRect, format1);
                         // Print Header ------------------------------------------------------
                         iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                         txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight));
@@ -3747,6 +4614,7 @@ namespace SDCafeSales.Views
                 }
                 tTip.Show("1/N is " + bt_SetPPL.Tag, bt_SetPPL);
             }
+            BarCode_Get_Focus();
         }
 
         private void txtAmtEach_Click(object sender, EventArgs e)
@@ -3764,6 +4632,7 @@ namespace SDCafeSales.Views
             iSelectedProdTypeID = 0;
             PopulateMenuButtonByPopularity();
             txtSelectedMenu.Text = "All menu items are shown";
+            BarCode_Get_Focus();
         }
 
         private void PopulateMenuButtonByPopularity()
@@ -3900,7 +4769,8 @@ namespace SDCafeSales.Views
 
                 // set the location to the top left of the second screen
                 FrmSalesCustomer.Location = screen.WorkingArea.Location;
-
+                FrmSalesCustomer.Width = screen.WorkingArea.Width;
+                FrmSalesCustomer.Height = screen.WorkingArea.Height;
                 // set it fullscreen
                 //FrmSalesCustomer.Size = new Size(screen.WorkingArea.Width, screen.WorkingArea.Height);
                 //FrmSalesCustomer.ShowDialog();
@@ -3911,6 +4781,7 @@ namespace SDCafeSales.Views
             {
                 MessageBox.Show("No External Display is Available");
             }
+            BarCode_Get_Focus();
         }
         public Screen GetSecondaryScreen()
         {
@@ -3935,15 +4806,22 @@ namespace SDCafeSales.Views
         }
         public void StartScanByCustomer()
         {
-            this.bt_Stop.PerformClick();
-            this.bt_Start.PerformClick();
+            util.Logger("StartScanByCustomer : InvoiceNo = " + iNewInvNo.ToString());
+            Initialize_Local_Variables();
+            if (isRFIDConnected)
+            {
+                this.bt_Stop.PerformClick();
+                this.bt_Start.PerformClick();
+            }
             bt_Start.Enabled = false;
             bt_Payment.Enabled = true;
+
         }
 
         private void bt_HideSideBar_Click_1(object sender, EventArgs e)
         {
             pnlSideBar.Hide();
+            BarCode_Get_Focus();
         }
 
         private void bt_ShowSideBar_Click_1(object sender, EventArgs e)
@@ -3951,6 +4829,8 @@ namespace SDCafeSales.Views
             pnlSideBar.Location = new Point(861, 4);
             pnlSideBar.Show();
             pnlSideBar.BringToFront();
+            BarCode_Get_Focus();
+            timerExtendBar.Enabled = true;
         }
 
         private void bt_ShowAllMenuItem_Click_1(object sender, EventArgs e)
@@ -3958,6 +4838,7 @@ namespace SDCafeSales.Views
             iSelectedProdTypeID = 0;
             PopulateMenuButtonByPopularity();
             txtSelectedMenu.Text = "All menu items are shown";
+            BarCode_Get_Focus();
         }
 
         private void bt_Start_Click_1(object sender, EventArgs e)
@@ -3967,6 +4848,10 @@ namespace SDCafeSales.Views
             //                MessageBox.Show("Please select a menu item first!");
             //                return;
             //            }
+            if (!isRFIDConnected)
+            {
+                return;
+            }
             _shouldStop = false;
 
             bPaymentSuccess = false;    // global variable used by another form
@@ -3993,23 +4878,26 @@ namespace SDCafeSales.Views
             //// Set the flag for the new customer
             isNewInvoice = false;
             iNewInvNo = 0;
-            txt_SubTotal.Text = String.Empty;
-            txt_TaxTotal.Text = String.Empty;
-            txt_TotalDue.Text = String.Empty;
-            txtCount.Text = String.Empty;
+            Initialize_Local_Variables();
 
             //Bug #1553
+            util.Logger("bt_Start_Click_1 : InvoiceNo = " + iNewInvNo.ToString());
             Load_Existing_Orders();
 
             InvenThread = new Thread(DoInventory);
             InvenThread.Start();
 
             inventoryState = 1;
+            BarCode_Get_Focus();
             return;
         }
 
         private void bt_Stop_Click_1(object sender, EventArgs e)
         {
+            if (!isRFIDConnected)
+            {
+                return;
+            }
             _shouldStop = true;
             bt_Start.Enabled = true;
 
@@ -4017,6 +4905,8 @@ namespace SDCafeSales.Views
              * Exit the inventory quickly
              */
             RFIDLIB.rfidlib_reader.RDR_SetCommuImmeTimeout(hreader);
+
+            util.Logger("bt_Stop_Click_1 InvNo  :" + iNewInvNo.ToString());
             ////////////////////////////////////////
             // Abort Inventory Scan thread
             if (InvenThread != null)
@@ -4033,28 +4923,80 @@ namespace SDCafeSales.Views
                 // Normal stop of thread
                 //InvenThread.Join();
             }
+            BarCode_Get_Focus();
         }
 
         private void bt_Exit_Click_1(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Do you really want to finish ?", "POS Sales Main", MessageBoxButtons.YesNo);
-            if (dialogResult == DialogResult.Yes)
-            {
-                this.Close();
-                Application.Exit();
-            }
-            else if (dialogResult == DialogResult.No)
-            {
+            //DialogResult dialogResult = MessageBox.Show("Do you really want to finish ?", "POS Sales Main", MessageBoxButtons.YesNo);
+            //if (dialogResult == DialogResult.Yes)
+            //{
+            //    this.Close();
+            //    Application.Exit();
+            //}
+            //else if (dialogResult == DialogResult.No)
+            //{
                 //do something else
                 // Do nothing
+            //}
+            using (var FrmYesNo = new frmYesNo(this))
+            {
+                FrmYesNo.Set_Title("POS Sales Main");
+                FrmYesNo.Set_Message("Do you really want to finish ?");
+                FrmYesNo.StartPosition = FormStartPosition.Manual; // FormStartPosition.CenterScreen; //
+                FrmYesNo.Location = new Point((Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2,
+                          (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2); //Screen.PrimaryScreen.Bounds.Location;
+                FrmYesNo.ShowDialog();
+
+                if (FrmYesNo.bYesNo)
+                {
+                    //Kill_If_SalesCustomer_Opened();
+                    //this.Hide();
+                    // This hides the form, and causes ShowDialog() to return in your Form1
+                    //this.DialogResult = DialogResult.OK;
+                    this.Hide();
+                    Application.Exit();
+//                  if (this.FrmLogOn != null)
+//                        this.FrmLogOn.Show();
+                    //this.Close();
+
+                }
             }
 
         }
 
         private void bt_SalesHistory_Click(object sender, EventArgs e)
         {
-            FrmSalesHist = new frmSalesHistory(this);
+            //if (loginUsers[0].Grade == "1")
+            //{
+                FrmSalesHist = new frmSalesHistory(this);
+                FrmSalesHist.p_strLoginPassword = loginUsers[0].PassWord;
+                FrmSalesHist.p_intLoginUserId = loginUsers[0].Id;
+                FrmSalesHist.p_blnPaymentree = m_blnPaymentree;
+                FrmSalesHist.p_strUserName = loginUsers[0].FirstName;
+                FrmSalesHist.p_strStation = strStation;
+
             FrmSalesHist.Show();
+                FrmSalesHist.BringToFront();
+            //}
+            /*else
+            {
+                using (var FrmYesNo = new frmYesNo(this))
+                {
+                    FrmYesNo.Set_Title("POS Sales Main");
+                    FrmYesNo.Set_Message("Please check your login grade!");
+                    FrmYesNo.StartPosition = FormStartPosition.Manual; // FormStartPosition.CenterScreen; //
+                    FrmYesNo.Location = new Point((Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2,
+                              (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2); //Screen.PrimaryScreen.Bounds.Location;
+                    FrmYesNo.ShowDialog();
+
+                    if (FrmYesNo.bYesNo)
+                    {
+                        // do nothing
+                    }
+                }
+            }*/
+            //BarCode_Get_Focus();
         }
 
         private void bt_ProdPageUp_Click(object sender, EventArgs e)
@@ -4106,6 +5048,7 @@ namespace SDCafeSales.Views
                                                         //btnArray[i].Top = btnArray[i].Top - ((((btnArray[i].Height + 5) * 5) * iCurrentProdPage) - ((btnArray[i].Height + 5) * 5));
             }
             lbl_ProdPages.Text = iCurrentProdPage.ToString() + "/" + (iTotalProdPages - 1).ToString();
+            BarCode_Get_Focus();
         }
 
         private void bt_ProdPageDown_Click(object sender, EventArgs e)
@@ -4158,6 +5101,7 @@ namespace SDCafeSales.Views
                 //btnArray[i].Top = btnArray[i].Top - ((((btnArray[i].Height + 5) * 5) * iCurrentProdPage) - ((btnArray[i].Height + 5) * 5));
             }
             lbl_ProdPages.Text = iCurrentProdPage.ToString() + "/" + (iTotalProdPages - 1).ToString();
+            BarCode_Get_Focus();
         }
 
         private void bt_TypePageUp_Click(object sender, EventArgs e)
@@ -4198,7 +5142,7 @@ namespace SDCafeSales.Views
                 {
                     iLines = 1;
                 }
-                btnTypeArray[i].BackColor = btColor[iLines];
+                btnTypeArray[i].BackColor = btTypeColor[iLines]; //btColor[iLines];
                 // Location of button: 
                 //btnArray[i].Left = xPos;
                 btnTypeArray[i].Top = yPos;
@@ -4208,6 +5152,7 @@ namespace SDCafeSales.Views
                                                         //btnArray[i].Top = btnArray[i].Top - ((((btnArray[i].Height + 5) * 5) * iCurrentProdPage) - ((btnArray[i].Height + 5) * 5));
             }
             lbl_TypePages.Text = iCurrentTypePage.ToString() + "/" + (iTotalTypePages - 1).ToString();
+            BarCode_Get_Focus();
         }
 
         private void bt_TypePageDown_Click(object sender, EventArgs e)
@@ -4248,7 +5193,7 @@ namespace SDCafeSales.Views
                 {
                     iLines = 1;
                 }
-                btnTypeArray[i].BackColor = btColor[iLines];
+                btnTypeArray[i].BackColor = btTypeColor[iLines]; //btColor[iLines];
                 // Location of button: 
                 //btnArray[i].Left = xPos;
                 btnTypeArray[i].Top = yPos;
@@ -4258,18 +5203,21 @@ namespace SDCafeSales.Views
                                                             //btnArray[i].Top = btnArray[i].Top - ((((btnArray[i].Height + 5) * 5) * iCurrentProdPage) - ((btnArray[i].Height + 5) * 5));
             }
             lbl_TypePages.Text = iCurrentTypePage.ToString() + "/" + (iTotalTypePages - 1).ToString();
+            BarCode_Get_Focus();
         }
 
         private void bt_OpenCashDrawer_Click(object sender, EventArgs e)
         {
             //SendStringToPrinter("EPSON-1", openTillCommand);
             RawPrinterHelper.SendStringToPrinter("EPSON-1", openTillCommand);
+            BarCode_Get_Focus();
         }
 
         private void bt_OpenCashDrawer1_Click(object sender, EventArgs e)
         {
             //SendStringToPrinter("EPSON-1", openTillCommand);
             RawPrinterHelper.SendStringToPrinter("EPSON-1", openTillCommand);
+            BarCode_Get_Focus();
         }
 
         private void bt_SaveOrder_Click(object sender, EventArgs e)
@@ -4299,7 +5247,7 @@ namespace SDCafeSales.Views
                 txtSelectedMenu.Text = "No invoice was selected : " + iNewInvNo.ToString();
                 util.Logger("No invoice was selected to save order  : Invoice# " + iNewInvNo.ToString());
             }
-
+            BarCode_Get_Focus();
         }
 
         private void Print_SavedOrders(int iInvoiceNo)
@@ -4332,6 +5280,7 @@ namespace SDCafeSales.Views
             Font fntTitle = new Font("Arial", 12, FontStyle.Bold);
             Font fntHeader = new Font("Courier New", 9);
             Font fntFooter = new Font("Courier New", 10, FontStyle.Bold);
+            Font fntInvNoBarCode = new Font("IDAutomationHC39M", 12, FontStyle.Regular);
             Font fntContents = new Font("Courier New", 8);
             Font fntTotals = new Font("Courier New", 8, FontStyle.Bold);
             Font fntCard = new Font("Consolas", 8);
@@ -4531,9 +5480,16 @@ namespace SDCafeSales.Views
 
 
                 // Print Header ------------------------------------------------------
-                iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                iNextLineYPoint = iNextLineYPoint + iheaderHeight ;
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight * 2));
                 e1.Graphics.DrawString("Please recall this order with Invoice No! #( " + iInvoiceNo.ToString() + " )", fntFooter, brsBlack, (RectangleF)txtRect, format1);
+
+                // Print Barcode ------------------------------------------------------
+                iNextLineYPoint = iNextLineYPoint + (iheaderHeight * 3);
+                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight * 2));
+                e1.Graphics.DrawString("*99999" + iInvoiceNo.ToString("0000000")+ "*", fntInvNoBarCode, brsBlack, (RectangleF)txtRect, format1);
+
+
             }; //if (IsInvoice)
             try
             {
@@ -4547,6 +5503,8 @@ namespace SDCafeSales.Views
 
         private void bt_RecallOrder_Click(object sender, EventArgs e)
         {
+            util.Logger("bt_RecallOrder_Click InvNo  :" + iNewInvNo.ToString());
+
             if (txtCount.Text == "0" | txtCount.Text=="")
             {
                 using (var FrmRecallOrder = new frmRecallOrder(this))
@@ -4564,9 +5522,14 @@ namespace SDCafeSales.Views
                             dgv_Orders_Initialize();
                             Load_Existing_Orders();
                             bt_Stop.PerformClick();
+                            txtSelectedMenu.Text = "Recall order successed ! " + iRecallInvoiceNo.ToString();
+                            util.Logger("Recall order successed ! iRecallInvoiceNo = " + iRecallInvoiceNo.ToString());
                         }
-                        txtSelectedMenu.Text = "Recall order successed ! " + iRecallInvoiceNo.ToString();
-                        util.Logger("Recall order successed ! " + iRecallInvoiceNo.ToString());
+                        else
+                        {
+                            txtSelectedMenu.Text = "Recall order not exist ! " + iRecallInvoiceNo.ToString();
+                            util.Logger("Recall order not exist : failed ! iRecallInvoiceNo = " + iRecallInvoiceNo.ToString());
+                        }
                     }
                     else
                     {
@@ -4580,6 +5543,7 @@ namespace SDCafeSales.Views
             {
                 txtSelectedMenu.Text = "Please proceed the on going order first !";
             }
+            BarCode_Get_Focus();
         }
         // Amount Discount
         private void bt_SetDiscount_Click(object sender, EventArgs e)
@@ -4588,10 +5552,11 @@ namespace SDCafeSales.Views
             Double dblDueAmount = dbPOS.Get_Total_Due_Amount(iNewInvNo);
 
 
-            if (Add_Discount_Orders_Item(true, "Total D/C(", dblDueAmount,0))
+            if (Add_Discount_Orders_Item(0, true, "Total D/C(", dblDueAmount,0))
             {
                 txtSelectedMenu.Text = "Total Discount added !";
             }
+            BarCode_Get_Focus();
         }
         // Selected Item Discount
         private void bt_SetItemDiscount_Click(object sender, EventArgs e)
@@ -4610,24 +5575,30 @@ namespace SDCafeSales.Views
                         DataAccessPOS dbPOS = new DataAccessPOS();
                         Double dblDueAmount = dbPOS.Get_Order_Amount_By_OrderId(iNewInvNo, iSelectedOrderId);
 
-                        if (Add_Discount_Orders_Item(false, iSelectedOrderId.ToString() + " (", dblDueAmount, iSelectedOrderId))
+                        //if (Add_Discount_Orders_Item(false, iSelectedOrderId.ToString() + " (", dblDueAmount, iSelectedOrderId))
+                        if (Add_Discount_Orders_Item(row.Index, false, "-D/C:" + row.Cells[1].Value.ToString() + " (", dblDueAmount, iSelectedOrderId))
                         {
                             txtSelectedMenu.Text = "Item Discount added !";
                         }
+                        BarCode_Get_Focus();
                         return;
                     }
                 }
             }
+            BarCode_Get_Focus();
         }
 
-        private bool Add_Discount_Orders_Item(bool bIsTotalDiscount, string strDescription, Double dblDueAmount, int iOrderId)
+        private bool Add_Discount_Orders_Item(int iSelectedRow, bool bIsTotalDiscount, string strDescription, Double dblDueAmount, int iOrderId)
         {
+            int iSeq = 0;
             DataAccessPOS dbPOS = new DataAccessPOS();
 
             double iTotalAmount = 0;
             double iTotalTax1 = 0;
             double iTotalTax2 = 0;
             double iTotalTax3 = 0;
+
+            util.Logger("Add_Discount_Orders_Item ! InvNo  :" + iNewInvNo.ToString());
 
             if (bIsTotalDiscount)
             {
@@ -4651,11 +5622,39 @@ namespace SDCafeSales.Views
                 FrmDiscount.ShowDialog();
 
                 double iDiscountRate = FrmDiscount.iDiscountRate;
-
-                if (iDiscountRate > 0 && iDiscountRate <= 100)
+                //Feature #2604
+                float fDiscountAmount = FrmDiscount.fAmountDisc * -1;
+                //Feature #2604
+                if ((iDiscountRate > 0 && iDiscountRate <= 100) || (fDiscountAmount < 0))
                 {
                     orders.Clear();
-
+                    //Feature #2604 ---------------------------
+                    float fNewAmount = 0;
+                    float fTax1 = 0;
+                    float fTax2 = 0;
+                    float fTax3 = 0;
+                    if (fDiscountAmount < 0)
+                    {
+                        strDescription = strDescription + "$" + fDiscountAmount.ToString() + ")";
+                        fNewAmount = fDiscountAmount;
+                        fTax1 = (float)(-iTotalTax1 * ((fDiscountAmount * -1) / iTotalAmount));
+                        fTax2 = (float)(-iTotalTax2 * ((fDiscountAmount * -1) / iTotalAmount));
+                        fTax3 = (float)(-iTotalTax3 * ((fDiscountAmount * -1) / iTotalAmount));
+                    }
+                    else if (iDiscountRate > 0)
+                    {
+                        strDescription = strDescription + iDiscountRate.ToString() + "%)";
+                        fNewAmount = (float)(-iTotalAmount * (iDiscountRate / 100));
+                        fTax1 = (float)(-iTotalTax1 * (iDiscountRate / 100));
+                        fTax2 = (float)(-iTotalTax2 * (iDiscountRate / 100));
+                        fTax3 = (float)(-iTotalTax3 * (iDiscountRate / 100));
+                    }
+                    else
+                    {
+                        BarCode_Get_Focus();
+                        return false;
+                    }
+                    
                     ////////////////////////////////////////////////
                     // Add the ordered item into Orders table
                     ////////////////////////////////////////////////
@@ -4663,8 +5662,8 @@ namespace SDCafeSales.Views
                     {
                         TranType = "20",
                         ProductId = 0,
-                        ProductName = strDescription + iDiscountRate.ToString() + "%)",
-                        SecondName = strDescription + iDiscountRate.ToString() + "%)",
+                        ProductName = strDescription,
+                        SecondName = strDescription,
                         ProductTypeId = 0,
                         InUnitPrice = 0,
                         OutUnitPrice = 0,
@@ -4672,13 +5671,13 @@ namespace SDCafeSales.Views
                         IsTax2 = false,
                         IsTax3 = false,
                         Quantity = 1,
-                        Amount = (float)(-iTotalAmount * (iDiscountRate / 100)),
+                        Amount = fNewAmount,
                         Tax1Rate = TaxRate1,
                         Tax2Rate = TaxRate2,
                         Tax3Rate = TaxRate3,
-                        Tax1 = (float)(-iTotalTax1 * (iDiscountRate / 100)),
-                        Tax2 = (float)(-iTotalTax2 * (iDiscountRate / 100)),
-                        Tax3 = (float)(-iTotalTax3 * (iDiscountRate / 100)),
+                        Tax1 = fTax1,
+                        Tax2 = fTax2,
+                        Tax3 = fTax3,
                         InvoiceNo = iNewInvNo,
                         IsPaidComplete = false,
                         CompleteDate = "",
@@ -4694,9 +5693,11 @@ namespace SDCafeSales.Views
                         LastModUserName = "",
                         LastModStation = "",
                         RFTagId = 0,
-                        ParentId = 0,
-                        OrderCategoryId = 4     // Discount
+                        ParentId = iOrderId,
+                        OrderCategoryId = 4,     // Discount
+                        BarCode = ""
                     });
+                    //Feature #2604 ---------------------------
                     int iNewOrderId = dbPOS.Insert_Order(orders[0]);
                     util.Logger(" ## _Discount_Orders_Item : " + orders[0].Id.ToString() + ", PROD=" + orders[0].ProductName + ", New Amount = " + orders[0].Amount.ToString());
                     if (iNewOrderId > 0)
@@ -4705,17 +5706,39 @@ namespace SDCafeSales.Views
                         // Add the ordered item into datagrid view
                         ////////////////////////////////////////////////
                         float iAmount = orders[0].Amount;
-                        this.dgv_Orders.Rows.Add(new String[] { prods[0].Id.ToString(),
+                        iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                       /* if (iSelectedRow > 0)
+                        {*/
+                            this.dgv_Orders.Rows.Insert(iSelectedRow, new String[] { iSeq.ToString(),
                                                                                orders[0].ProductName,
                                                                                "1",
                                                                                orders[0].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
-                                                                               iNewOrderId.ToString()
+                                                                               iNewOrderId.ToString(),
+                                                                               prods[0].Id.ToString(),
+                                                                               prods[0].BarCode
                             });
-                        this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = 0;
-                        DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
-                        row.DefaultCellStyle.ForeColor = Color.Red;
+                     /*   }
+                        else
+                        {
+                            this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
+                                                       orders[0].ProductName,
+                                                       "1",
+                                                       orders[0].OutUnitPrice.ToString("0.00"),
+                                                       iAmount.ToString("0.00"),
+                                                       iNewOrderId.ToString(),
+                                                       prods[0].Id.ToString(),
+                                                       prods[0].BarCode
+                            });
+                            this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = 0;
+                            DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
+                            row.DefaultCellStyle.ForeColor = Color.Red;
+                        }*/
                         //this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView_By_RFTagID(rfids[0].Id);
+                        if (iOrderId > 0)
+                        {
+
+                        }
                     }
 
                     dgv_Orders_Initialize();
@@ -4723,10 +5746,12 @@ namespace SDCafeSales.Views
                     Calculate_Total_Due();
                 }
             }
+            BarCode_Get_Focus();
             return true;
         }
         private bool Add_Amount_Discount_Orders_Item(string strDescription, Double dblAmount)
         {
+            int iSeq = 0;
             DataAccessPOS dbPOS = new DataAccessPOS();
 
             double iTotalAmount = dblAmount;
@@ -4736,6 +5761,12 @@ namespace SDCafeSales.Views
 
             orders.Clear();
 
+            if (iNewInvNo == 0)
+            {
+                return false;
+            }
+
+            util.Logger("Add_Amount_Discount_Orders_Item ! InvNo  :" + iNewInvNo.ToString());
             ////////////////////////////////////////////////
             // Add the ordered item into Orders table
             ////////////////////////////////////////////////
@@ -4776,6 +5807,7 @@ namespace SDCafeSales.Views
                 RFTagId = 0,
                 ParentId = 0,
                 OrderCategoryId = 4     // Discount
+                ,BarCode = ""
             });
             int iNewOrderId = dbPOS.Insert_Order(orders[0]);
             util.Logger(" ## Discount : " + orders[0].Id.ToString() + ", PRODID=" + orders[0].ProductId + ", Discount Amount = " + orders[0].Amount.ToString("C2"));
@@ -4785,12 +5817,15 @@ namespace SDCafeSales.Views
                 // Add the ordered item into datagrid view
                 ////////////////////////////////////////////////
                 float iAmount = orders[0].Amount;
-                this.dgv_Orders.Rows.Add(new String[] { prods[0].Id.ToString(),
+                iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                        orders[0].ProductName,
                                                                        "1",
                                                                        orders[0].OutUnitPrice.ToString("0.00"),
                                                                        iAmount.ToString("0.00"),
-                                                                       iNewOrderId.ToString()
+                                                                       iNewOrderId.ToString(),
+                                                                       prods[0].Id.ToString(),
+                                                                       prods[0].BarCode,
                     });
                 this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = 0;
                 DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
@@ -4801,12 +5836,14 @@ namespace SDCafeSales.Views
             dgv_Orders_Initialize();
             Load_Existing_Orders();
             Calculate_Total_Due();
+            BarCode_Get_Focus();
             return true;
         }
 
         private void bt_SetIOneDollarDiscount_Click(object sender, EventArgs e)
         {
             Add_Amount_Discount_Orders_Item("$1 Discount", 1);
+            BarCode_Get_Focus();
         }
 
         private void bt_EditPrice_Click(object sender, EventArgs e)
@@ -4836,6 +5873,7 @@ namespace SDCafeSales.Views
                     }
                 }
             }
+            BarCode_Get_Focus();
 
         }
 
@@ -4850,6 +5888,9 @@ namespace SDCafeSales.Views
                 FrmEditOrderPrice.ShowDialog();
 
                 double dblNewAmount = FrmEditOrderPrice.dblNewAmount;
+                bool bManualTax1 = FrmEditOrderPrice.bTax1;
+                bool bManualTax2 = FrmEditOrderPrice.bTax2;
+                bool bManualTax3 = FrmEditOrderPrice.bTax3;
 
                 if (dblNewAmount > 0)
                 {
@@ -4859,34 +5900,40 @@ namespace SDCafeSales.Views
                     if (orders.Count == 1)
                     {
                         orders[0].Amount = (float)dblNewAmount;
-                        if (orders[0].IsTax1)
+                        if (bManualTax1)
                         {
                             orders[0].Tax1 = (float)(dblNewAmount * orders[0].Tax1Rate);
                         }
-                        if (orders[0].IsTax2)
+                        else orders[0].Tax1 = 0;
+                        if (bManualTax2)
                         {
                             orders[0].Tax2 = (float)(dblNewAmount * orders[0].Tax2Rate);
                         }
-                        if (orders[0].IsTax3)
+                        else orders[0].Tax2 = 0;
+                        if (bManualTax3)
                         {
                             orders[0].Tax3 = (float)(dblNewAmount * orders[0].Tax3Rate);
                         }
+                        else orders[0].Tax3 = 0;
                         dbPOS.Update_Orders_Amount_Qty(orders[0]);
                         util.Logger(" ## Edit Price : " + orders[0].Id.ToString() + ", PRODID=" + orders[0].ProductId + ", New Amount = " + dblNewAmount.ToString());
                     }
                 }
             }
+            BarCode_Get_Focus();
             return true;
         }
 
         private void bt_SetITwoDollarDiscount_Click(object sender, EventArgs e)
         {
             Add_Amount_Discount_Orders_Item("$2 Discount", 2);
+            BarCode_Get_Focus();
         }
 
         private void bt_SetIThreeDollarDiscount_Click(object sender, EventArgs e)
         {
             Add_Amount_Discount_Orders_Item("$3 Discount", 3);
+            BarCode_Get_Focus();
         }
 
         private void bt_ManualPrice_Click(object sender, EventArgs e)
@@ -4901,13 +5948,17 @@ namespace SDCafeSales.Views
             {
                 MessageBox.Show("Manual Item is not registered! Please add first!");
             }
-            
+            BarCode_Get_Focus();
         }
 
         private bool Add_Order_ManualItem(int pProdID)
         {
+            int iSeq = 0;
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+
+
+            util.Logger("Add_Order_ManualItem ! InvNo  :" + iNewInvNo.ToString() + ", ProdId = " + pProdID.ToString());
 
             if (!isNewInvoice)   // Set when start button is pressed
             {
@@ -4926,6 +5977,16 @@ namespace SDCafeSales.Views
             {
                 FrmManualPrice.Set_ProductName(dbPOS.Get_ProductName_By_Id(pProdID));
                 FrmManualPrice.Set_Amount(0);
+                
+                List<POS_ProductModel> prods = new List<POS_ProductModel>();
+                prods = dbPOS.Get_Product_By_ID(pProdID);
+                if (prods.Count > 0)
+                {
+                    FrmManualPrice.p_IsTax1 = prods[0].IsTax1;
+                    FrmManualPrice.p_IsTax2 = prods[0].IsTax2;
+                    FrmManualPrice.p_IsTax3 = prods[0].IsTax3;
+                }
+
                 FrmManualPrice.ShowDialog();
 
                 string strManualName = FrmManualPrice.strManualName;
@@ -4947,7 +6008,7 @@ namespace SDCafeSales.Views
                         ProductId = pProdID,
                         ProductName = strManualName,
                         SecondName = strManualName,
-                        ProductTypeId = pProdID,
+                        ProductTypeId = prods[0].ProductTypeId,
                         InUnitPrice = 0,
                         OutUnitPrice = (float)dblManualPrice,
                         IsTax1 = bManualTax1,
@@ -4981,7 +6042,8 @@ namespace SDCafeSales.Views
                         RFTagId = 0,
                         ParentId = 0,
                         OrderCategoryId = 0,
-                        IsDiscounted = false
+                        IsDiscounted = false,
+                        BarCode = ""
                     });
                     //if (dbPOS.Insert_Order(orders[0]))
                     int iNewOrderId = dbPOS.Insert_Order(orders[0]);
@@ -4991,12 +6053,15 @@ namespace SDCafeSales.Views
                         // Add the ordered item into datagrid view
                         ////////////////////////////////////////////////
                         float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
-                        this.dgv_Orders.Rows.Add(new String[] { orders[0].ProductId.ToString(),
+                        iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                        this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                strManualName,
                                                                                "1",
                                                                                orders[0].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
-                                                                               iNewOrderId.ToString()
+                                                                               iNewOrderId.ToString(),
+                                                                               orders[0].ProductId.ToString(),
+                                                                               orders[0].BarCode
                             });
                         this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView_By_ProdID(pProdID);
                         this.dgv_Orders.Rows[Get_OrderedItem_Index_of_GridView_By_ProdID(pProdID)].Selected = true;
@@ -5015,12 +6080,411 @@ namespace SDCafeSales.Views
 
             Check_Promotions();
             Calculate_Total_Due();
+            BarCode_Get_Focus();
             return true;
 
         }
 
-    }
+        private void txtBarCode_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //util.Logger($"txtBarCode_KeyPress: '{e.KeyChar}' pressed.");
+            
+            lblBarCode.ForeColor = Color.FromArgb(rdm.Next(0, 256),rdm.Next(0, 256), rdm.Next(0, 256));
+            lblBarCode2.ForeColor = Color.FromArgb(rdm.Next(0, 256), rdm.Next(0, 256), rdm.Next(0, 256));
 
+            if (e.KeyChar >= 48 && e.KeyChar <= 57)
+            {
+                strBarCode = strBarCode + (char)e.KeyChar;
+                //util.Logger($"Barcode = '{strBarCode}'");
+            }
+            if (e.KeyChar == 13)
+            {
+                util.Logger($" ====> Complete Barcode = '{strBarCode}'");
+                if (strBarCode.Length > 5)
+                {
+                    if (strBarCode.Substring(0, 5) == "99999")
+                    {
+                        int iRecallInvoiceNo = Convert.ToInt32(strBarCode.Substring(5, 7));
+                        if (Process_Recall_Saved_Order(iRecallInvoiceNo))
+                        {
+                            Initialize_Local_Variables();
+                            dgv_Orders_Initialize();
+                            Load_Existing_Orders();
+                            bt_Stop.PerformClick();
+                            txtSelectedMenu.Text = "Recall order successed ! " + iRecallInvoiceNo.ToString();
+                            util.Logger("Recall order successed ! iRecallInvoiceNo = " + iRecallInvoiceNo.ToString());
+                        }
+                        else
+                        {
+                            txtSelectedMenu.Text = "Recall order not exist ! " + iRecallInvoiceNo.ToString();
+                            util.Logger("Recall order not exist : failed ! iRecallInvoiceNo = " + iRecallInvoiceNo.ToString());
+                        }
+                        txtBarCode.Text = string.Empty;
+                        strBarCode = string.Empty;
+                        return;
+                    }
+                }
+                if (Add_Order_BarCode(strBarCode) == true)
+                {
+                    txtBarCode.Text = string.Empty;
+                    strBarCode = string.Empty;
+                }
+                else
+                {
+                    strBarCode = string.Empty;
+                }
+            }
+            BarCode_Get_Focus();
+        }
+
+        private void frmSalesMain_Shown(object sender, EventArgs e)
+        {
+            txtBarCode.Focus();
+        }
+
+        private void bt_cashPayment_Click(object sender, EventArgs e)
+        {
+            txtSelectedMenu.Text = "Cash Payment is selected : Invoice# " + iNewInvNo.ToString();
+            util.Logger(txtSelectedMenu.Text);
+            if (fTotDue == 0)
+            {
+                txtSelectedMenu.Text = "Check your due amount ! " + fTotDue.ToString("C2");
+                return;
+            }
+            using (var FrmCashPay = new frmCashPayment(this))
+            {
+                FrmCashPay.Set_TenderAmt(Convert.ToDouble(txt_TotalDue.Text.Replace("$", "")));
+                FrmCashPay.Set_InvoiceNo(iNewInvNo);
+                FrmCashPay.Set_Station(strStation);
+                FrmCashPay.Set_UserName(strUserName);
+                FrmCashPay.ShowDialog();
+
+                if (FrmCashPay.bPaymentComplete)
+                {
+                    util.Logger("Cash/Manual Payment completed !" + FrmCashPay.strPaymentType);
+                    // Move Orders to OrderComplete
+                    Process_Order_Complete(iNewInvNo);
+                    // Add collection table
+                    Process_Tran_Collection(iNewInvNo, FrmCashPay.p_CashAmt,
+                                                        FrmCashPay.p_DebitAmt,
+                                                        FrmCashPay.p_VisaAmt,
+                                                        FrmCashPay.p_MasterAmt,
+                                                        FrmCashPay.p_AmexAmt,
+                                                        FrmCashPay.p_OthersAmt,
+                                                        FrmCashPay.p_ChangeAmt, FrmCashPay.p_TipAmt, FrmCashPay.strPaymentType, false);
+                    Process_Receipt(false, true);
+
+                    util.Logger("--------------- Cash Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString());
+                    txtSelectedMenu.Text = "Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString();
+
+                    Initialize_Local_Variables();
+                    dgv_Orders_Initialize();
+                    Load_Existing_Orders();
+                    bt_Stop.PerformClick();
+                }
+                else
+                {
+                    txtSelectedMenu.Text = "Payment is not yet completed : Invoice# " + iNewInvNo.ToString();
+                    util.Logger("Payment is not done yet!");
+                    //Bug #1554
+                    bCashPayment = false;
+                }
+            }
+            BarCode_Get_Focus();
+        }
+
+        private void bt_AutoReceipt_Click(object sender, EventArgs e)
+        {
+            Check_AutoReceipt();
+            Show_AutoReceipt_Button();
+            BarCode_Get_Focus();
+        }
+
+        private void Show_AutoReceipt_Button()
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            sysConfs.Clear();
+            sysConfs = dbPOS.Get_SysConfig_By_Name("IS_AUTO_RECEIPT_PRINT"); //"COM1";
+            if (sysConfs.Count == 0)
+            {
+                sysConfs.Clear();
+                sysConfs.Add(new POS_SysConfigModel()
+                {
+                    //Id = int.Parse(txt_ConfigID.Text),
+                    ConfigName = "IS_AUTO_RECEIPT_PRINT",
+                    ConfigValue = "FALSE",
+                    ConfigDesc = "",
+                    IsActive = true
+                });
+                int isysConfigCnt = dbPOS.Insert_SysConfig(sysConfs[0]);
+                bAutoReceipt = false;
+            }
+            else
+            {
+                if (sysConfs[0].ConfigValue == "TRUE")
+                {
+                    bAutoReceipt = true;
+                }
+                else
+                {
+                    bAutoReceipt = false;
+                }
+            }
+            bt_AutoReceipt.Text = "Print" + System.Environment.NewLine + "Receipt";
+            bt_AutoReceipt.TextAlign = ContentAlignment.MiddleRight;
+            if (bAutoReceipt)
+            {
+                bt_AutoReceipt.BackColor = Color.Green;
+                bt_AutoReceipt.ForeColor = Color.Black;
+                bt_AutoReceipt.ImageList = m_ImageList;
+                bt_AutoReceipt.ImageIndex = 2;
+                bt_AutoReceipt.ImageAlign = ContentAlignment.MiddleLeft;
+            }
+            else
+            {
+                bt_AutoReceipt.BackColor = Color.DarkRed;
+                bt_AutoReceipt.ForeColor = Color.LightGray;
+                bt_AutoReceipt.ImageList = m_ImageList;
+                bt_AutoReceipt.ImageIndex = 3;
+                bt_AutoReceipt.ImageAlign = ContentAlignment.MiddleLeft;
+            }
+        }
+
+        private void Check_AutoReceipt()
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            sysConfs.Clear();
+            sysConfs = dbPOS.Get_SysConfig_By_Name("IS_AUTO_RECEIPT_PRINT"); //"COM1";
+            if (sysConfs.Count == 0)
+            {
+                sysConfs.Clear();
+                sysConfs.Add(new POS_SysConfigModel()
+                {
+                    //Id = int.Parse(txt_ConfigID.Text),
+                    ConfigName = "IS_AUTO_RECEIPT_PRINT",
+                    ConfigValue = "FALSE",
+                    ConfigDesc = "",
+                    IsActive = true
+                });
+                int isysConfigCnt = dbPOS.Insert_SysConfig(sysConfs[0]);
+                bAutoReceipt = false;
+            }
+            else
+            {
+                if (sysConfs[0].ConfigValue == "TRUE")
+                {
+                    sysConfs[0].ConfigValue = "FALSE";
+                    bAutoReceipt = false;
+                }
+                else
+                {
+                    sysConfs[0].ConfigValue = "TRUE";
+                    bAutoReceipt = true;
+                }
+                dbPOS.Update_SysConfig(sysConfs[0]);
+            }
+        }
+
+        private void timerExtendBar_Tick(object sender, EventArgs e)
+        {
+            pnlSideBar.Hide();
+            timerExtendBar.Enabled = false;
+            BarCode_Get_Focus();
+        }
+
+        private int Get_OrderedItem_Index_of_GridView_By_OrderId(int orderId)
+        {
+            int rowIndex = 0;
+            if (dgv_Orders.Rows.Count > 0)
+            {
+                foreach (DataGridViewRow row in dgv_Orders.Rows)
+                {
+                    if (row.Cells[5].Value != null)
+                    {
+                        row.Selected = false;
+                        if (row.Cells[5].Value.ToString() == orderId.ToString() && row.Tag == null)
+                        {
+                            row.Selected = true;
+                            this.dgv_Orders.FirstDisplayedScrollingRowIndex = row.Index;
+                            rowIndex = row.Index;
+                            //return rowIndex;
+                        }
+                    }
+                }
+            }
+            return rowIndex;
+        }
+
+        private void bt_Plus_Click(object sender, EventArgs e)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            if (dgv_Orders.Rows.Count > 0)
+            {
+                foreach (DataGridViewRow row in dgv_Orders.Rows)
+                {
+
+                    if (row.Selected)
+                    {
+                        int iSelectedProdId = System.Convert.ToInt32(row.Cells[6].Value.ToString()); // Cells[6] product id
+
+                        // Set QTY for only Non-RFID Tag prod items
+                        orders.Clear();
+                        orders = dbPOS.Get_NonRFID_Order_By_ProdId(iNewInvNo, iSelectedProdId);
+                        if (orders.Count == 1)
+                        {
+                            orders[0].Quantity = orders[0].Quantity + 1;
+
+                            // update datagrid veiw
+                            row.Cells[2].Value = orders[0].Quantity.ToString();
+                            float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
+                            row.Cells[4].Value = iAmount.ToString("0.00");
+                            // update orders table
+                            orders[0].Amount = orders[0].OutUnitPrice * orders[0].Quantity;
+                            if (orders[0].IsTax1) orders[0].Tax1 = orders[0].Amount * orders[0].Tax1Rate;
+                            if (orders[0].IsTax2) orders[0].Tax2 = orders[0].Amount * orders[0].Tax2Rate;
+                            if (orders[0].IsTax3) orders[0].Tax3 = orders[0].Amount * orders[0].Tax3Rate;
+                            orders[0].LastModDate = DateTime.Now.ToString("yyyy-MM-dd"); //DateTime.Now.ToShortDateString();
+                            orders[0].LastModTime = DateTime.Now.ToString("HH:mm:ss"); //DateTime.Now.ToShortTimeString();
+                            dbPOS.Update_Orders_Amount_Qty(orders[0]);
+                        }
+                        else if (orders.Count > 1)
+                        {
+                            // Error on duplicated data exists
+                            util.Logger("Error on duplicated data exists : InvoiceNo = " + iNewInvNo.ToString());
+                            MessageBox.Show("Error on duplicated data exists : InvoiceNo = " + iNewInvNo.ToString());
+                        }
+                    }
+                }
+                Calculate_Total_Due();
+                txtQTY.Text = "0";
+            }
+            else
+            {
+                txtSelectedMenu.Text = "QTY is not set or No ordered items to update!";
+            }
+            //txtBarCode.Focus();
+
+            BarCode_Get_Focus();
+        }
+
+        private void bt_Minus_Click(object sender, EventArgs e)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            if (dgv_Orders.Rows.Count > 0)
+            {
+                foreach (DataGridViewRow row in dgv_Orders.Rows)
+                {
+
+                    if (row.Selected)
+                    {
+                        //int iSelectedProdId = System.Convert.ToInt32(row.Cells[6].Value.ToString()); // Cells[6] product id
+                        int iSelectedOrderId = System.Convert.ToInt32(row.Cells[5].Value.ToString()); // Cells[5] order id  //Bug #2553
+
+                        // Set QTY for only Non-RFID Tag prod items
+                        orders.Clear();
+                        //orders = dbPOS.Get_NonRFID_Order_By_ProdId(iNewInvNo, iSelectedProdId);   //Bug #2553
+                        orders = dbPOS.Get_NonRFID_Order_By_OrderId(iNewInvNo, iSelectedOrderId);   //Bug #2553
+                        if ((orders.Count == 1) && (orders[0].Quantity > 1))
+                        {
+                            
+                            orders[0].Quantity = orders[0].Quantity - 1;
+
+                            // update datagrid veiw
+                            row.Cells[2].Value = orders[0].Quantity.ToString();
+                            float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
+                            row.Cells[4].Value = iAmount.ToString("0.00");
+                            // update orders table
+                            orders[0].Amount = orders[0].OutUnitPrice * orders[0].Quantity;
+                            if (orders[0].IsTax1) orders[0].Tax1 = orders[0].Amount * orders[0].Tax1Rate;
+                            if (orders[0].IsTax2) orders[0].Tax2 = orders[0].Amount * orders[0].Tax2Rate;
+                            if (orders[0].IsTax3) orders[0].Tax3 = orders[0].Amount * orders[0].Tax3Rate;
+                            orders[0].LastModDate = DateTime.Now.ToString("yyyy-MM-dd"); //DateTime.Now.ToShortDateString();
+                            orders[0].LastModTime = DateTime.Now.ToString("HH:mm:ss"); //DateTime.Now.ToShortTimeString();
+                            dbPOS.Update_Orders_Amount_Qty(orders[0]);
+                        }
+                        else if ((orders.Count == 1) && (orders[0].Quantity == 1))
+                        {
+                            dbPOS.Delete_Order_By_OrderId(orders[0].InvoiceNo, orders[0].Id);
+                            dgv_Orders.Rows.RemoveAt(row.Index);
+                        }
+                        else if (orders.Count > 1)
+                        {
+                            // Error on duplicated data exists
+                            util.Logger("Error on duplicated data exists : InvoiceNo = " + iNewInvNo.ToString());
+                            MessageBox.Show("Error on duplicated data exists : InvoiceNo = " + iNewInvNo.ToString());
+                        }
+                    }
+                }
+                Calculate_Total_Due();
+                txtQTY.Text = "0";
+            }
+            else
+            {
+                txtSelectedMenu.Text = "QTY is not set or No ordered items to update!";
+            }
+            //txtBarCode.Focus();
+
+            BarCode_Get_Focus();
+        }
+
+        private void bt_SetReturn_Click(object sender, EventArgs e)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            if (dgv_Orders.Rows.Count > 0)
+            {
+                foreach (DataGridViewRow row in dgv_Orders.Rows)
+                {
+
+                    if (row.Selected)
+                    {
+                        //int iSelectedProdId = System.Convert.ToInt32(row.Cells[6].Value.ToString()); // Cells[6] product id
+                        int iSelectedOrderId = System.Convert.ToInt32(row.Cells[5].Value.ToString()); // Cells[5] order id  //Bug #2553
+
+                        // Set QTY for only Non-RFID Tag prod items
+                        orders.Clear();
+                        //orders = dbPOS.Get_NonRFID_Order_By_ProdId(iNewInvNo, iSelectedProdId);   //Bug #2553
+                        orders = dbPOS.Get_NonRFID_Order_By_OrderId(iNewInvNo, iSelectedOrderId);   //Bug #2553
+                        if (orders.Count == 1)
+                        {
+
+                            orders[0].Quantity = orders[0].Quantity * - 1;
+
+                            // update datagrid veiw
+                            row.Cells[2].Value = orders[0].Quantity.ToString();
+                            float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
+                            row.Cells[4].Value = iAmount.ToString("0.00");
+                            // update orders table
+                            orders[0].Amount = orders[0].OutUnitPrice * orders[0].Quantity;
+                            if (orders[0].IsTax1) orders[0].Tax1 = orders[0].Amount * orders[0].Tax1Rate;
+                            if (orders[0].IsTax2) orders[0].Tax2 = orders[0].Amount * orders[0].Tax2Rate;
+                            if (orders[0].IsTax3) orders[0].Tax3 = orders[0].Amount * orders[0].Tax3Rate;
+                            orders[0].LastModDate = DateTime.Now.ToString("yyyy-MM-dd"); //DateTime.Now.ToShortDateString();
+                            orders[0].LastModTime = DateTime.Now.ToString("HH:mm:ss"); //DateTime.Now.ToShortTimeString();
+                            if (orders[0].Quantity < 0) 
+                                orders[0].OrderCategoryId = 5;  // Return
+                            else
+                                orders[0].OrderCategoryId = 0;  // Normal
+                            dbPOS.Update_Orders_Amount_Qty(orders[0]);
+                            //this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = corder.RFTagId;
+                            if (orders[0].Quantity < 0)
+                                row.DefaultCellStyle.ForeColor = Color.Red;
+                            else
+                                row.DefaultCellStyle.ForeColor = Color.Black;
+                        }
+                    }
+                }
+                Calculate_Total_Due();
+                txtQTY.Text = "0";
+            }
+            else
+            {
+                txtSelectedMenu.Text = "QTY is not set or No ordered items to update!";
+            }
+            //txtBarCode.Focus();
+
+            BarCode_Get_Focus();
+        }
+    }
     public class TagReportEvent : Object
     {
         public UInt32 aipType;

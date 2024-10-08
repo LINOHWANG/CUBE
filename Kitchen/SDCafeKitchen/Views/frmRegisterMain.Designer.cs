@@ -123,6 +123,7 @@
             // bt_Start
             // 
             this.bt_Start.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.bt_Start.Enabled = false;
             this.bt_Start.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
             this.bt_Start.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.bt_Start.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
@@ -156,6 +157,7 @@
             // bt_Stop
             // 
             this.bt_Stop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.bt_Stop.Enabled = false;
             this.bt_Stop.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
             this.bt_Stop.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.bt_Stop.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
@@ -547,6 +549,7 @@
             this.bt_PrintOneLabel.Size = new System.Drawing.Size(116, 45);
             this.bt_PrintOneLabel.TabIndex = 79;
             this.bt_PrintOneLabel.Text = "Print One Label";
+            this.bt_PrintOneLabel.Visible = false;
             this.bt_PrintOneLabel.Click += new System.EventHandler(this.bt_PrintOneLabel_Click);
             // 
             // timerPrtLblButton

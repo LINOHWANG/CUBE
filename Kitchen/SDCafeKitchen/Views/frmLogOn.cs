@@ -20,6 +20,7 @@ namespace SDCafeKitchen
     public partial class frmLogOn : Form
     {
         List<POS_LoginUserModel> loginUsers = new List<POS_LoginUserModel>();
+        List<POS_SysConfigModel> sysConfigs = new List<POS_SysConfigModel>();
         Utility util = new Utility();
         public CustomButton selectedBTN;
         public String strPassCode;
@@ -128,6 +129,14 @@ namespace SDCafeKitchen
                 btnNums[n].Click += new System.EventHandler(ClickNumberButton);
                 n++;
             }
+
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            sysConfigs = dbPOS.Get_SysConfig_By_Name("SCREEN_LOGO_IMAGE");
+            if (sysConfigs.Count > 0)
+            {
+                pictureBoxLogo.Image = Image.FromFile(sysConfigs[0].ConfigValue);
+            }
+
             txtPassCode.Focus();
             pnlNums.Enabled = true; // not need now to this button now 
         }
@@ -211,6 +220,11 @@ namespace SDCafeKitchen
                 return false;
             }
             return false;
+        }
+
+        private void frmLogOn_Shown(object sender, EventArgs e)
+        {
+            txtPassCode.Focus();
         }
     }
 }

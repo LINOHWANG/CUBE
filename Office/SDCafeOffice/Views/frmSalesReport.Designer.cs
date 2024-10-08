@@ -35,13 +35,15 @@
             this.dttm_TranStart = new System.Windows.Forms.DateTimePicker();
             this.dttm_TranStartTime = new System.Windows.Forms.DateTimePicker();
             this.dttm_TranEndTime = new System.Windows.Forms.DateTimePicker();
+            this.lblReportType = new System.Windows.Forms.Label();
+            this.dgvDataTender = new System.Windows.Forms.DataGridView();
+            this.label3 = new System.Windows.Forms.Label();
+            this.rbRptType = new System.Windows.Forms.RadioButton();
+            this.rbRptItem = new System.Windows.Forms.RadioButton();
             this.bt_Excel = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Query = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Print = new SDCafeCommon.Utilities.CustomButton();
-            this.label2 = new System.Windows.Forms.Label();
-            this.dgvDataTender = new System.Windows.Forms.DataGridView();
-            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDataTender)).BeginInit();
             this.SuspendLayout();
@@ -58,6 +60,7 @@
             this.dgvData.ShowEditingIcon = false;
             this.dgvData.Size = new System.Drawing.Size(990, 317);
             this.dgvData.TabIndex = 2;
+            this.dgvData.SortCompare += new System.Windows.Forms.DataGridViewSortCompareEventHandler(this.dgvData_SortCompare);
             // 
             // label1
             // 
@@ -117,11 +120,74 @@
             this.dttm_TranEndTime.Size = new System.Drawing.Size(155, 29);
             this.dttm_TranEndTime.TabIndex = 46;
             // 
+            // lblReportType
+            // 
+            this.lblReportType.AutoSize = true;
+            this.lblReportType.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblReportType.ForeColor = System.Drawing.Color.Blue;
+            this.lblReportType.Location = new System.Drawing.Point(21, 119);
+            this.lblReportType.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblReportType.Name = "lblReportType";
+            this.lblReportType.Size = new System.Drawing.Size(215, 22);
+            this.lblReportType.TabIndex = 47;
+            this.lblReportType.Text = "Sales Summary by Type";
+            // 
+            // dgvDataTender
+            // 
+            this.dgvDataTender.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.dgvDataTender.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvDataTender.Location = new System.Drawing.Point(12, 495);
+            this.dgvDataTender.MultiSelect = false;
+            this.dgvDataTender.Name = "dgvDataTender";
+            this.dgvDataTender.ReadOnly = true;
+            this.dgvDataTender.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvDataTender.ShowEditingIcon = false;
+            this.dgvDataTender.Size = new System.Drawing.Size(990, 222);
+            this.dgvDataTender.TabIndex = 48;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.Blue;
+            this.label3.Location = new System.Drawing.Point(21, 470);
+            this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(315, 22);
+            this.label3.TabIndex = 49;
+            this.label3.Text = "Collection Summary by Tender Type";
+            // 
+            // rbRptType
+            // 
+            this.rbRptType.AutoSize = true;
+            this.rbRptType.Font = new System.Drawing.Font("Arial", 14.25F);
+            this.rbRptType.Location = new System.Drawing.Point(481, 24);
+            this.rbRptType.Name = "rbRptType";
+            this.rbRptType.Size = new System.Drawing.Size(97, 26);
+            this.rbRptType.TabIndex = 50;
+            this.rbRptType.TabStop = true;
+            this.rbRptType.Text = "By Type";
+            this.rbRptType.UseVisualStyleBackColor = true;
+            this.rbRptType.CheckedChanged += new System.EventHandler(this.rbRptType_CheckedChanged);
+            // 
+            // rbRptItem
+            // 
+            this.rbRptItem.AutoSize = true;
+            this.rbRptItem.Font = new System.Drawing.Font("Arial", 14.25F);
+            this.rbRptItem.Location = new System.Drawing.Point(481, 70);
+            this.rbRptItem.Name = "rbRptItem";
+            this.rbRptItem.Size = new System.Drawing.Size(93, 26);
+            this.rbRptItem.TabIndex = 51;
+            this.rbRptItem.TabStop = true;
+            this.rbRptItem.Text = "By Item";
+            this.rbRptItem.UseVisualStyleBackColor = true;
+            this.rbRptItem.CheckedChanged += new System.EventHandler(this.rbRptItem_CheckedChanged);
+            // 
             // bt_Excel
             // 
             this.bt_Excel.CornerRadius = 30;
             this.bt_Excel.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Excel.Location = new System.Drawing.Point(709, 67);
+            this.bt_Excel.Location = new System.Drawing.Point(860, 67);
             this.bt_Excel.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Excel.Name = "bt_Excel";
             this.bt_Excel.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -135,7 +201,7 @@
             // 
             this.bt_Query.CornerRadius = 30;
             this.bt_Query.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Query.Location = new System.Drawing.Point(555, 12);
+            this.bt_Query.Location = new System.Drawing.Point(709, 12);
             this.bt_Query.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Query.Name = "bt_Query";
             this.bt_Query.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -164,7 +230,7 @@
             // 
             this.bt_Print.CornerRadius = 30;
             this.bt_Print.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Print.Location = new System.Drawing.Point(709, 12);
+            this.bt_Print.Location = new System.Drawing.Point(709, 67);
             this.bt_Print.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Print.Name = "bt_Print";
             this.bt_Print.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -174,51 +240,16 @@
             this.bt_Print.Text = "Print";
             this.bt_Print.Click += new System.EventHandler(this.bt_Print_Click);
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.Blue;
-            this.label2.Location = new System.Drawing.Point(21, 119);
-            this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(215, 22);
-            this.label2.TabIndex = 47;
-            this.label2.Text = "Sales Summary by Type";
-            // 
-            // dgvDataTender
-            // 
-            this.dgvDataTender.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.dgvDataTender.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvDataTender.Location = new System.Drawing.Point(12, 495);
-            this.dgvDataTender.MultiSelect = false;
-            this.dgvDataTender.Name = "dgvDataTender";
-            this.dgvDataTender.ReadOnly = true;
-            this.dgvDataTender.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvDataTender.ShowEditingIcon = false;
-            this.dgvDataTender.Size = new System.Drawing.Size(990, 222);
-            this.dgvDataTender.TabIndex = 48;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.Blue;
-            this.label3.Location = new System.Drawing.Point(21, 470);
-            this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(315, 22);
-            this.label3.TabIndex = 49;
-            this.label3.Text = "Collection Summary by Tender Type";
-            // 
             // frmSalesReport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.rbRptItem);
+            this.Controls.Add(this.rbRptType);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.dgvDataTender);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.lblReportType);
             this.Controls.Add(this.dttm_TranEndTime);
             this.Controls.Add(this.dttm_TranStartTime);
             this.Controls.Add(this.bt_Excel);
@@ -253,8 +284,10 @@
         private SDCafeCommon.Utilities.CustomButton bt_Excel;
         private System.Windows.Forms.DateTimePicker dttm_TranStartTime;
         private System.Windows.Forms.DateTimePicker dttm_TranEndTime;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblReportType;
         private System.Windows.Forms.DataGridView dgvDataTender;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.RadioButton rbRptType;
+        private System.Windows.Forms.RadioButton rbRptItem;
     }
 }

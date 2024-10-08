@@ -14,6 +14,8 @@ namespace SDCafeCommon.Model
         public int ProductTypeId { get; set; }
         public float InUnitPrice { get; set; }
         public float OutUnitPrice { get; set; }
+
+        public float Balance { get; set; }
         public bool IsTax1 { get; set; }
         public bool IsTax2 { get; set; }
         public bool IsTax3 { get; set; }
@@ -36,5 +38,8 @@ namespace SDCafeCommon.Model
         public float RecyclingFee { get; set; }
         public float ChillCharge { get; set; }
         public string MemoText { get; set; }
+        public string BarCode { get; set; }
+
+        public bool IsManualItem { get; set; }
     }
 }

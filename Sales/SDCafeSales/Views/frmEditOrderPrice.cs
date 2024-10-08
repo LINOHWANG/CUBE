@@ -20,8 +20,13 @@ namespace SDCafeSales.Views
         public String strNewPrice;
         public double dblNewAmount = 0;
         public bool bEditNow;
+        public bool bTax1 = true, bTax2 = false, bTax3 = false;
         public float p_Amount { get; set; }
         public string p_PName { get; set; }
+
+        public bool p_IsTax1 { get; set; }
+        public bool p_IsTax2 { get; set; }
+        public bool p_IsTax3 { get; set; }
 
         public Color[] btColor =
 {
@@ -57,6 +62,17 @@ namespace SDCafeSales.Views
             p_PName = pPName;
             txt_ProductName.Text = p_PName;
         }
+
+        private void cb_Tax1_CheckedChanged(object sender, EventArgs e)
+        {
+            bTax1 = cb_Tax1.Checked;
+        }
+
+        private void cb_Tax2_CheckedChanged(object sender, EventArgs e)
+        {
+            bTax1 = cb_Tax2.Checked;
+        }
+
         private void frmEditOrderPrice_Load(object sender, EventArgs e)
         {
             //this.Top = Screen.PrimaryScreen.WorkingArea.Size.Height / 2 - (this.Height / 2);
@@ -151,6 +167,14 @@ namespace SDCafeSales.Views
             }
             txt_NewPrice.Focus();
             pnlNums.Enabled = true; // not need now to this button now 
+
+            bTax1 = p_IsTax1;
+            bTax2 = p_IsTax2;
+            bTax3 = p_IsTax3;
+
+            cb_Tax1.Checked = bTax1;
+            cb_Tax2.Checked = bTax2;
+            //cb_Tax3.Checked = bTax3;
 
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BringToFront();

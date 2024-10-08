@@ -12,6 +12,8 @@ using SDCafeCommon.Model;
 using SDCafeCommon.Utilities;
 using SDCafeOffice.Views;
 using SDCafeOffice;
+using Excel = Microsoft.Office.Interop.Excel;
+using System.IO;
 
 namespace SDCafeOffice
 {
@@ -45,8 +47,11 @@ namespace SDCafeOffice
         public frmPromotion FrmPromotion;
 
         public frmSalesReport FrmSalesReport;
+        private int iDataGridHeight;
+        private int iDataGridTop;
+        private string p_strSelectedTypeName;
 
-
+        public frmTimeReport FrmTimeReport;
         //private bool isSystem = false;
         public frmMain()
         {
@@ -55,8 +60,14 @@ namespace SDCafeOffice
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+            bt_ProductExport.Enabled = false;
+            progBarExport.Visible = false;
             //pnl_User.Hide();
             //pnl_Product.Hide();
+            iDataGridHeight = dgvData.Height;
+            iDataGridTop = dgvData.Top;
+            Load_PType_Combo_Contents();
+            dgvData_Adjustment();
         }
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -65,8 +76,41 @@ namespace SDCafeOffice
             FrmLogOn.Show();
 
         }
+        private void Load_PType_Combo_Contents()
+        {
+            // Type Combo box contents fill
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            ptypes = dbPOS.Get_All_ProductTypes();
+            if (ptypes.Count > 0)
+            {
+                cb_PType.Items.Clear();
+                int iTypeCount = 0;
+                foreach (var pType in ptypes)
+                {
+                    iTypeCount = cb_PType.Items.Add(pType.TypeName);
+                }
+            }
+            cb_PType.SelectionLength = 0;
+        }
+        private void dgvData_Adjustment()
+        {
+            dgvData.Location = new Point(160, 65); //(160, 65);
+
+            if (isProduct)
+            {
+                dgvData.Height = iDataGridHeight - cb_PType.Height - 20;
+                dgvData.Top = iDataGridTop + cb_PType.Height + 20;
+            }
+            else
+            {
+                dgvData.Height = iDataGridHeight;
+                dgvData.Top = iDataGridTop;
+            }
+        }
         private void dgvData_Prod_Initialize()
         {
+            dgvData_Adjustment();
+
             DataAccessPOS dbPOS = new DataAccessPOS();
 
             this.dgvData.AutoSize = false;
@@ -77,7 +121,7 @@ namespace SDCafeOffice
             this.dgvData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvData.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            this.dgvData.ColumnCount = 12;
+            this.dgvData.ColumnCount = 11;
             this.dgvData.Columns[0].Name = "Id";
             this.dgvData.Columns[0].Width = 50;
             this.dgvData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -87,33 +131,30 @@ namespace SDCafeOffice
             this.dgvData.Columns[2].Name = "Second Name";
             this.dgvData.Columns[2].Width = 120;
             this.dgvData.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            this.dgvData.Columns[3].Name = "UnitPrice";
-            this.dgvData.Columns[3].Width = 120;
-            this.dgvData.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            this.dgvData.Columns[4].Name = dbPOS.Get_SysConfig_By_Name("Tax1")[0].ConfigValue;
-            this.dgvData.Columns[4].Width = 50;
-            this.dgvData.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[5].Name = dbPOS.Get_SysConfig_By_Name("Tax2")[0].ConfigValue; // "Tax2";
+            this.dgvData.Columns[3].Name = "Type";
+            this.dgvData.Columns[3].Width = 80;
+            this.dgvData.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            this.dgvData.Columns[4].Name = "UnitPrice";
+            this.dgvData.Columns[4].Width = 80;
+            this.dgvData.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.dgvData.Columns[5].Name = dbPOS.Get_SysConfig_By_Name("Tax1")[0].ConfigValue;
             this.dgvData.Columns[5].Width = 50;
             this.dgvData.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[6].Name = dbPOS.Get_SysConfig_By_Name("Tax3")[0].ConfigValue; // "Tax3";
+            this.dgvData.Columns[6].Name = dbPOS.Get_SysConfig_By_Name("Tax2")[0].ConfigValue; // "Tax2";
             this.dgvData.Columns[6].Width = 50;
             this.dgvData.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[7].Name = "PRT1";
+            this.dgvData.Columns[7].Name = dbPOS.Get_SysConfig_By_Name("Tax3")[0].ConfigValue; // "Tax3";
             this.dgvData.Columns[7].Width = 50;
             this.dgvData.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[8].Name = "PRT2";
-            this.dgvData.Columns[8].Width = 50;
+            this.dgvData.Columns[8].Name = "InPrice";
+            this.dgvData.Columns[8].Width = 80;
             this.dgvData.Columns[8].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[9].Name = "PRT3";
-            this.dgvData.Columns[9].Width = 50;
+            this.dgvData.Columns[9].Name = "QTY";
+            this.dgvData.Columns[9].Width = 80;
             this.dgvData.Columns[9].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[10].Name = "PRT4";
-            this.dgvData.Columns[10].Width = 50;
+            this.dgvData.Columns[10].Name = "BarCode";
+            this.dgvData.Columns[10].Width = 80;
             this.dgvData.Columns[10].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[11].Name = "PRT5";
-            this.dgvData.Columns[11].Width = 50;
-            this.dgvData.Columns[11].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             this.dgvData.DefaultCellStyle.Font = new Font("Arial", 16F, GraphicsUnit.Pixel);
 
@@ -126,8 +167,8 @@ namespace SDCafeOffice
             dgvData.AllowUserToResizeRows = false;
             dgvData.RowTemplate.Resizable = DataGridViewTriState.True;
             dgvData.RowTemplate.MinimumHeight = 40;
-        }
 
+        }
 
         private void bt_Product_Click(object sender, EventArgs e)
         {
@@ -141,7 +182,30 @@ namespace SDCafeOffice
             bt_SysConfig.BackColor = Color.Orchid;
 
             DataAccessPOS dbPOS = new DataAccessPOS();
-            prods = dbPOS.Get_All_Products();
+            if (String.IsNullOrEmpty(p_strSelectedTypeName))
+            {
+                if (String.IsNullOrEmpty(text_PName.Text))
+                {
+                    if (String.IsNullOrEmpty(text_BarCode.Text))
+                    {
+                        //prods = dbPOS.Get_All_Products();
+                        prods = dbPOS.Get_All_Products_Sortby_Name();
+                    }
+                    else
+                    {
+                        prods = dbPOS.Get_All_Products_By_BarCode(text_BarCode.Text);
+                    }
+                }
+                else
+                {
+                    prods = dbPOS.Get_All_Products_By_ProdName(text_PName.Text);
+                }
+
+            }
+            else
+            {
+                prods = dbPOS.Get_All_Products_By_ProdType(dbPOS.Get_ProductTypeId_By_TypeName(p_strSelectedTypeName)[0].Id);
+            }
             isProduct = true;
             isLoginUser = false;
             isPType = false;
@@ -154,30 +218,22 @@ namespace SDCafeOffice
             dgvData_Prod_Initialize();
             if (prods.Count > 0)
             {
+                bt_ProductExport.Enabled = true;
                 foreach (var prod in prods)
                 {
                     this.dgvData.Rows.Add(new String[] { prod.Id.ToString(),
                                                          prod.ProductName,
                                                          prod.SecondName,
+                                                         dbPOS.Get_ProductTypeName_By_Id(prod.ProductTypeId),
                                                          prod.OutUnitPrice.ToString(),
                                                          prod.IsTax1.ToString(),
                                                          prod.IsTax2.ToString(),
                                                          prod.IsTax3.ToString(),
-                                                         prod.IsPrinter1.ToString(),
-                                                         prod.IsPrinter2.ToString(),
-                                                         prod.IsPrinter3.ToString(),
-                                                         prod.IsPrinter4.ToString(),
-                                                         prod.IsPrinter5.ToString()
+                                                         prod.InUnitPrice.ToString(),
+                                                         prod.Balance.ToString(),
+                                                         prod.BarCode
                     });
                     if (prod.IsTax1) 
-                    { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[4].Style.BackColor = Color.Green; 
-                    }
-                    else 
-                    { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[4].Style.BackColor = Color.LightSalmon; 
-                    };
-                    if (prod.IsTax2) 
                     { 
                         this.dgvData.Rows[dgvData.RowCount - 2].Cells[5].Style.BackColor = Color.Green; 
                     }
@@ -185,7 +241,7 @@ namespace SDCafeOffice
                     { 
                         this.dgvData.Rows[dgvData.RowCount - 2].Cells[5].Style.BackColor = Color.LightSalmon; 
                     };
-                    if (prod.IsTax3) 
+                    if (prod.IsTax2) 
                     { 
                         this.dgvData.Rows[dgvData.RowCount - 2].Cells[6].Style.BackColor = Color.Green; 
                     }
@@ -193,45 +249,13 @@ namespace SDCafeOffice
                     { 
                         this.dgvData.Rows[dgvData.RowCount - 2].Cells[6].Style.BackColor = Color.LightSalmon; 
                     };
-                    if (prod.IsPrinter1) 
+                    if (prod.IsTax3) 
                     { 
                         this.dgvData.Rows[dgvData.RowCount - 2].Cells[7].Style.BackColor = Color.Green; 
                     }
                     else 
                     { 
                         this.dgvData.Rows[dgvData.RowCount - 2].Cells[7].Style.BackColor = Color.LightSalmon; 
-                    };
-                    if (prod.IsPrinter2) 
-                    { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[8].Style.BackColor = Color.Green; 
-                    }
-                    else 
-                    { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[8].Style.BackColor = Color.LightSalmon; 
-                    };
-                    if (prod.IsPrinter3) 
-                    { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[9].Style.BackColor = Color.Green; 
-                    }
-                    else 
-                    { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[9].Style.BackColor = Color.LightSalmon; 
-                    };
-                    if (prod.IsPrinter4) 
-                    { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[10].Style.BackColor = Color.Green; 
-                    }
-                    else 
-                    { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[10].Style.BackColor = Color.LightSalmon; 
-                    };
-                    if (prod.IsPrinter5) 
-                    { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[11].Style.BackColor = Color.Green; 
-                    }
-                    else 
-                    { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[11].Style.BackColor = Color.LightSalmon; 
                     };
 
                     this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
@@ -240,6 +264,8 @@ namespace SDCafeOffice
         }
         private void dgvData_LoginUser_Initialize()
         {
+            dgvData_Adjustment();
+
             this.dgvData.AutoSize = false;
             dgvData.Rows.Clear();
             //this.dataGridActivity.AutoGenerateColumns = false;
@@ -278,6 +304,8 @@ namespace SDCafeOffice
         }
         private void bt_LoginUser_Click(object sender, EventArgs e)
         {
+            bt_ProductExport.Enabled = false;
+
             bt_Product.BackColor = Color.LightGreen;
             bt_LoginUser.BackColor = Color.Yellow;
             bt_ProdType.BackColor = Color.LightGreen;
@@ -323,6 +351,8 @@ namespace SDCafeOffice
 
         private void bt_ProdType_Click(object sender, EventArgs e)
         {
+            bt_ProductExport.Enabled = false;
+
             bt_Product.BackColor = Color.LightGreen;
             bt_LoginUser.BackColor = Color.Khaki;
             bt_ProdType.BackColor = Color.Yellow;
@@ -367,6 +397,8 @@ namespace SDCafeOffice
         }
         private void dgvData_ProdType_Initialize()
         {
+            dgvData_Adjustment();
+
             this.dgvData.AutoSize = false;
             dgvData.Rows.Clear();
             //this.dataGridActivity.AutoGenerateColumns = false;
@@ -406,6 +438,8 @@ namespace SDCafeOffice
 
         private void bt_SysConfig_Click(object sender, EventArgs e)
         {
+            bt_ProductExport.Enabled = false;
+
             bt_Product.BackColor = Color.LightGreen;
             bt_LoginUser.BackColor = Color.Khaki;
             bt_ProdType.BackColor = Color.LightGreen;
@@ -442,6 +476,8 @@ namespace SDCafeOffice
         }
         private void dgvData_SysConfig_Initialize()
         {
+            dgvData_Adjustment();
+
             this.dgvData.AutoSize = false;
             dgvData.Rows.Clear();
             //this.dataGridActivity.AutoGenerateColumns = false;
@@ -530,6 +566,8 @@ namespace SDCafeOffice
         }
         private void dgvData_RFIDTags_Initialize()
         {
+            dgvData_Adjustment();
+
             this.dgvData.AutoSize = false;
             dgvData.Rows.Clear();
             //this.dataGridActivity.AutoGenerateColumns = false;
@@ -578,6 +616,8 @@ namespace SDCafeOffice
         }
         private void dgvData_Stations_Initialize()
         {
+            dgvData_Adjustment();
+
             this.dgvData.AutoSize = false;
             dgvData.Rows.Clear();
             //this.dataGridActivity.AutoGenerateColumns = false;
@@ -622,6 +662,8 @@ namespace SDCafeOffice
         }
         private void bt_Tax_Click(object sender, EventArgs e)
         {
+            bt_ProductExport.Enabled = false;
+
             bt_Product.BackColor = Color.LightGreen;
             bt_LoginUser.BackColor = Color.Khaki;
             bt_ProdType.BackColor = Color.LightGreen;
@@ -638,7 +680,7 @@ namespace SDCafeOffice
             isSysConfig = false;
             isTax = true;
             isStation = false;
-            isPromotion = true;
+            isPromotion = false;
 
             dgvData_Tax_Initialize();
             if (taxs.Count > 0)
@@ -657,6 +699,8 @@ namespace SDCafeOffice
         }
         private void dgvData_Tax_Initialize()
         {
+            dgvData_Adjustment();
+
             this.dgvData.AutoSize = false;
             dgvData.Rows.Clear();
             //this.dataGridActivity.AutoGenerateColumns = false;
@@ -689,7 +733,15 @@ namespace SDCafeOffice
             dgvData.RowTemplate.Resizable = DataGridViewTriState.True;
             dgvData.RowTemplate.MinimumHeight = 40;
         }
-        private void dgvData_MouseClick(object sender, MouseEventArgs e)
+        private void dgvData_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            //if (dgvData.SelectedRows[0].Index == 0)
+            //{
+                dgvData.ClearSelection();
+            //    return;
+            //}
+        }
+        private void dgvData_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             String strSelProdId = String.Empty;
             String strSelConfigId = String.Empty;
@@ -698,10 +750,16 @@ namespace SDCafeOffice
             String strHostName = String.Empty;
             String strPromoId = String.Empty;
 
-            Int32 selectedRowCount =
+  /*          Int32 selectedRowCount =
                 dgvData.Rows.GetRowCount(DataGridViewElementStates.Selected);
+
             if (selectedRowCount > 0)
             {
+                //Header clicked
+                if (dgvData.SelectedRows[0].Index < 0)
+                {
+                    return;
+                }
                 System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
                 for (int i = 0; i < selectedRowCount; i++)
@@ -714,90 +772,99 @@ namespace SDCafeOffice
                 sb.Append("Total: " + selectedRowCount.ToString());
                 //MessageBox.Show(sb.ToString(), "Selected Rows");
             }
-            if (isProduct)
+            else
             {
-                if (dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value == null)
-                {
-                    strSelProdId = String.Empty;
-                }
-                else
-                {
-                    strSelProdId = dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value.ToString();
-                }
-                FrmProd = new frmProduct(strSelProdId);
-                FrmProd.ShowDialog();
-                bt_Product.PerformClick();
-            }
-            if (isSysConfig)
+                return;
+            } */
+            if (e.RowIndex >= 0)
             {
-                if (dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value == null)
+                DataGridViewRow row = dgvData.Rows[e.RowIndex];
+                if (isProduct)
                 {
-                    strSelConfigId = String.Empty;
+                    if (row.Cells[0].Value == null)
+                    {
+                        strSelProdId = String.Empty;
+                    }
+                    else
+                    {
+                        strSelProdId = row.Cells[0].Value.ToString();
+                    }
+                    FrmProd = new frmProduct(strSelProdId);
+                    FrmProd.ShowDialog();
+                    bt_Product.PerformClick();
                 }
-                else
+                if (isSysConfig)
                 {
-                    strSelConfigId = dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value.ToString();
+                    if (row.Cells[0].Value == null)
+                    {
+                        strSelConfigId = String.Empty;
+                    }
+                    else
+                    {
+                        strSelConfigId = row.Cells[0].Value.ToString(); //dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value.ToString();
+                    }
+                    FrmSysConfig = new frmSysConfig(strSelConfigId);
+                    FrmSysConfig.ShowDialog();
+                    bt_SysConfig.PerformClick();
                 }
-                FrmSysConfig = new frmSysConfig(strSelConfigId);
-                FrmSysConfig.ShowDialog();
-                bt_SysConfig.PerformClick();
-            }
-            if (isLoginUser)
-            {
-                if (dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value == null)
+                if (isLoginUser)
                 {
-                    strSelLoginId = String.Empty;
+                    if (row.Cells[0].Value == null)
+                    {
+                        strSelLoginId = String.Empty;
+                    }
+                    else
+                    {
+                        strSelLoginId = row.Cells[0].Value.ToString();
+                    }
+                    FrmLoginUser = new frmLoginUser(strSelLoginId);
+                    FrmLoginUser.ShowDialog();
+                    bt_LoginUser.PerformClick();
                 }
-                else
+
+                if (isPType)
                 {
-                    strSelLoginId = dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value.ToString();
+                    if (row.Cells[0].Value == null)
+                    {
+                        strTypeId = String.Empty;
+                    }
+                    else
+                    {
+                        strTypeId = row.Cells[0].Value.ToString();
+                    }
+                    FrmProdType = new frmProdType(strTypeId);
+                    FrmProdType.ShowDialog();
+                    bt_ProdType.PerformClick();
+                    Load_PType_Combo_Contents();
                 }
-                FrmLoginUser = new frmLoginUser(strSelLoginId);
-                FrmLoginUser.ShowDialog();
-                bt_LoginUser.PerformClick();
-            }
-            
-            if (isPType)
-            {
-                if (dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value == null)
+                if (isStation)
                 {
-                    strTypeId = String.Empty;
+                    if (row.Cells[0].Value == null)
+                    {
+                        strHostName = String.Empty;
+                    }
+                    else
+                    {
+                        strHostName = row.Cells[0].Value.ToString();
+                    }
+                    FrmStations = new frmStations(strHostName);
+                    FrmStations.ShowDialog();
+                    bt_Station.PerformClick();
                 }
-                else
+                if (isPromotion)
                 {
-                    strTypeId = dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value.ToString();
+                    //if (dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value == null)
+                    //{
+                    //    strPromoId = String.Empty;
+                    //}
+                    //else
+                    //{
+                    //    strPromoId = dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value.ToString();
+                    // }
+                    //FrmPromotion = new frmPromotion(strPromoId);
+                    //FrmPromotion.ShowDialog();
+                    //bt_Promotion.PerformClick();
                 }
-                FrmProdType = new frmProdType(strTypeId);
-                FrmProdType.ShowDialog();
-                bt_ProdType.PerformClick();
-            }
-            if (isStation)
-            {
-                if (dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value == null)
-                {
-                    strHostName = String.Empty;
-                }
-                else
-                {
-                    strHostName = dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value.ToString();
-                }
-                FrmStations = new frmStations(strHostName);
-                FrmStations.ShowDialog();
-                bt_Station.PerformClick();
-            }
-            if (isPromotion)
-            {
-                if (dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value == null)
-                {
-                    strPromoId = String.Empty;
-                }
-                else
-                {
-                    strPromoId = dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value.ToString();
-                }
-                FrmPromotion = new frmPromotion(strPromoId);
-                FrmPromotion.ShowDialog();
-                bt_Promotion.PerformClick();
             }
         }
 
@@ -809,6 +876,8 @@ namespace SDCafeOffice
 
         private void bt_Station_Click(object sender, EventArgs e)
         {
+            bt_ProductExport.Enabled = false;
+
             bt_Product.BackColor = Color.LightGreen;
             bt_LoginUser.BackColor = Color.Khaki;
             bt_ProdType.BackColor = Color.LightGreen;
@@ -849,12 +918,14 @@ namespace SDCafeOffice
 
         private void bt_SalesReport_Click(object sender, EventArgs e)
         {
+            bt_ProductExport.Enabled = false;
             FrmSalesReport = new frmSalesReport();
             FrmSalesReport.ShowDialog();
         }
 
         private void bt_Promotion_Click(object sender, EventArgs e)
         {
+            bt_ProductExport.Enabled = false;
             //pnl_Product.Show();
             //pnl_User.Hide();
             bt_Product.BackColor = Color.Yellow;
@@ -896,6 +967,8 @@ namespace SDCafeOffice
         }
         private void dgvData_Promo_Initialize()
         {
+            dgvData_Adjustment();
+
             DataAccessPOS dbPOS = new DataAccessPOS();
 
             this.dgvData.AutoSize = false;
@@ -940,6 +1013,172 @@ namespace SDCafeOffice
             dgvData.AllowUserToResizeRows = false;
             dgvData.RowTemplate.Resizable = DataGridViewTriState.True;
             dgvData.RowTemplate.MinimumHeight = 40;
+        }
+
+        private void cb_PType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            p_strSelectedTypeName = cb_PType.SelectedItem.ToString();
+        }
+
+        private void cb_PType_TextChanged(object sender, EventArgs e)
+        {
+            p_strSelectedTypeName = cb_PType.Text;
+        }
+
+        private void bt_TimeReport_Click(object sender, EventArgs e)
+        {
+            bt_ProductExport.Enabled = false;
+
+            FrmTimeReport = new frmTimeReport();
+            FrmTimeReport.ShowDialog();
+        }
+
+        private void text_BarCode_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13)
+            {
+                cb_PType.Text = "";
+                text_PName.Text = "";
+                bt_Product.PerformClick();
+            }
+        }
+
+        private void text_PName_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13)
+            {
+                cb_PType.Text = "";
+                text_BarCode.Text = "";
+                bt_Product.PerformClick();
+            }
+        }
+
+        private void bt_ProductExport_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Excel Documents (*.xls)|*.xls";
+            sfd.FileName = "Product_Inventory_" + DateTime.Now.ToString("yyyyMMddHHMMss") + ".xls";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                Cursor.Current = Cursors.WaitCursor;
+                //show progressbar
+                progBarExport.Visible = true;
+                progBarExport.Value = 0;
+                // set backcolor of progressbar
+                progBarExport.BackColor = Color.LightGreen;
+                progBarExport.Style = ProgressBarStyle.Continuous;
+                // creating Excel Application  
+                Microsoft.Office.Interop.Excel._Application app = new Microsoft.Office.Interop.Excel.Application();
+                // creating new WorkBook within Excel application  
+                Microsoft.Office.Interop.Excel._Workbook workbook = app.Workbooks.Add(Type.Missing);
+                // creating new Excelsheet in workbook  
+                Microsoft.Office.Interop.Excel._Worksheet worksheet = null;
+                // see the excel sheet behind the program  
+                app.Visible = false;
+                // get the reference of first sheet. By default its name is Sheet1.  
+                // store its reference to worksheet  
+                worksheet = workbook.Sheets["Sheet1"];
+                worksheet = workbook.ActiveSheet;
+                // changing the name of active sheet  
+                worksheet.Name = "Exported from gridview";
+                // storing header part in Excel  
+                for (int i = 1; i < dgvData.Columns.Count + 1; i++)
+                {
+                    worksheet.Cells[1, i] = dgvData.Columns[i - 1].HeaderText;
+                }
+                // set background color of the header cell
+                worksheet.Rows[1].Interior.Color = Color.LightBlue;
+                // storing Each row and column value to excel sheet  
+                //set progBarExport maximum value
+                progBarExport.Maximum = dgvData.Rows.Count -1;
+                for (int i = 0; i < dgvData.Rows.Count - 1; i++)
+                {
+                    progBarExport.Value = i;
+                    progBarExport.Refresh();
+                    for (int j = 0; j < dgvData.Columns.Count; j++)
+                    {
+                        // cells format to text
+                        worksheet.Cells[i + 2, j + 1].NumberFormat = "@";
+                        worksheet.Cells[i + 2, j + 1] = dgvData.Rows[i].Cells[j].Value.ToString();
+                    }
+                }
+
+                // insert Title row on top of the sheet
+                worksheet.Rows[1].Insert();
+                worksheet.Cells[1, 1] = "Date/Time Exported : " + DateTime.Now.ToString("G");
+                worksheet.Rows[1].Insert();
+                worksheet.Cells[1, 1] = "Product Inventory : " + cb_PType.Text;
+                // set bold font for the title
+                worksheet.Cells[1, 1].Font.Bold = true;
+
+                // save the application  
+                workbook.SaveAs(sfd.FileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                // Exit from the application  
+                app.Visible = false;
+                app.Quit();
+
+                releaseObject(worksheet);
+                releaseObject(workbook);
+                releaseObject(app);
+
+                progBarExport.Visible = false;
+                Cursor.Current = Cursors.Default;
+                // Open the newly saved excel file
+                if (File.Exists(sfd.FileName))
+                { 
+                    // copy the file to the temp folder
+                    string strTempPath = Path.GetTempPath();
+                    string strTempFile = strTempPath + Path.GetFileName(sfd.FileName);
+                    File.Copy(sfd.FileName, strTempFile, true);
+
+                    DataAccessPOS dbPOS = new DataAccessPOS();
+                    string strConfig = dbPOS.Get_SysConfig_By_Name("CON_SEND_EMAIL_REPORT")[0].ConfigValue.Trim();
+                    if (strConfig.Contains("TRUE"))
+                    {
+                        string strHTMLBody = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>" + System.Environment.NewLine +
+                             "<html>" + System.Environment.NewLine +
+                             "<head>" + System.Environment.NewLine +
+                             " <style>#grad1 {" + System.Environment.NewLine +
+                             " background-image: linear-gradient(to right, white , gray);" + System.Environment.NewLine +
+                             " font-family: verdana;" + System.Environment.NewLine +
+                             " }</style>" + System.Environment.NewLine +
+                             "</head>" + System.Environment.NewLine +
+                             "<body>" + System.Environment.NewLine +
+                             " <h3 style='color: #000000;'> Dear Business Owner,</h3>" + System.Environment.NewLine +
+                             " <h4 style='color: #000000;'> Product Data Excel Export action has been taken at YOUR POS today..<br /> " + System.Environment.NewLine +
+                             " <span style='color: #FF0000;'> <strong>Please find attached excel file for your reference.</strong> </span>" + System.Environment.NewLine +
+                             " <br /> " + System.Environment.NewLine +
+                             " <br /><i> This email was automatically generated and sent from YOUR POS.. </i>" + System.Environment.NewLine +
+                             " <br />Best Regards," + System.Environment.NewLine +
+                             " </h4>" + System.Environment.NewLine +
+                             " <h3 ><strong><span style='color: #0000ff;'>TechServe POS</span></strong><span style='color: #566573;'> &copy; 2023 <a href='https://techservepos.com'>techservepos.com</a></span></h3>" + System.Environment.NewLine +
+                             "</body>" + System.Environment.NewLine +
+                             "</html>" + System.Environment.NewLine;
+                        util.SendEmail("Product Inventory Excel Export", strHTMLBody, strTempFile);
+                    }
+
+                    System.Diagnostics.Process.Start(sfd.FileName);
+                }
+
+            }
+
+        }
+        private void releaseObject(object obj)
+        {
+            try
+            {
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+                obj = null;
+            }
+            catch (Exception ex)
+            {
+                obj = null;
+                MessageBox.Show("Exception Occurred while releasing object " + ex.ToString());
+            }
+            finally
+            {
+                GC.Collect();
+            }
         }
     }
 }

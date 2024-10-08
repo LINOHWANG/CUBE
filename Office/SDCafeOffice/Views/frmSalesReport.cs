@@ -14,6 +14,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
 using Microsoft.Office.Interop.Excel;
 using Font = Microsoft.Office.Interop.Excel.Font;
+using SDCafeCommon.Utilities;
 
 namespace SDCafeOffice.Views
 {
@@ -21,6 +22,8 @@ namespace SDCafeOffice.Views
     {
         List<POS1_TranCollectionModel> trancols = new List<POS1_TranCollectionModel>();
         List<POS1_OrderCompleteModel> ordercomps = new List<POS1_OrderCompleteModel>();
+        Utility util = new Utility();
+
         public frmSalesReport()
         {
             InitializeComponent();
@@ -38,6 +41,8 @@ namespace SDCafeOffice.Views
             dttm_TranEndTime.Format = DateTimePickerFormat.Custom;
             dttm_TranEndTime.CustomFormat = "HH:mm:ss";
             dttm_TranEndTime.Value = Convert.ToDateTime("23:59:59");
+
+            rbRptType.Checked = true;
         }
         private void dgvData_Initialize()
         {
@@ -50,10 +55,10 @@ namespace SDCafeOffice.Views
             this.dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvData.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             this.dgvData.ColumnCount = 8;
-            this.dgvData.Columns[0].Name = "ID";
-            this.dgvData.Columns[0].Width = 80;
+            this.dgvData.Columns[0].Name = "Type";
+            this.dgvData.Columns[0].Width = 180;
             this.dgvData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[1].Name = "Name";
+            this.dgvData.Columns[1].Name = "Product Name";
             this.dgvData.Columns[1].Width = 200;
             this.dgvData.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvData.Columns[2].Name = "QTY";
@@ -69,7 +74,7 @@ namespace SDCafeOffice.Views
             this.dgvData.Columns[5].Width = 100;
             this.dgvData.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             this.dgvData.Columns[6].Name = "Tax3";
-            this.dgvData.Columns[6].Width = 100;
+            this.dgvData.Columns[6].Width = 0;
             this.dgvData.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             this.dgvData.Columns[7].Name = "Total";
             this.dgvData.Columns[7].Width = 120;
@@ -150,12 +155,17 @@ namespace SDCafeOffice.Views
             trancols = dbPOS1.Get_TranCollection_by_DateTimeRange(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranStartTime.Value.ToString("HH:mm:ss"),
                                                             dttm_TranEnd.Value.ToString("yyyy-MM-dd"), dttm_TranEndTime.Value.ToString("HH:mm:ss"));
 
-            string[] strColTypeName = new string[] { "Cash", "Debit", "Visa", "MasterCard", "Amex", "GiftCard" };
+            string[] strColTypeName = new string[] { "CASH", "DEBIT", "VISA", "MASTER", "AMEX", "GIFTCARD", "OTHERS" };
 
-            float[] iQTY        = new float[] { 0, 0, 0, 0, 0, 0 };
-            float[] iNetAmount  = new float[] { 0, 0, 0, 0, 0, 0 };
-            float[] iTip        = new float[] { 0, 0, 0, 0, 0, 0 };
-            float[] iTotal      = new float[] { 0, 0, 0, 0, 0, 0 };
+            float[] iQTY        = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+            float[] iNetAmount  = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+            float[] iTip        = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+            float[] iTotal      = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+
+            float iCardTotalQTY = 0;
+            float iCardTotalNetAmount = 0;
+            float iCardTotalTip = 0;
+            float iCardTotalTotal = 0;
 
             float iTotalQTY = 0;
             float iTotalNetAmount = 0;
@@ -168,20 +178,128 @@ namespace SDCafeOffice.Views
             {
                 foreach (var trancol in trancols)
                 {
-                    for (int i = 0; i < strColTypeName.Length; i++)
+                    //for (int i = 0; i < strColTypeName.Length; i++)
+                    int i = 0;
+                    trancol.CollectionType = trancol.CollectionType.ToUpper();
+                    if (trancol.CollectionType.Contains(strColTypeName[0])) // Cash
                     {
-                        if (trancol.CollectionType == strColTypeName[i])
-                        {
-                            iQTY[i]++;
-                            iNetAmount[i] = iNetAmount[i] + trancol.TotalPaid;
-                            iTip[i] = iTip[i] + trancol.TotalTip;
-                            iTotal[i] = iTotal[i] + (trancol.TotalPaid + trancol.TotalTip);
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.Cash;
+                        iTip[i] = iTip[i] + trancol.CashTip;
+                        iTotal[i] = iTotal[i] + (trancol.Cash + trancol.CashTip);
 
-                            iTotalQTY++;
-                            iTotalNetAmount = iTotalNetAmount + trancol.TotalPaid;
-                            iTotalTip = iTotalTip + trancol.TotalTip;
-                            iTotalTotal = iTotalTotal + (trancol.TotalPaid + trancol.TotalTip); ;
-                        }
+                        iTotalQTY++;
+                        iTotalNetAmount = iTotalNetAmount + trancol.Cash;
+                        iTotalTip = iTotalTip + trancol.TotalTip;
+                        iTotalTotal = iTotalTotal + (trancol.Cash + trancol.CashTip); ;
+                    }
+                    else if (trancol.CollectionType.Contains(strColTypeName[1])) // Debit
+                    {
+                        i = 1;
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.Debit;
+                        iTip[i] = iTip[i] + trancol.DebitTip;
+                        iTotal[i] = iTotal[i] + (trancol.Debit + trancol.DebitTip);
+
+                        iTotalQTY++;
+                        iTotalNetAmount = iTotalNetAmount + trancol.Debit;
+                        iTotalTip = iTotalTip + trancol.DebitTip;
+                        iTotalTotal = iTotalTotal + (trancol.Debit + trancol.DebitTip); ;
+
+                        iCardTotalQTY++;
+                        iCardTotalNetAmount = iCardTotalNetAmount + trancol.Debit;
+                        iCardTotalTip = iCardTotalTip + trancol.DebitTip;
+                        iCardTotalTotal = iCardTotalTotal + (trancol.Debit + trancol.DebitTip);
+                    }
+                    else if (trancol.CollectionType.Contains(strColTypeName[2])) // Visa
+                    {
+                        i = 2;
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.Visa;
+                        iTip[i] = iTip[i] + trancol.VisaTip;
+                        iTotal[i] = iTotal[i] + (trancol.Visa + trancol.VisaTip);
+
+                        iTotalQTY++;
+                        iTotalNetAmount = iTotalNetAmount + trancol.Visa;
+                        iTotalTip = iTotalTip + trancol.VisaTip;
+                        iTotalTotal = iTotalTotal + (trancol.Visa + trancol.VisaTip);
+
+                        iCardTotalQTY++;
+                        iCardTotalNetAmount = iCardTotalNetAmount + trancol.Visa;
+                        iCardTotalTip = iCardTotalTip + trancol.VisaTip;
+                        iCardTotalTotal = iCardTotalTotal + (trancol.Visa + trancol.VisaTip);
+                    }
+                    else if (trancol.CollectionType.Contains(strColTypeName[3])) // Master
+                    {
+                        i = 3;
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.Master;
+                        iTip[i] = iTip[i] + trancol.MasterTip;
+                        iTotal[i] = iTotal[i] + (trancol.Master + trancol.MasterTip);
+
+                        iTotalQTY++;
+                        iTotalNetAmount = iTotalNetAmount + trancol.Master;
+                        iTotalTip = iTotalTip + trancol.MasterTip;
+                        iTotalTotal = iTotalTotal + (trancol.Master + trancol.MasterTip);
+
+                        iCardTotalQTY++;
+                        iCardTotalNetAmount = iCardTotalNetAmount + trancol.Master;
+                        iCardTotalTip = iCardTotalTip + trancol.MasterTip;
+                        iCardTotalTotal = iCardTotalTotal + (trancol.Master + trancol.MasterTip);
+                    }
+                    else if (trancol.CollectionType.Contains(strColTypeName[4])) // Amex
+                    {
+                        i = 4;
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.Amex;
+                        iTip[i] = iTip[i] + trancol.AmexTip;
+                        iTotal[i] = iTotal[i] + (trancol.Amex + trancol.AmexTip);
+
+                        iTotalQTY++;
+                        iTotalNetAmount = iTotalNetAmount + trancol.Amex;
+                        iTotalTip = iTotalTip + trancol.AmexTip;
+                        iTotalTotal = iTotalTotal + (trancol.Amex + trancol.AmexTip);
+
+                        iCardTotalQTY++;
+                        iCardTotalNetAmount = iCardTotalNetAmount + trancol.Amex;
+                        iCardTotalTip = iCardTotalTip + trancol.AmexTip;
+                        iCardTotalTotal = iCardTotalTotal + (trancol.Amex + trancol.AmexTip);
+                    }
+                    else if (trancol.CollectionType.Contains(strColTypeName[5])) // GiftCard
+                    {
+                        i = 5;
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.GiftCard;
+                        iTip[i] = iTip[i] + trancol.GiftCardTip;
+                        iTotal[i] = iTotal[i] + (trancol.GiftCard + trancol.GiftCardTip);
+
+                        iTotalQTY++;
+                        iTotalNetAmount = iTotalNetAmount + trancol.GiftCard;
+                        iTotalTip = iTotalTip + trancol.GiftCardTip;
+                        iTotalTotal = iTotalTotal + (trancol.GiftCard + trancol.GiftCardTip);
+
+                        iCardTotalQTY++;
+                        iCardTotalNetAmount = iCardTotalNetAmount + trancol.GiftCard;
+                        iCardTotalTip = iCardTotalTip + trancol.GiftCardTip;
+                        iCardTotalTotal = iCardTotalTotal + (trancol.GiftCard + trancol.GiftCardTip);
+                    }
+                    else
+                    { // Others
+                        i = 6;
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.Others;
+                        iTip[i] = iTip[i] + trancol.OthersTip;
+                        iTotal[i] = iTotal[i] + (trancol.Others + trancol.OthersTip);
+
+                        iTotalQTY++;
+                        iTotalNetAmount = iTotalNetAmount + trancol.Others;
+                        iTotalTip = iTotalTip + trancol.OthersTip;
+                        iTotalTotal = iTotalTotal + (trancol.Others + trancol.OthersTip);
+
+                        iCardTotalQTY++;
+                        iCardTotalNetAmount = iCardTotalNetAmount + trancol.Others;
+                        iCardTotalTip = iCardTotalTip + trancol.OthersTip;
+                        iCardTotalTotal = iCardTotalTotal + (trancol.Others + trancol.OthersTip);
                     }
                 }
             }
@@ -201,7 +319,20 @@ namespace SDCafeOffice.Views
                     this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
                 }
             }
-            this.dgvDataTender.Rows.Add(new String[] { "",
+            this.dgvDataTender.Rows.Add(new String[] { "CARD",
+                                                         "SUB TOTAL",
+                                                         iCardTotalQTY.ToString("0"),
+                                                         iCardTotalNetAmount.ToString("#,##0.00"),
+                                                         iCardTotalTip.ToString("#,##0.00"),
+                                                         iCardTotalTotal.ToString("#,##0.00")
+
+                 });
+            for (int j = 0; j < dgvDataTender.Columns.Count; j++)
+            {
+                this.dgvDataTender.Rows[dgvDataTender.RowCount - 2].Cells[j].Style.BackColor = Color.LightGreen;
+                this.dgvDataTender.Rows[dgvDataTender.RowCount - 2].Cells[j].Style.Font = new System.Drawing.Font(this.dgvDataTender.DefaultCellStyle.Font, FontStyle.Regular);
+            }
+            this.dgvDataTender.Rows.Add(new String[] { "GRAND",
                                                          "TOTAL",
                                                          iTotalQTY.ToString("0"),
                                                          iTotalNetAmount.ToString("#,##0.00"),
@@ -216,7 +347,41 @@ namespace SDCafeOffice.Views
             }
             this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
 
+            string strConfig = dbPOS.Get_SysConfig_By_Name("CON_SEND_EMAIL_REPORT")[0].ConfigValue.Trim();
+            if (strConfig.Contains("TRUE"))
+            {
+                string strHTMLTendor = "";
+
+                for (int j= 0; j<5; j++)
+                {
+                    strHTMLTendor =  strHTMLTendor + " <br />   " + (j+1).ToString("0") + ". "+ strColTypeName[j] + " : " + iNetAmount[j].ToString("C") + System.Environment.NewLine;
+                }
+                string strHTMLBody = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>" + System.Environment.NewLine +
+                     "<html>" + System.Environment.NewLine +
+                     "<head>" + System.Environment.NewLine +
+                     " <style>#grad1 {" + System.Environment.NewLine +
+                     " background-image: linear-gradient(to right, white , gray);" + System.Environment.NewLine +
+                     " font-family: verdana;" + System.Environment.NewLine +
+                     " }</style>" + System.Environment.NewLine +
+                     "</head>" + System.Environment.NewLine +
+                     "<body>" + System.Environment.NewLine +
+                     " <h3 style='color: #000000;'> Dear Business Owner,</h3>" + System.Environment.NewLine +
+                     " <h4 style='color: #000000;'> Sales Report Query action has been taken at YOUR POS today..<br /> " + System.Environment.NewLine +
+                     /*" <span style='color: #FF0000;'> <strong>Please find attached excel file for your reference.</strong> </span>" + System.Environment.NewLine +*/
+                     " <br /> Date : " + dttm_TranStart.Value.ToString("yyyy-MM-dd") + " to " + dttm_TranEnd.Value.ToString("yyyy-MM-dd") + System.Environment.NewLine +
+                     strHTMLTendor +
+                     " <br /> Total Net Sales : " + iTotalNetAmount.ToString("C") + System.Environment.NewLine +
+                     " <br /> " + System.Environment.NewLine +
+                     " <br /><i> This email was automatically generated and sent from YOUR POS.. </i>" + System.Environment.NewLine +
+                     " <br />Best Regards," + System.Environment.NewLine +
+                     " </h4>" + System.Environment.NewLine +
+                     " <h3 ><strong><span style='color: #0000ff;'>TechServe POS</span></strong><span style='color: #566573;'> &copy; 2023 <a href='https://techservepos.com'>techservepos.com</a></span></h3>" + System.Environment.NewLine +
+                     "</body>" + System.Environment.NewLine +
+                     "</html>" + System.Environment.NewLine;
+                util.SendEmail("Sales History Query", strHTMLBody, "");
+            }
         }
+    
 
 
 
@@ -227,7 +392,7 @@ namespace SDCafeOffice.Views
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
 
-            ordercomps = dbPOS1.Get_OrderComplete_by_Date_OrderBy_Type(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranStartTime.Value.ToString("HH:mm:ss"),
+            ordercomps = dbPOS1.Get_OrderComplete_by_Date_OrderBy_TypeProductId(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranStartTime.Value.ToString("HH:mm:ss"),
                                                             dttm_TranEnd.Value.ToString("yyyy-MM-dd"), dttm_TranEndTime.Value.ToString("HH:mm:ss"));
 
             string strTypeName = "";
@@ -268,6 +433,7 @@ namespace SDCafeOffice.Views
             float iDiscountTotal = 0;
 
             int iTempTypeId = 0;
+            int iTempProdId = 0;    //Feature #1916  
             int n = 0;
             if (ordercomps.Count > 0)
             {
@@ -276,14 +442,22 @@ namespace SDCafeOffice.Views
                     if (n == 0)
                     {
                         iTempTypeId = ordcomp.ProductTypeId;
+                        iTempProdId = ordcomp.ProductId;
                     }
 
-                    if (iTempTypeId != ordcomp.ProductTypeId)
+                    if (rbRptType.Checked)
                     {
-                        if (iTempTypeId != 0)   // Except Deposit, Discount ... add first
+                        if (iTempTypeId != ordcomp.ProductTypeId)
                         {
-                            this.dgvData.Rows.Add(new String[] { iTempTypeId.ToString(),
-                                                         dbPOS.Get_ProductTypeName_By_Id(iTempTypeId),
+                            if (iTempTypeId != 0)   // Except Deposit, Discount ... add first
+                            {
+                                strTypeName = dbPOS.Get_ProductTypeName_By_Id(iTempTypeId);
+                                if (string.IsNullOrEmpty(strTypeName))
+                                {
+                                    strTypeName = "#Undefined " + iTempTypeId;
+                                }
+                                this.dgvData.Rows.Add(new String[] { strTypeName,
+                                                         "",
                                                          iTypeQTY.ToString("0"),
                                                          iTypeAmount.ToString("#,##0.00"),
                                                          iTypeTax1.ToString("#,##0.00"),
@@ -291,18 +465,54 @@ namespace SDCafeOffice.Views
                                                          iTypeTax3.ToString("#,##0.00"),
                                                          iTypeTotal.ToString("#,##0.00")
 
-                            });
-                            this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
+                                });
+                                this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
+                            }
+
+                            iTypeQTY = 0;
+                            iTypeAmount = 0;
+                            iTypeTax1 = 0;
+                            iTypeTax2 = 0;
+                            iTypeTax3 = 0;
+                            iTypeTotal = 0;
+
+                            iTempTypeId = ordcomp.ProductTypeId;
                         }
+                    }
+                    else
+                    {
+                        if (iTempProdId != ordcomp.ProductId)
+                        {
+                            if (iTempProdId != 0)   // Except Deposit, Discount ... add first
+                            {
+                                strTypeName = dbPOS.Get_ProductTypeName_By_Id(iTempTypeId);
+                                if (string.IsNullOrEmpty(strTypeName))
+                                {
+                                    strTypeName = "#Undefined " + iTempTypeId;
+                                }
+                                this.dgvData.Rows.Add(new String[] { strTypeName,
+                                                         dbPOS.Get_ProductName_By_Id(iTempProdId),//ordcomp.ProductName,
+                                                         iTypeQTY.ToString("0"),
+                                                         iTypeAmount.ToString("#,##0.00"),
+                                                         iTypeTax1.ToString("#,##0.00"),
+                                                         iTypeTax2.ToString("#,##0.00"),
+                                                         iTypeTax3.ToString("#,##0.00"),
+                                                         iTypeTotal.ToString("#,##0.00")
 
-                        iTypeQTY = 0;
-                        iTypeAmount = 0;
-                        iTypeTax1 = 0;
-                        iTypeTax2 = 0;
-                        iTypeTax3 = 0;
-                        iTypeTotal = 0;
+                                });
+                                this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
+                            }
 
-                        iTempTypeId = ordcomp.ProductTypeId;
+                            iTypeQTY = 0;
+                            iTypeAmount = 0;
+                            iTypeTax1 = 0;
+                            iTypeTax2 = 0;
+                            iTypeTax3 = 0;
+                            iTypeTotal = 0;
+
+                            iTempProdId = ordcomp.ProductId;
+                            iTempTypeId = ordcomp.ProductTypeId;
+                        }
                     }
 
                     iQTY = ordcomp.Quantity;
@@ -354,6 +564,43 @@ namespace SDCafeOffice.Views
                     }
                     n++;
                 }
+                // Add the last one
+                if (rbRptType.Checked)
+                {
+                    strTypeName = dbPOS.Get_ProductTypeName_By_Id(iTempTypeId);
+                    if (string.IsNullOrEmpty(strTypeName))
+                    {
+                        strTypeName = "#Undefined " + iTempTypeId;
+                    }
+                    this.dgvData.Rows.Add(new String[] { strTypeName,
+                                                             "",
+                                                             iTypeQTY.ToString("0"),
+                                                             iTypeAmount.ToString("#,##0.00"),
+                                                             iTypeTax1.ToString("#,##0.00"),
+                                                             iTypeTax2.ToString("#,##0.00"),
+                                                             iTypeTax3.ToString("#,##0.00"),
+                                                             iTypeTotal.ToString("#,##0.00")
+
+                                });
+                }
+                else
+                {
+                    strTypeName = dbPOS.Get_ProductTypeName_By_Id(iTempTypeId);
+                    if (string.IsNullOrEmpty(strTypeName))
+                    {
+                        strTypeName = "#Undefined " + iTempTypeId;
+                    }
+                    this.dgvData.Rows.Add(new String[] { strTypeName,
+                                                         dbPOS.Get_ProductName_By_Id(iTempProdId),//ordcomp.ProductName,
+                                                         iTypeQTY.ToString("0"),
+                                                         iTypeAmount.ToString("#,##0.00"),
+                                                         iTypeTax1.ToString("#,##0.00"),
+                                                         iTypeTax2.ToString("#,##0.00"),
+                                                         iTypeTax3.ToString("#,##0.00"),
+                                                         iTypeTotal.ToString("#,##0.00")
+
+                                });
+                }
 
                 if (iDepositQTY > 0)
                 {
@@ -403,6 +650,13 @@ namespace SDCafeOffice.Views
                     this.dgvData.Rows[dgvData.RowCount - 2].Cells[i].Style.Font = new System.Drawing.Font(this.dgvData.DefaultCellStyle.Font, FontStyle.Bold);
                 }
                 this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
+                this.dgvData.Rows[dgvData.RowCount - 1].Selected = true;
+                // Exclude last total row on sorting
+                DataGridViewRow r = this.dgvData.SelectedRows[0];
+                if (r != null)
+                {
+                    r.ReadOnly = false;
+                }
             }
         }
 
@@ -524,7 +778,14 @@ namespace SDCafeOffice.Views
             iStartRow=iStartRow + 2;
 
             // --------------------------------------- Summary Header ---------------------------------
-            xlWorkSheet.Cells[iStartRow, 1] = "Sales Summary by Type";
+            if (rbRptItem.Checked)
+            {
+                xlWorkSheet.Cells[iStartRow, 1] = "Sales Summary by Item";
+            }
+            else
+            {
+                xlWorkSheet.Cells[iStartRow, 1] = "Sales Summary by Type";
+            }
             iStartRow++;
             int iStartSummaryRow = iStartRow;
             // --------------------------------------- Summary Title ---------------------------------
@@ -532,9 +793,14 @@ namespace SDCafeOffice.Views
             xlWorkSheet.Cells[iStartRow, 2] = "Amount";
             xlWorkSheet.Cells[iStartRow, 3] = "Tax";
             xlWorkSheet.Cells[iStartRow, 4] = "Sum";
+            xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+            xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+            xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+            xlWorkSheet.Cells[iStartRow, 4].Interior.Color = Excel.XlRgbColor.rgbLightGray;
             iStartRow++;
 
             // --------------------------------------- Summary Title ---------------------------------
+            xlWorkSheet.Cells[iStartRow, 1] = "> Product";
             xlWorkSheet.Cells[iStartRow, 2] = "QTY";
             xlWorkSheet.Cells[iStartRow, 3] = "GST";
             xlWorkSheet.Cells[iStartRow, 4] = "PST";
@@ -543,7 +809,7 @@ namespace SDCafeOffice.Views
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
 
-            ordercomps = dbPOS1.Get_OrderComplete_by_Date_OrderBy_Type(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranStartTime.Value.ToString("HH:mm:ss"),
+            ordercomps = dbPOS1.Get_OrderComplete_by_Date_OrderBy_TypeProductId(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranStartTime.Value.ToString("HH:mm:ss"),
                                                             dttm_TranEnd.Value.ToString("yyyy-MM-dd"), dttm_TranEndTime.Value.ToString("HH:mm:ss"));
 
             string strTypeName = "";
@@ -584,6 +850,8 @@ namespace SDCafeOffice.Views
             float iDiscountTotal = 0;
 
             int iTempTypeId = 0;
+            int iTempProdId = 0;
+
             int n = 0;
             if (ordercomps.Count > 0)
             {
@@ -592,39 +860,98 @@ namespace SDCafeOffice.Views
                     if (n == 0)
                     {
                         iTempTypeId = ordcomp.ProductTypeId;
+                        iTempProdId = ordcomp.ProductId;
                     }
-
-                    if (iTempTypeId != ordcomp.ProductTypeId)
+                    if (rbRptType.Checked)
                     {
-                        if (iTempTypeId != 0)   // Except Deposit, Discount ... add first
+                        if (iTempTypeId != ordcomp.ProductTypeId)
                         {
-                            // --------------------------------------- Type Summary ---------------------------------
-                            xlWorkSheet.Cells[iStartRow, 1] = dbPOS.Get_ProductTypeName_By_Id(iTempTypeId);
-                            xlWorkSheet.Cells[iStartRow, 2] = iTypeAmount.ToString("0.00");
-                            xlWorkSheet.Cells[iStartRow, 3] = (iTypeTax1 + iTypeTax2 + iTypeTax3).ToString("0.00");
-                            xlWorkSheet.Cells[iStartRow, 4] = iTypeTotal.ToString("0.00");
-                            //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
+                            if (iTempTypeId != 0)   // Except Deposit, Discount ... add first
+                            {
+                                strTypeName = dbPOS.Get_ProductTypeName_By_Id(iTempTypeId);
+                                if (string.IsNullOrEmpty(strTypeName))
+                                {
+                                    strTypeName = "#Undefined " + iTempTypeId;
+                                }
+                                // --------------------------------------- Type Summary ---------------------------------
+                                xlWorkSheet.Cells[iStartRow, 1] = strTypeName;
+                                xlWorkSheet.Cells[iStartRow, 2] = iTypeAmount.ToString("0.00");
+                                xlWorkSheet.Cells[iStartRow, 3] = (iTypeTax1 + iTypeTax2 + iTypeTax3).ToString("0.00");
+                                xlWorkSheet.Cells[iStartRow, 4] = iTypeTotal.ToString("0.00");
+                                xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                                xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                                xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                                xlWorkSheet.Cells[iStartRow, 4].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                                //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
-                            iStartRow++;
-;
-                            xlWorkSheet.Cells[iStartRow, 2] = "( " + iTypeQTY.ToString("0") + " Ea)" ;
-                            xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1 .ToString("0.00");
-                            xlWorkSheet.Cells[iStartRow, 4] = iTypeTax2.ToString("0.00");
-                            //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
+                                iStartRow++;
+                                ;
+                                xlWorkSheet.Cells[iStartRow, 2] = "( " + iTypeQTY.ToString("0") + " Ea)";
+                                xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("0.00");
+                                xlWorkSheet.Cells[iStartRow, 4] = iTypeTax2.ToString("0.00");
+                                //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
-                            iStartRow++;
+                                iStartRow++;
 
+                            }
+
+                            iTypeQTY = 0;
+                            iTypeAmount = 0;
+                            iTypeTax1 = 0;
+                            iTypeTax2 = 0;
+                            iTypeTax3 = 0;
+                            iTypeTotal = 0;
+
+                            iTempProdId = ordcomp.ProductId;
+                            iTempTypeId = ordcomp.ProductTypeId;
                         }
-
-                        iTypeQTY = 0;
-                        iTypeAmount = 0;
-                        iTypeTax1 = 0;
-                        iTypeTax2 = 0;
-                        iTypeTax3 = 0;
-                        iTypeTotal = 0;
-
-                        iTempTypeId = ordcomp.ProductTypeId;
                     }
+                    else
+                    {
+                        if (iTempProdId != ordcomp.ProductId)
+                        {
+                            if (iTempProdId != 0)   // Except Deposit, Discount ... add first
+                            {
+                                strTypeName = dbPOS.Get_ProductTypeName_By_Id(iTempTypeId);
+                                if (string.IsNullOrEmpty(strTypeName))
+                                {
+                                    strTypeName = "#Undefined " + iTempTypeId;
+                                }
+                                // --------------------------------------- Type Summary ---------------------------------
+                                xlWorkSheet.Cells[iStartRow, 1] = strTypeName;
+                                xlWorkSheet.Cells[iStartRow, 2] = iTypeAmount.ToString("0.00");
+                                xlWorkSheet.Cells[iStartRow, 3] = (iTypeTax1 + iTypeTax2 + iTypeTax3).ToString("0.00");
+                                xlWorkSheet.Cells[iStartRow, 4] = iTypeTotal.ToString("0.00");
+                                xlWorkSheet.Cells[iStartRow,1].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                                xlWorkSheet.Cells[iStartRow,2].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                                xlWorkSheet.Cells[iStartRow,3].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                                xlWorkSheet.Cells[iStartRow,4].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                                //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
+
+                                iStartRow++;
+                                xlWorkSheet.Cells[iStartRow, 1] = "> " + dbPOS.Get_ProductName_By_Id(iTempProdId); // ordcomp.ProductName;
+                                xlWorkSheet.Cells[iStartRow, 2] = "( " + iTypeQTY.ToString("0") + " Ea)";
+                                xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("0.00");
+                                xlWorkSheet.Cells[iStartRow, 4] = iTypeTax2.ToString("0.00");
+                                xlWorkSheet.Rows[iStartRow].WrapText = true;
+                                //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
+
+                                iStartRow++;
+
+                            }
+
+                            iTypeQTY = 0;
+                            iTypeAmount = 0;
+                            iTypeTax1 = 0;
+                            iTypeTax2 = 0;
+                            iTypeTax3 = 0;
+                            iTypeTotal = 0;
+
+                            iTempProdId = ordcomp.ProductId;
+                            iTempTypeId = ordcomp.ProductTypeId;
+                        }
+                    }
+
 
                     iQTY = ordcomp.Quantity;
                     iAmount = ordcomp.Amount;
@@ -675,6 +1002,61 @@ namespace SDCafeOffice.Views
                     }
                     n++;
                 }
+                if (rbRptType.Checked)
+                {
+                    strTypeName = dbPOS.Get_ProductTypeName_By_Id(iTempTypeId);
+                    if (string.IsNullOrEmpty(strTypeName))
+                    {
+                        strTypeName = "#Undefined " + iTempTypeId;
+                    }
+                    // --------------------------------------- Type Summary ---------------------------------
+                    xlWorkSheet.Cells[iStartRow, 1] = strTypeName;
+                    xlWorkSheet.Cells[iStartRow, 2] = iTypeAmount.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 3] = (iTypeTax1 + iTypeTax2 + iTypeTax3).ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = iTypeTotal.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                    xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                    xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                    xlWorkSheet.Cells[iStartRow, 4].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                    //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
+
+                    iStartRow++;
+                    ;
+                    xlWorkSheet.Cells[iStartRow, 2] = "( " + iTypeQTY.ToString("0") + " Ea)";
+                    xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = iTypeTax2.ToString("0.00");
+                    //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
+
+                    iStartRow++;
+                }
+                else
+                {
+                    strTypeName = dbPOS.Get_ProductTypeName_By_Id(iTempTypeId);
+                    if (string.IsNullOrEmpty(strTypeName))
+                    {
+                        strTypeName = "#Undefined " + iTempTypeId;
+                    }
+                    // --------------------------------------- Type Summary ---------------------------------
+                    xlWorkSheet.Cells[iStartRow, 1] = strTypeName;
+                    xlWorkSheet.Cells[iStartRow, 2] = iTypeAmount.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 3] = (iTypeTax1 + iTypeTax2 + iTypeTax3).ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = iTypeTotal.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                    xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                    xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                    xlWorkSheet.Cells[iStartRow, 4].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                    //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
+
+                    iStartRow++;
+                    xlWorkSheet.Cells[iStartRow, 1] = "> " + dbPOS.Get_ProductName_By_Id(iTempProdId); // ordcomp.ProductName;
+                    xlWorkSheet.Cells[iStartRow, 2] = "( " + iTypeQTY.ToString("0") + " Ea)";
+                    xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = iTypeTax2.ToString("0.00");
+                    xlWorkSheet.Rows[iStartRow].WrapText = true;
+                    //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
+
+                    iStartRow++;
+                }
 
                 if (iDepositQTY > 0)
                 {
@@ -684,6 +1066,10 @@ namespace SDCafeOffice.Views
                     xlWorkSheet.Cells[iStartRow, 3] = (iDepositTax1 + iDepositTax2 + iDepositTax3).ToString("0.00");
                     xlWorkSheet.Cells[iStartRow, 4] = iDepositTotal.ToString("0.00");
                     //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
+                    xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightGreen;
+                    xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightGreen;
+                    xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightGreen;
+                    xlWorkSheet.Cells[iStartRow, 4].Interior.Color = Excel.XlRgbColor.rgbLightGreen;
 
                     iStartRow++;
 
@@ -702,6 +1088,10 @@ namespace SDCafeOffice.Views
                     xlWorkSheet.Cells[iStartRow, 2] = iDiscountAmount.ToString("0.00");
                     xlWorkSheet.Cells[iStartRow, 3] = (iDiscountTax1 + iDiscountTax2 + iDiscountTax3).ToString("0.00");
                     xlWorkSheet.Cells[iStartRow, 4] = iDiscountTotal.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightPink;
+                    xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightPink;
+                    xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightPink;
+                    xlWorkSheet.Cells[iStartRow, 4].Interior.Color = Excel.XlRgbColor.rgbLightPink;
                     //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
                     iStartRow++;
@@ -718,6 +1108,10 @@ namespace SDCafeOffice.Views
                 xlWorkSheet.Cells[iStartRow, 2] = iSumAmount.ToString("0.00");
                 xlWorkSheet.Cells[iStartRow, 3] = (iSumTax1 + iSumTax2 + iSumTax3).ToString("0.00");
                 xlWorkSheet.Cells[iStartRow, 4] = iSumTotal.ToString("0.00");
+                xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
+                xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
+                xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
+                xlWorkSheet.Cells[iStartRow, 4].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
                 //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
                 iStartRow++;
 
@@ -777,12 +1171,17 @@ namespace SDCafeOffice.Views
             trancols = dbPOS1.Get_TranCollection_by_DateTimeRange(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranStartTime.Value.ToString("HH:mm:ss"),
                                                             dttm_TranEnd.Value.ToString("yyyy-MM-dd"), dttm_TranEndTime.Value.ToString("HH:mm:ss"));
 
-            string[] strColTypeName = new string[] { "Cash", "Debit", "Visa", "MasterCard", "Amex", "GiftCard" };
+            string[] strColTypeName = new string[] { "CASH", "DEBIT", "VISA", "MASTER", "AMEX", "GIFTCARD", "OTHERS" };
 
-            float[] iQTY = new float[] { 0, 0, 0, 0, 0, 0 };
-            float[] iNetAmount = new float[] { 0, 0, 0, 0, 0, 0 };
-            float[] iTip = new float[] { 0, 0, 0, 0, 0, 0 };
-            float[] iTotal = new float[] { 0, 0, 0, 0, 0, 0 };
+            float[] iQTY = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+            float[] iNetAmount = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+            float[] iTip = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+            float[] iTotal = new float[] { 0, 0, 0, 0, 0, 0 , 0 };
+
+            float iCardTotalQTY = 0;
+            float iCardTotalNetAmount = 0;
+            float iCardTotalTip = 0;
+            float iCardTotalTotal = 0;
 
             float iTotalQTY = 0;
             float iTotalNetAmount = 0;
@@ -795,20 +1194,119 @@ namespace SDCafeOffice.Views
             {
                 foreach (var trancol in trancols)
                 {
-                    for (int i = 0; i < strColTypeName.Length; i++)
-                    {
-                        if (trancol.CollectionType == strColTypeName[i])
-                        {
-                            iQTY[i]++;
-                            iNetAmount[i] = iNetAmount[i] + trancol.TotalPaid;
-                            iTip[i] = iTip[i] + trancol.TotalTip;
-                            iTotal[i] = iTotal[i] + (trancol.TotalPaid + trancol.TotalTip);
 
-                            iTotalQTY++;
-                            iTotalNetAmount = iTotalNetAmount + trancol.TotalPaid;
-                            iTotalTip = iTotalTip + trancol.TotalTip;
-                            iTotalTotal = iTotalTotal + (trancol.TotalPaid + trancol.TotalTip); ;
-                        }
+                    //for (int i = 0; i < strColTypeName.Length; i++)
+                    int i = 0;
+                    trancol.CollectionType = trancol.CollectionType.ToUpper();
+                    if (trancol.CollectionType.Contains(strColTypeName[i])) // Cash
+                    {
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.Cash;
+                        iTip[i] = iTip[i] + trancol.CashTip;
+                        iTotal[i] = iTotal[i] + (trancol.Cash + trancol.CashTip);
+
+                        iTotalQTY++;
+                        iTotalNetAmount = iTotalNetAmount + trancol.Cash;
+                        iTotalTip = iTotalTip + trancol.CashTip;
+                        iTotalTotal = iTotalTotal + (trancol.Cash + trancol.CashTip);
+                    }
+                    else if (trancol.CollectionType.Contains(strColTypeName[1])) // Debit
+                    {
+                        i = 1;
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.Debit;
+                        iTip[i] = iTip[i] + trancol.DebitTip;
+                        iTotal[i] = iTotal[i] + (trancol.Debit + trancol.DebitTip);
+
+                        iTotalQTY++;
+                        iTotalNetAmount = iTotalNetAmount + trancol.Debit;
+                        iTotalTip = iTotalTip + trancol.DebitTip;
+                        iTotalTotal = iTotalTotal + (trancol.Debit + trancol.DebitTip);
+
+                        iCardTotalQTY++;
+                        iCardTotalNetAmount = iCardTotalNetAmount + trancol.Debit;
+                        iCardTotalTip = iCardTotalTip + trancol.DebitTip;
+                        iCardTotalTotal = iCardTotalTotal + (trancol.Debit + trancol.DebitTip);
+                    }
+                    else if (trancol.CollectionType.Contains(strColTypeName[2])) // Visa
+                    {
+                        i = 2;
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.Visa;
+                        iTip[i] = iTip[i] + trancol.VisaTip;
+                        iTotal[i] = iTotal[i] + (trancol.Visa + trancol.VisaTip);
+
+                        iTotalQTY++;
+                        iTotalNetAmount = iTotalNetAmount + trancol.Visa;
+                        iTotalTip = iTotalTip + trancol.VisaTip;
+                        iTotalTotal = iTotalTotal + (trancol.Visa + trancol.VisaTip); ;
+
+                        iCardTotalQTY++;
+                        iCardTotalNetAmount = iCardTotalNetAmount + trancol.Visa;
+                        iCardTotalTip = iCardTotalTip + trancol.VisaTip;
+                        iCardTotalTotal = iCardTotalTotal + (trancol.Visa + trancol.VisaTip);
+                    }
+                    else if (trancol.CollectionType.Contains(strColTypeName[i])) // Master
+                    {
+                        i = 3;
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.Master;
+                        iTip[i] = iTip[i] + trancol.MasterTip;
+                        iTotal[i] = iTotal[i] + (trancol.Master + trancol.MasterTip);
+
+                        iTotalQTY++;
+                        iTotalNetAmount = iTotalNetAmount + trancol.Master;
+                        iTotalTip = iTotalTip + trancol.MasterTip;
+                        iTotalTotal = iTotalTotal + (trancol.Master + trancol.MasterTip);
+
+                        iCardTotalQTY++;
+                        iCardTotalNetAmount = iCardTotalNetAmount + trancol.Master;
+                        iCardTotalTip = iCardTotalTip + trancol.MasterTip;
+                        iCardTotalTotal = iCardTotalTotal + (trancol.Master + trancol.MasterTip);
+                    }
+                    else if (trancol.CollectionType.Contains(strColTypeName[i])) // Amex
+                    {
+                        i = 4;
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.Amex;
+                        iTip[i] = iTip[i] + trancol.AmexTip;
+                        iTotal[i] = iTotal[i] + (trancol.Amex + trancol.AmexTip);
+
+                        iTotalQTY++;
+                        iTotalNetAmount = iTotalNetAmount + trancol.Amex;
+                        iTotalTip = iTotalTip + trancol.AmexTip;
+                        iTotalTotal = iTotalTotal + (trancol.Amex + trancol.AmexTip);
+
+                        iCardTotalQTY++;
+                        iCardTotalNetAmount = iCardTotalNetAmount + trancol.Amex;
+                        iCardTotalTip = iCardTotalTip + trancol.AmexTip;
+                        iCardTotalTotal = iCardTotalTotal + (trancol.Amex + trancol.AmexTip);
+                    }
+                    else if (trancol.CollectionType.Contains(strColTypeName[i])) // GiftCard
+                    {
+                        i = 5;
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.GiftCard;
+                        iTip[i] = iTip[i] + trancol.GiftCardTip;
+                        iTotal[i] = iTotal[i] + (trancol.GiftCard + trancol.GiftCardTip);
+
+                        iTotalQTY++;
+                        iTotalNetAmount = iTotalNetAmount + trancol.GiftCard;
+                        iTotalTip = iTotalTip + trancol.GiftCardTip;
+                        iTotalTotal = iTotalTotal + (trancol.GiftCard + trancol.GiftCardTip);
+                    }
+                    else if (trancol.CollectionType.Contains(strColTypeName[i])) // Others
+                    {
+                        i = 6;
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.Others;
+                        iTip[i] = iTip[i] + trancol.OthersTip;
+                        iTotal[i] = iTotal[i] + (trancol.Others + trancol.OthersTip);
+
+                        iTotalQTY++;
+                        iTotalNetAmount = iTotalNetAmount + trancol.Others;
+                        iTotalTip = iTotalTip + trancol.OthersTip;
+                        iTotalTotal = iTotalTotal + (trancol.Others + trancol.OthersTip);
                     }
                 }
             }
@@ -827,7 +1325,13 @@ namespace SDCafeOffice.Views
                 }
             }
             // --------------------------------------- Tender ---------------------------------
-            xlWorkSheet.Cells[iStartRow, 1] = "TOTAL" + " (" + iTotalQTY.ToString() + " )";
+            xlWorkSheet.Cells[iStartRow, 1] = "CARD TOTAL" + " (" + iCardTotalQTY.ToString() + " )";
+            xlWorkSheet.Cells[iStartRow, 2] = iCardTotalNetAmount.ToString("0.00");
+            xlWorkSheet.Cells[iStartRow, 3] = iCardTotalTip.ToString("0.00");
+            xlWorkSheet.Cells[iStartRow, 4] = iCardTotalTotal.ToString("0.00");
+            iStartRow++;
+            // --------------------------------------- Tender ---------------------------------
+            xlWorkSheet.Cells[iStartRow, 1] = "GRAND TOTAL" + " (" + iTotalQTY.ToString() + " )";
             xlWorkSheet.Cells[iStartRow, 2] = iTotalNetAmount.ToString("0.00");
             xlWorkSheet.Cells[iStartRow, 3] = iTotalTip.ToString("0.00");
             xlWorkSheet.Cells[iStartRow, 4] = iTotalTotal.ToString("0.00");
@@ -859,6 +1363,40 @@ namespace SDCafeOffice.Views
 
             iStartRow++;
             return iStartRow;
+        }
+
+        private void rbRptType_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbRptType.Checked)
+            {
+                lblReportType.Text = "Sales Summary by Type";
+            }
+        }
+
+        private void rbRptItem_CheckedChanged(object sender, EventArgs e)
+        {
+
+            if (rbRptItem.Checked)
+            {
+                lblReportType.Text = "Sales Summary by Item";
+            }
+        }
+
+        private void dgvData_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
+        {
+            this.dgvData.Rows[dgvData.RowCount - 1].Selected = true;
+            // Exclude last total row on sorting
+            DataGridViewRow r = this.dgvData.SelectedRows[0];
+            if (r != null)
+            {
+                r.ReadOnly = false;
+            }
+            // All numeric data column sorting enable
+            if (e.Column.Index > 1)
+            {
+                e.SortResult = float.Parse(e.CellValue1.ToString()).CompareTo(float.Parse(e.CellValue2.ToString()));
+                e.Handled = true;//pass by the default sorting
+            }
         }
     }
 }

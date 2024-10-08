@@ -20,16 +20,16 @@ namespace SDCafeCommon.DataAccess
             {
                 string query = "INSERT INTO CardReceipt (ReceiptInformation,SeqNo,TransactionType,TransactionStatus,TransactionDate,TransactionTime, " +
                                 "TransactionAmount,TipAmount,CashBackAmount,SurchargeAmount,TaxAmount,TotalAmount,InvoiceNo,PurchaseOrderNo,ReferenceNo," +
-                                "TransactionSequenceNo,TicketNo,VoucherNo,ClerkId,GiftCardReferenceNo,OriginalTransactionType,"+
-                                "CustomerCardType,CustomerCardDescription,CustomerAccountNumber,CustomerLanguage,CustomerAccountType,CustomerCardEntryMode,"+
-                                "EmvAid,EmvTvr,EmvTsi,EMVApplicationLabel,CVMResult,AuthorizationNo,HostResponseCode,HostResponseText,HostResponseISOCode,"+
-                                "RetrievalReferenceNo,AmountDue,TraceNo,CardBalance,HostTransactionRefNbr,BatchNumber,TerminalId,DemoMode,MerchId,MerchCurrencyCode,"+
-                                "ReceiptHeader1,ReceiptHeader2,ReceiptHeader3,ReceiptHeader4,ReceiptHeader5,ReceiptHeader6,ReceiptHeader7,"+
-                                "ReceiptFooter1,ReceiptFooter2,ReceiptFooter3,ReceiptFooter4,ReceiptFooter5,ReceiptFooter6,ReceiptFooter7,"+
-                                "EndorsementLine1,EndorsementLine2,EndorsementLine3,EndorsementLine4,EndorsementLine5,EndorsementLine6,"+
-                                "EmvRespCode,TransactionData,CreateInvoiceNo,CreateDate,CreateTime,CreateUserId,CreateUserName,CreateStation)"+
-                                "VALUES (@ReceiptInformation,@SeqNo,@TransactionType,@TransactionStatus,@TransactionDate,@TransactionTime,@TransactionAmount,"+
-                                "@TipAmount,@CashBackAmount,@SurchargeAmount,@TaxAmount,@TotalAmount,@InvoiceNo,@PurchaseOrderNo,@ReferenceNo," +
+                                "TransactionSequenceNo,TicketNo,VoucherNo,ClerkId,GiftCardReferenceNo,OriginalTransactionType," +
+                                "CustomerCardType,CustomerCardDescription,CustomerAccountNumber,CustomerLanguage,CustomerAccountType,CustomerCardEntryMode," +
+                                "EmvAid,EmvTvr,EmvTsi,EMVApplicationLabel,CVMResult,AuthorizationNo,HostResponseCode,HostResponseText,HostResponseISOCode," +
+                                "RetrievalReferenceNo,AmountDue,TraceNo,CardBalance,HostTransactionRefNbr,BatchNumber,TerminalId,DemoMode,MerchId,MerchCurrencyCode," +
+                                "ReceiptHeader1,ReceiptHeader2,ReceiptHeader3,ReceiptHeader4,ReceiptHeader5,ReceiptHeader6,ReceiptHeader7," +
+                                "ReceiptFooter1,ReceiptFooter2,ReceiptFooter3,ReceiptFooter4,ReceiptFooter5,ReceiptFooter6,ReceiptFooter7," +
+                                "EndorsementLine1,EndorsementLine2,EndorsementLine3,EndorsementLine4,EndorsementLine5,EndorsementLine6," +
+                                "EmvRespCode,TransactionData,CreateInvoiceNo,CreateDate,CreateTime,CreateUserId,CreateUserName,CreateStation) ";
+                query +=      @"VALUES (@ReceiptInformation,@SeqNo,@TransactionType,@TransactionStatus,@TransactionDate,@TransactionTime,"+
+                                "@TransactionAmount,@TipAmount,@CashBackAmount,@SurchargeAmount,@TaxAmount,@TotalAmount,@InvoiceNo,@PurchaseOrderNo,@ReferenceNo," +
                                 "@TransactionSequenceNo,@TicketNo,@VoucherNo,@ClerkId,@GiftCardReferenceNo,@OriginalTransactionType," +
                                 "@CustomerCardType,@CustomerCardDescription,@CustomerAccountNumber,@CustomerLanguage,@CustomerAccountType,@CustomerCardEntryMode," +
                                 "@EmvAid,@EmvTvr,@EmvTsi,@EMVApplicationLabel,@CVMResult,@AuthorizationNo,@HostResponseCode,@HostResponseText,@HostResponseISOCode," +
@@ -37,7 +37,14 @@ namespace SDCafeCommon.DataAccess
                                 "@ReceiptHeader1,@ReceiptHeader2,@ReceiptHeader3,@ReceiptHeader4,@ReceiptHeader5,@ReceiptHeader6,@ReceiptHeader7," +
                                 "@ReceiptFooter1,@ReceiptFooter2,@ReceiptFooter3,@ReceiptFooter4,@ReceiptFooter5,@ReceiptFooter6,@ReceiptFooter7," +
                                 "@EndorsementLine1,@EndorsementLine2,@EndorsementLine3,@EndorsementLine4,@EndorsementLine5,@EndorsementLine6," +
-                                "@EmvRespCode,@TransactionData,@CreateInvoiceNo,@CreateDate,@CreateTime,@CreateUserId,@CreateUserName,@CreateStation)";
+                                "@EmvRespCode,@TransactionData,@CreateInvoiceNo,@CreateDate,@CreateTime,@CreateUserId,@CreateUserName,@CreateStation);";
+                //util.Logger("Insert_CardReceipt " + query);
+                //foreach(var item in pos_CardReceiptModel.GetType().GetProperties())
+                //{
+                //    var strValue = item.GetValue(pos_CardReceiptModel);
+                //    if (strValue != null)
+                //        util.Logger("Insert_CardReceipt pos_CardReceiptModel " + item.Name + " = " + strValue.ToString() + "\t" + strValue.ToString().Length.ToString());
+                //}
                 var count = connection.Execute(query, pos_CardReceiptModel);
                 return count;
             }
@@ -95,7 +102,7 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                var output = connection.Query<CCardReceipt>($"select * from CardReceipt where CreateInvoiceNo  = {iInvNo} and TransactionStatus ='00'").ToList();
+                var output = connection.Query<CCardReceipt>($"select * from CardReceipt where CreateInvoiceNo  = {iInvNo} and (TransactionStatus ='00' or TransactionStatus ='0')").ToList();
                 return output;
             }
         }

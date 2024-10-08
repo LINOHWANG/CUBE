@@ -53,5 +53,6 @@ namespace SDCafeCommon.Model
         public int ParentId { get; set; }
         public int OrderCategoryId { get; set; }
         public bool IsDiscounted { get; set; }
+        public string BarCode { get; set; }
     }
 }

@@ -23,6 +23,13 @@ namespace SDCafeSales.Views
         frmSalesMain FrmSalesMain;
         Utility util = new Utility();
 
+        const string ESC = "\u001B";
+        const string p = "\u0070";
+        const string m = "\u0000";
+        const string t1 = "\u0025";
+        const string t2 = "\u0250";
+        const string openTillCommand = ESC + p + m + t1 + t2;
+
         //float p_TenderAmt;
         //float p_TipAmt;
         int p_InvoiceNo;
@@ -31,8 +38,9 @@ namespace SDCafeSales.Views
         string strCashAmount = "";
         //Feature #1552
         string strTipAmount = "";
-        float fCashAmount = 0;
+        private float fCashAmount = 0;
         List<POS_StationModel> stations = new List<POS_StationModel>();
+        List<POS_SysConfigModel> sysConfigs = new List<POS_SysConfigModel>();
         public Boolean bPaymentComplete;
         //Feature #1552
         public Boolean bAddTip;
@@ -46,10 +54,25 @@ namespace SDCafeSales.Views
 
         public float p_ChangeAmt { get; set; }
 
+        public float p_TotalAmount { get; set; }
+        public float p_DebitAmt { get; set; }
+        public float p_VisaAmt { get; set; }
+        public float p_MasterAmt { get; set; }
+        public float p_AmexAmt { get; set; }
+        public float p_OthersAmt { get; set; }
+
+        public frmCardPayment FrmCardPay;
+
+        private float fUSDRate;
+        private bool bUSDEnable;
+        private float p_CashAmtUSD;
+
         public frmCashPayment(frmSalesMain _FrmSalesMain)
         {
             InitializeComponent();
+            lbl_ConvRate.Visible = false;
             this.FrmSalesMain = _FrmSalesMain;
+            bUSDEnable = false;
         }
         public void Set_TenderAmt(double pTenderAmt)
         {
@@ -80,6 +103,11 @@ namespace SDCafeSales.Views
             fCashAmount = 0;
             p_CashAmt = 0;
             p_ChangeAmt = 0;
+            p_DebitAmt = 0;
+            p_VisaAmt = 0;
+            p_MasterAmt = 0;
+            p_AmexAmt = 0;
+            p_OthersAmt = 0;
 
             strPaymentType = "";
             strCashAmount = "";
@@ -93,6 +121,7 @@ namespace SDCafeSales.Views
 
         private void bt_Exit_Click(object sender, EventArgs e)
         {
+            strPaymentType = strPaymentType.ToUpper();
             if (bPaymentComplete)
             {
                 util.Logger("frmCashPayment Exiting ... with PaymentComplete");
@@ -124,12 +153,41 @@ namespace SDCafeSales.Views
             }
             else
             {
-                bPaymentComplete = false;
-                MessageBox.Show("Please check Cash Amount ! ");
+                if (p_CashAmt == 0)
+                {
+                    strPaymentType = "Cash";
+                    p_CashAmt = p_TenderAmt;
+                    bPaymentComplete = true;
+                    bt_Exit.PerformClick();
+                    return;
+                }
+                p_TotalAmount = p_CashAmt + p_DebitAmt + p_VisaAmt + p_MasterAmt + p_AmexAmt;
+
+                if (p_TotalAmount >= p_TenderAmt)
+                {
+                    //strPaymentType = "Cash/Debit";
+                    bPaymentComplete = true;
+                    bt_Exit.PerformClick();
+                }
+                else
+                {
+                    bPaymentComplete = false;
+                    //MessageBox.Show("Please check Cash Amount ! ");
+                    bt_PayCash.Text = "DONE";
+                    strPaymentType = "Multi";
+                    lblPartialPay.Text = "Multi Tendering";
+                    lblPartialPay.Visible = true;
+                    labelTipOrCard.Text = "Card :";
+                    txt_CardAmount.Visible = true;
+                    txt_TipAmount.Visible = false;
+                    txt_CardAmount.Top = txt_TipAmount.Top;
+                    txt_CardAmount.Left = txt_TipAmount.Left;
+                }
             }
         }
         private void CashAmountUpdate()
         {
+
             // ------------- Cash Amount ---------------------
             if (strCashAmount.Length < 3)
             {
@@ -148,10 +206,20 @@ namespace SDCafeSales.Views
                 }
                 strCashAmount = strCashAmount.Substring(0, strCashAmount.Length - 2) + "." + strCashAmount.Substring(strCashAmount.Length - 2, 2);
             }
-            
-            lblTest.Text = strCashAmount;
-            p_CashAmt = float.Parse(strCashAmount);
-            txt_CashAmount.Text = p_CashAmt.ToString("C2");
+            lblPartialPay.Text = strCashAmount;
+            string strTemp = strCashAmount.Replace("$", "");
+            if (bUSDEnable)
+            {
+                p_CashAmtUSD = float.Parse(strTemp);
+                p_CashAmt = p_CashAmtUSD / fUSDRate;
+                txt_CashAmountUSD.Text = p_CashAmtUSD.ToString("C2");
+                txt_CashAmount.Text = p_CashAmt.ToString("C2");
+            }
+            else
+            {
+                p_CashAmt = float.Parse(strTemp);
+                txt_CashAmount.Text = p_CashAmt.ToString("C2");
+            }
 
             // ------------- Tip ---------------------
             //Feature #1552
@@ -181,6 +249,28 @@ namespace SDCafeSales.Views
 
             p_ChangeAmt = p_TenderAmt - p_CashAmt + p_TipAmt;
             txt_Changes.Text = p_ChangeAmt.ToString("C2");
+            //Feature #2904 ---------------------------------------
+            if (p_ChangeAmt <= 0)
+            {
+                lbl_Changes.Text = "Changes :";
+                lbl_Short.Visible = false;
+                bt_PayCash.Enabled = true;
+            }
+            else
+            {
+                lbl_Changes.Text = "Need more :";
+                lbl_Short.Visible = true;
+                bt_PayCash.Enabled = false;
+            }
+            //Feature #2904 ---------------------------------------
+            if (p_ChangeAmt != 0)
+            {
+                bt_IPSPayment.Visible = true;
+            }
+            else
+            {
+                bt_IPSPayment.Visible = false;
+            }
         }
         private void btNum1_Click(object sender, EventArgs e)
         {
@@ -327,6 +417,14 @@ namespace SDCafeSales.Views
 
             strCashAmount = "0";
             strTipAmount = "0";
+            txt_CardAmount.Text = "$0.00";
+            //txt_CardAmount.Visible = false;
+            p_CashAmt = 0;
+            p_DebitAmt = 0;
+            p_VisaAmt = 0;
+            p_MasterAmt = 0;
+            p_AmexAmt = 0;
+            p_ChangeAmt = 0;
 
             bAddTip = true;
 
@@ -335,41 +433,131 @@ namespace SDCafeSales.Views
             bAddTip = false;
 
             txt_TipAmount.BackColor = Color.LightSalmon;
+            bt_IPSPayment.Visible = false;
+            
+            Enable_Card_Buttons();
+
+            bUSDEnable = false;
         }
 
         private void btNumSame_Click(object sender, EventArgs e)
         {
             strCashAmount = p_TenderAmt.ToString("F2");
+            p_CashAmt = p_TenderAmt;
             CashAmountUpdate();
         }
 
         private void bt_5_Click(object sender, EventArgs e)
         {
-            strCashAmount = "5.00";
+            if (p_CashAmt > 0)
+            {
+                if (bUSDEnable)
+                {
+                    p_CashAmt = p_CashAmtUSD + 5;
+                }
+                else
+                {
+                    p_CashAmt = p_CashAmt + 5;
+                }
+                strCashAmount = p_CashAmt.ToString("C2");
+            }
+            else
+            {
+                strCashAmount = "5.00";
+                p_CashAmt = 5;
+            }
             CashAmountUpdate();
         }
 
         private void bt_10_Click(object sender, EventArgs e)
         {
-            strCashAmount = "10.00";
+            //strCashAmount = "10.00";
+            if (p_CashAmt > 0)
+            {
+                if (bUSDEnable)
+                {
+                    p_CashAmt = p_CashAmtUSD + 10;
+                }
+                else
+                {
+                    p_CashAmt = p_CashAmt + 10;
+                }
+                strCashAmount = p_CashAmt.ToString("C2");
+            }
+            else
+            {
+                strCashAmount = "10.00";
+                p_CashAmt = 10;
+            }
             CashAmountUpdate();
         }
 
         private void bt_20_Click(object sender, EventArgs e)
         {
-            strCashAmount = "20.00";
+            //strCashAmount = "20.00";
+            if (p_CashAmt > 0)
+            {
+                if (bUSDEnable)
+                {
+                    p_CashAmt = p_CashAmtUSD + 20;
+                }
+                else
+                {
+                    p_CashAmt = p_CashAmt + 20;
+                }
+                strCashAmount = p_CashAmt.ToString("C2");
+            }
+            else
+            {
+                strCashAmount = "20.00";
+                p_CashAmt = 20;
+            }
             CashAmountUpdate();
         }
 
         private void bt_50_Click(object sender, EventArgs e)
         {
-            strCashAmount = "50.00";
+            //strCashAmount = "50.00";
+            if (p_CashAmt > 0)
+            {
+                if (bUSDEnable)
+                {
+                    p_CashAmt = p_CashAmtUSD + 50;
+                }
+                else
+                {
+                    p_CashAmt = p_CashAmt + 50;
+                }
+                strCashAmount = p_CashAmt.ToString("C2");
+            }
+            else
+            {
+                strCashAmount = "50.00";
+                p_CashAmt = 50;
+            }
             CashAmountUpdate();
         }
 
         private void bt_100_Click(object sender, EventArgs e)
         {
-            strCashAmount = "100.00";
+            //strCashAmount = "100.00";
+            if (p_CashAmt > 0)
+            {
+                if (bUSDEnable)
+                {
+                    p_CashAmt = p_CashAmtUSD + 100;
+                }
+                else
+                {
+                    p_CashAmt = p_CashAmt + 100;
+                }
+                strCashAmount = p_CashAmt.ToString("C2");
+            }
+            else
+            {
+                strCashAmount = "100.00";
+                p_CashAmt = 100;
+            }
             CashAmountUpdate();
         }
 
@@ -404,7 +592,20 @@ namespace SDCafeSales.Views
 
             return null;
         }
-
+        private void Disable_Card_Buttons()
+        {
+            bt_PayDebit.Enabled = false;
+            bt_PayVisa.Enabled = false;
+            bt_PayMaster.Enabled = false;
+            bt_PayAmex.Enabled = false;
+        }
+        private void Enable_Card_Buttons()
+        {
+            bt_PayDebit.Enabled = true;
+            bt_PayVisa.Enabled = true;
+            bt_PayMaster.Enabled = true;
+            bt_PayAmex.Enabled = true;
+        }
         private void bt_PayDebit_Click(object sender, EventArgs e)
         {
             util.Logger("Manual Debit Payment Amount : " + p_CashAmt);
@@ -413,17 +614,36 @@ namespace SDCafeSales.Views
             if (p_CashAmt >= p_TenderAmt)
             {
                 strPaymentType = "Debit";
+                p_DebitAmt = p_TenderAmt;
                 bPaymentComplete = true;
                 bt_Exit.PerformClick();
             }
             else
             {
-                bPaymentComplete = false;
-                MessageBox.Show("Please check Amount ! ");
+                if (p_CashAmt == 0)
+                {
+                    strPaymentType = "Debit";
+                    p_DebitAmt = p_TenderAmt;
+                    bPaymentComplete = true;
+                    bt_Exit.PerformClick();
+                }
+                else
+                {
+                    bPaymentComplete = false;
+                    //MessageBox.Show("Please check Amount ! ");
+                    strPaymentType = "Cash/Debit";
+                    labelTipOrCard.Text = "Debit :";
+                    p_DebitAmt = p_ChangeAmt;
+                    p_ChangeAmt = 0;
+                    txt_Changes.Text = p_ChangeAmt.ToString("C2");
+                    txt_CardAmount.Text = p_DebitAmt.ToString("C2");
+                    bt_IPSPayment.Visible = false;
+                    bt_PayCash.Text = "DONE";
+                    Disable_Card_Buttons();
+                }
             }
 
         }
-
         private void bt_PayVisa_Click(object sender, EventArgs e)
         {
             util.Logger("Manual Visa Payment Amount : " + p_CashAmt);
@@ -432,13 +652,33 @@ namespace SDCafeSales.Views
             if (p_CashAmt >= p_TenderAmt)
             {
                 strPaymentType = "Visa";
+                p_VisaAmt = p_TenderAmt;
                 bPaymentComplete = true;
                 bt_Exit.PerformClick();
             }
             else
             {
-                bPaymentComplete = false;
-                MessageBox.Show("Please check Amount ! ");
+                if (p_CashAmt == 0)
+                {
+                    strPaymentType = "Visa";
+                    p_VisaAmt = p_TenderAmt;
+                    bPaymentComplete = true;
+                    bt_Exit.PerformClick();
+                }
+                else
+                {
+                    bPaymentComplete = false;
+                    //MessageBox.Show("Please check Amount ! ");
+                    strPaymentType = "Cash/Visa";
+                    labelTipOrCard.Text = "Visa :";
+                    p_VisaAmt = p_ChangeAmt;
+                    p_ChangeAmt = 0;
+                    txt_Changes.Text = p_ChangeAmt.ToString("C2");
+                    txt_CardAmount.Text = p_VisaAmt.ToString("C2");
+                    bt_IPSPayment.Visible = false;
+                    bt_PayCash.Text = "DONE";
+                    Disable_Card_Buttons();
+                }
             }
         }
 
@@ -450,13 +690,33 @@ namespace SDCafeSales.Views
             if (p_CashAmt >= p_TenderAmt)
             {
                 strPaymentType = "Master";
+                p_MasterAmt = p_TenderAmt;
                 bPaymentComplete = true;
                 bt_Exit.PerformClick();
             }
             else
             {
-                bPaymentComplete = false;
-                MessageBox.Show("Please check Amount ! ");
+                if (p_CashAmt == 0)
+                {
+                    strPaymentType = "Master";
+                    p_MasterAmt = p_TenderAmt;
+                    bPaymentComplete = true;
+                    bt_Exit.PerformClick();
+                }
+                else
+                {
+                    bPaymentComplete = false;
+                    //MessageBox.Show("Please check Amount ! ");
+                    strPaymentType = "Cash/Master";
+                    labelTipOrCard.Text = "Master :";
+                    p_MasterAmt = p_ChangeAmt;
+                    p_ChangeAmt = 0;
+                    txt_Changes.Text = p_ChangeAmt.ToString("C2");
+                    txt_CardAmount.Text = p_MasterAmt.ToString("C2");
+                    bt_IPSPayment.Visible = false;
+                    bt_PayCash.Text = "DONE";
+                    Disable_Card_Buttons();
+                }
             }
         }
 
@@ -468,13 +728,33 @@ namespace SDCafeSales.Views
             if (p_CashAmt >= p_TenderAmt)
             {
                 strPaymentType = "Amex";
+                p_AmexAmt = p_TenderAmt;
                 bPaymentComplete = true;
                 bt_Exit.PerformClick();
             }
             else
             {
-                bPaymentComplete = false;
-                MessageBox.Show("Please check Amount ! ");
+                if (p_CashAmt == 0)
+                {
+                    strPaymentType = "Amex";
+                    p_AmexAmt = p_TenderAmt;
+                    bPaymentComplete = true;
+                    bt_Exit.PerformClick();
+                }
+                else
+                {
+                    bPaymentComplete = false;
+                    //MessageBox.Show("Please check Amount ! ");
+                    strPaymentType = "Cash/Amex";
+                    labelTipOrCard.Text = "Amex :";
+                    p_AmexAmt = p_ChangeAmt;
+                    p_ChangeAmt = 0;
+                    txt_Changes.Text = p_ChangeAmt.ToString("C2");
+                    txt_CardAmount.Text = p_AmexAmt.ToString("C2");
+                    bt_IPSPayment.Visible = false;
+                    bt_PayCash.Text = "DONE";
+                    Disable_Card_Buttons();
+                }
             }
         }
 
@@ -493,6 +773,127 @@ namespace SDCafeSales.Views
             strTipAmount = p_TipAmt.ToString("F2");
             CashAmountUpdate();
             bAddTip = false;
+        }
+
+        private void bt_IPSPayment_Click(object sender, EventArgs e)
+        {
+            /*float fCash = 0;
+            float fDebit = 0;
+            float fVisa = 0;
+            float fMaster = 0;
+            float fAmex = 0;*/
+            p_DebitAmt = 0;
+            p_VisaAmt = 0;
+            p_MasterAmt = 0;
+            p_AmexAmt = 0;
+            p_OthersAmt = 0;
+
+            using (var FrmCardPay = new frmCardPayment(this.FrmSalesMain))
+            {
+                FrmCardPay.Set_TenderAmt(p_ChangeAmt);
+                FrmCardPay.Set_InvoiceNo(p_InvoiceNo);// iNewInvNo);
+                FrmCardPay.Set_Station(p_Station); // strStation);
+                FrmCardPay.Set_UserName(p_UserName); // strUserName);
+                FrmCardPay.p_strTranType = "Purchase";
+                FrmCardPay.ShowDialog();
+
+                //strPaymentType = "Cash";
+                bPaymentComplete = FrmCardPay.bPaymentComplete;
+                //bCashPayment = FrmCardPay.bCashPayment;
+
+                if (FrmCardPay.bPaymentComplete)
+                {
+                    util.Logger("Card Payment completed !" + FrmCardPay.strPaymentType);
+                    // Move Orders to OrderComplete
+                    // Add collection table
+                    p_ChangeAmt = 0;
+                    switch (FrmCardPay.strPaymentType)
+                    {
+                        case "Cash":
+                            //fCash = FrmCardPay.p_TenderAmt;
+                            break;
+                        case "Debit":
+                            p_DebitAmt = FrmCardPay.p_TenderAmt;
+                            strPaymentType = "Debit";
+                            break;
+                        case "Visa":
+                            p_VisaAmt = FrmCardPay.p_TenderAmt;
+                            strPaymentType = "Visa";
+                            break;
+                        case "Master": case "MasterCard": case "M/C":
+                            p_MasterAmt = FrmCardPay.p_TenderAmt;
+                            strPaymentType = "Master";
+                            break;
+                        case "Amex":
+                            p_AmexAmt = FrmCardPay.p_TenderAmt; 
+                            strPaymentType = "Amex";
+                            break;
+                        default:
+                            p_OthersAmt = FrmCardPay.p_TenderAmt;
+                            strPaymentType = FrmCardPay.strPaymentType;
+                            util.Logger("Unknown Card Type !" + FrmCardPay.strPaymentType);
+                            break;
+                    }
+
+                    bt_Exit.PerformClick();
+                }
+                else
+                {
+                    //txtSelectedMenu.Text = "######### Payment is not yet completed : Invoice# " + iNewInvNo.ToString();
+                    util.Logger("Payment is not done yet!");
+
+                }
+            }
+        }
+
+        private void bt_ShowUSD_Click(object sender, EventArgs e)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            sysConfigs = dbPOS.Get_SysConfig_By_Name("CADUSD_CONVERSION_RATE");
+            util.Logger("CADUSD_CONVERSION_RATE Count = " + sysConfigs.Count.ToString());
+            bUSDEnable = false;
+            string strUSDRate = "";
+            if (sysConfigs.Count > 0)
+            {
+                strUSDRate = sysConfigs[0].ConfigValue.Trim();
+                util.Logger("CADUSD_CONVERSION_RATE = " + strUSDRate);
+                try
+                {
+                    fUSDRate = 0;
+                    fUSDRate = (float)System.Convert.ToDouble(strUSDRate);
+                    bUSDEnable = true;
+                }
+                catch (Exception ex)
+                {
+                    strUSDRate = "NOT SET";
+                }
+            }
+            else
+            {
+            }
+
+
+            lbl_ConvRate.Text = "CAD:USD = 1:" + strUSDRate;
+            lbl_ConvRate.Visible = true;
+            float fUSDDueAmount = p_TenderAmt * fUSDRate;
+            txt_TotalDueUSD.Text = fUSDDueAmount.ToString("C2");
+            if (bUSDEnable)
+            {
+                txt_CashAmountUSD.Visible = true;
+                txt_CashAmountUSD.ForeColor = Color.DarkRed;
+                txt_CashAmountUSD.BackColor = Color.LightSalmon;
+            }
+            else
+            {
+                txt_CashAmountUSD.Visible = false;
+                txt_CashAmountUSD.ForeColor = Color.Black;
+                txt_CashAmountUSD.BackColor = Color.LightGreen;
+            }
+        }
+
+        private void bt_OpenCD_Click(object sender, EventArgs e)
+        {
+            RawPrinterHelper.SendStringToPrinter("EPSON-1", openTillCommand);
         }
     }
     /// <summary>

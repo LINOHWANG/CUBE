@@ -1,9 +1,15 @@
-﻿using System;
+﻿using SDCafeCommon.DataAccess;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
+using SDCafeCommon.Model;
+using System.Xml;
 
 namespace SDCafeCommon.Utilities
 {
@@ -42,6 +48,94 @@ namespace SDCafeCommon.Utilities
                 }
             }
 
+        }
+        public string ToXML(POS_PmTreeTranModel p_PmTreeTran)
+        {
+            var emptyNamespaces = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
+            var serializer = new XmlSerializer(p_PmTreeTran.GetType());
+            var settings = new XmlWriterSettings();
+            string strXML = "";
+            string strXML2Return = "";
+            settings.Indent = false;
+            settings.OmitXmlDeclaration = true;
+
+            using (var stream = new StringWriter())
+            using (var writer = XmlWriter.Create(stream, settings))
+            {
+                serializer.Serialize(writer, p_PmTreeTran, emptyNamespaces);
+                strXML = stream.ToString();
+            }
+            strXML = strXML.Replace("POS_PmTreeTranModel", "TRANS");
+            strXML = strXML.Replace("<Id>0</Id>", "");
+            strXML = strXML.Replace("<Token />", "<TOKEN></TOKEN>");
+            strXML = strXML.Replace("<Dynamic_Ip />", "<DYNAMIC_IP></DYNAMIC_IP>");
+            strXML = strXML.Replace("<Dynamic_Port>0</Dynamic_Port>", "<DYNAMIC_PORT></DYNAMIC_PORT>");
+            // change strXML string to capital letters
+            strXML = strXML.ToUpper();
+
+            return strXML;
+        }
+        public bool SendEmail(string strSubject, string strBody, string strAttachmentFile)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            MailAddress from = null;
+            MailAddress to = null;
+            try 
+            {
+                from = new MailAddress(dbPOS.Get_SysConfig_By_Name("CON_EMAIL_SENDFROM")[0].ConfigValue.Trim());
+                to = new MailAddress(dbPOS.Get_SysConfig_By_Name("CON_EMAIL_SENDTO")[0].ConfigValue.Trim()); 
+            }
+            catch (Exception ex)
+            {
+                //util.ex.ToString());
+                return false;
+            }
+
+            MailMessage email = new MailMessage(from, to);
+            email.Subject = strSubject;
+            email.IsBodyHtml = true;
+            email.Body = strBody;
+
+            SmtpClient smtp = new SmtpClient();
+            smtp.Host = dbPOS.Get_SysConfig_By_Name("CON_EMAIL_SMTPSERVER")[0].ConfigValue.Trim();
+            string strUser = dbPOS.Get_SysConfig_By_Name("CON_EMAIL_SENDUSERNAME")[0].ConfigValue.Trim();
+            string strpassword = dbPOS.Get_SysConfig_By_Name("CON_EMAIL_SENDPASSWORD")[0].ConfigValue.Trim();
+            smtp.Port = 587; // 25;
+            smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+            smtp.UseDefaultCredentials = false;
+            smtp.EnableSsl = true;
+            smtp.Credentials = new NetworkCredential(strUser, strpassword);
+
+            if (!String.IsNullOrEmpty(strAttachmentFile))
+            {
+                email.Attachments.Add(new Attachment(strAttachmentFile));
+            }
+
+            try
+            {
+                // Send method called below is what will send off our email 
+                // unless an exception is thrown.
+                //
+                smtp.Send(email);
+            }
+            catch (SmtpException ex)
+            {
+                Logger(ex.ToString());
+                return false;
+            }
+
+            return true;
+        }
+        public float CalculateElapsedHours(DateTime dtStart, DateTime dtEnd)
+        {
+            TimeSpan TS = dtEnd - dtStart;
+            float fDays = TS.Days;
+            float fHour = TS.Hours;
+            float fMins = TS.Minutes;
+            //float fSecs = TS.Seconds;
+
+            float fElapsedHours = (fDays * 24) + fHour + (fMins / 60);
+            return fElapsedHours;
         }
         public byte[][] Separate(byte[] source, byte[] separator)
         {
@@ -83,6 +177,19 @@ namespace SDCafeCommon.Utilities
                              .Select(x => Convert.ToByte(strHex.Substring(x, 2), 16))
                              .ToArray();
         }
+
+        public POS_PmTreeRespModel LoadFromXML(string p_content)
+        {
+            using (var stringReader = new System.IO.StringReader(p_content))
+            {
+                XmlRootAttribute xRoot = new XmlRootAttribute();
+                xRoot.ElementName = "TRANS";
+                xRoot.IsNullable = true;
+                var serializer = new XmlSerializer(typeof(POS_PmTreeRespModel),xRoot);
+                return serializer.Deserialize(stringReader) as POS_PmTreeRespModel;
+            }
+        }
+
         public Dictionary<string, string> dicTranStates = new Dictionary<string, string>()
         {
             {"Approved","00"},

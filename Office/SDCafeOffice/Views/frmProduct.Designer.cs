@@ -75,15 +75,25 @@
             this.txt_ChillCharge = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.txt_Memo = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.txt_BarCode2 = new System.Windows.Forms.TextBox();
+            this.checkManual = new System.Windows.Forms.CheckBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.txt_Balance = new System.Windows.Forms.TextBox();
             this.bt_Delete = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Add = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
+            this.txt_BarCode = new System.Windows.Forms.TextBox();
+            this.bt_RprintLabel = new SDCafeCommon.Utilities.CustomButton();
+            this.txt_PrintCopy = new System.Windows.Forms.TextBox();
+            this.lbl_PrintCopy = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // txt_ProductName
             // 
+            this.txt_ProductName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.txt_ProductName.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_ProductName.Location = new System.Drawing.Point(195, 46);
             this.txt_ProductName.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
@@ -158,6 +168,7 @@
             // 
             // txt_OUnitPrice
             // 
+            this.txt_OUnitPrice.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.txt_OUnitPrice.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_OUnitPrice.Location = new System.Drawing.Point(195, 198);
             this.txt_OUnitPrice.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
@@ -482,6 +493,7 @@
             // 
             // cb_ProdType
             // 
+            this.cb_ProdType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.cb_ProdType.FormattingEnabled = true;
             this.cb_ProdType.Location = new System.Drawing.Point(195, 122);
             this.cb_ProdType.Name = "cb_ProdType";
@@ -602,8 +614,67 @@
             this.txt_Memo.Location = new System.Drawing.Point(482, 361);
             this.txt_Memo.Multiline = true;
             this.txt_Memo.Name = "txt_Memo";
-            this.txt_Memo.Size = new System.Drawing.Size(364, 124);
+            this.txt_Memo.Size = new System.Drawing.Size(390, 124);
             this.txt_Memo.TabIndex = 46;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.Location = new System.Drawing.Point(452, 11);
+            this.label18.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(91, 22);
+            this.label18.TabIndex = 47;
+            this.label18.Text = "Bar Code";
+            // 
+            // txt_BarCode2
+            // 
+            this.txt_BarCode2.AcceptsTab = true;
+            this.txt_BarCode2.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.txt_BarCode2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_BarCode2.Location = new System.Drawing.Point(456, 84);
+            this.txt_BarCode2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_BarCode2.Name = "txt_BarCode2";
+            this.txt_BarCode2.ReadOnly = true;
+            this.txt_BarCode2.Size = new System.Drawing.Size(249, 29);
+            this.txt_BarCode2.TabIndex = 48;
+            this.txt_BarCode2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_BarCode2.Visible = false;
+            // 
+            // checkManual
+            // 
+            this.checkManual.AutoSize = true;
+            this.checkManual.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkManual.Location = new System.Drawing.Point(482, 159);
+            this.checkManual.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.checkManual.Name = "checkManual";
+            this.checkManual.Size = new System.Drawing.Size(196, 26);
+            this.checkManual.TabIndex = 49;
+            this.checkManual.Text = "Manual Price Item ?";
+            this.checkManual.UseVisualStyleBackColor = true;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label19.Location = new System.Drawing.Point(11, 453);
+            this.label19.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(131, 22);
+            this.label19.TabIndex = 51;
+            this.label19.Text = "QTY Balance";
+            // 
+            // txt_Balance
+            // 
+            this.txt_Balance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.txt_Balance.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Balance.Location = new System.Drawing.Point(195, 450);
+            this.txt_Balance.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_Balance.Name = "txt_Balance";
+            this.txt_Balance.Size = new System.Drawing.Size(249, 29);
+            this.txt_Balance.TabIndex = 50;
+            this.txt_Balance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // bt_Delete
             // 
@@ -664,11 +735,67 @@
             this.bt_Save.Text = "Save";
             this.bt_Save.Click += new System.EventHandler(this.bt_Save_Click);
             // 
+            // txt_BarCode
+            // 
+            this.txt_BarCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.txt_BarCode.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_BarCode.Location = new System.Drawing.Point(456, 46);
+            this.txt_BarCode.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_BarCode.Name = "txt_BarCode";
+            this.txt_BarCode.Size = new System.Drawing.Size(249, 29);
+            this.txt_BarCode.TabIndex = 52;
+            this.txt_BarCode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // bt_RprintLabel
+            // 
+            this.bt_RprintLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.bt_RprintLabel.CornerRadius = 30;
+            this.bt_RprintLabel.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
+            this.bt_RprintLabel.Location = new System.Drawing.Point(730, 306);
+            this.bt_RprintLabel.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_RprintLabel.Name = "bt_RprintLabel";
+            this.bt_RprintLabel.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_RprintLabel.Size = new System.Drawing.Size(142, 47);
+            this.bt_RprintLabel.TabIndex = 53;
+            this.bt_RprintLabel.Text = "Print Label";
+            this.bt_RprintLabel.Click += new System.EventHandler(this.bt_RprintLabel_Click);
+            // 
+            // txt_PrintCopy
+            // 
+            this.txt_PrintCopy.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_PrintCopy.Location = new System.Drawing.Point(730, 270);
+            this.txt_PrintCopy.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_PrintCopy.Name = "txt_PrintCopy";
+            this.txt_PrintCopy.Size = new System.Drawing.Size(142, 29);
+            this.txt_PrintCopy.TabIndex = 54;
+            this.txt_PrintCopy.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // lbl_PrintCopy
+            // 
+            this.lbl_PrintCopy.AutoSize = true;
+            this.lbl_PrintCopy.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_PrintCopy.Location = new System.Drawing.Point(759, 243);
+            this.lbl_PrintCopy.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lbl_PrintCopy.Name = "lbl_PrintCopy";
+            this.lbl_PrintCopy.Size = new System.Drawing.Size(87, 22);
+            this.lbl_PrintCopy.TabIndex = 55;
+            this.lbl_PrintCopy.Text = "Copies ?";
+            // 
             // frmProduct
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 661);
+            this.Controls.Add(this.lbl_PrintCopy);
+            this.Controls.Add(this.txt_PrintCopy);
+            this.Controls.Add(this.bt_RprintLabel);
+            this.Controls.Add(this.txt_BarCode);
+            this.Controls.Add(this.label19);
+            this.Controls.Add(this.txt_Balance);
+            this.Controls.Add(this.checkManual);
+            this.Controls.Add(this.txt_BarCode2);
+            this.Controls.Add(this.label18);
             this.Controls.Add(this.txt_Memo);
             this.Controls.Add(this.label17);
             this.Controls.Add(this.bt_Delete);
@@ -773,5 +900,14 @@
         private SDCafeCommon.Utilities.CustomButton bt_Delete;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.TextBox txt_Memo;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.TextBox txt_BarCode2;
+        private System.Windows.Forms.CheckBox checkManual;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.TextBox txt_Balance;
+        private System.Windows.Forms.TextBox txt_BarCode;
+        private SDCafeCommon.Utilities.CustomButton bt_RprintLabel;
+        private System.Windows.Forms.TextBox txt_PrintCopy;
+        private System.Windows.Forms.Label lbl_PrintCopy;
     }
 }

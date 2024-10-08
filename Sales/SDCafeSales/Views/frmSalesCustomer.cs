@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using SDCafeCommon.Utilities;
 using SDCafeCommon.DataAccess;
 using SDCafeCommon.Model;
+using System.IO;
 
 namespace SDCafeSales.Views
 {
@@ -17,7 +18,9 @@ namespace SDCafeSales.Views
 
     public partial class frmSalesCustomer : Form
     {
+        List<POS_SysConfigModel> sysConfigs = new List<POS_SysConfigModel>();
         List<POS_OrdersModel> orders = new List<POS_OrdersModel>();
+        List<POS_OrdersModel> childOrders = new List<POS_OrdersModel>();
         frmSalesMain FrmSalesMain;
         Utility util = new Utility();
 
@@ -31,18 +34,59 @@ namespace SDCafeSales.Views
 
         public bool b_ScanStarted = false;
 
+        private string[] strAdImageFiles;
+        private int iAdImageFiles;
+        private int iCurrentAdImageFilesIndex;
+        private Size sizeAdImage;
+        private int iAdImageX;
+        private int iAdImageY;
+        private Point pointAdImage;
+
         public frmSalesCustomer(frmSalesMain _FrmSalesMain)
         {
             InitializeComponent();
+            LoadAdImageFiles();
             this.FrmSalesMain = _FrmSalesMain;
             timer1.Enabled = true;
+            timer_AdImg.Enabled = true;
             txtMessages.Text = "Ready to Start !";
+
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            sysConfigs = dbPOS.Get_SysConfig_By_Name("SCREEN_LOGO_IMAGE");
+            if (sysConfigs.Count > 0)
+            {
+                pb_Instruction.Image = Image.FromFile(sysConfigs[0].ConfigValue);
+            }
+            sysConfigs = dbPOS.Get_SysConfig_By_Name("AD_IMAGE_ROTATION_INTERVAL");
+            if (sysConfigs.Count > 0)
+            {
+                timer_AdImg.Interval = int.Parse(sysConfigs[0].ConfigValue);
+            }
+
+        }
+
+        private void LoadAdImageFiles()
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            sysConfigs = dbPOS.Get_SysConfig_By_Name("AD_IMAGE_FOLDER");
+            
+            //strAdImageFiles.Initialize();
+            if (sysConfigs.Count > 0)
+            {
+                strAdImageFiles = Directory.GetFiles(sysConfigs[0].ConfigValue);
+            }
+            iAdImageFiles = strAdImageFiles.Length;
+            iCurrentAdImageFilesIndex = 0;
+
+            sizeAdImage = pb_Instruction.Size;
+            pointAdImage = pb_Instruction.Location;
         }
 
         private void bt_Start_Click(object sender, EventArgs e)
         {
             txtMessages.Text = "Scanning is Started !";
-            FrmSalesMain.StartScanByCustomer();
+            util.Logger("frmSalesCustomer : bt_Start_Click");
+            //FrmSalesMain.StartScanByCustomer();
             //Bug #1553
             //dgv_Orders_Initialize();
             Load_Existing_Orders();
@@ -50,11 +94,13 @@ namespace SDCafeSales.Views
             bt_Start.Visible = false;
             bt_Payment.Enabled = true;
             bt_Payment.Visible = true;
+            FrmSalesMain.BarCode_Get_Focus();
         }
 
         private void bt_Payment_Click(object sender, EventArgs e)
         {
             txtMessages.Text = "Payment Started !";
+            util.Logger("frmSalesCustomer : bt_Payment_Click");
             FrmSalesMain.PaymentByCustomer();
             if (FrmSalesMain.bPaymentSuccess)
             {
@@ -65,10 +111,12 @@ namespace SDCafeSales.Views
             {
                 txtMessages.Text = "Payment is canceled or aborted !";
             }
+            util.Logger("frmSalesCustomer : " + txtMessages.Text);
             bt_Start.Enabled = true;
             bt_Start.Visible = true;
             bt_Payment.Enabled = false;
             bt_Payment.Visible = false;
+            FrmSalesMain.BarCode_Get_Focus();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -77,12 +125,27 @@ namespace SDCafeSales.Views
             txt_SubTotal.Text = FrmSalesMain.iSubTotal.ToString("C2");
             txt_TaxTotal.Text = FrmSalesMain.iTaxTotal.ToString("C2");
             txt_TotalDue.Text = FrmSalesMain.iTotalDue.ToString("C2");
+
+            // Maximize Ad image
+            if (FrmSalesMain.iTotalDue == 0)
+            {
+                pb_Instruction.Size = this.Size;
+                Point pntZero = new Point(0, 0); ;
+                pb_Instruction.Location = pntZero;
+                pb_Instruction.BringToFront();
+            }
+            else
+            {
+                // Original size of Ad image with Amount, Items
+                pb_Instruction.Size = sizeAdImage;
+                pb_Instruction.Location = pointAdImage;
+            }
         }
 
         private void txt_SubTotal_TextChanged(object sender, EventArgs e)
         {
-            util.Logger("frmSalesCustomer : Total has changed : " + txt_SubTotal.Text);
             Load_Existing_Orders();
+            util.Logger("frmSalesCustomer : Total has changed : " + txt_SubTotal.Text + ", InvNo = " + iNewInvNo.ToString());
         }
 
         private void dgv_Orders_Initialize()
@@ -115,16 +178,16 @@ namespace SDCafeSales.Views
             //this.dgv_Orders.Columns[5].Width = 0;
             //this.dgv_Orders.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            this.dgv_Orders.DefaultCellStyle.Font = new Font("Arial Narrow", 14F, FontStyle.Bold);
+            this.dgv_Orders.DefaultCellStyle.Font = new Font("Arial Narrow", 12F, FontStyle.Bold);
             this.dgv_Orders.EnableHeadersVisualStyles = false;
-            this.dgv_Orders.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 12F, FontStyle.Bold);
+            this.dgv_Orders.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 11F, FontStyle.Bold);
             this.dgv_Orders.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgv_Orders.ColumnHeadersDefaultCellStyle.BackColor = Color.LightBlue;
             // fix the row height
             dgv_Orders.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             dgv_Orders.AllowUserToResizeRows = false;
             dgv_Orders.RowTemplate.Resizable = DataGridViewTriState.True;
-            dgv_Orders.RowTemplate.MinimumHeight = 50;
+            dgv_Orders.RowTemplate.MinimumHeight = 40;
             dgv_Orders.AllowUserToAddRows = false;
         }
         private void Load_Existing_Orders()
@@ -133,7 +196,7 @@ namespace SDCafeSales.Views
 
             dgv_Orders_Initialize();
             DataAccessPOS dbPOS = new DataAccessPOS();
-            orders = dbPOS.Get_Orders_by_Station(FrmSalesMain.strStation);
+            orders = dbPOS.Get_ParentOrders_by_Station(FrmSalesMain.strStation);
             if (orders.Count > 0)
             {
                 ////////////////////////////////////////////////
@@ -148,23 +211,77 @@ namespace SDCafeSales.Views
                     if (order.OrderCategoryId == 0)
                     {
                         iAmount = order.Quantity * order.OutUnitPrice;
-                        this.dgv_Orders.Rows.Add(new String[] { order.ProductId.ToString(),
+                        this.dgv_Orders.Rows.Add(new String[] { iIndex.ToString(),
                                                                                    order.ProductName,
                                                                                    order.Quantity.ToString(),
                                                                                    order.OutUnitPrice.ToString("0.00"),
                                                                                    //iAmount.ToString("0.00")
-                                                                                   order.Amount.ToString("0.00")
+                                                                                   order.Amount.ToString("0.00"),
+                                                                                   order.Id.ToString(),
+                                                                                   order.ProductId.ToString(),
+                                                                                   order.BarCode
                                 });
+                        childOrders.Clear();
+                        childOrders = dbPOS.Get_ChildOrders_by_Station(FrmSalesMain.strStation, order.Id);
+                        foreach (var corder in childOrders)
+                        {
+                            if (corder.OrderCategoryId == 0)
+                            {
+                                iAmount = corder.Quantity * corder.OutUnitPrice;
+                                this.dgv_Orders.Rows.Add(new String[] {  iIndex.ToString(),
+                                                                                   corder.ProductName,
+                                                                                   corder.Quantity.ToString(),
+                                                                                   corder.OutUnitPrice.ToString("0.00"),
+                                                                                   //iAmount.ToString("0.00"),
+                                                                                   corder.Amount.ToString("0.00"),
+                                                                                   corder.Id.ToString(),
+                                                                                   corder.ProductId.ToString(),
+                                                                                   corder.BarCode
+                                });
+                            }
+                            else if (corder.OrderCategoryId > 0) // Discount
+                            {
+                                iAmount = corder.Amount;
+                                this.dgv_Orders.Rows.Add(new String[] { iIndex.ToString(),
+                                                                                   corder.ProductName,
+                                                                                   corder.Quantity.ToString(),
+                                                                                   corder.Amount.ToString("0.00"),
+                                                                                   //iAmount.ToString("0.00"),
+                                                                                   corder.Amount.ToString("0.00"),
+                                                                                   corder.Id.ToString(),
+                                                                                   corder.ProductId.ToString(),
+                                                                                   corder.BarCode
+                                });
+                                this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = corder.RFTagId;
+                                DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
+                                row.DefaultCellStyle.ForeColor = Color.Red;
+                            }
+                            if (corder.RFTagId > 0)
+                            {
+                                this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = corder.RFTagId;
+                                DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
+                                row.DefaultCellStyle.ForeColor = Color.Blue;
+                            }
+                            else
+                            {
+                                this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = null;
+                            }
+                            this.dgv_Orders.FirstDisplayedScrollingRowIndex = dgv_Orders.RowCount - 1;
+
+                        }
                     }
                     else if (order.OrderCategoryId > 0) // Discount
                     {
                         iAmount = order.Amount;
-                        this.dgv_Orders.Rows.Add(new String[] { order.ProductId.ToString(),
+                        this.dgv_Orders.Rows.Add(new String[] { iIndex.ToString(),
                                                                                    order.ProductName,
                                                                                    order.Quantity.ToString(),
                                                                                    order.Amount.ToString("0.00"),
                                                                                    //iAmount.ToString("0.00")
-                                                                                   order.Amount.ToString("0.00")
+                                                                                   order.Amount.ToString("0.00"),
+                                                                                   order.Id.ToString(),
+                                                                                   order.ProductId.ToString(),
+                                                                                   order.BarCode
                                 });
                     }
                     if (order.RFTagId > 0)
@@ -184,6 +301,16 @@ namespace SDCafeSales.Views
                 }
             }
             this.dgv_Orders.ClearSelection();
+        }
+
+        private void timer_AdImg_Tick(object sender, EventArgs e)
+        {
+            pb_Instruction.Image = Image.FromFile(strAdImageFiles[iCurrentAdImageFilesIndex]);
+            iCurrentAdImageFilesIndex++;
+            if (iCurrentAdImageFilesIndex >= strAdImageFiles.Length)
+            {
+                iCurrentAdImageFilesIndex = 0;
+            }
         }
     }
 }

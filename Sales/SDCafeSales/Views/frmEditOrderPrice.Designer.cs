@@ -35,6 +35,9 @@
             this.pnlNums = new System.Windows.Forms.Panel();
             this.txt_NewPrice = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cb_Tax2 = new System.Windows.Forms.CheckBox();
+            this.cb_Tax1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // txt_ProductName
@@ -84,9 +87,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlNums.AutoSize = true;
             this.pnlNums.BackColor = System.Drawing.SystemColors.Desktop;
-            this.pnlNums.Location = new System.Drawing.Point(22, 136);
+            this.pnlNums.Location = new System.Drawing.Point(22, 163);
             this.pnlNums.Name = "pnlNums";
-            this.pnlNums.Size = new System.Drawing.Size(459, 337);
+            this.pnlNums.Size = new System.Drawing.Size(459, 363);
             this.pnlNums.TabIndex = 15;
             // 
             // txt_NewPrice
@@ -110,11 +113,49 @@
             this.label1.TabIndex = 16;
             this.label1.Text = "New Amount";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(18, 132);
+            this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(44, 22);
+            this.label3.TabIndex = 27;
+            this.label3.Text = "Tax";
+            // 
+            // cb_Tax2
+            // 
+            this.cb_Tax2.AutoSize = true;
+            this.cb_Tax2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cb_Tax2.Location = new System.Drawing.Point(314, 131);
+            this.cb_Tax2.Name = "cb_Tax2";
+            this.cb_Tax2.Size = new System.Drawing.Size(68, 26);
+            this.cb_Tax2.TabIndex = 26;
+            this.cb_Tax2.Text = "PST";
+            this.cb_Tax2.UseVisualStyleBackColor = true;
+            this.cb_Tax2.CheckedChanged += new System.EventHandler(this.cb_Tax2_CheckedChanged);
+            // 
+            // cb_Tax1
+            // 
+            this.cb_Tax1.AutoSize = true;
+            this.cb_Tax1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cb_Tax1.Location = new System.Drawing.Point(177, 131);
+            this.cb_Tax1.Name = "cb_Tax1";
+            this.cb_Tax1.Size = new System.Drawing.Size(70, 26);
+            this.cb_Tax1.TabIndex = 25;
+            this.cb_Tax1.Text = "GST";
+            this.cb_Tax1.UseVisualStyleBackColor = true;
+            this.cb_Tax1.CheckedChanged += new System.EventHandler(this.cb_Tax1_CheckedChanged);
+            // 
             // frmEditOrderPrice
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(506, 485);
+            this.ClientSize = new System.Drawing.Size(506, 538);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.cb_Tax2);
+            this.Controls.Add(this.cb_Tax1);
             this.Controls.Add(this.txt_NewPrice);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pnlNums);
@@ -138,5 +179,8 @@
         private System.Windows.Forms.Panel pnlNums;
         private System.Windows.Forms.TextBox txt_NewPrice;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox cb_Tax2;
+        private System.Windows.Forms.CheckBox cb_Tax1;
     }
 }

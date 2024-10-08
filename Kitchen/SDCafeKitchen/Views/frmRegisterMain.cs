@@ -32,6 +32,7 @@ namespace SDCafeKitchen.Views
         List<POS1_ProductPopModel> prodPops = new List<POS1_ProductPopModel>();
 
         Utility util = new Utility();
+        public frmPrintCount FrmPrintCount;
 
         public UIntPtr hreader;
         public UIntPtr hTag;
@@ -157,8 +158,8 @@ namespace SDCafeKitchen.Views
             }
             PopulateMenuButtons();
             PopulateMenuTypeButtons();
-            Load_RFID_Drivers();
-            Open_RFID_Connection();
+            //Load_RFID_Drivers();
+            //Open_RFID_Connection();
             Load_Dymo_Printer();
         }
 
@@ -961,7 +962,7 @@ namespace SDCafeKitchen.Views
                     timerPrtLblButton.Interval = 500;
                     timerPrtLblButton.Enabled = true;
                 }
-                bt_PrintLabel.Text = "Print Lables ( " + iTagLabelCount.ToString() + " )";
+                bt_PrintLabel.Text = "Print Labels ( " + iTagLabelCount.ToString() + " )";
                 bt_PrintLabel.BackColor = Color.LightGreen;
                 bt_PrintLabel.ForeColor = Color.DarkBlue;
             }
@@ -973,6 +974,7 @@ namespace SDCafeKitchen.Views
             DataAccessPOS dbPOS = new DataAccessPOS();
 
             string strMemoText;
+            string strBarCodeText;
 
             IEnumerable<ILabelObject> enumLabelObj = dymoSDKLabel.GetLabelObjects();
 
@@ -989,6 +991,12 @@ namespace SDCafeKitchen.Views
                     strMemoText = dbPOS.Get_ProductMemo_By_Id(prodId);
 
                     dymoSDKLabel.UpdateLabelObject(iLabelObj, strMemoText);
+                }
+                if (iLabelObj.Name == "ITextObject3")
+                {
+                    strBarCodeText = dbPOS.Get_ProductBarCode_By_Id(prodId);
+
+                    dymoSDKLabel.UpdateLabelObject(iLabelObj, "*" + strBarCodeText + "*");
                 }
                 //if (iLabelObj.Name == "IImageObject0")
                 //{
@@ -1177,8 +1185,11 @@ namespace SDCafeKitchen.Views
             else {
                 strSelectedProdName = String.Empty;
             }
-            bt_Stop.PerformClick();
-            bt_Start.PerformClick();
+            if (isRFIDConnected)
+            {
+                bt_Stop.PerformClick();
+                bt_Start.PerformClick();
+            }
         }
 
         private void PopulateMenuTypeButtons()
@@ -1482,64 +1493,70 @@ namespace SDCafeKitchen.Views
                 int n = 0;
                 foreach (var prodPop in prodPops)
                 {
-                    prods = dbPOS.Get_Product_By_ID(prodPop.ProductId);
-                    prod = prods[0];
-                    btnArray[n].Tag = n + 1; // Tag of button 
-                    btnArray[n].Width = (pnlMenu.Width / 5) - 5; // Width of button 
-                    btnArray[n].Height = (pnlMenu.Height / 5) - 5; // Height of button
-                    btnArray[n].Font = new Font("Arial", 11, FontStyle.Bold);
-                    //btnArray[n].BackColor = Color.LightSteelBlue;
-                    btnArray[n].ForeColor = Color.WhiteSmoke;
-                    btnArray[n].CornerRadius = 30;
-                    btnArray[n].RoundCorners = Corners.TopLeft | Corners.TopRight | Corners.BottomLeft;
-                    //btnArray[n].RoundCorners = Corners.All;
-                    //btnArray[n].AutoSize = true;
-                    /////////////////////////////////////////////////////
-                    // 4 Buttons in one line
-                    /////////////////////////////////////////////////////
-                    if (n >= 5) // Location of second line of buttons: 
+                    if (prodPop.ProductId > 0)
                     {
-                        if (n % 5 == 0)
+                        prods = dbPOS.Get_Product_By_ID(prodPop.ProductId);
+                        if (prods.Count > 0)
                         {
-                            xPos = 0;
-                            yPos = yPos + btnArray[n].Height + 5;
-                            iLines++;
+                            prod = prods[0];
+                            btnArray[n].Tag = n + 1; // Tag of button 
+                            btnArray[n].Width = (pnlMenu.Width / 5) - 5; // Width of button 
+                            btnArray[n].Height = (pnlMenu.Height / 5) - 5; // Height of button
+                            btnArray[n].Font = new Font("Arial", 11, FontStyle.Bold);
+                            //btnArray[n].BackColor = Color.LightSteelBlue;
+                            btnArray[n].ForeColor = Color.WhiteSmoke;
+                            btnArray[n].CornerRadius = 30;
+                            btnArray[n].RoundCorners = Corners.TopLeft | Corners.TopRight | Corners.BottomLeft;
+                            //btnArray[n].RoundCorners = Corners.All;
+                            //btnArray[n].AutoSize = true;
+                            /////////////////////////////////////////////////////
+                            // 4 Buttons in one line
+                            /////////////////////////////////////////////////////
+                            if (n >= 5) // Location of second line of buttons: 
+                            {
+                                if (n % 5 == 0)
+                                {
+                                    xPos = 0;
+                                    yPos = yPos + btnArray[n].Height + 5;
+                                    iLines++;
+                                }
+                            }
+                            if ((n) % 25 == 0)
+                            {
+                                iTotalProdPages++;
+                            }
+                            if (iLines > 5)
+                            {
+                                iLines = 1;
+                            }
+                            btnArray[n].BackColor = btColor[iLines];
+                            // Location of button: 
+                            btnArray[n].Left = xPos;
+                            btnArray[n].Top = yPos;
+                            // Add buttons to a Panel: E0040150996E1CA8
+                            pnlMenu.Controls.Add(btnArray[n]);  // Let panel hold the Buttons 
+                            xPos = xPos + btnArray[n].Width + 5;    // Left of next button 
+                                                                    // Write English Character: 
+                            /* **************************************************************** 
+                                Menu item button text
+                            //**************************************************************** */
+
+                            //btnArray[n].Text = ((char)(n + 65)).ToString() + (n+1).ToString();
+                            int iTotalTagCount = dbPOS.Get_Tag_Count_by_ProdId(prod.Id);
+                            int iUsedTagCount = dbPOS.Get_UsedTag_Count_by_ProdId(prod.Id);
+                            btnArray[n].Text = prod.ProductName +
+                                                                    Environment.NewLine + prod.OutUnitPrice.ToString("c2")
+                                                                    + " ( " +
+                                                                    iUsedTagCount.ToString() +
+                                                                    "/" +
+                                                                    iTotalTagCount.ToString() + " )";
+                            btnArray[n].Tag = prod.Id;
+                            // the Event of click Button 
+                            btnArray[n].Click += new System.EventHandler(ClickMenuButton);
+
+                            n++;
                         }
                     }
-                    if ((n) % 25 == 0)
-                    {
-                        iTotalProdPages++;
-                    }
-                    if (iLines > 5)
-                    {
-                        iLines = 1;
-                    }
-                    btnArray[n].BackColor = btColor[iLines];
-                    // Location of button: 
-                    btnArray[n].Left = xPos;
-                    btnArray[n].Top = yPos;
-                    // Add buttons to a Panel: E0040150996E1CA8
-                    pnlMenu.Controls.Add(btnArray[n]);  // Let panel hold the Buttons 
-                    xPos = xPos + btnArray[n].Width + 5;    // Left of next button 
-                                                            // Write English Character: 
-                    /* **************************************************************** 
-                        Menu item button text
-                    //**************************************************************** */
-
-                    //btnArray[n].Text = ((char)(n + 65)).ToString() + (n+1).ToString();
-                    int iTotalTagCount = dbPOS.Get_Tag_Count_by_ProdId(prod.Id);
-                    int iUsedTagCount = dbPOS.Get_UsedTag_Count_by_ProdId(prod.Id);
-                    btnArray[n].Text = prod.ProductName +
-                                                            Environment.NewLine + prod.OutUnitPrice.ToString("c2")
-                                                            + " ( " +
-                                                            iUsedTagCount.ToString() +
-                                                            "/" +
-                                                            iTotalTagCount.ToString() + " )";
-                    btnArray[n].Tag = prod.Id;
-                    // the Event of click Button 
-                    btnArray[n].Click += new System.EventHandler(ClickMenuButton);
-
-                    n++;
                 }
             }
             lbl_ProdPages.Text = iCurrentProdPage.ToString() + "/" + (iTotalProdPages - 1).ToString();
@@ -2118,12 +2135,37 @@ namespace SDCafeKitchen.Views
             }
             else
             {
-                bt_PrintLabel.Enabled = false;
-                for (int i = 0; i < iTagLabelCount; i++)
+                if (iTagLabelCount > 0)
                 {
-                    bt_PrintLabel.Text = "Printing Lables ( " + i.ToString() + " )";
-                    bt_PrintLabel.ForeColor = Color.DarkBlue;
-                    Print_Product_Label(iSelected_ProdId);
+                    bt_PrintLabel.Enabled = false;
+                    for (int i = 0; i < iTagLabelCount; i++)
+                    {
+                        bt_PrintLabel.Text = "Printing Lables ( " + i.ToString() + " )";
+                        bt_PrintLabel.ForeColor = Color.DarkBlue;
+                        Print_Product_Label(iSelected_ProdId);
+                    }
+                }
+                else
+                {
+                    using (var FrmPrintCount = new frmPrintCount(this))
+                    {
+                        FrmPrintCount.Location = new Point((Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2,
+                                  (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2); //Screen.PrimaryScreen.Bounds.Location;
+                        FrmPrintCount.ShowDialog();
+
+                        if (FrmPrintCount.bPrintNow)
+                        {
+                            iTagLabelCount = Convert.ToInt32(FrmPrintCount.strQTY);
+
+                            for (int i = 0; i < iTagLabelCount; i++)
+                            {
+                                bt_PrintLabel.Text = "Printing Lables ( " + i.ToString() + " )";
+                                bt_PrintLabel.ForeColor = Color.DarkBlue;
+                                Print_Product_Label(iSelected_ProdId);
+                            }
+                        }
+
+                    }
                 }
                 iTagLabelCount = 0;
                 timerPrtLblButton.Enabled = false;
@@ -2131,8 +2173,9 @@ namespace SDCafeKitchen.Views
                 bt_PrintLabel.Text = "Print Lables ( " + iTagLabelCount.ToString() + " )";
                 bt_PrintLabel.BackColor = Color.DarkGray;
                 bt_PrintLabel.ForeColor = Color.White;
+
             }
-            
+
         }
 
         private void bt_PrintOneLabel_Click(object sender, EventArgs e)

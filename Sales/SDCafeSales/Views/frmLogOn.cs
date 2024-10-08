@@ -19,10 +19,15 @@ namespace SDCafeSales
     public partial class frmLogOn : Form
     {
         List<POS_LoginUserModel> loginUsers = new List<POS_LoginUserModel>();
+        List<POS_SysConfigModel> sysConfigs = new List<POS_SysConfigModel>();
+        
+        List<POS_TimeTableModel> timeTables = new List<POS_TimeTableModel>();
+        POS_TimeTableModel timeTable = new POS_TimeTableModel();
+
         Utility util = new Utility();
         public CustomButton selectedBTN;
         public String strPassCode;
-        public frmSalesMain FrmSalesMain;        
+        public frmSalesMain FrmSalesMain;
         public Color[] btColor =
         {
             Color.Crimson,
@@ -40,9 +45,17 @@ namespace SDCafeSales
            //47,74,126 0x007E4A2F,
            // 0,102,0 0x00006600
         };
+
+        //////////////////////////////////////////////////////
+        // Declare and assign number of buttons = 20 
+        //System.Windows.Forms.Button[] btnArray = new System.Windows.Forms.Button[30];
+        private CustomButton[] btnNums = new CustomButton[13];
+        private ImageList m_ImageList;
+
         public frmLogOn()
         {
             InitializeComponent();
+
         }
 
         private void frmLogOn_Load(object sender, EventArgs e)
@@ -50,13 +63,28 @@ namespace SDCafeSales
             //this.Top = Screen.PrimaryScreen.WorkingArea.Size.Height / 2 - (this.Height / 2);
             //this.Left = Screen.PrimaryScreen.WorkingArea.Size.Width / 2 - (this.Width / 2);
             //lbl_Titie.Text = "Welcom to AB SD Cafeteria Office Module";
+            Load_ImageList();
+            Initialize_Buttons();
+            Initialize_ClockInOut_List();
+
+            txtPassCode.Focus();
+
+        }
+
+        private void Load_ImageList()
+        {
+            m_ImageList = new ImageList();
+            m_ImageList.ImageSize = new Size(40, 40);
+            m_ImageList.ColorDepth = ColorDepth.Depth32Bit;
+            m_ImageList.Images.Add(Properties.Resources.Card_Terminal_POS_100x100);
+            m_ImageList.Images.Add(Properties.Resources.logout_40dp);
+        }
+
+        private void Initialize_Buttons()
+        {
             int xPos = 2;
             int yPos = 2;
             int iLines = 0;
-            //////////////////////////////////////////////////////
-            // Declare and assign number of buttons = 20 
-            //System.Windows.Forms.Button[] btnArray = new System.Windows.Forms.Button[30];
-            CustomButton[] btnNums = new CustomButton[13];
             //////////////////////////////////////////////////////
             // Create (20) Buttons: 
             for (int i = 0; i < 13; i++)
@@ -72,8 +100,8 @@ namespace SDCafeSales
             while (n < 13)
             {
                 btnNums[n].Tag = n + 1; // Tag of button 
-                btnNums[n].Width = btWidth/3; // Width of button 
-                btnNums[n].Height = btHeight/5; // Height of button
+                btnNums[n].Width = btWidth / 3; // Width of button 
+                btnNums[n].Height = btHeight / 5; // Height of button
                 btnNums[n].Font = new Font("Arial", 28, FontStyle.Bold);
                 //btnArray[n].BackColor = Color.LightSteelBlue;
                 btnNums[n].ForeColor = Color.WhiteSmoke;
@@ -104,14 +132,14 @@ namespace SDCafeSales
                 // Add buttons to a Panel: 
                 pnlNums.Controls.Add(btnNums[n]);  // Let panel hold the Buttons 
                 xPos = xPos + btnNums[n].Width + iSpace;    // Left of next button 
-                                                       // Write English Character: 
-                                                       /* **************************************************************** 
-                                                           Menu item button text
-                                                       //**************************************************************** */
+                                                            // Write English Character: 
+                /* **************************************************************** 
+                    Menu item button text
+                //**************************************************************** */
 
                 //btnArray[n].Text = ((char)(n + 65)).ToString() + (n+1).ToString();
                 btnNums[n].Text = (n + 1).ToString();
-                if (n+1 == 10)
+                if (n + 1 == 10)
                 {
                     btnNums[n].Text = "OK";
                     btnNums[n].BackColor = Color.ForestGreen;
@@ -132,19 +160,36 @@ namespace SDCafeSales
                     btnNums[n].Text = "EXIT";
                     btnNums[n].BackColor = Color.Gray;
                     btnNums[n].ForeColor = Color.White;
+                    btnNums[n].ImageList = m_ImageList;
+                    btnNums[n].ImageIndex = 1;
+                    btnNums[n].ImageAlign = ContentAlignment.MiddleLeft;
                 }
                 // the Event of click Button 
                 btnNums[n].Click += new System.EventHandler(ClickNumberButton);
                 n++;
             }
-            txtPassCode.Focus();
             pnlNums.Enabled = true; // not need now to this button now 
+
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            sysConfigs = dbPOS.Get_SysConfig_By_Name("SCREEN_LOGO_IMAGE");
+            if (sysConfigs.Count > 0)
+            {
+                pictureBoxLogo.Image = Image.FromFile(sysConfigs[0].ConfigValue);
+            }
+            sysConfigs = dbPOS.Get_SysConfig_By_Name("BIZ_TITLE");
+            if (sysConfigs.Count > 0)
+            {
+                textBoxBizTitle.Text = sysConfigs[0].ConfigValue;
+            }
+
+            txtMessage.Text = "Please press Pass Code & OK to login!";
 
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BringToFront();
             this.TopMost = true;
             this.TopMost = false;
         }
+
         public void ClickNumberButton(Object sender, System.EventArgs e)
         {
             //Button btn = (Button)sender;
@@ -159,6 +204,85 @@ namespace SDCafeSales
             //selectedBTN = (Button)sender;
             selectedBTN = (CustomButton)sender;
             if (btn.Text == "OK")  // OK
+            {
+                if (UserLoginWithPassCode(txtPassCode.Text))
+                {
+                    this.Hide();
+                    FrmSalesMain = new frmSalesMain();
+                    FrmSalesMain.Set_PassCode(txtPassCode.Text);
+                    //FrmSalesMain.Show();
+                    FrmSalesMain.ShowDialog();
+                    //FrmSalesMain.Close();
+                    // We get here when newform's DialogResult gets set
+                    //this.Show();
+                    strPassCode = string.Empty;
+                    txtPassCode.Text = strPassCode;
+                    //this.Close();
+                }
+                else
+                {
+                    txtMessage.Text = "Login Failed ! Please check your passcode !";
+                    strPassCode = string.Empty;
+                    txtPassCode.Text = strPassCode;
+                    Console.Beep(3000, 1000);
+
+                }
+
+                //this.Show();
+                return;
+            }
+            if (btn.Text == "DEL")  // DELETE
+            {
+                strPassCode = string.Empty;
+                txtPassCode.Text = strPassCode;
+                txtPassCode.Focus();
+                return;
+            }
+            if (btn.Text == "EXIT")  // OK
+            {
+                this.Close();
+                Application.Exit();
+                return;
+            }
+
+            txtPassCode.Text = strPassCode + btn.Text;
+            strPassCode = txtPassCode.Text;
+            // txtSelectedMenu.Text = "You have now selected button [ " + btn.Text + " ]";
+            //bt_Stop.PerformClick();
+            //bt_Start.PerformClick();
+            //Reset_NumButtons();
+            txtPassCode.Focus();
+        }
+
+        private bool UserLoginWithPassCode(string strPassCode)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            try
+            {
+                loginUsers = dbPOS.UserLogin(strPassCode);
+
+                if (loginUsers.Count == 1)
+                {
+                    return true;
+                }
+                util.Logger("UserLogin Failed with PassCode :" + strPassCode);
+            }
+            catch (Exception e)
+            {
+                util.Logger("UserLogin Error :" + e.Message);
+                return false;
+            }
+            return false;
+        }
+
+        private void frmLogOn_Shown(object sender, EventArgs e)
+        {
+            txtPassCode.Focus();
+        }
+
+        private void txtPassCode_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
             {
                 if (UserLoginWithPassCode(txtPassCode.Text))
                 {
@@ -181,45 +305,164 @@ namespace SDCafeSales
                 //this.Show();
                 return;
             }
-            if (btn.Text == "DEL")  // DELETE
-            {
-                strPassCode = string.Empty;
-                txtPassCode.Text = strPassCode;
-                return;
-            }
-            if (btn.Text == "EXIT")  // OK
-            {
-                this.Close();
-                Application.Exit();
-                return;
-            }
-
-            txtPassCode.Text = strPassCode + btn.Text;
-            strPassCode = txtPassCode.Text;
-           // txtSelectedMenu.Text = "You have now selected button [ " + btn.Text + " ]";
-            //bt_Stop.PerformClick();
-            //bt_Start.PerformClick();
         }
 
-        private bool UserLoginWithPassCode(string strPassCode)
+        private void bt_ClockIn_Click(object sender, EventArgs e)
         {
-            DataAccessPOS dbPOS = new DataAccessPOS();
             try
             {
+                DataAccessPOS dbPOS = new DataAccessPOS();
                 loginUsers = dbPOS.UserLogin(strPassCode);
 
                 if (loginUsers.Count == 1)
                 {
-                    return true;
+                    timeTables = dbPOS.Get_Today_ClockInOut(loginUsers[0].Id);
+                    if (timeTables.Count == 0)
+                    {
+                        timeTable.UserId = loginUsers[0].Id;
+                        timeTable.DateTimeStarted = DateTime.Now;
+                        timeTable.DateTimeFinished = null;
+                        timeTable.InCount = 1;
+                        timeTable.Wage = loginUsers[0].Wage;
+                        dbPOS.Insert_TimeTable(timeTable);
+                        txtMessage.Text = "Clock In Success ! " + loginUsers[0].FirstName ;
+                    }
+                    else
+                    {
+                        txtMessage.Text = "Already Clock In ! " + loginUsers[0].FirstName;
+                    }
+
+                    //util.Logger("UserLogin Failed with PassCode :" + strPassCode);
                 }
-                util.Logger("UserLogin Failed with PassCode :" + strPassCode);
+                else
+                {
+                    txtMessage.Text = "User Does Not Exists! Please check PassCode!";
+                }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                util.Logger("UserLogin Error :" + e.Message);
-                return false;
+                txtMessage.Text = "Error! " + ex.Message;
+                util.Logger("UserLogin Error :" + ex.Message);
             }
-            return false;
+
+            strPassCode = string.Empty;
+            txtPassCode.Text = strPassCode;
+            Reset_NumButtons();
+            Initialize_ClockInOut_List();
+            txtPassCode.Focus();
+        }
+
+        private void bt_ClockOut_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataAccessPOS dbPOS = new DataAccessPOS();
+                loginUsers = dbPOS.UserLogin(strPassCode);
+
+                if (loginUsers.Count == 1)
+                {
+                    timeTables = dbPOS.Get_Today_ClockInOut(loginUsers[0].Id);
+                    if (timeTables.Count > 0)
+                    {
+                        timeTable.UserId = loginUsers[0].Id;
+                        timeTable.DateTimeStarted = timeTables[0].DateTimeStarted;
+                        if (timeTables[0].DateTimeFinished == null)
+                        {
+                            timeTable.DateTimeFinished = DateTime.Now;
+                            timeTable.InCount = 1;
+                            timeTable.Wage = loginUsers[0].Wage;
+                            dbPOS.Update_TimeTable(timeTable);
+                            txtMessage.Text = "Clock Out Success ! " + loginUsers[0].FirstName;
+                        }
+                        else
+                        {
+                            txtMessage.Text = "Already Clock Out ! " + loginUsers[0].FirstName + " " + timeTables[0].DateTimeFinished;
+                        }
+                    }
+                    else
+                    {
+                        txtMessage.Text = "Clock In Does Not Exist ! " + loginUsers[0].FirstName;
+                    }
+
+                    //util.Logger("UserLogin Failed with PassCode :" + strPassCode);
+                }
+                else
+                {
+                    txtMessage.Text = "User Does Not Exists! Please check PassCode!";
+                }
+            }
+            catch (Exception ex)
+            {
+                txtMessage.Text = "Error! " + ex.Message;
+                util.Logger("UserLogin Error :" + ex.Message);
+            }
+            strPassCode = string.Empty;
+            txtPassCode.Text = strPassCode;
+            Reset_NumButtons();
+            Initialize_ClockInOut_List();
+            txtPassCode.Focus();
+        }
+        private void Initialize_ClockInOut_List()
+        {
+            listBoxClockInOut.Items.Clear();
+            listBoxClockInOut.MultiColumn = true;
+            String columns = "{0, -25}{1, -25}";
+            try
+            {
+                DataAccessPOS dbPOS = new DataAccessPOS();
+                timeTables = dbPOS.Get_All_Today_ClockInOut();
+                if (timeTables.Count > 0)
+                {
+                    foreach (var tt in timeTables)
+                    {
+                        loginUsers = dbPOS.Get_LoginUser_By_ID(tt.UserId);
+                        if (loginUsers.Count > 0)
+                        {
+                            string strUserName = loginUsers[0].FirstName + " " + loginUsers[0].LastName;
+                            string strStartTime = "@ " + tt.DateTimeStarted.ToString();
+                            listBoxClockInOut.Items.Add(string.Format(columns,strUserName,strStartTime));
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                txtMessage.Text = "Error! " + ex.Message;
+               //util.Logger("UserLogin Error :" + ex.Message);
+            }
+
+        }
+        private void Reset_NumButtons()
+        {
+            int n = 0;
+            int iSpace = 2;
+            while (n < 13)
+            {
+                btnNums[n].BackColor = btColor[2];
+                btnNums[n].ForeColor = Color.White;
+                if (n + 1 == 10)
+                {
+                    btnNums[n].BackColor = Color.ForestGreen;
+                    btnNums[n].ForeColor = Color.White;
+                }
+                if (n + 1 == 11)
+                {
+                    btnNums[n].Text = "0";
+                }
+                if (n + 1 == 12)
+                {
+                    btnNums[n].Text = "DEL";
+                    btnNums[n].BackColor = Color.Maroon;
+                    btnNums[n].ForeColor = Color.White;
+                }
+                if (n + 1 == 13)
+                {
+                    btnNums[n].Text = "EXIT";
+                    btnNums[n].BackColor = Color.Gray;
+                    btnNums[n].ForeColor = Color.White;
+                }
+                n++;
+            }
         }
     }
 }

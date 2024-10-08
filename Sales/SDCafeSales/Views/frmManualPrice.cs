@@ -26,6 +26,10 @@ namespace SDCafeSales.Views
         public float p_Amount { get; set; }
         public string p_PName { get; set; }
 
+        public bool p_IsTax1 { get; set; }
+        public bool p_IsTax2 { get; set; }
+        public bool p_IsTax3 { get; set; }
+
         public Color[] btColor =
 {
             Color.Crimson,
@@ -179,6 +183,10 @@ namespace SDCafeSales.Views
             }
             txt_ManualPrice.Focus();
             pnlNums.Enabled = true; // not need now to this button now 
+
+            bTax1 = p_IsTax1;
+            bTax2 = p_IsTax2;
+            bTax3 = p_IsTax3;
 
             cb_Tax1.Checked = bTax1;
             cb_Tax2.Checked = bTax2;

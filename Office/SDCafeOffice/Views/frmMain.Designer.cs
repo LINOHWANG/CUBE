@@ -30,6 +30,16 @@
         {
             this.dgvData = new System.Windows.Forms.DataGridView();
             this.txtMessage = new System.Windows.Forms.TextBox();
+            this.cb_PType = new System.Windows.Forms.ComboBox();
+            this.text_BarCode = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.text_PName = new System.Windows.Forms.TextBox();
+            this.bt_ProductExport = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_TimeReport = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_Promotion = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_SalesReport = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_Station = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Tax = new SDCafeCommon.Utilities.CustomButton();
             this.bt_SysConfig = new SDCafeCommon.Utilities.CustomButton();
             this.bt_RFIDTags = new SDCafeCommon.Utilities.CustomButton();
@@ -37,9 +47,7 @@
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_LoginUser = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Product = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_Station = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_SalesReport = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_Promotion = new SDCafeCommon.Utilities.CustomButton();
+            this.progBarExport = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -55,7 +63,8 @@
             this.dgvData.ShowEditingIcon = false;
             this.dgvData.Size = new System.Drawing.Size(836, 624);
             this.dgvData.TabIndex = 1;
-            this.dgvData.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvData_MouseClick);
+            this.dgvData.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvData_CellMouseDoubleClick);
+            this.dgvData.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvData_ColumnHeaderMouseClick);
             // 
             // txtMessage
             // 
@@ -67,6 +76,126 @@
             this.txtMessage.Size = new System.Drawing.Size(1003, 32);
             this.txtMessage.TabIndex = 34;
             this.txtMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // cb_PType
+            // 
+            this.cb_PType.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cb_PType.FormattingEnabled = true;
+            this.cb_PType.Location = new System.Drawing.Point(160, 75);
+            this.cb_PType.Name = "cb_PType";
+            this.cb_PType.Size = new System.Drawing.Size(208, 30);
+            this.cb_PType.TabIndex = 38;
+            this.cb_PType.SelectedIndexChanged += new System.EventHandler(this.cb_PType_SelectedIndexChanged);
+            this.cb_PType.TextChanged += new System.EventHandler(this.cb_PType_TextChanged);
+            // 
+            // text_BarCode
+            // 
+            this.text_BarCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.text_BarCode.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.text_BarCode.Location = new System.Drawing.Point(769, 75);
+            this.text_BarCode.Name = "text_BarCode";
+            this.text_BarCode.Size = new System.Drawing.Size(227, 29);
+            this.text_BarCode.TabIndex = 39;
+            this.text_BarCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.text_BarCode_KeyPress);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(666, 78);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(92, 22);
+            this.label1.TabIndex = 40;
+            this.label1.Text = "BarCode";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(375, 78);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(75, 22);
+            this.label2.TabIndex = 42;
+            this.label2.Text = "PName";
+            // 
+            // text_PName
+            // 
+            this.text_PName.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.text_PName.Location = new System.Drawing.Point(456, 75);
+            this.text_PName.Name = "text_PName";
+            this.text_PName.Size = new System.Drawing.Size(204, 29);
+            this.text_PName.TabIndex = 41;
+            this.text_PName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.text_PName_KeyPress);
+            // 
+            // bt_ProductExport
+            // 
+            this.bt_ProductExport.BackColor = System.Drawing.Color.ForestGreen;
+            this.bt_ProductExport.CornerRadius = 30;
+            this.bt_ProductExport.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_ProductExport.Location = new System.Drawing.Point(12, 171);
+            this.bt_ProductExport.Name = "bt_ProductExport";
+            this.bt_ProductExport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_ProductExport.Size = new System.Drawing.Size(142, 47);
+            this.bt_ProductExport.TabIndex = 44;
+            this.bt_ProductExport.Text = "Prod. Export";
+            this.bt_ProductExport.Click += new System.EventHandler(this.bt_ProductExport_Click);
+            // 
+            // bt_TimeReport
+            // 
+            this.bt_TimeReport.BackColor = System.Drawing.Color.Khaki;
+            this.bt_TimeReport.CornerRadius = 30;
+            this.bt_TimeReport.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_TimeReport.Location = new System.Drawing.Point(12, 536);
+            this.bt_TimeReport.Name = "bt_TimeReport";
+            this.bt_TimeReport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_TimeReport.Size = new System.Drawing.Size(142, 47);
+            this.bt_TimeReport.TabIndex = 43;
+            this.bt_TimeReport.Text = "Time Report";
+            this.bt_TimeReport.Click += new System.EventHandler(this.bt_TimeReport_Click);
+            // 
+            // bt_Promotion
+            // 
+            this.bt_Promotion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.bt_Promotion.CornerRadius = 30;
+            this.bt_Promotion.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_Promotion.Location = new System.Drawing.Point(12, 589);
+            this.bt_Promotion.Name = "bt_Promotion";
+            this.bt_Promotion.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Promotion.Size = new System.Drawing.Size(142, 47);
+            this.bt_Promotion.TabIndex = 37;
+            this.bt_Promotion.Text = "Promotions";
+            this.bt_Promotion.Click += new System.EventHandler(this.bt_Promotion_Click);
+            // 
+            // bt_SalesReport
+            // 
+            this.bt_SalesReport.BackColor = System.Drawing.Color.DarkGray;
+            this.bt_SalesReport.CornerRadius = 30;
+            this.bt_SalesReport.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_SalesReport.Location = new System.Drawing.Point(12, 642);
+            this.bt_SalesReport.Name = "bt_SalesReport";
+            this.bt_SalesReport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_SalesReport.Size = new System.Drawing.Size(142, 47);
+            this.bt_SalesReport.TabIndex = 36;
+            this.bt_SalesReport.Text = "Sales Report";
+            this.bt_SalesReport.Click += new System.EventHandler(this.bt_SalesReport_Click);
+            // 
+            // bt_Station
+            // 
+            this.bt_Station.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.bt_Station.CornerRadius = 30;
+            this.bt_Station.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_Station.Location = new System.Drawing.Point(456, 12);
+            this.bt_Station.Name = "bt_Station";
+            this.bt_Station.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Station.Size = new System.Drawing.Size(142, 47);
+            this.bt_Station.TabIndex = 35;
+            this.bt_Station.Text = "Station";
+            this.bt_Station.Click += new System.EventHandler(this.bt_Station_Click);
             // 
             // bt_Tax
             // 
@@ -87,7 +216,7 @@
             this.bt_SysConfig.BackColor = System.Drawing.Color.Orchid;
             this.bt_SysConfig.CornerRadius = 30;
             this.bt_SysConfig.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_SysConfig.Location = new System.Drawing.Point(456, 12);
+            this.bt_SysConfig.Location = new System.Drawing.Point(604, 12);
             this.bt_SysConfig.Name = "bt_SysConfig";
             this.bt_SysConfig.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -98,21 +227,22 @@
             // 
             // bt_RFIDTags
             // 
-            this.bt_RFIDTags.BackColor = System.Drawing.Color.LightGreen;
+            this.bt_RFIDTags.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.bt_RFIDTags.CornerRadius = 30;
             this.bt_RFIDTags.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_RFIDTags.Location = new System.Drawing.Point(12, 118);
+            this.bt_RFIDTags.Location = new System.Drawing.Point(12, 536);
             this.bt_RFIDTags.Name = "bt_RFIDTags";
             this.bt_RFIDTags.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
             this.bt_RFIDTags.Size = new System.Drawing.Size(142, 47);
             this.bt_RFIDTags.TabIndex = 7;
             this.bt_RFIDTags.Text = "RFID Tags";
+            this.bt_RFIDTags.Visible = false;
             this.bt_RFIDTags.Click += new System.EventHandler(this.bt_RFIDTags_Click);
             // 
             // bt_ProdType
             // 
-            this.bt_ProdType.BackColor = System.Drawing.Color.LightGreen;
+            this.bt_ProdType.BackColor = System.Drawing.Color.GreenYellow;
             this.bt_ProdType.CornerRadius = 30;
             this.bt_ProdType.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_ProdType.Location = new System.Drawing.Point(12, 65);
@@ -158,7 +288,7 @@
             this.bt_Product.BackColor = System.Drawing.Color.LightGreen;
             this.bt_Product.CornerRadius = 30;
             this.bt_Product.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_Product.Location = new System.Drawing.Point(12, 12);
+            this.bt_Product.Location = new System.Drawing.Point(12, 118);
             this.bt_Product.Name = "bt_Product";
             this.bt_Product.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -167,53 +297,33 @@
             this.bt_Product.Text = "Product";
             this.bt_Product.Click += new System.EventHandler(this.bt_Product_Click);
             // 
-            // bt_Station
+            // progBarExport
             // 
-            this.bt_Station.BackColor = System.Drawing.Color.LightGreen;
-            this.bt_Station.CornerRadius = 30;
-            this.bt_Station.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_Station.Location = new System.Drawing.Point(12, 171);
-            this.bt_Station.Name = "bt_Station";
-            this.bt_Station.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Station.Size = new System.Drawing.Size(142, 47);
-            this.bt_Station.TabIndex = 35;
-            this.bt_Station.Text = "Station";
-            this.bt_Station.Click += new System.EventHandler(this.bt_Station_Click);
-            // 
-            // bt_SalesReport
-            // 
-            this.bt_SalesReport.BackColor = System.Drawing.Color.DarkGray;
-            this.bt_SalesReport.CornerRadius = 30;
-            this.bt_SalesReport.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_SalesReport.Location = new System.Drawing.Point(12, 642);
-            this.bt_SalesReport.Name = "bt_SalesReport";
-            this.bt_SalesReport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_SalesReport.Size = new System.Drawing.Size(142, 47);
-            this.bt_SalesReport.TabIndex = 36;
-            this.bt_SalesReport.Text = "Sales Report";
-            this.bt_SalesReport.Click += new System.EventHandler(this.bt_SalesReport_Click);
-            // 
-            // bt_Promotion
-            // 
-            this.bt_Promotion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.bt_Promotion.CornerRadius = 30;
-            this.bt_Promotion.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_Promotion.Location = new System.Drawing.Point(12, 589);
-            this.bt_Promotion.Name = "bt_Promotion";
-            this.bt_Promotion.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Promotion.Size = new System.Drawing.Size(142, 47);
-            this.bt_Promotion.TabIndex = 37;
-            this.bt_Promotion.Text = "Promotions";
-            this.bt_Promotion.Click += new System.EventHandler(this.bt_Promotion_Click);
+            this.progBarExport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progBarExport.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.progBarExport.Location = new System.Drawing.Point(3, 698);
+            this.progBarExport.Name = "progBarExport";
+            this.progBarExport.Size = new System.Drawing.Size(1003, 29);
+            this.progBarExport.Step = 1;
+            this.progBarExport.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progBarExport.TabIndex = 45;
+            this.progBarExport.Visible = false;
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.progBarExport);
+            this.Controls.Add(this.bt_ProductExport);
+            this.Controls.Add(this.bt_TimeReport);
+            this.Controls.Add(this.dgvData);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.text_PName);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.text_BarCode);
+            this.Controls.Add(this.cb_PType);
             this.Controls.Add(this.bt_Promotion);
             this.Controls.Add(this.bt_SalesReport);
             this.Controls.Add(this.bt_Station);
@@ -225,7 +335,6 @@
             this.Controls.Add(this.bt_Exit);
             this.Controls.Add(this.bt_LoginUser);
             this.Controls.Add(this.bt_Product);
-            this.Controls.Add(this.dgvData);
             this.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.Name = "frmMain";
@@ -251,5 +360,13 @@
         private SDCafeCommon.Utilities.CustomButton bt_Station;
         private SDCafeCommon.Utilities.CustomButton bt_SalesReport;
         private SDCafeCommon.Utilities.CustomButton bt_Promotion;
+        private System.Windows.Forms.ComboBox cb_PType;
+        private System.Windows.Forms.TextBox text_BarCode;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox text_PName;
+        private SDCafeCommon.Utilities.CustomButton bt_TimeReport;
+        private SDCafeCommon.Utilities.CustomButton bt_ProductExport;
+        private System.Windows.Forms.ProgressBar progBarExport;
     }
 }

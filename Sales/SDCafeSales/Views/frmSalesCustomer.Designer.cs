@@ -48,6 +48,7 @@
             this.txt_TotalDue = new System.Windows.Forms.TextBox();
             this.bt_Start = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Payment = new SDCafeCommon.Utilities.CustomButton();
+            this.timer_AdImg = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_Orders)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pb_Instruction)).BeginInit();
             this.SuspendLayout();
@@ -78,10 +79,11 @@
             // 
             // pb_Instruction
             // 
-            this.pb_Instruction.Image = global::SDCafeSales.Properties.Resources.CUBE_LOGO2;
+            this.pb_Instruction.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pb_Instruction.Cursor = System.Windows.Forms.Cursors.Default;
             this.pb_Instruction.Location = new System.Drawing.Point(399, 55);
             this.pb_Instruction.Name = "pb_Instruction";
-            this.pb_Instruction.Size = new System.Drawing.Size(597, 377);
+            this.pb_Instruction.Size = new System.Drawing.Size(597, 379);
             this.pb_Instruction.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pb_Instruction.TabIndex = 78;
             this.pb_Instruction.TabStop = false;
@@ -284,7 +286,7 @@
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
             this.bt_Start.Size = new System.Drawing.Size(600, 257);
             this.bt_Start.TabIndex = 79;
-            this.bt_Start.Text = "Start";
+            this.bt_Start.Text = "THANK YOU FOR VISITING!";
             this.bt_Start.Click += new System.EventHandler(this.bt_Start_Click);
             // 
             // bt_Payment
@@ -302,6 +304,11 @@
             this.bt_Payment.TabIndex = 77;
             this.bt_Payment.Text = "Confirm / Payment";
             this.bt_Payment.Click += new System.EventHandler(this.bt_Payment_Click);
+            // 
+            // timer_AdImg
+            // 
+            this.timer_AdImg.Interval = 2000;
+            this.timer_AdImg.Tick += new System.EventHandler(this.timer_AdImg_Tick);
             // 
             // frmSalesCustomer
             // 
@@ -357,5 +364,6 @@
         private System.Windows.Forms.TextBox txt_SubTotal;
         private System.Windows.Forms.TextBox txt_TaxTotal;
         private System.Windows.Forms.TextBox txt_TotalDue;
+        private System.Windows.Forms.Timer timer_AdImg;
     }
 }
