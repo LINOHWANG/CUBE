@@ -14,7 +14,7 @@ namespace SDCafeCommon.Model
         public string Register { get; set; }
         public string Cashier   { get; set; }
         public string Req_Trans_Id  { get; set; }
-        public string Tran_Id_To_Void { get; set; }
+        public string Trans_Id_To_Void { get; set; }
         public string Request_Type { get; set; }
         public string Action_Type { get; set; }
         public int Amount { get; set; }

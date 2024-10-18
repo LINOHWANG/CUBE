@@ -53,6 +53,8 @@ namespace SDCafeSales.Views
 
         POS_PmTreeTranModel posPmTreeTran = new POS_PmTreeTranModel();
         POS_PmTreeRespModel posPmTreeResp = new POS_PmTreeRespModel();
+        //CardReceipt to Void
+        List<CCardReceipt> cardReceipts = new List<CCardReceipt>();
 
         // create a enum for the different transaction types
         //public enum PTActionTypes : int
@@ -63,7 +65,7 @@ namespace SDCafeSales.Views
             {"Refund","10"},
             {"PreAuth","17"},
             {"PreAuthComplete","18"},
-            {"Void","38"},
+            {"Void","30"},
             {"CommitTrans","40"},
             {"CloseBatch","51"},
             {"GetBatchTotal","56"}
@@ -403,6 +405,7 @@ namespace SDCafeSales.Views
             String content = String.Empty;
             //bPaymentComplete = false;
             string strProcessingCode = "";
+            string strProcessingMsg = "";
 
             if (p_blnPaymentree)
             {
@@ -418,6 +421,33 @@ namespace SDCafeSales.Views
 
                     util.Logger("bPaymentree Recieved : Read Data -> (" + bytesRead + " Bytes) " + content);
                     strProcessingCode = ProcessPaymentreeTransaction(handler, content);
+                    //split the content by : to get the response code and message
+                    string[] strlist = strProcessingCode.Split(':');
+                    if (strlist.Count() > 1)
+                    {
+                        strProcessingCode = strlist[0];
+                        strProcessingMsg = strlist[1];
+                    }
+                    util.Logger("bPaymentree Recieved : ProcessPaymentreeTransaction finished : strProcessingCode = " + strProcessingCode + " " + strProcessingMsg);
+                    if (strProcessingCode != "0")
+                    {
+                        util.Logger("Transaction Error...." + strProcessingMsg);
+                        //AddText_To_GridControl("Transaction Error ! " + strProcessingMsg);
+                        lblStatus.Invoke((Action)(() => lblStatus.Text = "Transaction Error ! " + strProcessingMsg));
+                        handler.Close();
+                        handler.Dispose();
+                        return;
+                    }
+                    else
+                    {
+                        util.Logger("Paymentree : Approved and closing connection....");
+                        //AddText_To_GridControl("Paymentree : Approved and closing connection....");
+                        handler.Close();
+                        handler.Dispose();
+                        bPaymentComplete = true;
+                        lblStatus.Invoke((Action)(() => lblStatus.Text = "Paymentree : Approved : " + strPaymentType));
+                        return;
+                    }
                 }
             }
             else
@@ -683,7 +713,7 @@ namespace SDCafeSales.Views
                 p_socketHandler.Close();
                 p_socketHandler.Dispose();
                 bPaymentComplete = false;
-                return strProcessingCode;
+                return strProcessingCode + ":" + posPmTreeResp.TransRespMsg;
             }
         }
 
@@ -845,7 +875,46 @@ namespace SDCafeSales.Views
         }
         private void ProcessVoidPaymentreeTran()
         {
-            throw new NotImplementedException();
+            DataAccessCard dbCard = new DataAccessCard();
+            cardReceipts = dbCard.Get_Approved_CardReceipt_By_InvoiceNo(p_InvoiceNo);
+            // Populate posPmTreeTran data
+            posPmTreeTran.Request_Type = PTRequestType["Card"];
+            posPmTreeTran.Action_Type = PTActionTypes["Void"];
+            posPmTreeTran.Client_Id = stations[0].Client_Id;
+            posPmTreeTran.Location = stations[0].Location;
+            posPmTreeTran.Register = stations[0].Register;
+            posPmTreeTran.Cashier = p_UserPassCode; //p_UserName;
+            posPmTreeTran.Req_Trans_Id = p_InvoiceNo.ToString();
+            if (cardReceipts.Count > 0)
+                posPmTreeTran.Trans_Id_To_Void = cardReceipts[0].TicketNo;
+            posPmTreeTran.Amount = (int)(p_TenderAmt * 100);
+            posPmTreeTran.Token = "";
+            posPmTreeTran.Dynamic_Ip = "";
+            posPmTreeTran.Dynamic_Port = 0;
+
+            // Serialize posPmTreeTran data to XML format
+            string strXML = util.ToXML(posPmTreeTran);
+            util.Logger(strXML);
+
+            NetworkStream ns = tcpClient.GetStream();
+            StateObject state = new StateObject();
+            state.workSocket = tcpClient.Client;
+            tcpClient.Client.BeginReceive(state.buffer, 0, state.buffer.Length, SocketFlags.None,
+                  new AsyncCallback(OnReceive), state);
+
+            var utf8 = new UTF8Encoding();
+            byte[] sendBytes = utf8.GetBytes(strXML);
+
+            lblStatus.Text = "Paymentree Void Transaction requested... Please follow instruction on PINPAD!";
+            //lblAmount.Text = "Amount : " + text_Data2Send.Text.Substring(0, 2) + "." + text_Data2Send.Text.Substring(2, 2);
+            BlinkStatusLabel();
+            util.Logger("------------------ Paymentree Void Transaction Started ------------------");
+            util.Logger("Paymentree : Send Data To PinPad Terminal : (" + sendBytes.Length.ToString() + ") " + utf8.GetString(sendBytes));
+            this.dgv_CardData.Rows.Add(new String[] { DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), "Send Data To Terminal : (" + sendBytes.Length.ToString() + ") " + utf8.GetString(sendBytes) });
+            //ns.Write(sendBytes, 0, sendBytes.Length);
+            tcpClient.Client.Send(sendBytes, 0, sendBytes.Length, SocketFlags.None);
+
+            text_Data2Send.Text = "";
         }
 
         private void ProcessRefundPaymentreeTran()

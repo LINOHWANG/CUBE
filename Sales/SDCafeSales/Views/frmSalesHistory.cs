@@ -1452,17 +1452,6 @@ namespace SDCafeSales.Views
                     strSelInvNo = dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[1].Value.ToString();
                 }
 
-                DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
-                if (dbPOS1.IsVoidCollection(Convert.ToInt32(strSelInvNo)) == true)
-                {
-                    bt_SetVoid.Text = "Cancel Void";
-                    bt_SetVoid.BackColor = Color.GreenYellow;
-                }
-                else
-                {
-                    bt_SetVoid.Text = "Manual Void";
-                    bt_SetVoid.BackColor = Color.LightSalmon;
-                }
                 ShowOrderItems(Convert.ToInt32(strSelInvNo));
             }
             RefreshCardProcessButtons(selectedRowCount, selectedRowIndex);
@@ -1489,6 +1478,14 @@ namespace SDCafeSales.Views
                                         order.Tax1, order.Tax2, order.Tax3, order.Amount + order.Tax1 + order.Tax2 + order.Tax3, order.IsVoid);
                     // Set row tag
                     dgvItems.Rows[iItemCount - 1].Tag = order.Id.ToString();
+                    if (order.IsVoid)
+                    {
+                        for (int i = 0; i < dgvItems.Rows[iItemCount - 1].Cells.Count; i++)
+                        {
+                            this.dgvItems.Rows[dgvItems.RowCount - 2].Cells[i].Style.BackColor = Color.LightSalmon;
+                            this.dgvItems.Rows[dgvItems.RowCount - 2].DefaultCellStyle.Font = new Font(this.Font, FontStyle.Strikeout);
+                        }
+                    }
                 }
             }
         }
@@ -1541,6 +1538,25 @@ namespace SDCafeSales.Views
                     bt_CardRefund.Enabled = false;
                     bt_CardVoid.Enabled = false;
                     bt_SetVoid.Enabled = false;
+                }
+                else
+                {
+                    bt_CardRefund.Enabled = true;
+                    bt_CardVoid.Enabled = true;
+                    bt_SetVoid.Enabled = true;
+                }
+
+                if (dbPOS1.IsVoidCollection(Convert.ToInt32(strSelInvNo)) == true)
+                {
+                    bt_SetVoid.Text = "Cancel Void";
+                    bt_SetVoid.BackColor = Color.GreenYellow;
+                    bt_CardVoid.Enabled = false;
+                    bt_CardRefund.Enabled = false;
+                }
+                else
+                {
+                    bt_SetVoid.Text = "Manual Void";
+                    bt_SetVoid.BackColor = Color.LightSalmon;
                 }
             }
             else
@@ -1858,7 +1874,88 @@ namespace SDCafeSales.Views
 
         private void bt_CardVoid_Click(object sender, EventArgs e)
         {
+            float fCash = 0;
+            float fDebit = 0;
+            float fVisa = 0;
+            float fMaster = 0;
+            float fAmex = 0;
+            float fOthers = 0;
+            float fTip = 0;
+            float fVoidAmt = 0;
 
+            bool bCardVoid = false;
+            string strMsg = "";
+
+            fVoidAmt = trancolSelected.TotalPaid;
+            // Call frmCardPayment form
+            using (var FrmCardPay = new frmCardPayment(this.FrmSalesMain))
+            {
+                FrmCardPay.Set_InvoiceNo(trancolSelected.InvoiceNo);
+                FrmCardPay.Set_TenderAmt((double)fVoidAmt);
+                FrmCardPay.Set_Station(p_strStation);
+                FrmCardPay.Set_UserName(p_strUserName);
+                FrmCardPay.Set_UserPassCode(p_strLoginPassword);
+                FrmCardPay.p_strTranType = "Void";
+                FrmCardPay.p_blnPaymentree = this.FrmSalesMain.m_blnPaymentree;
+                FrmCardPay.StartPosition = FormStartPosition.CenterScreen;
+                FrmCardPay.ShowDialog();
+
+                if (FrmCardPay.bPaymentComplete)
+                {
+                    fVoidAmt = (float)FrmCardPay.p_TenderAmt;
+                    FrmCardPay.strPaymentType = FrmCardPay.strPaymentType.ToUpper();
+                    util.Logger("Card Void completed !" + FrmCardPay.strPaymentType);
+                    // Update collection table
+                    switch (FrmCardPay.strPaymentType)
+                    {
+                        case "Cash":
+                        case "CASH":
+                            fCash = fVoidAmt * -1;
+                            break;
+                        case "Debit":
+                        case "DEBIT":
+                            fDebit = fVoidAmt * -1;
+                            break;
+                        case "Visa":
+                        case "VISA":
+                            fVisa = fVoidAmt * -1;
+                            break;
+                        case "Master":
+                        case "MASTER":
+                        case "M/C":
+                        case "MasterCard":
+                        case "MASTERCARD":
+                            FrmCardPay.strPaymentType = "MASTER";
+                            fMaster = fVoidAmt * -1;
+                            break;
+                        case "Amex":
+                        case "AMEX":
+                            fAmex = fVoidAmt * -1;
+                            break;
+                        default:
+                            fOthers = fVoidAmt * -1;
+                            util.Logger("Unknown Card Type !" + FrmCardPay.strPaymentType);
+                            break;
+                    }
+
+                    Process_VoidTran_Collection(trancolSelected.InvoiceNo);
+                    Print_Receipt(false, true, trancolSelected.InvoiceNo);
+                    util.Logger("--------------- Card Void & Printing Receipt is Done : Invoice# " + trancolSelected.InvoiceNo.ToString());
+                    //txtSelectedMenu.Text = "Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString();
+
+                    //Initialize_Local_Variables();
+                    //dgv_Orders_Initialize();
+                    //Load_Existing_Orders();
+                    //bt_Stop.PerformClick();
+                    //bCashPayment = false;
+                }
+                else
+                {
+                    util.Logger("Payment Void is not done yet!");
+
+                }
+
+            }
         }
 
         private void bt_CardRefund_Click(object sender, EventArgs e)
@@ -1878,7 +1975,7 @@ namespace SDCafeSales.Views
             m_fRefundAmt = CalculateRefundAmount();
             bPartialRefundExists = CheckAnyPartialRefundExist();
 
-            if ( (m_fRefundAmt == 0) && (bPartialRefundExists == false))
+            if ((m_fRefundAmt == 0) && (bPartialRefundExists == false))
             {
                 using (var FrmYesNo = new frmYesNo(FrmSalesMain))
                 {
@@ -1888,7 +1985,7 @@ namespace SDCafeSales.Views
                     m_fRefundAmt = GetRefundableAmount(fTip);//trancolSelected.TotalPaid - fTip;
                     strMsg = "Full Refund ? " + m_fRefundAmt.ToString("C2");
                     if (fTip > 0)
-                    { 
+                    {
                         strMsg += System.Environment.NewLine + "Tip Exluded : " + fTip.ToString("C2");
                     }
                     FrmYesNo.Set_Message(strMsg);
@@ -2016,8 +2113,8 @@ namespace SDCafeSales.Views
                     }
                     // Add collection table
                 }
-                }
             }
+        }
 
         private bool CheckAnyPartialRefundExist()
         {
@@ -2348,6 +2445,14 @@ namespace SDCafeSales.Views
             }
 
         }
+        private void Process_VoidTran_Collection(int p_iInvNo)
+        {
+            DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+            dbPOS1.Set_Void_Transaction_by_InvoiceNo(p_iInvNo);
+
+        }
+
+    
         private void Print_Receipt(bool IsInvoice, bool IsCustomerCopy, int p_intInvoiceNo)
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
@@ -3035,6 +3140,21 @@ namespace SDCafeSales.Views
         private void dgvData_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
         {
             DataGridViewRow row = dgvData.Rows[e.RowIndex];
+            // Amount is negative
+            if (Convert.ToDouble(row.Cells[8].Value) < 0)
+            {
+                row.DefaultCellStyle.BackColor = Color.LightPink;
+            }
+            else
+            {
+                row.DefaultCellStyle.BackColor = Color.White;
+            }
+        }
+
+        private void dgvItems_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            DataGridViewRow row = dgvItems.Rows[e.RowIndex];
+            // Amount is negative
             if (Convert.ToDouble(row.Cells[8].Value) < 0)
             {
                 row.DefaultCellStyle.BackColor = Color.LightPink;

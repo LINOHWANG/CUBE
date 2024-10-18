@@ -313,6 +313,7 @@
             this.dgvItems.Size = new System.Drawing.Size(983, 239);
             this.dgvItems.TabIndex = 62;
             this.dgvItems.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvItems_CellContentClick);
+            this.dgvItems.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.dgvItems_RowPrePaint);
             // 
             // bt_CardRefund
             // 

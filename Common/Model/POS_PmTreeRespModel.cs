@@ -11,7 +11,7 @@ namespace SDCafeCommon.Model
     public class POS_PmTreeRespModel
     {
         public int Id { get; set; }
-        public string PAYLinqTransID { get; set; }
+        public string PAYLinqTransId { get; set; }
         public string reqtransid { get; set; }
         public string CheckNumber { get; set; }
         public string TransRespCode { get; set; }
