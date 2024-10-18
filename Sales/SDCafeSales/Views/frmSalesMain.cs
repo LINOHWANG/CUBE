@@ -332,7 +332,7 @@ namespace SDCafeSales.Views
             bt_OpenCashDrawer1.Text = "Open" + System.Environment.NewLine + "C/D";
             bt_OpenCashDrawer1.TextAlign = ContentAlignment.MiddleRight;
 
-            Check_AutoReceipt();
+            Check_AutoReceipt(false);
             Show_AutoReceipt_Button();
 
         }
@@ -4976,8 +4976,10 @@ namespace SDCafeSales.Views
                 FrmSalesHist.p_strUserName = loginUsers[0].FirstName;
                 FrmSalesHist.p_strStation = strStation;
 
-            FrmSalesHist.Show();
+                FrmSalesHist.Show();
                 FrmSalesHist.BringToFront();
+                // Show the FrmSalesHist on Top most
+                FrmSalesHist.TopMost = true;
             //}
             /*else
             {
@@ -6195,7 +6197,7 @@ namespace SDCafeSales.Views
 
         private void bt_AutoReceipt_Click(object sender, EventArgs e)
         {
-            Check_AutoReceipt();
+            Check_AutoReceipt(true);
             Show_AutoReceipt_Button();
             BarCode_Get_Focus();
         }
@@ -6250,7 +6252,7 @@ namespace SDCafeSales.Views
             }
         }
 
-        private void Check_AutoReceipt()
+        private void Check_AutoReceipt(bool p_IsUpdate)
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
             sysConfs.Clear();
@@ -6273,15 +6275,26 @@ namespace SDCafeSales.Views
             {
                 if (sysConfs[0].ConfigValue == "TRUE")
                 {
-                    sysConfs[0].ConfigValue = "FALSE";
-                    bAutoReceipt = false;
+                    if (p_IsUpdate)
+                    {
+                        sysConfs[0].ConfigValue = "FALSE";
+                        bAutoReceipt = false;
+                    }
+                    else
+                        bAutoReceipt = true;
                 }
                 else
                 {
-                    sysConfs[0].ConfigValue = "TRUE";
-                    bAutoReceipt = true;
+                    if (p_IsUpdate)
+                    {
+                        sysConfs[0].ConfigValue = "TRUE";
+                        bAutoReceipt = true;
+                    }
+                    else
+                        bAutoReceipt = false;
                 }
-                dbPOS.Update_SysConfig(sysConfs[0]);
+                if (p_IsUpdate)
+                    dbPOS.Update_SysConfig(sysConfs[0]);
             }
         }
 

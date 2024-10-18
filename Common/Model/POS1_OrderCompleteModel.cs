@@ -53,6 +53,10 @@ namespace SDCafeCommon.Model
         public int RFTagId { get; set; }
         public int ParentId { get; set; }
         public int OrderCategoryId { get; set; }
+
+        public bool IsVoid { get; set; }
+        public string VoidDate { get; set; }
+        public string VoidTime { get; set; }
         public bool IsDiscounted { get; set; }
         public string BarCode { get; set; }
     }

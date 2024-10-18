@@ -161,6 +161,14 @@ namespace SDCafeCommon.DataAccess
                 return output[0];
             }
         }
+        public POS1_TranCollectionModel Get_One_TranCollection_by_Id(int p_iId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS1")))
+            {
+                var output = connection.Query<POS1_TranCollectionModel>($"select * from TranCollection where Id = {p_iId}").ToList();
+                return output[0];
+            }
+        }
         public List<POS1_TranCollectionModel> Get_TranCollection_by_Date_Tender(string strStartDate, string strEndDate, string strTender)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS1")))
@@ -291,6 +299,32 @@ namespace SDCafeCommon.DataAccess
                                                                 $"where CollectionType not like '%/%' And CollectionType <> '' Order By CollectionType").ToArray();
                 if (strTenders.Length > 0)
                     return strTenders;
+                else
+                    return null;
+            }
+        }
+
+        public POS1_OrderCompleteModel Get_OrderComplete_by_Id(int p_iOrderItemId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS1")))
+            {
+                if (p_iOrderItemId == 0) return null;
+                var output = connection.Query<POS1_OrderCompleteModel>($"select * from OrderComplete where Id = {p_iOrderItemId}").ToList();
+                if (output.Count > 0)
+                    return output[0];
+                else
+                    return null;
+            }
+        }
+
+        public POS1_OrderCompleteModel Get_Refund_OrderComplete_by_InvoiceNo_ProdId(int p_invoiceNo, int p_productId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS1")))
+            {
+                if (p_invoiceNo == 0) return null;
+                var output = connection.Query<POS1_OrderCompleteModel>($"select * from OrderComplete where InvoiceNo = {p_invoiceNo} and ProductId = {p_productId} and Quantity < 0;").ToList();
+                if (output.Count > 0)
+                    return output[0];
                 else
                     return null;
             }

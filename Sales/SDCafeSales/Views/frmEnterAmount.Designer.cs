@@ -32,6 +32,7 @@
             this.txt_Amount = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
+            this.lblTest = new System.Windows.Forms.Label();
             this.bt_Process = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.btNumClear = new SDCafeCommon.Utilities.CustomButton();
@@ -46,7 +47,6 @@
             this.btNum2 = new SDCafeCommon.Utilities.CustomButton();
             this.btNum4 = new SDCafeCommon.Utilities.CustomButton();
             this.btNum1 = new SDCafeCommon.Utilities.CustomButton();
-            this.lblTest = new System.Windows.Forms.Label();
             this.pnlNumPad.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -100,7 +100,7 @@
             // lblTitle
             // 
             this.lblTitle.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.lblTitle.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold);
             this.lblTitle.ForeColor = System.Drawing.Color.Black;
             this.lblTitle.Location = new System.Drawing.Point(19, 9);
             this.lblTitle.Name = "lblTitle";
@@ -108,6 +108,19 @@
             this.lblTitle.TabIndex = 96;
             this.lblTitle.Text = "Title";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblTest
+            // 
+            this.lblTest.BackColor = System.Drawing.Color.Transparent;
+            this.lblTest.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.lblTest.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTest.ForeColor = System.Drawing.Color.DarkBlue;
+            this.lblTest.Location = new System.Drawing.Point(346, -5);
+            this.lblTest.Name = "lblTest";
+            this.lblTest.Size = new System.Drawing.Size(140, 53);
+            this.lblTest.TabIndex = 99;
+            this.lblTest.Text = "Amount";
+            this.lblTest.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // bt_Process
             // 
@@ -332,19 +345,6 @@
             this.btNum1.TabIndex = 17;
             this.btNum1.Text = "1";
             this.btNum1.Click += new System.EventHandler(this.btNum1_Click);
-            // 
-            // lblTest
-            // 
-            this.lblTest.BackColor = System.Drawing.Color.Transparent;
-            this.lblTest.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.lblTest.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTest.ForeColor = System.Drawing.Color.DarkBlue;
-            this.lblTest.Location = new System.Drawing.Point(346, -5);
-            this.lblTest.Name = "lblTest";
-            this.lblTest.Size = new System.Drawing.Size(140, 53);
-            this.lblTest.TabIndex = 99;
-            this.lblTest.Text = "Amount";
-            this.lblTest.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // frmEnterAmount
             // 

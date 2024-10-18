@@ -146,11 +146,16 @@ namespace SDCafeCommon.DataAccess
             }
         }
 
-        public List<POS_SysConfigModel> Get_SysConfig_By_Name(string strName)
+        public List<POS_SysConfigModel> Get_SysConfig_By_Name(string strConfigName)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                var output = connection.Query<POS_SysConfigModel>($"select * from SysConfig where ConfigName = '{strName}'").ToList();
+                var output = connection.Query<POS_SysConfigModel>($"select * from SysConfig where ConfigName = '{strConfigName}'").ToList();
+                if (output.Count == 0)
+                {
+                    Insert_SysConfig(new POS_SysConfigModel { ConfigName = strConfigName, ConfigValue = "TRUE", ConfigDesc = "", IsActive = true });
+                    output = connection.Query<POS_SysConfigModel>($"select * from SysConfig where ConfigName = '{strConfigName}'").ToList();
+                }
                 return output;
             }
         }

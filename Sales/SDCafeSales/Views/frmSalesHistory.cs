@@ -14,6 +14,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
 using System.Runtime.Remoting.Lifetime;
 using System.Security.Policy;
+using static System.Net.WebRequestMethods;
 
 
 namespace SDCafeSales.Views
@@ -26,6 +27,7 @@ namespace SDCafeSales.Views
         List<POS1_TranCollectionModel> trancols = new List<POS1_TranCollectionModel>();
         List<POS_LoginUserModel> loginUsers = new List<POS_LoginUserModel>();
         POS1_TranCollectionModel trancolSelected = new POS1_TranCollectionModel();
+        List<POS1_TranCollectionModel> trancolsRelated = new List<POS1_TranCollectionModel>();
         // string array to store all type of tenters
         string[] strTenderTypes; //Feature #3264
         private string strSelInvNo;
@@ -34,13 +36,20 @@ namespace SDCafeSales.Views
         Utility util = new Utility();
         private ImageList m_imageList;
         private List<POS1_OrderCompleteModel> compOrders;
-
+        
         public string p_strUserName { get; set; }
         public string p_strStation { get; set; }
         public string p_strLoginPassword { get; set; }
         public int p_intLoginUserId { get; set; }
         public bool p_blnPaymentree { get; set; }
         public string p_strUserPassCode { get; private set; }
+
+        private string m_strTax1Name;
+        private string m_strTax2Name;
+        private string m_strTax3Name;
+
+        private float m_fRefundAmt;
+        private bool m_bExcludeTip;
 
         public frmSalesHistory(frmSalesMain _FrmSalesMain)
         {
@@ -57,6 +66,7 @@ namespace SDCafeSales.Views
         private void bt_Query_Click(object sender, EventArgs e)
         {
             dgvData_Initialize();
+            dgvItems_Initialize();
 
             float iTotalCount = 0;
             float iTotalSales = 0;
@@ -68,6 +78,7 @@ namespace SDCafeSales.Views
             string strConfig = "";
 
             string strTenderType = "";
+            int iRowCount = 0;
             if (cb_Tender.SelectedIndex > 0)
             {
                 strTenderType = cb_Tender.SelectedItem.ToString();
@@ -83,6 +94,7 @@ namespace SDCafeSales.Views
                 iTotalCount = trancols.Count;
                 foreach (var trancol in trancols)
                 {
+                    iRowCount++;
                     iTotalSales = iTotalSales + (trancol.Amount + trancol.Tax1 + trancol.Tax2 + trancol.Tax3);
                     iTotalTips = iTotalTips + trancol.TotalTip;
                     this.dgvData.Rows.Add(new String[] { trancol.CreateDate.ToString() + " " + trancol.CreateTime.ToString(),
@@ -92,10 +104,13 @@ namespace SDCafeSales.Views
                                                          trancol.Tax1.ToString("0.00"),
                                                          trancol.Tax2.ToString("0.00"),
                                                          trancol.Tax3.ToString("0.00"),
+                                                         trancol.TotalTip.ToString("0.00"),
                                                          trancol.TotalPaid.ToString("0.00"),
                                                          //trancol.TotalTip.ToString("0.00"),
                                                          trancol.IsVoid.ToString()
                     });
+                    // set the row tag with trancol's id
+                    this.dgvData.Rows[iRowCount - 1].Tag = trancol.Id.ToString();
 
                     if (trancol.IsVoid)
                     {
@@ -171,7 +186,7 @@ namespace SDCafeSales.Views
             {
                 bt_ExcelExport.Enabled = false;
             }
-            RefreshCardProcessButtons(0);
+            RefreshCardProcessButtons(0, 0);
         }
 
         private void dgvData_Initialize()
@@ -184,12 +199,12 @@ namespace SDCafeSales.Views
             this.dgvData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvData.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            this.dgvData.ColumnCount = 9;
+            this.dgvData.ColumnCount = 10;
             this.dgvData.Columns[0].Name = "DateTime";
             this.dgvData.Columns[0].Width = 150;
             this.dgvData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvData.Columns[1].Name = "Invoice #";
-            this.dgvData.Columns[1].Width = 140;
+            this.dgvData.Columns[1].Width = 120;
             this.dgvData.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvData.Columns[2].Name = "Payment Type";
             this.dgvData.Columns[2].Width = 100;
@@ -197,38 +212,110 @@ namespace SDCafeSales.Views
             this.dgvData.Columns[3].Name = "Net";
             this.dgvData.Columns[3].Width = 100;
             this.dgvData.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            this.dgvData.Columns[4].Name = "GST";
-            this.dgvData.Columns[4].Width = 90;
+            this.dgvData.Columns[4].Name = m_strTax1Name; // "GST";
+            this.dgvData.Columns[4].Width = 70;
             this.dgvData.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            this.dgvData.Columns[5].Name = "PST";
-            this.dgvData.Columns[5].Width = 90;
+            this.dgvData.Columns[5].Name = m_strTax2Name; // "GST";
+            this.dgvData.Columns[5].Width = 70;
             this.dgvData.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            this.dgvData.Columns[6].Name = "Tax3";
-            this.dgvData.Columns[6].Width = 90;
+            this.dgvData.Columns[6].Name = m_strTax3Name; // "GST";
+            this.dgvData.Columns[6].Width = 70;
             this.dgvData.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            this.dgvData.Columns[7].Name = "Paid";
-            this.dgvData.Columns[7].Width = 110;
+            this.dgvData.Columns[7].Name = "Tip"; // "GST";
+            this.dgvData.Columns[7].Width = 70;
             this.dgvData.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            this.dgvData.Columns[8].Name = "Paid";
+            this.dgvData.Columns[8].Width = 100;
+            this.dgvData.Columns[8].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             //this.dgvData.Columns[8].Name = "Tip";
             //this.dgvData.Columns[8].Width = 70;
             //this.dgvData.Columns[8].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            this.dgvData.Columns[8].Name = "Void";
-            this.dgvData.Columns[8].Width = 50;
-            this.dgvData.Columns[8].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.dgvData.Columns[9].Name = "Void";
+            this.dgvData.Columns[9].Width = 70;
+            this.dgvData.Columns[9].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            this.dgvData.DefaultCellStyle.Font = new Font("Arial", 16F, GraphicsUnit.Pixel);
+            this.dgvData.DefaultCellStyle.Font = new Font("Arial", 12F, FontStyle.Bold ,GraphicsUnit.Pixel);
 
             this.dgvData.EnableHeadersVisualStyles = false;
-            this.dgvData.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 18F, GraphicsUnit.Pixel);
+            this.dgvData.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
             this.dgvData.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvData.ColumnHeadersDefaultCellStyle.BackColor = Color.LightBlue;
             // fix the row height
             dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             dgvData.AllowUserToResizeRows = false;
             dgvData.RowTemplate.Resizable = DataGridViewTriState.True;
-            dgvData.RowTemplate.MinimumHeight = 40;
+            dgvData.RowTemplate.MinimumHeight = 30;
         }
+        private void dgvItems_Initialize()
+        {
+            this.dgvItems.AutoSize = false;
+            dgvItems.Rows.Clear();
+            //this.dataGridActivity.AutoGenerateColumns = false;
+            //this.dataGridActivity.RowHeadersVisible = false;
+            //this.dataGridActivity.MultiSelect = false;
+            this.dgvItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            this.dgvItems.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            this.dgvItems.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            this.dgvItems.ColumnCount = 10;
+            this.dgvItems.Columns[0].Name = "Seq";
+            this.dgvItems.Columns[0].Width = 50;
+            this.dgvItems.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvItems.Columns[1].Name = "Type";
+            this.dgvItems.Columns[1].Width = 100;
+            this.dgvItems.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvItems.Columns[2].Name = "Product";
+            this.dgvItems.Columns[2].Width = 150;
+            this.dgvItems.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvItems.Columns[3].Name = "Unit Price";
+            this.dgvItems.Columns[3].Width = 70;
+            this.dgvItems.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.dgvItems.Columns[4].Name = "QTY";
+            this.dgvItems.Columns[4].Width = 70;
+            this.dgvItems.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.dgvItems.Columns[5].Name = m_strTax1Name; // "GST";"Tax1";
+            this.dgvItems.Columns[5].Width = 70;
+            this.dgvItems.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.dgvItems.Columns[6].Name = m_strTax2Name; // "GST";"Tax2";
+            this.dgvItems.Columns[6].Width = 70;
+            this.dgvItems.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.dgvItems.Columns[7].Name = m_strTax3Name; // "GST";"Tax3";
+            this.dgvItems.Columns[7].Width = 70;
+            this.dgvItems.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.dgvItems.Columns[8].Name = "Amount";
+            this.dgvItems.Columns[8].Width = 70;
+            this.dgvItems.Columns[8].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.dgvItems.Columns[9].Name = "Void";
+            this.dgvItems.Columns[9].Width = 60;
+            this.dgvItems.Columns[9].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            DataGridViewCheckBoxColumn dgvCmb = new DataGridViewCheckBoxColumn();
+            dgvCmb.ValueType = typeof(bool);
+            dgvCmb.Name = "RefundChk";
+            dgvCmb.HeaderText = "Refund?";
+            this.dgvItems.Columns.Add(dgvCmb);
+            this.dgvItems.Columns[this.dgvItems.ColumnCount - 1].Width = 80;
+            // Add a numeric column
+            //this.dgvItems.Columns.Add();
+            DataGridViewTextBoxColumn dgvRefundQty = new DataGridViewTextBoxColumn();
+            dgvRefundQty.HeaderText = "Refund Qty";
+            dgvRefundQty.Name = "RefundQty";
+            this.dgvItems.Columns.Add(dgvRefundQty);
+            this.dgvItems.Columns[this.dgvItems.ColumnCount - 1].Width = 80;
+            this.dgvItems.Columns[this.dgvItems.ColumnCount - 1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            this.dgvItems.DefaultCellStyle.Font = new Font("Arial", 12F, FontStyle.Bold, GraphicsUnit.Pixel);
+
+            this.dgvItems.EnableHeadersVisualStyles = false;
+            this.dgvItems.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
+            this.dgvItems.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvItems.ColumnHeadersDefaultCellStyle.BackColor = Color.LightBlue;
+            // fix the row height
+            dgvItems.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            dgvItems.AllowUserToResizeRows = false;
+            dgvItems.RowTemplate.Resizable = DataGridViewTriState.True;
+            dgvItems.RowTemplate.MinimumHeight = 30;
+            dgvItems.MultiSelect = false;
+        }
         private void bt_ReprintReceipt_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(strSelInvNo)) return;
@@ -1337,7 +1424,11 @@ namespace SDCafeSales.Views
 
         private void dgvData_MouseClick(object sender, MouseEventArgs e)
         {
+            int selectedRowIndex = dgvData.CurrentCell.RowIndex;
             Int32 selectedRowCount = dgvData.Rows.GetRowCount(DataGridViewElementStates.Selected);
+            // Get the selected row index
+
+
             if (selectedRowCount == 1)
             {
                 System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -1372,20 +1463,68 @@ namespace SDCafeSales.Views
                     bt_SetVoid.Text = "Manual Void";
                     bt_SetVoid.BackColor = Color.LightSalmon;
                 }
+                ShowOrderItems(Convert.ToInt32(strSelInvNo));
             }
-            RefreshCardProcessButtons(selectedRowCount);
+            RefreshCardProcessButtons(selectedRowCount, selectedRowIndex);
 
         }
 
-        private void RefreshCardProcessButtons(int selectedRowCount)
+        private void ShowOrderItems(int p_intInvNo)
         {
+            int iItemCount = 0;
+            string strPTypeName = String.Empty;
+            dgvItems.Rows.Clear();
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+            List<POS1_OrderCompleteModel> orderitems = new List<POS1_OrderCompleteModel>();
+            orderitems = dbPOS1.Get_OrderComplete_by_InvoiceNo(p_intInvNo);
+            if (orderitems.Count > 0)
+            {
+                foreach (var order in orderitems)
+                {
+                    iItemCount++;
+                    // Get Product Type Name
+                    strPTypeName = dbPOS.Get_ProductTypeName_By_Id(order.ProductTypeId);
+                    dgvItems.Rows.Add(iItemCount.ToString(), strPTypeName, order.ProductName, order.OutUnitPrice.ToString(), order.Quantity,
+                                        order.Tax1, order.Tax2, order.Tax3, order.Amount + order.Tax1 + order.Tax2 + order.Tax3, order.IsVoid);
+                    // Set row tag
+                    dgvItems.Rows[iItemCount - 1].Tag = order.Id.ToString();
+                }
+            }
+        }
+
+        private void RefreshCardProcessButtons(int selectedRowCount, int p_selectedRowIndex)
+        {
+            int iselectedCollectionId = 0;
+            float fRefundableAmt = 0;
+            if (selectedRowCount == 0) return;
+            if (p_selectedRowIndex >= 0)
+            {
+                if (dgvData.Rows[p_selectedRowIndex].Tag != null)
+                    iselectedCollectionId = Convert.ToInt32(dgvData.Rows[p_selectedRowIndex].Tag);
+            }
             if ((selectedRowCount == 1) && (strSelInvNo.Length > 0))
             {
                 DataAccessCard dbCard = new DataAccessCard();
                 DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
                 List<CCardReceipt> cardReceipts = new List<CCardReceipt>();
                 cardReceipts = dbCard.Get_Approved_CardReceipt_By_InvoiceNo(Convert.ToInt32(strSelInvNo));
-                trancolSelected = dbPOS1.Get_One_TranCollection_by_InvoiceNo(Convert.ToInt32(strSelInvNo));
+                trancolSelected = dbPOS1.Get_One_TranCollection_by_Id(iselectedCollectionId);
+                trancolsRelated = dbPOS1.Get_TranCollection_by_InvoiceNo(Convert.ToInt32(strSelInvNo));
+                fRefundableAmt = GetRefundableAmount(0);
+                // remove one of trancolsRelated that is same as trancolSelected
+                if (trancolsRelated.Count > 0)
+                {
+                    for (int i = 0; i < trancolsRelated.Count; i++)
+                    {
+                        if (trancolsRelated[i].Id == iselectedCollectionId)
+                        {
+                            trancolsRelated.RemoveAt(i);
+                            break;
+                        }
+                    }
+                }
+
                 if ((cardReceipts.Count > 0) && (p_blnPaymentree))
                 {
                     bt_CardRefund.Enabled = true;
@@ -1395,6 +1534,13 @@ namespace SDCafeSales.Views
                 {
                     bt_CardRefund.Enabled = false;
                     bt_CardVoid.Enabled = false;
+                }
+                // Total Paid is less than zero, then disable the Refund button
+                if ((trancolSelected.TotalPaid < 0) && (p_blnPaymentree))
+                {
+                    bt_CardRefund.Enabled = false;
+                    bt_CardVoid.Enabled = false;
+                    bt_SetVoid.Enabled = false;
                 }
             }
             else
@@ -1488,7 +1634,7 @@ namespace SDCafeSales.Views
             LoadImageList();
             LoadTenderComboBox();
             EnableDisableControls();
-            RefreshCardProcessButtons(0);
+            RefreshCardProcessButtons(0, 0);
         }
 
         private void LoadImageList()
@@ -1558,6 +1704,8 @@ namespace SDCafeSales.Views
                 }
             }
 
+            m_bExcludeTip = dbPOS.Get_SysConfig_By_Name("IS_FULLREFUND_EXCLUDE_TIP")[0].ConfigValue.Trim() == "TRUE" ? true : false;
+
         }
         //Feature #3264
         private void LoadTenderComboBox()
@@ -1570,6 +1718,10 @@ namespace SDCafeSales.Views
             {
                 cb_Tender.DataSource = strTenderTypes;
             }
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            m_strTax1Name = dbPOS.Get_SysConfig_By_Name("TAX1")[0].ConfigValue;
+            m_strTax2Name = dbPOS.Get_SysConfig_By_Name("TAX2")[0].ConfigValue;
+            m_strTax3Name = dbPOS.Get_SysConfig_By_Name("TAX3")[0].ConfigValue;
         }
 
         private void bt_ExcelExport_Click(object sender, EventArgs e)
@@ -1647,12 +1799,12 @@ namespace SDCafeSales.Views
                 progBarExport.Visible = false;
                 Cursor.Current = Cursors.Default;
                 // Open the newly saved excel file
-                if (File.Exists(sfd.FileName))
+                if (System.IO.File.Exists(sfd.FileName))
                 {
                     // copy the file to the temp folder
                     string strTempPath = Path.GetTempPath();
                     string strTempFile = strTempPath + Path.GetFileName(sfd.FileName);
-                    File.Copy(sfd.FileName, strTempFile, true);
+                    System.IO.File.Copy(sfd.FileName, strTempFile, true);
 
                     DataAccessPOS dbPOS = new DataAccessPOS();
                     string strConfig = dbPOS.Get_SysConfig_By_Name("CON_SEND_EMAIL_REPORT")[0].ConfigValue.Trim();
@@ -1717,17 +1869,54 @@ namespace SDCafeSales.Views
             float fMaster = 0;
             float fAmex = 0;
             float fOthers = 0;
+            float fTip = 0;
 
             bool bCardRefund = false;
-            float fRefundAmt = 0;
+            bool bFullRefund = false;
+            bool bPartialRefundExists = false;
+            string strMsg = "";
+            m_fRefundAmt = CalculateRefundAmount();
+            bPartialRefundExists = CheckAnyPartialRefundExist();
+
+            if ( (m_fRefundAmt == 0) && (bPartialRefundExists == false))
+            {
+                using (var FrmYesNo = new frmYesNo(FrmSalesMain))
+                {
+                    FrmYesNo.Set_Title("Refund");
+
+                    fTip = CheckExcludeTipOnFullRefund();
+                    m_fRefundAmt = GetRefundableAmount(fTip);//trancolSelected.TotalPaid - fTip;
+                    strMsg = "Full Refund ? " + m_fRefundAmt.ToString("C2");
+                    if (fTip > 0)
+                    { 
+                        strMsg += System.Environment.NewLine + "Tip Exluded : " + fTip.ToString("C2");
+                    }
+                    FrmYesNo.Set_Message(strMsg);
+                    //FrmYesNo.Set_Message("Set/Unset All selected Invoice ?" + strSelInvNo);
+                    FrmYesNo.StartPosition = FormStartPosition.Manual; // FormStartPosition.CenterScreen; //
+                    FrmYesNo.Location = new Point((Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2,
+                              (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2); //Screen.PrimaryScreen.Bounds.Location;
+                    FrmYesNo.ShowDialog();
+
+                    if (FrmYesNo.bYesNo)
+                    {
+                        bFullRefund = true;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+            }
             using (var FrmEnterAmount = new frmEnterAmount(this.FrmSalesMain))
             {
                 this.TopMost = false;
-                FrmEnterAmount.p_Title = "Enter Refund Amount !";
+                FrmEnterAmount.p_Title = "Please confirm Refund Amount !";
                 FrmEnterAmount.StartPosition = FormStartPosition.CenterScreen;
-                if (trancolSelected != null)
+                //if (trancolSelected != null)
+                if (m_fRefundAmt > 0)
                 {
-                    FrmEnterAmount.p_TenderAmt = trancolSelected.TotalPaid;
+                    FrmEnterAmount.p_TenderAmt = m_fRefundAmt; // trancolSelected.TotalPaid;
                 }
                 else
                 {
@@ -1738,15 +1927,15 @@ namespace SDCafeSales.Views
 
                 this.TopMost = true;
                 bCardRefund = FrmEnterAmount.p_IsRefund;
-                fRefundAmt = FrmEnterAmount.p_RefundAmt;
+                m_fRefundAmt = FrmEnterAmount.p_RefundAmt;
             }
-            if (bCardRefund && fRefundAmt > 0)
+            if (bCardRefund && m_fRefundAmt > 0)
             {
                 // Call frmCardPayment form
                 using (var FrmCardPay = new frmCardPayment(this.FrmSalesMain))
                 {
                     FrmCardPay.Set_InvoiceNo(trancolSelected.InvoiceNo);
-                    FrmCardPay.Set_TenderAmt((double)fRefundAmt);
+                    FrmCardPay.Set_TenderAmt((double)m_fRefundAmt);
                     FrmCardPay.Set_Station(p_strStation);
                     FrmCardPay.Set_UserName(p_strUserName);
                     FrmCardPay.Set_UserPassCode(p_strLoginPassword);
@@ -1757,27 +1946,27 @@ namespace SDCafeSales.Views
 
                     if (FrmCardPay.bPaymentComplete)
                     {
-                        fRefundAmt = (float)FrmCardPay.p_TenderAmt;
+                        m_fRefundAmt = (float)FrmCardPay.p_TenderAmt;
                         FrmCardPay.strPaymentType = FrmCardPay.strPaymentType.ToUpper();
                         util.Logger("Card Refund completed !" + FrmCardPay.strPaymentType);
                         // Move Orders to OrderComplete
                         //Process_Order_Complete(trancolSelected.InvoiceNo);
-                        Process_OrderRefund_Complete(trancolSelected.InvoiceNo);
+                        Process_OrderRefund_Complete(trancolSelected.InvoiceNo, bFullRefund);
                         //Process_Tran_Collection(iNewInvNo, FrmCardPay.p_TenderAmt, 
                         // Add collection table
                         switch (FrmCardPay.strPaymentType)
                         {
                             case "Cash":
                             case "CASH":
-                                fCash = fRefundAmt * -1;
+                                fCash = m_fRefundAmt * -1;
                                 break;
                             case "Debit":
                             case "DEBIT":
-                                fDebit = fRefundAmt * -1;
+                                fDebit = m_fRefundAmt * -1;
                                 break;
                             case "Visa":
                             case "VISA":
-                                fVisa = fRefundAmt * -1;
+                                fVisa = m_fRefundAmt * -1;
                                 break;
                             case "Master":
                             case "MASTER":
@@ -1785,19 +1974,30 @@ namespace SDCafeSales.Views
                             case "MasterCard":
                             case "MASTERCARD":
                                 FrmCardPay.strPaymentType = "MASTER";
-                                fMaster = fRefundAmt * -1;
+                                fMaster = m_fRefundAmt * -1;
                                 break;
                             case "Amex":
                             case "AMEX":
-                                fAmex = fRefundAmt * -1;
+                                fAmex = m_fRefundAmt * -1;
                                 break;
                             default:
-                                fOthers = fRefundAmt * -1;
+                                fOthers = m_fRefundAmt * -1;
                                 util.Logger("Unknown Card Type !" + FrmCardPay.strPaymentType);
                                 break;
                         }
+                        if (bFullRefund)
+                        {
+                            if (m_bExcludeTip)
+                            {
+                                FrmCardPay.p_TipAmt = 0;
+                            }
+                            else
+                            {
+                                FrmCardPay.p_TipAmt = fTip; // trancolSelected.TotalTip;
+                            }
+                        }
                         Process_RefundTran_Collection(trancolSelected.InvoiceNo, fCash, fDebit, fVisa, fMaster, fAmex, fOthers,
-                                                            0, FrmCardPay.p_TipAmt, FrmCardPay.strPaymentType, true);
+                                                            0, FrmCardPay.p_TipAmt, FrmCardPay.strPaymentType, true, bFullRefund);
                         Print_Receipt(false, true, trancolSelected.InvoiceNo);
                         util.Logger("--------------- Card Refund & Printing Receipt is Done : Invoice# " + trancolSelected.InvoiceNo.ToString());
                         //txtSelectedMenu.Text = "Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString();
@@ -1819,12 +2019,161 @@ namespace SDCafeSales.Views
                 }
             }
 
-        private void Process_OrderRefund_Complete(int invoiceNo)
+        private bool CheckAnyPartialRefundExist()
         {
+            bool bRefindExist = false;
+            DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+            List<POS1_TranCollectionModel> cols = new List<POS1_TranCollectionModel>();
+            cols = dbPOS1.Get_TranCollection_by_InvoiceNo(trancolSelected.InvoiceNo);
+            if (cols.Count > 0)
+            {
+                for (int i = 0; i < cols.Count; i++)
+                {
+                    if (cols[i].TotalPaid < 0)
+                    {
+                        bRefindExist = true;
+                        break;
+                    }
+                }
+            }
+            return bRefindExist;
+        }
+
+        private float GetRefundableAmount(float fTip)
+        {
+            float fRefundAmt = 0;
+            fRefundAmt += trancolSelected.TotalPaid - fTip;
+            if (trancolsRelated.Count > 0)
+            {
+                for (int i = 0; i < trancolsRelated.Count; i++)
+                {
+                    fRefundAmt += trancolsRelated[i].TotalPaid;
+                }
+            }
+
+            return fRefundAmt;
+        }
+        private float CheckExcludeTipOnFullRefund()
+        {
+            if (m_bExcludeTip)
+            {
+                return trancolSelected.TotalTip;
+            }
+            else
+            {
+                return 0;
+            }
+
+        }
+
+        private float CalculateRefundAmount()
+        {
+            // Calculate Refund Amount
+            float fRefundAmt = 0;
+            float fOrderItemAmt = 0;
+            float fOrderItemTaxAmt = 0;
+            int iOrderId = 0;
+            DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+            // Calculate Refund Amount from dgvItems
+            foreach (DataGridViewRow row in dgvItems.Rows)
+            {
+                if (row.Cells[11].Value != null)
+                {
+                    iOrderId = Convert.ToInt32(row.Tag);
+                    POS1_OrderCompleteModel orderComp = new POS1_OrderCompleteModel();
+                    orderComp = dbPOS1.Get_OrderComplete_by_Id(iOrderId);
+                    if (Convert.ToInt32(row.Cells[11].Value.ToString()) > 0)
+                    {
+                        fOrderItemAmt = ((float)System.Convert.ToDouble(row.Cells[3].Value) * Convert.ToInt32(row.Cells[11].Value.ToString()));
+                        fOrderItemTaxAmt = (orderComp.IsTax1 ? (orderComp.Tax1Rate * fOrderItemAmt) : 0) +
+                                                  (orderComp.IsTax2 ? (orderComp.Tax2Rate * fOrderItemAmt) : 0) +
+                                                  (orderComp.IsTax3 ? (orderComp.Tax3Rate * fOrderItemAmt) : 0);
+                        fRefundAmt += (fOrderItemAmt + fOrderItemTaxAmt);
+                    }
+                }
+            }
+            fRefundAmt = (float)Math.Round((Double)fRefundAmt, 2);
+            return fRefundAmt;
+        }
+
+        private void Process_OrderRefund_Complete(int p_invoiceNo, bool p_bFullRefund)
+        {
+            int iOrderId = 0;
+            int iRefundQty = 0;
             // Set OrderComplete to Void
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
-            dbPOS1.Set_Void_OrderCoplete_by_InvoiceNo(invoiceNo);
-            //throw new NotImplementedException();
+            //dbPOS1.Set_Void_OrderCoplete_by_InvoiceNo(p_invoiceNo);
+            if (p_bFullRefund)
+            { // Full Refund
+                //dbPOS1.Set_Void_OrderCoplete_by_InvoiceNo(p_invoiceNo);
+                foreach (DataGridViewRow row in dgvItems.Rows)
+                {
+
+                    iOrderId = Convert.ToInt32(row.Tag);
+                    if (iOrderId == 0) continue;
+                    POS1_OrderCompleteModel orderComp = new POS1_OrderCompleteModel();
+                    orderComp = dbPOS1.Get_OrderComplete_by_Id(iOrderId);
+                    if (orderComp != null)
+                    {
+                        if (orderComp.Quantity > 0)
+                        {
+                            orderComp.Quantity = orderComp.Quantity * -1;
+                            orderComp.Amount = orderComp.OutUnitPrice * orderComp.Quantity;
+                            orderComp.Tax1 = (orderComp.IsTax1 ? (orderComp.Tax1Rate * orderComp.Amount) : 0);
+                            orderComp.Tax2 = (orderComp.IsTax2 ? (orderComp.Tax2Rate * orderComp.Amount) : 0);
+                            orderComp.Tax3 = (orderComp.IsTax3 ? (orderComp.Tax3Rate * orderComp.Amount) : 0);
+                            orderComp.CreateDate = DateTime.Now.ToString("yyyy-MM-dd");
+                            orderComp.CreateTime = DateTime.Now.ToString("HH:mm:ss");
+                            orderComp.CreateUserId = p_intLoginUserId;
+                            orderComp.CreateUserName = p_strUserName;
+                            orderComp.CreateStation = p_strStation;
+                            orderComp.LastModDate = DateTime.Now.ToString("yyyy-MM-dd");
+                            orderComp.LastModTime = DateTime.Now.ToString("HH:mm:ss");
+                            orderComp.LastModUserId = p_intLoginUserId;
+                            orderComp.LastModUserName = p_strUserName;
+                            orderComp.LastModStation = p_strStation;
+                            orderComp.CompleteDate = DateTime.Now.ToString("yyyy-MM-dd");
+                            orderComp.CompleteTime = DateTime.Now.ToString("HH:mm:ss");
+                            dbPOS1.Insert_OrderComplete(orderComp);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (DataGridViewRow row in dgvItems.Rows)
+                {
+                    // Cells[11] is Refund Quantity
+                    if (row.Cells[11].Value != null)
+                    {
+                        iOrderId = Convert.ToInt32(row.Tag);
+                        POS1_OrderCompleteModel orderComp = new POS1_OrderCompleteModel();
+                        orderComp = dbPOS1.Get_OrderComplete_by_Id(iOrderId);
+                        if (Convert.ToInt32(row.Cells[11].Value.ToString()) > 0)
+                        {
+                            iRefundQty = Convert.ToInt32(row.Cells[11].Value.ToString());
+                            orderComp.Quantity = iRefundQty * -1;
+                            orderComp.Amount = orderComp.OutUnitPrice * orderComp.Quantity;
+                            orderComp.Tax1 = (orderComp.IsTax1 ? (orderComp.Tax1Rate * orderComp.Amount) : 0);
+                            orderComp.Tax2 = (orderComp.IsTax2 ? (orderComp.Tax2Rate * orderComp.Amount) : 0);
+                            orderComp.Tax3 = (orderComp.IsTax3 ? (orderComp.Tax3Rate * orderComp.Amount) : 0);
+                            orderComp.CreateDate = DateTime.Now.ToString("yyyy-MM-dd");
+                            orderComp.CreateTime = DateTime.Now.ToString("HH:mm:ss");
+                            orderComp.CreateUserId = p_intLoginUserId;
+                            orderComp.CreateUserName = p_strUserName;
+                            orderComp.CreateStation = p_strStation;
+                            orderComp.LastModDate = DateTime.Now.ToString("yyyy-MM-dd");
+                            orderComp.LastModTime = DateTime.Now.ToString("HH:mm:ss");
+                            orderComp.LastModUserId = p_intLoginUserId;
+                            orderComp.LastModUserName = p_strUserName;
+                            orderComp.LastModStation = p_strStation;
+                            orderComp.CompleteDate = DateTime.Now.ToString("yyyy-MM-dd");
+                            orderComp.CompleteTime = DateTime.Now.ToString("HH:mm:ss");
+                            dbPOS1.Insert_OrderComplete(orderComp);
+                        }
+                    }
+                }
+            }
         }
         private void Process_RefundTran_Collection(int iInvNo, float fCashAmt,
                                                          float fDebitAmt,
@@ -1832,7 +2181,7 @@ namespace SDCafeSales.Views
                                                          float fMasterAmt,
                                                          float fAmexAmt,
                                                          float fOthersAmt,
-                                                         float fChangeAmt, float fTips, string strPaymentType, bool bIsIPSPayment)
+                                                         float fChangeAmt, float fTips, string strPaymentType, bool bIsIPSPayment, bool bIsFullRefund)
         {
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
             DataAccessCard dbCard = new DataAccessCard();
@@ -1872,20 +2221,61 @@ namespace SDCafeSales.Views
 
             if (compOrders.Count > 0)
             {
-                foreach (var order in compOrders)
+                if (bIsFullRefund)
                 {
-                    fTax1 = fTax1 + order.Tax1;
-                    fTax2 = fTax2 + order.Tax2;
-                    fTax3 = fTax3 + order.Tax3;
-                    fAmount = fAmount + order.Amount;
+                    //foreach (var order in compOrders.FindAll(s => s.Quantity > 0))
+                    //{
+                    //    fTax1 = fTax1 + order.Tax1;
+                    //    fTax2 = fTax2 + order.Tax2;
+                    //    fTax3 = fTax3 + order.Tax3;
+                    //    fAmount = fAmount + order.Amount;
+                    //}
+                    foreach (DataGridViewRow row in dgvItems.Rows)
+                    {
+
+                        float fOrderItemAmt = 0;
+                        float fOrderItemTaxAmt = 0;
+                        int iOrderId = Convert.ToInt32(row.Tag);
+                        if (iOrderId > 0)
+                        {
+                            POS1_OrderCompleteModel orderComp = new POS1_OrderCompleteModel();
+                            orderComp = dbPOS1.Get_OrderComplete_by_Id(iOrderId);
+                            fOrderItemAmt = ((float)System.Convert.ToDouble(row.Cells[3].Value) * orderComp.Quantity);
+                            fTax1 += (orderComp.IsTax1 ? (orderComp.Tax1Rate * fOrderItemAmt) : 0);
+                            fTax2 += (orderComp.IsTax2 ? (orderComp.Tax2Rate * fOrderItemAmt) : 0);
+                            fTax3 += (orderComp.IsTax3 ? (orderComp.Tax3Rate * fOrderItemAmt) : 0);
+                            fAmount += (fOrderItemAmt);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (DataGridViewRow row in dgvItems.Rows)
+                    {
+                        if (row.Cells[11].Value != null)
+                        {
+                            float fOrderItemAmt = 0;
+                            float fOrderItemTaxAmt = 0;
+                            int iOrderId = Convert.ToInt32(row.Tag);
+                            POS1_OrderCompleteModel orderComp = new POS1_OrderCompleteModel();
+                            orderComp = dbPOS1.Get_OrderComplete_by_Id(iOrderId);
+                            if (Convert.ToInt32(row.Cells[11].Value.ToString()) > 0)
+                            {
+                                fOrderItemAmt = ((float)System.Convert.ToDouble(row.Cells[3].Value) * Convert.ToInt32(row.Cells[11].Value.ToString()));
+                                fTax1 += (orderComp.IsTax1 ? (orderComp.Tax1Rate * fOrderItemAmt) : 0);
+                                fTax2 += (orderComp.IsTax2 ? (orderComp.Tax2Rate * fOrderItemAmt) : 0);
+                                fTax3 += (orderComp.IsTax3 ? (orderComp.Tax3Rate * fOrderItemAmt) : 0);
+                                fAmount += (fOrderItemAmt);
+                            }
+                        }
+                    }
                 }
                 fTotalDueAmt = fAmount + fTax1 + fTax2 + fTax3;
 
-                col.Amount = fAmount;   // Sub Total without Tax
-                col.Tax1 = fTax1;
-                col.Tax2 = fTax2;
-                col.Tax3 = fTax3;
-
+                col.Amount = fAmount * -1;   // Sub Total without Tax
+                col.Tax1 = fTax1 * -1;
+                col.Tax2 = fTax2 * -1;
+                col.Tax3 = fTax3 * -1;
 
                 if (strPaymentType.Contains("CASH"))
                 {
@@ -2602,6 +2992,58 @@ namespace SDCafeSales.Views
             }
         }
 
+        private void dgvItems_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            int iOrderItemId = 0;
+            DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+            POS1_OrderCompleteModel orderitem = new POS1_OrderCompleteModel();
+            POS1_OrderCompleteModel refunditem = new POS1_OrderCompleteModel();
+            // Get the selected order item id from the datagrid view
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = this.dgvItems.Rows[e.RowIndex];
+                // Get the row tag
+                iOrderItemId = Convert.ToInt32(row.Tag);
+                // Get the selected order item
+                if (iOrderItemId > 0)
+                {
+                    orderitem = dbPOS1.Get_OrderComplete_by_Id(iOrderItemId);
+                    if (orderitem != null)
+                    {
+                        refunditem = dbPOS1.Get_Refund_OrderComplete_by_InvoiceNo_ProdId(orderitem.InvoiceNo, orderitem.ProductId);
+                        if (refunditem != null)
+                            orderitem.Quantity += refunditem.Quantity;
+                    }
+                    // Set the selected order item to the form
+                }
+            }
+            // Refund checkbox is clicked ?
+            if (e.ColumnIndex == 10)
+            {
+                if ((bool)dgvItems.Rows[e.RowIndex].Cells[10].EditedFormattedValue == true)
+                {
+                    dgvItems.Rows[e.RowIndex].Cells[11].Value = orderitem.Quantity;
+                }
+                else
+                {
+                    dgvItems.Rows[e.RowIndex].Cells[11].Value = 0;
+                }
+            }
+
+        }
+        // set row background color pink if void or refund
+        private void dgvData_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            DataGridViewRow row = dgvData.Rows[e.RowIndex];
+            if (Convert.ToDouble(row.Cells[8].Value) < 0)
+            {
+                row.DefaultCellStyle.BackColor = Color.LightPink;
+            }
+            else
+            {
+                row.DefaultCellStyle.BackColor = Color.White;
+            }
+        }
     }
 }
 

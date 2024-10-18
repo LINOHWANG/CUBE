@@ -93,11 +93,11 @@ namespace SDCafeSales
             // 
             // textBoxBizTitle
             // 
-            this.textBoxBizTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxBizTitle.Font = new System.Drawing.Font("Roboto Condensed SemiBold", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxBizTitle.Location = new System.Drawing.Point(65, 95);
             this.textBoxBizTitle.Name = "textBoxBizTitle";
             this.textBoxBizTitle.ReadOnly = true;
-            this.textBoxBizTitle.Size = new System.Drawing.Size(873, 62);
+            this.textBoxBizTitle.Size = new System.Drawing.Size(873, 65);
             this.textBoxBizTitle.TabIndex = 8;
             this.textBoxBizTitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
