@@ -52,13 +52,13 @@
             // 
             this.dgvData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvData.Location = new System.Drawing.Point(12, 144);
+            this.dgvData.Location = new System.Drawing.Point(12, 123);
             this.dgvData.MultiSelect = false;
             this.dgvData.Name = "dgvData";
             this.dgvData.ReadOnly = true;
             this.dgvData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvData.ShowEditingIcon = false;
-            this.dgvData.Size = new System.Drawing.Size(990, 317);
+            this.dgvData.Size = new System.Drawing.Size(990, 299);
             this.dgvData.TabIndex = 2;
             this.dgvData.SortCompare += new System.Windows.Forms.DataGridViewSortCompareEventHandler(this.dgvData_SortCompare);
             // 
@@ -66,7 +66,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(21, 72);
+            this.label1.Location = new System.Drawing.Point(21, 61);
             this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(89, 22);
@@ -88,7 +88,7 @@
             // 
             this.dttm_TranEnd.Font = new System.Drawing.Font("Arial", 14.25F);
             this.dttm_TranEnd.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dttm_TranEnd.Location = new System.Drawing.Point(124, 67);
+            this.dttm_TranEnd.Location = new System.Drawing.Point(124, 56);
             this.dttm_TranEnd.Name = "dttm_TranEnd";
             this.dttm_TranEnd.Size = new System.Drawing.Size(155, 29);
             this.dttm_TranEnd.TabIndex = 38;
@@ -115,7 +115,7 @@
             // 
             this.dttm_TranEndTime.Font = new System.Drawing.Font("Arial", 14.25F);
             this.dttm_TranEndTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.dttm_TranEndTime.Location = new System.Drawing.Point(285, 67);
+            this.dttm_TranEndTime.Location = new System.Drawing.Point(285, 56);
             this.dttm_TranEndTime.Name = "dttm_TranEndTime";
             this.dttm_TranEndTime.Size = new System.Drawing.Size(155, 29);
             this.dttm_TranEndTime.TabIndex = 46;
@@ -125,7 +125,7 @@
             this.lblReportType.AutoSize = true;
             this.lblReportType.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblReportType.ForeColor = System.Drawing.Color.Blue;
-            this.lblReportType.Location = new System.Drawing.Point(21, 119);
+            this.lblReportType.Location = new System.Drawing.Point(21, 98);
             this.lblReportType.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lblReportType.Name = "lblReportType";
             this.lblReportType.Size = new System.Drawing.Size(215, 22);
@@ -136,13 +136,13 @@
             // 
             this.dgvDataTender.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvDataTender.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvDataTender.Location = new System.Drawing.Point(12, 495);
+            this.dgvDataTender.Location = new System.Drawing.Point(12, 459);
             this.dgvDataTender.MultiSelect = false;
             this.dgvDataTender.Name = "dgvDataTender";
             this.dgvDataTender.ReadOnly = true;
             this.dgvDataTender.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvDataTender.ShowEditingIcon = false;
-            this.dgvDataTender.Size = new System.Drawing.Size(990, 222);
+            this.dgvDataTender.Size = new System.Drawing.Size(990, 258);
             this.dgvDataTender.TabIndex = 48;
             // 
             // label3
@@ -150,7 +150,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.Blue;
-            this.label3.Location = new System.Drawing.Point(21, 470);
+            this.label3.Location = new System.Drawing.Point(21, 434);
             this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(315, 22);
@@ -174,7 +174,7 @@
             // 
             this.rbRptItem.AutoSize = true;
             this.rbRptItem.Font = new System.Drawing.Font("Arial", 14.25F);
-            this.rbRptItem.Location = new System.Drawing.Point(481, 70);
+            this.rbRptItem.Location = new System.Drawing.Point(481, 59);
             this.rbRptItem.Name = "rbRptItem";
             this.rbRptItem.Size = new System.Drawing.Size(93, 26);
             this.rbRptItem.TabIndex = 51;
@@ -187,12 +187,12 @@
             // 
             this.bt_Excel.CornerRadius = 30;
             this.bt_Excel.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Excel.Location = new System.Drawing.Point(860, 67);
+            this.bt_Excel.Location = new System.Drawing.Point(860, 45);
             this.bt_Excel.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Excel.Name = "bt_Excel";
             this.bt_Excel.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Excel.Size = new System.Drawing.Size(142, 47);
+            this.bt_Excel.Size = new System.Drawing.Size(142, 40);
             this.bt_Excel.TabIndex = 44;
             this.bt_Excel.Text = "Excel";
             this.bt_Excel.Click += new System.EventHandler(this.bt_Excel_Click);
@@ -201,12 +201,12 @@
             // 
             this.bt_Query.CornerRadius = 30;
             this.bt_Query.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Query.Location = new System.Drawing.Point(709, 12);
+            this.bt_Query.Location = new System.Drawing.Point(709, 1);
             this.bt_Query.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Query.Name = "bt_Query";
             this.bt_Query.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Query.Size = new System.Drawing.Size(142, 47);
+            this.bt_Query.Size = new System.Drawing.Size(142, 40);
             this.bt_Query.TabIndex = 43;
             this.bt_Query.Text = "Query";
             this.bt_Query.Click += new System.EventHandler(this.bt_Query_Click);
@@ -217,11 +217,11 @@
             this.bt_Exit.CornerRadius = 30;
             this.bt_Exit.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
             this.bt_Exit.ForeColor = System.Drawing.Color.White;
-            this.bt_Exit.Location = new System.Drawing.Point(860, 12);
+            this.bt_Exit.Location = new System.Drawing.Point(860, 1);
             this.bt_Exit.Name = "bt_Exit";
             this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Exit.Size = new System.Drawing.Size(142, 47);
+            this.bt_Exit.Size = new System.Drawing.Size(142, 40);
             this.bt_Exit.TabIndex = 42;
             this.bt_Exit.Text = "Exit";
             this.bt_Exit.Click += new System.EventHandler(this.bt_Exit_Click);
@@ -230,12 +230,12 @@
             // 
             this.bt_Print.CornerRadius = 30;
             this.bt_Print.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Print.Location = new System.Drawing.Point(709, 67);
+            this.bt_Print.Location = new System.Drawing.Point(709, 45);
             this.bt_Print.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Print.Name = "bt_Print";
             this.bt_Print.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Print.Size = new System.Drawing.Size(142, 47);
+            this.bt_Print.Size = new System.Drawing.Size(142, 40);
             this.bt_Print.TabIndex = 41;
             this.bt_Print.Text = "Print";
             this.bt_Print.Click += new System.EventHandler(this.bt_Print_Click);

@@ -433,7 +433,14 @@ namespace SDCafeSales.Views
                     {
                         util.Logger("Transaction Error...." + strProcessingMsg);
                         //AddText_To_GridControl("Transaction Error ! " + strProcessingMsg);
-                        lblStatus.Invoke((Action)(() => lblStatus.Text = "Transaction Error ! " + strProcessingMsg));
+                        try
+                        {
+                            lblStatus.Invoke((Action)(() => lblStatus.Text = "Transaction Error ! " + strProcessingMsg));
+                        }
+                        catch (Exception ex)
+                        {
+                            util.Logger("Exception : Transaction Error ! " + strProcessingMsg);
+                        }
                         handler.Close();
                         handler.Dispose();
                         return;
@@ -442,10 +449,17 @@ namespace SDCafeSales.Views
                     {
                         util.Logger("Paymentree : Approved and closing connection....");
                         //AddText_To_GridControl("Paymentree : Approved and closing connection....");
+                        try
+                        {
+                            lblStatus.Invoke((Action)(() => lblStatus.Text = "Paymentree : Approved : " + strPaymentType));
+                        }
+                        catch(Exception ex)
+                        {
+                            util.Logger("Exception : Paymentree : Approved : " + strPaymentType);
+                        }
                         handler.Close();
                         handler.Dispose();
                         bPaymentComplete = true;
-                        lblStatus.Invoke((Action)(() => lblStatus.Text = "Paymentree : Approved : " + strPaymentType));
                         return;
                     }
                 }

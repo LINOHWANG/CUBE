@@ -70,10 +70,14 @@ namespace SDCafeSales.Views
 
             float iTotalCount = 0;
             float iTotalSales = 0;
+            float iTotalTips = 0;
             float iVoidCount = 0;
             float iVoidSales = 0;
-            float iTotalTips = 0;
             float iVoidTips = 0;
+            float iRefundCount = 0;
+            float iRefundSales = 0;
+            float iRefundTips = 0;
+
             string strHTMLBody = "";
             string strConfig = "";
 
@@ -95,8 +99,7 @@ namespace SDCafeSales.Views
                 foreach (var trancol in trancols)
                 {
                     iRowCount++;
-                    iTotalSales = iTotalSales + (trancol.Amount + trancol.Tax1 + trancol.Tax2 + trancol.Tax3);
-                    iTotalTips = iTotalTips + trancol.TotalTip;
+
                     this.dgvData.Rows.Add(new String[] { trancol.CreateDate.ToString() + " " + trancol.CreateTime.ToString(),
                                                          trancol.InvoiceNo.ToString(),
                                                          trancol.CollectionType,
@@ -112,6 +115,11 @@ namespace SDCafeSales.Views
                     // set the row tag with trancol's id
                     this.dgvData.Rows[iRowCount - 1].Tag = trancol.Id.ToString();
 
+                    if (trancol.TotalPaid > 0)
+                    {
+                        iTotalSales = iTotalSales + (trancol.Amount + trancol.Tax1 + trancol.Tax2 + trancol.Tax3);
+                        iTotalTips = iTotalTips + trancol.TotalTip;
+                    }
                     if (trancol.IsVoid)
                     {
                         iVoidCount++;
@@ -123,6 +131,18 @@ namespace SDCafeSales.Views
                             this.dgvData.Rows[dgvData.RowCount - 2].DefaultCellStyle.Font = new Font(this.Font, FontStyle.Strikeout);
                         }
                     }
+                    // Sum up the refund amount
+                    if (trancol.TotalPaid < 0)
+                    {
+                        iRefundCount++;
+                        iRefundSales = iRefundSales + (trancol.Amount + trancol.Tax1 + trancol.Tax2 + trancol.Tax3);
+                        iRefundTips = iRefundTips + trancol.TotalTip;
+                        for (int i = 0; i < 9; i++)
+                        {
+                            this.dgvData.Rows[dgvData.RowCount - 2].Cells[i].Style.BackColor = Color.LightPink;
+                            //this.dgvData.Rows[dgvData.RowCount - 2].DefaultCellStyle.Font = new Font(this.Font, FontStyle.Strikeout);
+                        }
+                    }
 
                     this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
                 }
@@ -131,14 +151,17 @@ namespace SDCafeSales.Views
                 txt_TotalTips.Text = iTotalTips.ToString("C");
 
                 txt_TotalVoidCount.Text = iVoidCount.ToString();
-                txt_TotalVoidCount.BackColor = Color.LightSalmon;
+                //txt_TotalVoidCount.BackColor = Color.LightSalmon;
                 txt_TotalVoidSales.Text = iVoidSales.ToString("C");
-                txt_TotalVoidSales.BackColor = Color.LightSalmon;
+                //txt_TotalVoidSales.BackColor = Color.LightSalmon;
                 txt_VoidTips.Text = iVoidTips.ToString("C");
-                txt_VoidTips.BackColor = Color.LightSalmon;
+                //txt_VoidTips.BackColor = Color.LightSalmon;
+                txt_TotalRefundCount.Text = iRefundCount.ToString();
+                txt_TotalRefund.Text = iRefundSales.ToString("C");
+                txt_RefundTips.Text = iRefundTips.ToString("C");
 
-                txt_TotalSum.Text = (iTotalSales - iVoidSales).ToString("C");
-                txt_TipSum.Text = (iTotalTips - iVoidTips).ToString("C");
+                txt_TotalSum.Text = (iTotalSales - iVoidSales + iRefundSales).ToString("C");
+                txt_TipSum.Text = (iTotalTips - iVoidTips + iRefundTips).ToString("C");
 
                 string strFirstDayofMonth = dttm_TranStart.Value.ToString("yyyy-MM") + "-01";
                 string strLastDayofMonth = dttm_TranEnd.Value.AddMonths(1).AddDays(-1).ToString("yyyy-MM-dd");
@@ -166,6 +189,7 @@ namespace SDCafeSales.Views
                          " <br /> Date : " + dttm_TranStart.Value.ToString("yyyy-MM-dd") + " to " + dttm_TranEnd.Value.ToString("yyyy-MM-dd") + System.Environment.NewLine +
                          " <br /> Total Net Sales : " + String.Format(txt_TotalSales.Text, "C") + System.Environment.NewLine +
                          " <br /> Total Void : " + String.Format(txt_TotalVoidSales.Text, "C") + System.Environment.NewLine +
+                         " <br /> Total Refund : " + String.Format(txt_TotalRefund.Text, "C") + System.Environment.NewLine +
                          " <br /> Total Sales : " + String.Format(txt_TotalSum.Text, "C") + System.Environment.NewLine +
                          " <br /> Monthly Total : " + dblMonthlyTotal.ToString("C") + System.Environment.NewLine +
                          " <br /> " + System.Environment.NewLine +

@@ -201,6 +201,18 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
+        public List<POS1_TranCollectionModel> Get_VoidTranCollection_by_DateTimeRange(string strStartDate, string strStartTime, string strEndDate, string strEndTime)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS1")))
+            {
+                string query = "select * from TranCollection where CreateDate >= '" + strStartDate + "' and CreateDate <= '" + strEndDate + "' " +
+                               " And CreateTime >= '" + strStartTime + "' and CreateTime <= '" + strEndTime + "' " +
+                               " And (Isvoid = 1) " +
+                               "order by CreateDate, CreateTime ";
+                var output = connection.Query<POS1_TranCollectionModel>(query).ToList();
+                return output;
+            }
+        }
         public List<POS1_OrderCompleteModel> Get_OrderComplete_by_Date_OrderBy_Type(string strStartDate, string strStartTime, string strEndDate, string strEndTime)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS1")))

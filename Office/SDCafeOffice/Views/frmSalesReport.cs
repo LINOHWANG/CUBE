@@ -21,8 +21,14 @@ namespace SDCafeOffice.Views
     public partial class frmSalesReport : Form
     {
         List<POS1_TranCollectionModel> trancols = new List<POS1_TranCollectionModel>();
+        List<POS1_TranCollectionModel> voidcols = new List<POS1_TranCollectionModel>();
         List<POS1_OrderCompleteModel> ordercomps = new List<POS1_OrderCompleteModel>();
         Utility util = new Utility();
+
+        private string m_strTax1Name;
+        private string m_strTax2Name;
+        private string m_strTax3Name;
+
 
         public frmSalesReport()
         {
@@ -30,7 +36,6 @@ namespace SDCafeOffice.Views
         }
         private void frmSalesReport_Load(object sender, EventArgs e)
         {
-            dgvData_Initialize();
             dttm_TranStart.Value = DateTime.Now;
             dttm_TranEnd.Value = DateTime.Now;
 
@@ -43,6 +48,13 @@ namespace SDCafeOffice.Views
             dttm_TranEndTime.Value = Convert.ToDateTime("23:59:59");
 
             rbRptType.Checked = true;
+
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            m_strTax1Name = dbPOS.Get_SysConfig_By_Name("TAX1")[0].ConfigValue;
+            m_strTax2Name = dbPOS.Get_SysConfig_By_Name("TAX2")[0].ConfigValue;
+            m_strTax3Name = dbPOS.Get_SysConfig_By_Name("TAX3")[0].ConfigValue;
+
+            dgvData_Initialize();
         }
         private void dgvData_Initialize()
         {
@@ -67,30 +79,30 @@ namespace SDCafeOffice.Views
             this.dgvData.Columns[3].Name = "Amount";
             this.dgvData.Columns[3].Width = 120;
             this.dgvData.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            this.dgvData.Columns[4].Name = "GST";
+            this.dgvData.Columns[4].Name = m_strTax1Name; // "GST";
             this.dgvData.Columns[4].Width = 100;
             this.dgvData.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            this.dgvData.Columns[5].Name = "PST";
+            this.dgvData.Columns[5].Name = m_strTax2Name; // "PST";
             this.dgvData.Columns[5].Width = 100;
             this.dgvData.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            this.dgvData.Columns[6].Name = "Tax3";
+            this.dgvData.Columns[6].Name = m_strTax3Name; // "Tax3";
             this.dgvData.Columns[6].Width = 0;
             this.dgvData.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             this.dgvData.Columns[7].Name = "Total";
             this.dgvData.Columns[7].Width = 120;
             this.dgvData.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            this.dgvData.DefaultCellStyle.Font = new System.Drawing.Font("Arial", 16F, GraphicsUnit.Pixel);
+            this.dgvData.DefaultCellStyle.Font = new System.Drawing.Font("Arial", 12F, FontStyle.Bold, GraphicsUnit.Pixel);
 
             this.dgvData.EnableHeadersVisualStyles = false;
-            this.dgvData.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Arial", 18F, GraphicsUnit.Pixel);
+            this.dgvData.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Arial", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
             this.dgvData.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvData.ColumnHeadersDefaultCellStyle.BackColor = Color.LightBlue;
             // fix the row height
             dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             dgvData.AllowUserToResizeRows = false;
             dgvData.RowTemplate.Resizable = DataGridViewTriState.True;
-            dgvData.RowTemplate.MinimumHeight = 40;
+            dgvData.RowTemplate.MinimumHeight = 30;
         }
         private void dgvDataTender_Initialize()
         {
@@ -122,17 +134,17 @@ namespace SDCafeOffice.Views
             this.dgvDataTender.Columns[5].Width = 150;
             this.dgvDataTender.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            this.dgvDataTender.DefaultCellStyle.Font = new System.Drawing.Font("Arial", 16F, GraphicsUnit.Pixel);
+            this.dgvDataTender.DefaultCellStyle.Font = new System.Drawing.Font("Arial", 12F, FontStyle.Bold, GraphicsUnit.Pixel);
 
             this.dgvDataTender.EnableHeadersVisualStyles = false;
-            this.dgvDataTender.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Arial", 18F, GraphicsUnit.Pixel);
+            this.dgvDataTender.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Arial", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
             this.dgvDataTender.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataTender.ColumnHeadersDefaultCellStyle.BackColor = Color.LightBlue;
             // fix the row height
             dgvDataTender.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             dgvDataTender.AllowUserToResizeRows = false;
             dgvDataTender.RowTemplate.Resizable = DataGridViewTriState.True;
-            dgvDataTender.RowTemplate.MinimumHeight = 40;
+            dgvDataTender.RowTemplate.MinimumHeight = 30;
         }
         private void bt_Exit_Click(object sender, EventArgs e)
         {
@@ -154,7 +166,8 @@ namespace SDCafeOffice.Views
 
             trancols = dbPOS1.Get_TranCollection_by_DateTimeRange(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranStartTime.Value.ToString("HH:mm:ss"),
                                                             dttm_TranEnd.Value.ToString("yyyy-MM-dd"), dttm_TranEndTime.Value.ToString("HH:mm:ss"));
-
+            voidcols = dbPOS1.Get_VoidTranCollection_by_DateTimeRange(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranStartTime.Value.ToString("HH:mm:ss"),
+                                                            dttm_TranEnd.Value.ToString("yyyy-MM-dd"), dttm_TranEndTime.Value.ToString("HH:mm:ss"));
             string[] strColTypeName = new string[] { "CASH", "DEBIT", "VISA", "MASTER", "AMEX", "GIFTCARD", "OTHERS" };
 
             float[] iQTY        = new float[] { 0, 0, 0, 0, 0, 0, 0 };
@@ -171,6 +184,16 @@ namespace SDCafeOffice.Views
             float iTotalNetAmount = 0;
             float iTotalTip = 0;
             float iTotalTotal = 0;
+
+            float iVoidQTY = 0;
+            float iVoidNetAmount = 0;
+            float iVoidTip = 0;
+            float iVoidTotal = 0;
+
+            float iRefundQTY = 0;
+            float iRefundNetAmount = 0;
+            float iRefundTip = 0;
+            float iRefundTotal = 0;
 
             string strTemp = "";
             int n = 0;
@@ -301,9 +324,29 @@ namespace SDCafeOffice.Views
                         iCardTotalTip = iCardTotalTip + trancol.OthersTip;
                         iCardTotalTotal = iCardTotalTotal + (trancol.Others + trancol.OthersTip);
                     }
+                    if (trancol.TotalPaid < 0)
+                    {
+                        iRefundQTY++;
+                        iRefundNetAmount = iRefundNetAmount + (trancol.Amount + trancol.Tax1 + trancol.Tax2 + trancol.Tax3); ;
+                        iRefundTip = iRefundTip + trancol.TotalTip;
+                        iRefundTotal = iRefundTotal + (trancol.Amount + trancol.Tax1 + trancol.Tax2 + trancol.Tax3 + trancol.TotalTip);
+                    }
                 }
             }
+            if (voidcols.Count > 0)
+            {
+                foreach (var trancol in voidcols)
+                {
 
+                    if (trancol.IsVoid)
+                    {
+                        iVoidQTY++;
+                        iVoidNetAmount = iVoidNetAmount + (trancol.Amount + trancol.Tax1 + trancol.Tax2 + trancol.Tax3);
+                        iVoidTip = iVoidTip + trancol.TotalTip;
+                        iVoidTotal = iVoidTotal + (trancol.Amount + trancol.Tax1 + trancol.Tax2 + trancol.Tax3 + trancol.TotalTip);
+                    }
+                }
+            }
             for (int i = 0; i < strColTypeName.Length; i++)
             {
                 if (iQTY[i] > 0)
@@ -343,6 +386,33 @@ namespace SDCafeOffice.Views
             for (int j = 0; j < dgvDataTender.Columns.Count; j++)
             {
                 this.dgvDataTender.Rows[dgvDataTender.RowCount - 2].Cells[j].Style.BackColor = Color.LightBlue;
+                this.dgvDataTender.Rows[dgvDataTender.RowCount - 2].Cells[j].Style.Font = new System.Drawing.Font(this.dgvDataTender.DefaultCellStyle.Font, FontStyle.Bold);
+            }
+            // Add empty row
+            this.dgvDataTender.Rows.Add();
+            // add void and refund
+            this.dgvDataTender.Rows.Add(new String[] { "VOID",
+                                                         "TOTAL",
+                                                         iVoidQTY.ToString("0"),
+                                                         iVoidNetAmount.ToString("#,##0.00"),
+                                                         iVoidTip.ToString("#,##0.00"),
+                                                         iVoidTotal.ToString("#,##0.00")
+                 });
+            for (int j = 0; j < dgvDataTender.Columns.Count; j++)
+            {
+                this.dgvDataTender.Rows[dgvDataTender.RowCount - 2].Cells[j].Style.BackColor = Color.LightSalmon;
+                this.dgvDataTender.Rows[dgvDataTender.RowCount - 2].Cells[j].Style.Font = new System.Drawing.Font(this.dgvDataTender.DefaultCellStyle.Font, FontStyle.Bold);
+            }
+            this.dgvDataTender.Rows.Add(new String[] { "REFUND",
+                                                         "TOTAL",
+                                                         iRefundQTY.ToString("0"),
+                                                         iRefundNetAmount.ToString("#,##0.00"),
+                                                         iRefundTip.ToString("#,##0.00"),
+                                                         iRefundTotal.ToString("#,##0.00")
+                 });
+            for (int j = 0; j < dgvDataTender.Columns.Count; j++)
+            {
+                this.dgvDataTender.Rows[dgvDataTender.RowCount - 2].Cells[j].Style.BackColor = Color.LightPink;
                 this.dgvDataTender.Rows[dgvDataTender.RowCount - 2].Cells[j].Style.Font = new System.Drawing.Font(this.dgvDataTender.DefaultCellStyle.Font, FontStyle.Bold);
             }
             this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
@@ -1170,6 +1240,8 @@ namespace SDCafeOffice.Views
 
             trancols = dbPOS1.Get_TranCollection_by_DateTimeRange(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranStartTime.Value.ToString("HH:mm:ss"),
                                                             dttm_TranEnd.Value.ToString("yyyy-MM-dd"), dttm_TranEndTime.Value.ToString("HH:mm:ss"));
+            voidcols = dbPOS1.Get_VoidTranCollection_by_DateTimeRange(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranStartTime.Value.ToString("HH:mm:ss"),
+                                                            dttm_TranEnd.Value.ToString("yyyy-MM-dd"), dttm_TranEndTime.Value.ToString("HH:mm:ss"));
 
             string[] strColTypeName = new string[] { "CASH", "DEBIT", "VISA", "MASTER", "AMEX", "GIFTCARD", "OTHERS" };
 
@@ -1187,6 +1259,16 @@ namespace SDCafeOffice.Views
             float iTotalNetAmount = 0;
             float iTotalTip = 0;
             float iTotalTotal = 0;
+
+            float iVoidQTY = 0;
+            float iVoidNetAmount = 0;
+            float iVoidTip = 0;
+            float iVoidTotal = 0;
+
+            float iRefundQTY = 0;
+            float iRefundNetAmount = 0;
+            float iRefundTip = 0;
+            float iRefundTotal = 0;
 
             string strTemp = "";
             int n = 0;
@@ -1210,9 +1292,9 @@ namespace SDCafeOffice.Views
                         iTotalTip = iTotalTip + trancol.CashTip;
                         iTotalTotal = iTotalTotal + (trancol.Cash + trancol.CashTip);
                     }
-                    else if (trancol.CollectionType.Contains(strColTypeName[1])) // Debit
+                    i = 1;
+                    if (trancol.CollectionType.Contains(strColTypeName[1])) // Debit
                     {
-                        i = 1;
                         iQTY[i]++;
                         iNetAmount[i] = iNetAmount[i] + trancol.Debit;
                         iTip[i] = iTip[i] + trancol.DebitTip;
@@ -1228,9 +1310,9 @@ namespace SDCafeOffice.Views
                         iCardTotalTip = iCardTotalTip + trancol.DebitTip;
                         iCardTotalTotal = iCardTotalTotal + (trancol.Debit + trancol.DebitTip);
                     }
-                    else if (trancol.CollectionType.Contains(strColTypeName[2])) // Visa
+                    i = 2;
+                    if (trancol.CollectionType.Contains(strColTypeName[2])) // Visa
                     {
-                        i = 2;
                         iQTY[i]++;
                         iNetAmount[i] = iNetAmount[i] + trancol.Visa;
                         iTip[i] = iTip[i] + trancol.VisaTip;
@@ -1246,9 +1328,9 @@ namespace SDCafeOffice.Views
                         iCardTotalTip = iCardTotalTip + trancol.VisaTip;
                         iCardTotalTotal = iCardTotalTotal + (trancol.Visa + trancol.VisaTip);
                     }
-                    else if (trancol.CollectionType.Contains(strColTypeName[i])) // Master
+                    i = 3;
+                    if (trancol.CollectionType.Contains(strColTypeName[i])) // Master
                     {
-                        i = 3;
                         iQTY[i]++;
                         iNetAmount[i] = iNetAmount[i] + trancol.Master;
                         iTip[i] = iTip[i] + trancol.MasterTip;
@@ -1264,9 +1346,10 @@ namespace SDCafeOffice.Views
                         iCardTotalTip = iCardTotalTip + trancol.MasterTip;
                         iCardTotalTotal = iCardTotalTotal + (trancol.Master + trancol.MasterTip);
                     }
-                    else if (trancol.CollectionType.Contains(strColTypeName[i])) // Amex
+                    i = 4;
+                    if (trancol.CollectionType.Contains(strColTypeName[i])) // Amex
                     {
-                        i = 4;
+
                         iQTY[i]++;
                         iNetAmount[i] = iNetAmount[i] + trancol.Amex;
                         iTip[i] = iTip[i] + trancol.AmexTip;
@@ -1282,9 +1365,10 @@ namespace SDCafeOffice.Views
                         iCardTotalTip = iCardTotalTip + trancol.AmexTip;
                         iCardTotalTotal = iCardTotalTotal + (trancol.Amex + trancol.AmexTip);
                     }
-                    else if (trancol.CollectionType.Contains(strColTypeName[i])) // GiftCard
+                    i = 5;
+                    if (trancol.CollectionType.Contains(strColTypeName[i])) // GiftCard
                     {
-                        i = 5;
+
                         iQTY[i]++;
                         iNetAmount[i] = iNetAmount[i] + trancol.GiftCard;
                         iTip[i] = iTip[i] + trancol.GiftCardTip;
@@ -1295,9 +1379,9 @@ namespace SDCafeOffice.Views
                         iTotalTip = iTotalTip + trancol.GiftCardTip;
                         iTotalTotal = iTotalTotal + (trancol.GiftCard + trancol.GiftCardTip);
                     }
-                    else if (trancol.CollectionType.Contains(strColTypeName[i])) // Others
+                    i = 6;
+                    if (trancol.CollectionType.Contains(strColTypeName[i])) // Others
                     {
-                        i = 6;
                         iQTY[i]++;
                         iNetAmount[i] = iNetAmount[i] + trancol.Others;
                         iTip[i] = iTip[i] + trancol.OthersTip;
@@ -1308,9 +1392,30 @@ namespace SDCafeOffice.Views
                         iTotalTip = iTotalTip + trancol.OthersTip;
                         iTotalTotal = iTotalTotal + (trancol.Others + trancol.OthersTip);
                     }
+
+                    if (trancol.TotalPaid < 0)
+                    {
+                        iRefundQTY++;
+                        iRefundNetAmount = iRefundNetAmount + (trancol.Amount + trancol.Tax1 + trancol.Tax2 + trancol.Tax3); ;
+                        iRefundTip = iRefundTip + trancol.TotalTip;
+                        iRefundTotal = iRefundTotal + (trancol.Amount + trancol.Tax1 + trancol.Tax2 + trancol.Tax3 + trancol.TotalTip);
+                    }
                 }
             }
+            if (voidcols.Count > 0)
+            {
+                foreach (var trancol in voidcols)
+                {
 
+                    if (trancol.IsVoid)
+                    {
+                        iVoidQTY++;
+                        iVoidNetAmount = iVoidNetAmount + (trancol.Amount + trancol.Tax1 + trancol.Tax2 + trancol.Tax3);
+                        iVoidTip = iVoidTip + trancol.TotalTip;
+                        iVoidTotal = iVoidTotal + (trancol.Amount + trancol.Tax1 + trancol.Tax2 + trancol.Tax3 + trancol.TotalTip);
+                    }
+                }
+            }
             for (int i = 0; i < strColTypeName.Length; i++)
             {
                 if (iQTY[i] > 0)
@@ -1335,6 +1440,7 @@ namespace SDCafeOffice.Views
             xlWorkSheet.Cells[iStartRow, 2] = iTotalNetAmount.ToString("0.00");
             xlWorkSheet.Cells[iStartRow, 3] = iTotalTip.ToString("0.00");
             xlWorkSheet.Cells[iStartRow, 4] = iTotalTotal.ToString("0.00");
+
             //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
             // --------------------------------------- Set Boder ---------------------------------
             Excel.Range formatRange;
@@ -1357,6 +1463,29 @@ namespace SDCafeOffice.Views
             // --------------------------------------- Set Boder on Total ---------------------------------
             formatRange = xlWorkSheet.get_Range("A" + (iStartRow).ToString(), "D" + (iStartRow).ToString());
             formatRange.EntireRow.Font.Bold = true;
+            formatRange.BorderAround(Excel.XlLineStyle.xlContinuous,
+            Excel.XlBorderWeight.xlMedium, Excel.XlColorIndex.xlColorIndexAutomatic,
+            Excel.XlColorIndex.xlColorIndexAutomatic);
+
+            iStartRow++;
+            iStartRow++;
+            iStartSummaryRow = iStartRow;
+            // --------------------------------------- Void ---------------------------------
+            xlWorkSheet.Cells[iStartRow, 1] = "VOID TOTAL" + " (" + iVoidQTY.ToString() + " )";
+            xlWorkSheet.Cells[iStartRow, 2] = iVoidNetAmount.ToString("0.00");
+            xlWorkSheet.Cells[iStartRow, 3] = iVoidTip.ToString("0.00");
+            xlWorkSheet.Cells[iStartRow, 4] = iVoidTotal.ToString("0.00");
+            iStartRow++;
+            // --------------------------------------- Refund ---------------------------------
+            xlWorkSheet.Cells[iStartRow, 1] = "REFUND TOTAL" + " (" + iRefundQTY.ToString() + " )";
+            xlWorkSheet.Cells[iStartRow, 2] = iRefundNetAmount.ToString("0.00");
+            xlWorkSheet.Cells[iStartRow, 3] = iRefundTip.ToString("0.00");
+            xlWorkSheet.Cells[iStartRow, 4] = iRefundTotal.ToString("0.00");
+            // --------------------------------------- Set Boder ---------------------------------
+            formatRange = xlWorkSheet.get_Range("A" + iStartSummaryRow.ToString(), "D" + iStartRow.ToString());
+            formatRange.Font.Size = 8;
+            border.LineStyle = Excel.XlLineStyle.xlContinuous;
+            border.Weight = 2d;
             formatRange.BorderAround(Excel.XlLineStyle.xlContinuous,
             Excel.XlBorderWeight.xlMedium, Excel.XlColorIndex.xlColorIndexAutomatic,
             Excel.XlColorIndex.xlColorIndexAutomatic);

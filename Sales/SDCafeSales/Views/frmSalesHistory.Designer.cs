@@ -60,6 +60,12 @@
             this.bt_Query = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_ReprintReceipt = new SDCafeCommon.Utilities.CustomButton();
+            this.label12 = new System.Windows.Forms.Label();
+            this.txt_TotalRefund = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.txt_RefundTips = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.txt_TotalRefundCount = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).BeginInit();
             this.SuspendLayout();
@@ -67,10 +73,10 @@
             // dgvData
             // 
             this.dgvData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvData.Location = new System.Drawing.Point(13, 113);
+            this.dgvData.Location = new System.Drawing.Point(12, 126);
             this.dgvData.Name = "dgvData";
             this.dgvData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvData.Size = new System.Drawing.Size(983, 241);
+            this.dgvData.Size = new System.Drawing.Size(983, 236);
             this.dgvData.TabIndex = 0;
             this.dgvData.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.dgvData_RowPrePaint);
             this.dgvData.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvData_MouseClick);
@@ -119,16 +125,16 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(379, 626);
+            this.label2.Location = new System.Drawing.Point(368, 607);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(102, 19);
+            this.label2.Size = new System.Drawing.Size(91, 19);
             this.label2.TabIndex = 37;
-            this.label2.Text = "Total Sales :";
+            this.label2.Text = "Net Sales :";
             // 
             // txt_TotalSales
             // 
             this.txt_TotalSales.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_TotalSales.Location = new System.Drawing.Point(509, 621);
+            this.txt_TotalSales.Location = new System.Drawing.Point(487, 602);
             this.txt_TotalSales.Name = "txt_TotalSales";
             this.txt_TotalSales.Size = new System.Drawing.Size(186, 26);
             this.txt_TotalSales.TabIndex = 38;
@@ -137,7 +143,7 @@
             // txt_TotalTips
             // 
             this.txt_TotalTips.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_TotalTips.Location = new System.Drawing.Point(810, 622);
+            this.txt_TotalTips.Location = new System.Drawing.Point(799, 603);
             this.txt_TotalTips.Name = "txt_TotalTips";
             this.txt_TotalTips.Size = new System.Drawing.Size(186, 26);
             this.txt_TotalTips.TabIndex = 40;
@@ -147,18 +153,18 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(701, 626);
+            this.label3.Location = new System.Drawing.Point(679, 607);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(84, 19);
+            this.label3.Size = new System.Drawing.Size(82, 19);
             this.label3.TabIndex = 39;
-            this.label3.Text = "Tip Total :";
+            this.label3.Text = "Net Tips :";
             // 
             // txt_TotalCount
             // 
             this.txt_TotalCount.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_TotalCount.Location = new System.Drawing.Point(222, 621);
+            this.txt_TotalCount.Location = new System.Drawing.Point(176, 602);
             this.txt_TotalCount.Name = "txt_TotalCount";
-            this.txt_TotalCount.Size = new System.Drawing.Size(135, 26);
+            this.txt_TotalCount.Size = new System.Drawing.Size(186, 26);
             this.txt_TotalCount.TabIndex = 42;
             this.txt_TotalCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -166,7 +172,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(33, 626);
+            this.label4.Location = new System.Drawing.Point(22, 607);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(150, 19);
             this.label4.TabIndex = 41;
@@ -174,10 +180,11 @@
             // 
             // txt_TotalVoidCount
             // 
+            this.txt_TotalVoidCount.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.txt_TotalVoidCount.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_TotalVoidCount.Location = new System.Drawing.Point(222, 653);
+            this.txt_TotalVoidCount.Location = new System.Drawing.Point(176, 631);
             this.txt_TotalVoidCount.Name = "txt_TotalVoidCount";
-            this.txt_TotalVoidCount.Size = new System.Drawing.Size(135, 26);
+            this.txt_TotalVoidCount.Size = new System.Drawing.Size(186, 26);
             this.txt_TotalVoidCount.TabIndex = 49;
             this.txt_TotalVoidCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txt_TotalVoidCount.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
@@ -186,7 +193,8 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(33, 658);
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.label6.Location = new System.Drawing.Point(22, 634);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(85, 19);
             this.label6.TabIndex = 48;
@@ -195,8 +203,9 @@
             // 
             // txt_TotalVoidSales
             // 
+            this.txt_TotalVoidSales.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.txt_TotalVoidSales.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_TotalVoidSales.Location = new System.Drawing.Point(509, 653);
+            this.txt_TotalVoidSales.Location = new System.Drawing.Point(487, 631);
             this.txt_TotalVoidSales.Name = "txt_TotalVoidSales";
             this.txt_TotalVoidSales.Size = new System.Drawing.Size(186, 26);
             this.txt_TotalVoidSales.TabIndex = 45;
@@ -206,7 +215,8 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(379, 658);
+            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.label8.Location = new System.Drawing.Point(368, 634);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(94, 19);
             this.label8.TabIndex = 44;
@@ -215,7 +225,7 @@
             // txt_TotalSum
             // 
             this.txt_TotalSum.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_TotalSum.Location = new System.Drawing.Point(509, 685);
+            this.txt_TotalSum.Location = new System.Drawing.Point(487, 691);
             this.txt_TotalSum.Name = "txt_TotalSum";
             this.txt_TotalSum.Size = new System.Drawing.Size(186, 26);
             this.txt_TotalSum.TabIndex = 51;
@@ -225,16 +235,17 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(379, 690);
+            this.label7.Location = new System.Drawing.Point(368, 693);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(54, 19);
+            this.label7.Size = new System.Drawing.Size(102, 19);
             this.label7.TabIndex = 50;
-            this.label7.Text = "Sum :";
+            this.label7.Text = "Total Sales :";
             // 
             // txt_VoidTips
             // 
+            this.txt_VoidTips.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.txt_VoidTips.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_VoidTips.Location = new System.Drawing.Point(810, 655);
+            this.txt_VoidTips.Location = new System.Drawing.Point(799, 631);
             this.txt_VoidTips.Name = "txt_VoidTips";
             this.txt_VoidTips.Size = new System.Drawing.Size(186, 26);
             this.txt_VoidTips.TabIndex = 53;
@@ -244,7 +255,8 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(701, 659);
+            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.label9.Location = new System.Drawing.Point(679, 634);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(90, 19);
             this.label9.TabIndex = 52;
@@ -253,7 +265,7 @@
             // txt_TipSum
             // 
             this.txt_TipSum.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_TipSum.Location = new System.Drawing.Point(810, 687);
+            this.txt_TipSum.Location = new System.Drawing.Point(799, 691);
             this.txt_TipSum.Name = "txt_TipSum";
             this.txt_TipSum.Size = new System.Drawing.Size(186, 26);
             this.txt_TipSum.TabIndex = 55;
@@ -263,11 +275,11 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(701, 691);
+            this.label10.Location = new System.Drawing.Point(679, 693);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(82, 19);
+            this.label10.Size = new System.Drawing.Size(93, 19);
             this.label10.TabIndex = 54;
-            this.label10.Text = "Tip Sum :";
+            this.label10.Text = "Total Tips :";
             // 
             // label11
             // 
@@ -296,9 +308,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progBarExport.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.progBarExport.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.progBarExport.Location = new System.Drawing.Point(13, 605);
+            this.progBarExport.Location = new System.Drawing.Point(12, 113);
             this.progBarExport.Name = "progBarExport";
-            this.progBarExport.Size = new System.Drawing.Size(983, 10);
+            this.progBarExport.Size = new System.Drawing.Size(983, 7);
             this.progBarExport.Step = 1;
             this.progBarExport.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progBarExport.TabIndex = 59;
@@ -307,10 +319,10 @@
             // dgvItems
             // 
             this.dgvItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvItems.Location = new System.Drawing.Point(13, 360);
+            this.dgvItems.Location = new System.Drawing.Point(12, 368);
             this.dgvItems.Name = "dgvItems";
             this.dgvItems.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvItems.Size = new System.Drawing.Size(983, 239);
+            this.dgvItems.Size = new System.Drawing.Size(983, 229);
             this.dgvItems.TabIndex = 62;
             this.dgvItems.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvItems_CellContentClick);
             this.dgvItems.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.dgvItems_RowPrePaint);
@@ -421,12 +433,80 @@
             this.bt_ReprintReceipt.Text = "Re-Print";
             this.bt_ReprintReceipt.Click += new System.EventHandler(this.bt_ReprintReceipt_Click);
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.ForeColor = System.Drawing.Color.Red;
+            this.label12.Location = new System.Drawing.Point(368, 662);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(116, 19);
+            this.label12.TabIndex = 63;
+            this.label12.Text = "Refund Total :";
+            // 
+            // txt_TotalRefund
+            // 
+            this.txt_TotalRefund.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.txt_TotalRefund.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_TotalRefund.Location = new System.Drawing.Point(487, 659);
+            this.txt_TotalRefund.Name = "txt_TotalRefund";
+            this.txt_TotalRefund.Size = new System.Drawing.Size(186, 26);
+            this.txt_TotalRefund.TabIndex = 64;
+            this.txt_TotalRefund.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.ForeColor = System.Drawing.Color.Red;
+            this.label13.Location = new System.Drawing.Point(679, 662);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(112, 19);
+            this.label13.TabIndex = 65;
+            this.label13.Text = "Refund Tips :";
+            // 
+            // txt_RefundTips
+            // 
+            this.txt_RefundTips.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.txt_RefundTips.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_RefundTips.Location = new System.Drawing.Point(799, 659);
+            this.txt_RefundTips.Name = "txt_RefundTips";
+            this.txt_RefundTips.Size = new System.Drawing.Size(186, 26);
+            this.txt_RefundTips.TabIndex = 66;
+            this.txt_RefundTips.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.ForeColor = System.Drawing.Color.Red;
+            this.label14.Location = new System.Drawing.Point(22, 662);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(107, 19);
+            this.label14.TabIndex = 67;
+            this.label14.Text = "# of Refund :";
+            // 
+            // txt_TotalRefundCount
+            // 
+            this.txt_TotalRefundCount.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.txt_TotalRefundCount.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_TotalRefundCount.Location = new System.Drawing.Point(176, 659);
+            this.txt_TotalRefundCount.Name = "txt_TotalRefundCount";
+            this.txt_TotalRefundCount.Size = new System.Drawing.Size(186, 26);
+            this.txt_TotalRefundCount.TabIndex = 68;
+            this.txt_TotalRefundCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // frmSalesHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 725);
-            this.Controls.Add(this.dgvItems);
+            this.Controls.Add(this.txt_TotalRefundCount);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.txt_RefundTips);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.txt_TotalRefund);
+            this.Controls.Add(this.label12);
             this.Controls.Add(this.bt_CardRefund);
             this.Controls.Add(this.bt_CardVoid);
             this.Controls.Add(this.progBarExport);
@@ -458,6 +538,7 @@
             this.Controls.Add(this.dttm_TranEnd);
             this.Controls.Add(this.dttm_TranStart);
             this.Controls.Add(this.dgvData);
+            this.Controls.Add(this.dgvItems);
             this.Name = "frmSalesHistory";
             this.Text = "Sales History / Reprint / Void";
             this.Load += new System.EventHandler(this.frmSalesHistory_Load);
@@ -502,5 +583,11 @@
         private SDCafeCommon.Utilities.CustomButton bt_CardVoid;
         private SDCafeCommon.Utilities.CustomButton bt_CardRefund;
         private System.Windows.Forms.DataGridView dgvItems;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox txt_TotalRefund;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox txt_RefundTips;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.TextBox txt_TotalRefundCount;
     }
 }
