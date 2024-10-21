@@ -1482,11 +1482,21 @@ namespace SDCafeOffice.Views
             xlWorkSheet.Cells[iStartRow, 3] = iRefundTip.ToString("0.00");
             xlWorkSheet.Cells[iStartRow, 4] = iRefundTotal.ToString("0.00");
             // --------------------------------------- Set Boder ---------------------------------
-            formatRange = xlWorkSheet.get_Range("A" + iStartSummaryRow.ToString(), "D" + iStartRow.ToString());
-            formatRange.Font.Size = 8;
-            border.LineStyle = Excel.XlLineStyle.xlContinuous;
-            border.Weight = 2d;
-            formatRange.BorderAround(Excel.XlLineStyle.xlContinuous,
+            Excel.Range formatRange2;
+            formatRange2 = xlWorkSheet.get_Range("A" + iStartSummaryRow.ToString(), "D" + iStartRow.ToString());
+            formatRange2.Font.Size = 8;
+            /*
+            Excel.Borders border2 = formatRange.Borders;
+            border2[Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Excel.XlLineStyle.xlContinuous;
+            border2[Excel.XlBordersIndex.xlEdgeTop].LineStyle = Excel.XlLineStyle.xlContinuous;
+            border2[Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Excel.XlLineStyle.xlContinuous;
+            border2[Excel.XlBordersIndex.xlEdgeRight].LineStyle = Excel.XlLineStyle.xlContinuous;
+            border2.Weight = 2d;
+            */
+            Excel.Borders border2 = formatRange2.Borders;
+            border2.LineStyle = Excel.XlLineStyle.xlContinuous;
+            formatRange2.EntireRow.Font.Bold = false;
+            formatRange2.BorderAround(Excel.XlLineStyle.xlContinuous,
             Excel.XlBorderWeight.xlMedium, Excel.XlColorIndex.xlColorIndexAutomatic,
             Excel.XlColorIndex.xlColorIndexAutomatic);
 
