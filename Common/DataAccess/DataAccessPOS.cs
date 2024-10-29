@@ -153,7 +153,10 @@ namespace SDCafeCommon.DataAccess
                 var output = connection.Query<POS_SysConfigModel>($"select * from SysConfig where ConfigName = '{strConfigName}'").ToList();
                 if (output.Count == 0)
                 {
-                    Insert_SysConfig(new POS_SysConfigModel { ConfigName = strConfigName, ConfigValue = "TRUE", ConfigDesc = "", IsActive = true });
+                    if (strConfigName.Contains("IS_"))
+                        Insert_SysConfig(new POS_SysConfigModel { ConfigName = strConfigName, ConfigValue = "TRUE", ConfigDesc = "", IsActive = true });
+                    else
+                        Insert_SysConfig(new POS_SysConfigModel { ConfigName = strConfigName, ConfigValue = "99", ConfigDesc = "", IsActive = true });
                     output = connection.Query<POS_SysConfigModel>($"select * from SysConfig where ConfigName = '{strConfigName}'").ToList();
                 }
                 return output;
@@ -567,11 +570,12 @@ namespace SDCafeCommon.DataAccess
                             "InUnitPrice, OutUnitPrice, IsTax1, IsTax2, IsTax3, IsTaxInverseCalculation, " +
                             "PromoStartDate, PromoEndDate, PromoDay1, PromoDay2, PromoDay3, " +
                             "IsPrinter1, IsPrinter2, IsPrinter3, IsPrinter4, IsPrinter5, " +
-                            "PromoPrice1, PromoPrice2, PromoPrice3, IsSoldOut, Deposit, RecyclingFee, ChillCharge, MemoText, BarCode, IsManualItem, Balance) " +
+                            "PromoPrice1, PromoPrice2, PromoPrice3, IsSoldOut, Deposit, RecyclingFee, ChillCharge, MemoText, BarCode, IsManualItem, Balance," +
+                            "IsMainSalesButton) " +
                             "VALUES(@ProductName,@SecondName,@ProductTypeId,CAST(@OutUnitPrice as decimal(10,2)),CAST(@OutUnitPrice as decimal(10,2)),@IsTax1,@IsTax2,@IsTax3,@IsTaxInverseCalculation, " +
                             "@PromoStartDate,@PromoEndDate,@PromoDay1,@PromoDay2,@PromoDay3,@IsPrinter1,@IsPrinter2,@IsPrinter3,@IsPrinter4,@IsPrinter5,"+
                             "CAST(@PromoPrice1 as decimal(10,2)),CAST(@PromoPrice2 as decimal(10,2)),CAST(@PromoPrice3 as decimal(10,2)),@IsSoldOut," +
-                            "CAST(@Deposit as decimal(10,2)),CAST(@RecyclingFee as decimal(10,2)),CAST(@ChillCharge as decimal(10,2)), @MemoText, @BarCode, @IsManualItem, @Balance); " +
+                            "CAST(@Deposit as decimal(10,2)),CAST(@RecyclingFee as decimal(10,2)),CAST(@ChillCharge as decimal(10,2)), @MemoText, @BarCode, @IsManualItem, @Balance, @IsMainSalesButton); " +
                             "SELECT CAST(SCOPE_IDENTITY() as int)";
                 //var count = connection.Execute(query, pos_ProductModel);
                 var id = connection.QuerySingle<int>(query, pos_ProductModel);
@@ -598,7 +602,8 @@ namespace SDCafeCommon.DataAccess
                                 "IsPrinter1=@IsPrinter1, IsPrinter2=@IsPrinter2, IsPrinter3=@IsPrinter3, IsPrinter4=@IsPrinter4, IsPrinter5=@IsPrinter5, " +
                                 "PromoPrice1=CAST(@PromoPrice1 as decimal(10,2)), PromoPrice2=CAST(@PromoPrice2 as decimal(10,2)), PromoPrice3=CAST(@PromoPrice3 as decimal(10,2)), IsSoldOut=@IsSoldOut, " +
                                 "Deposit=CAST(@Deposit as decimal(10,2)), RecyclingFee=CAST(@RecyclingFee as decimal(10,2)),ChillCharge=CAST(@ChillCharge as decimal(10,2)), MemoText=@MemoText, " +
-                                "BarCode=@BarCode, IsManualItem=@IsManualItem, Balance=@Balance " +
+                                "BarCode=@BarCode, IsManualItem=@IsManualItem, Balance=@Balance, " +
+                                "IsMainSalesButton = @IsMainSalesButton " +
                                 "WHERE Id = @Id";
                 var count = connection.Execute(query, pos_ProductModel);
                 return count;
@@ -1066,11 +1071,20 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
-        public List<POS_ProductModel> Get_All_Products_By_ProdType_Sortby_Price(int iSelectedProdTypeID)
+        public List<POS_ProductModel> Get_All_Products_By_ProdType_Sortby_Price(int iSelectedProdTypeID, int iTop)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                var output = connection.Query<POS_ProductModel>($"select * from Product WHERE ProductTypeId = {iSelectedProdTypeID} Order by IsManualItem Desc, OutUnitPrice").ToList();
+                var output = connection.Query<POS_ProductModel>($"select Top {iTop} * from Product WHERE ProductTypeId = {iSelectedProdTypeID} Order by IsManualItem Desc, OutUnitPrice").ToList();
+                return output;
+            }
+        }
+        
+        public List<POS_ProductModel> Get_All_DefaultSales_Products()
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_ProductModel>($"select * from Product WHERE ISNULL(IsMainSalesButton,0) = 1 Order by IsManualItem Desc, OutUnitPrice").ToList();
                 return output;
             }
         }

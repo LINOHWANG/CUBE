@@ -123,6 +123,16 @@ namespace SDCafeSales.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap Cash_Refund {
+            get {
+                object obj = ResourceManager.GetObject("Cash_Refund", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap cd_open_40dp {
             get {
                 object obj = ResourceManager.GetObject("cd_open_40dp", resourceCulture);

@@ -341,5 +341,14 @@ namespace SDCafeCommon.DataAccess
                     return null;
             }
         }
+
+        public POS1_TranCollectionModel Get_Last_TranCollection()
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS1")))
+            {
+                var output = connection.Query<POS1_TranCollectionModel>($"SELECT TOP (1) * from TranCollection WHERE TotalPaid > 0 And ISNULL(IsVoid,0) = 0 order by CreateDate desc, createtime desc").ToList();
+                return output[0];
+            }
+        }
     }
 }

@@ -134,6 +134,7 @@ namespace SDCafeOffice.Views
                 txt_BarCode.Text = prods[0].BarCode;
                 checkManual.Checked = prods[0].IsManualItem;
                 txt_Balance.Text = prods[0].Balance.ToString();
+                checkMainSalesButton.Checked = prods[0].IsMainSalesButton;
 
                 if (txt_BarCode.Text.Length > 0)
                 {
@@ -268,7 +269,8 @@ namespace SDCafeOffice.Views
                 MemoText = txt_Memo.Text,
                 IsManualItem = checkManual.Checked,
                 Balance = int.Parse(txt_Balance.Text),
-                BarCode = txt_BarCode.Text
+                BarCode = txt_BarCode.Text,
+                IsMainSalesButton = checkMainSalesButton.Checked
             });
             int iProdCnt = dbPOS.Update_Product(prods[0]);
             if (string.IsNullOrEmpty(txt_BarCode.Text))
@@ -361,8 +363,9 @@ namespace SDCafeOffice.Views
                 MemoText = txt_Memo.Text,
                 BarCode = txt_BarCode.Text, //string.Empty,
                 IsManualItem = checkManual.Checked,
-                Balance = int.Parse(txt_Balance.Text)
-                
+                Balance = int.Parse(txt_Balance.Text),
+                IsMainSalesButton = checkMainSalesButton.Checked
+
             });
             int iProdId = dbPOS.Insert_Product(prods[0]);
             if (string.IsNullOrEmpty(txt_BarCode.Text))

@@ -53,6 +53,13 @@
             this.cb_Tender = new System.Windows.Forms.ComboBox();
             this.progBarExport = new System.Windows.Forms.ProgressBar();
             this.dgvItems = new System.Windows.Forms.DataGridView();
+            this.label12 = new System.Windows.Forms.Label();
+            this.txt_TotalRefund = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.txt_RefundTips = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.txt_TotalRefundCount = new System.Windows.Forms.TextBox();
+            this.bt_CashRefund = new SDCafeCommon.Utilities.CustomButton();
             this.bt_CardRefund = new SDCafeCommon.Utilities.CustomButton();
             this.bt_CardVoid = new SDCafeCommon.Utilities.CustomButton();
             this.bt_ExcelExport = new SDCafeCommon.Utilities.CustomButton();
@@ -60,12 +67,6 @@
             this.bt_Query = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_ReprintReceipt = new SDCafeCommon.Utilities.CustomButton();
-            this.label12 = new System.Windows.Forms.Label();
-            this.txt_TotalRefund = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.txt_RefundTips = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.txt_TotalRefundCount = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).BeginInit();
             this.SuspendLayout();
@@ -327,112 +328,6 @@
             this.dgvItems.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvItems_CellContentClick);
             this.dgvItems.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.dgvItems_RowPrePaint);
             // 
-            // bt_CardRefund
-            // 
-            this.bt_CardRefund.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.bt_CardRefund.CornerRadius = 30;
-            this.bt_CardRefund.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
-            this.bt_CardRefund.Location = new System.Drawing.Point(685, 60);
-            this.bt_CardRefund.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_CardRefund.Name = "bt_CardRefund";
-            this.bt_CardRefund.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_CardRefund.Size = new System.Drawing.Size(160, 47);
-            this.bt_CardRefund.TabIndex = 61;
-            this.bt_CardRefund.Text = "Card Refund";
-            this.bt_CardRefund.Click += new System.EventHandler(this.bt_CardRefund_Click);
-            // 
-            // bt_CardVoid
-            // 
-            this.bt_CardVoid.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.bt_CardVoid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.bt_CardVoid.CornerRadius = 30;
-            this.bt_CardVoid.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
-            this.bt_CardVoid.Location = new System.Drawing.Point(513, 60);
-            this.bt_CardVoid.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_CardVoid.Name = "bt_CardVoid";
-            this.bt_CardVoid.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_CardVoid.Size = new System.Drawing.Size(160, 47);
-            this.bt_CardVoid.TabIndex = 60;
-            this.bt_CardVoid.Text = "Card Void";
-            this.bt_CardVoid.Click += new System.EventHandler(this.bt_CardVoid_Click);
-            // 
-            // bt_ExcelExport
-            // 
-            this.bt_ExcelExport.BackColor = System.Drawing.Color.Green;
-            this.bt_ExcelExport.CornerRadius = 30;
-            this.bt_ExcelExport.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
-            this.bt_ExcelExport.Location = new System.Drawing.Point(513, 7);
-            this.bt_ExcelExport.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_ExcelExport.Name = "bt_ExcelExport";
-            this.bt_ExcelExport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_ExcelExport.Size = new System.Drawing.Size(160, 47);
-            this.bt_ExcelExport.TabIndex = 56;
-            this.bt_ExcelExport.Text = "Ecel Export";
-            this.bt_ExcelExport.Click += new System.EventHandler(this.bt_ExcelExport_Click);
-            // 
-            // bt_SetVoid
-            // 
-            this.bt_SetVoid.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.bt_SetVoid.CornerRadius = 30;
-            this.bt_SetVoid.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
-            this.bt_SetVoid.Location = new System.Drawing.Point(341, 60);
-            this.bt_SetVoid.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_SetVoid.Name = "bt_SetVoid";
-            this.bt_SetVoid.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_SetVoid.Size = new System.Drawing.Size(160, 47);
-            this.bt_SetVoid.TabIndex = 43;
-            this.bt_SetVoid.Text = "Manual Void";
-            this.bt_SetVoid.Click += new System.EventHandler(this.bt_SetVoid_Click);
-            // 
-            // bt_Query
-            // 
-            this.bt_Query.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.bt_Query.CornerRadius = 30;
-            this.bt_Query.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_Query.Location = new System.Drawing.Point(341, 7);
-            this.bt_Query.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_Query.Name = "bt_Query";
-            this.bt_Query.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Query.Size = new System.Drawing.Size(160, 47);
-            this.bt_Query.TabIndex = 36;
-            this.bt_Query.Text = "Query";
-            this.bt_Query.Click += new System.EventHandler(this.bt_Query_Click);
-            // 
-            // bt_Exit
-            // 
-            this.bt_Exit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.bt_Exit.CornerRadius = 30;
-            this.bt_Exit.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Exit.ForeColor = System.Drawing.Color.White;
-            this.bt_Exit.Location = new System.Drawing.Point(854, 7);
-            this.bt_Exit.Name = "bt_Exit";
-            this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Exit.Size = new System.Drawing.Size(142, 100);
-            this.bt_Exit.TabIndex = 35;
-            this.bt_Exit.Text = "Exit";
-            this.bt_Exit.Click += new System.EventHandler(this.bt_Exit_Click);
-            // 
-            // bt_ReprintReceipt
-            // 
-            this.bt_ReprintReceipt.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.bt_ReprintReceipt.CornerRadius = 30;
-            this.bt_ReprintReceipt.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
-            this.bt_ReprintReceipt.Location = new System.Drawing.Point(683, 7);
-            this.bt_ReprintReceipt.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_ReprintReceipt.Name = "bt_ReprintReceipt";
-            this.bt_ReprintReceipt.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_ReprintReceipt.Size = new System.Drawing.Size(160, 47);
-            this.bt_ReprintReceipt.TabIndex = 23;
-            this.bt_ReprintReceipt.Text = "Re-Print";
-            this.bt_ReprintReceipt.Click += new System.EventHandler(this.bt_ReprintReceipt_Click);
-            // 
             // label12
             // 
             this.label12.AutoSize = true;
@@ -496,11 +391,135 @@
             this.txt_TotalRefundCount.TabIndex = 68;
             this.txt_TotalRefundCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // bt_CashRefund
+            // 
+            this.bt_CashRefund.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.bt_CashRefund.CornerRadius = 30;
+            this.bt_CashRefund.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
+            this.bt_CashRefund.Location = new System.Drawing.Point(666, 60);
+            this.bt_CashRefund.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_CashRefund.Name = "bt_CashRefund";
+            this.bt_CashRefund.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_CashRefund.Size = new System.Drawing.Size(160, 47);
+            this.bt_CashRefund.TabIndex = 69;
+            this.bt_CashRefund.Text = "Cash Refund";
+            this.bt_CashRefund.Click += new System.EventHandler(this.bt_CashRefund_Click);
+            // 
+            // bt_CardRefund
+            // 
+            this.bt_CardRefund.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.bt_CardRefund.CornerRadius = 30;
+            this.bt_CardRefund.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
+            this.bt_CardRefund.Location = new System.Drawing.Point(833, 60);
+            this.bt_CardRefund.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_CardRefund.Name = "bt_CardRefund";
+            this.bt_CardRefund.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_CardRefund.Size = new System.Drawing.Size(160, 47);
+            this.bt_CardRefund.TabIndex = 61;
+            this.bt_CardRefund.Text = "Card Refund";
+            this.bt_CardRefund.Click += new System.EventHandler(this.bt_CardRefund_Click);
+            // 
+            // bt_CardVoid
+            // 
+            this.bt_CardVoid.BackColor = System.Drawing.Color.Firebrick;
+            this.bt_CardVoid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.bt_CardVoid.CornerRadius = 30;
+            this.bt_CardVoid.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
+            this.bt_CardVoid.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.bt_CardVoid.Location = new System.Drawing.Point(494, 58);
+            this.bt_CardVoid.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_CardVoid.Name = "bt_CardVoid";
+            this.bt_CardVoid.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_CardVoid.Size = new System.Drawing.Size(160, 47);
+            this.bt_CardVoid.TabIndex = 60;
+            this.bt_CardVoid.Text = "Card Void";
+            this.bt_CardVoid.Click += new System.EventHandler(this.bt_CardVoid_Click);
+            // 
+            // bt_ExcelExport
+            // 
+            this.bt_ExcelExport.BackColor = System.Drawing.Color.Green;
+            this.bt_ExcelExport.CornerRadius = 30;
+            this.bt_ExcelExport.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
+            this.bt_ExcelExport.Location = new System.Drawing.Point(666, 7);
+            this.bt_ExcelExport.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_ExcelExport.Name = "bt_ExcelExport";
+            this.bt_ExcelExport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_ExcelExport.Size = new System.Drawing.Size(160, 47);
+            this.bt_ExcelExport.TabIndex = 56;
+            this.bt_ExcelExport.Text = "Ecel Export";
+            this.bt_ExcelExport.Click += new System.EventHandler(this.bt_ExcelExport_Click);
+            // 
+            // bt_SetVoid
+            // 
+            this.bt_SetVoid.BackColor = System.Drawing.Color.Firebrick;
+            this.bt_SetVoid.CornerRadius = 30;
+            this.bt_SetVoid.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
+            this.bt_SetVoid.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.bt_SetVoid.Location = new System.Drawing.Point(322, 60);
+            this.bt_SetVoid.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_SetVoid.Name = "bt_SetVoid";
+            this.bt_SetVoid.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_SetVoid.Size = new System.Drawing.Size(160, 47);
+            this.bt_SetVoid.TabIndex = 43;
+            this.bt_SetVoid.Text = "Manual Void";
+            this.bt_SetVoid.Click += new System.EventHandler(this.bt_SetVoid_Click);
+            // 
+            // bt_Query
+            // 
+            this.bt_Query.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.bt_Query.CornerRadius = 30;
+            this.bt_Query.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_Query.Location = new System.Drawing.Point(322, 7);
+            this.bt_Query.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_Query.Name = "bt_Query";
+            this.bt_Query.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Query.Size = new System.Drawing.Size(160, 47);
+            this.bt_Query.TabIndex = 36;
+            this.bt_Query.Text = "Query";
+            this.bt_Query.Click += new System.EventHandler(this.bt_Query_Click);
+            // 
+            // bt_Exit
+            // 
+            this.bt_Exit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.bt_Exit.CornerRadius = 30;
+            this.bt_Exit.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
+            this.bt_Exit.ForeColor = System.Drawing.Color.White;
+            this.bt_Exit.Location = new System.Drawing.Point(835, 7);
+            this.bt_Exit.Name = "bt_Exit";
+            this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Exit.Size = new System.Drawing.Size(160, 47);
+            this.bt_Exit.TabIndex = 35;
+            this.bt_Exit.Text = "Exit";
+            this.bt_Exit.Click += new System.EventHandler(this.bt_Exit_Click);
+            // 
+            // bt_ReprintReceipt
+            // 
+            this.bt_ReprintReceipt.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.bt_ReprintReceipt.CornerRadius = 30;
+            this.bt_ReprintReceipt.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
+            this.bt_ReprintReceipt.Location = new System.Drawing.Point(494, 7);
+            this.bt_ReprintReceipt.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_ReprintReceipt.Name = "bt_ReprintReceipt";
+            this.bt_ReprintReceipt.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_ReprintReceipt.Size = new System.Drawing.Size(160, 47);
+            this.bt_ReprintReceipt.TabIndex = 23;
+            this.bt_ReprintReceipt.Text = "Re-Print";
+            this.bt_ReprintReceipt.Click += new System.EventHandler(this.bt_ReprintReceipt_Click);
+            // 
             // frmSalesHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 725);
+            this.Controls.Add(this.bt_CashRefund);
             this.Controls.Add(this.txt_TotalRefundCount);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.txt_RefundTips);
@@ -589,5 +608,6 @@
         private System.Windows.Forms.TextBox txt_RefundTips;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.TextBox txt_TotalRefundCount;
+        private SDCafeCommon.Utilities.CustomButton bt_CashRefund;
     }
 }

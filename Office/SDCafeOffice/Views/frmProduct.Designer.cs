@@ -88,6 +88,7 @@
             this.bt_RprintLabel = new SDCafeCommon.Utilities.CustomButton();
             this.txt_PrintCopy = new System.Windows.Forms.TextBox();
             this.lbl_PrintCopy = new System.Windows.Forms.Label();
+            this.checkMainSalesButton = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -451,7 +452,7 @@
             // 
             this.checkSoldOut.AutoSize = true;
             this.checkSoldOut.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkSoldOut.Location = new System.Drawing.Point(482, 199);
+            this.checkSoldOut.Location = new System.Drawing.Point(482, 162);
             this.checkSoldOut.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkSoldOut.Name = "checkSoldOut";
             this.checkSoldOut.Size = new System.Drawing.Size(119, 26);
@@ -646,7 +647,7 @@
             // 
             this.checkManual.AutoSize = true;
             this.checkManual.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkManual.Location = new System.Drawing.Point(482, 159);
+            this.checkManual.Location = new System.Drawing.Point(482, 126);
             this.checkManual.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkManual.Name = "checkManual";
             this.checkManual.Size = new System.Drawing.Size(196, 26);
@@ -782,11 +783,25 @@
             this.lbl_PrintCopy.TabIndex = 55;
             this.lbl_PrintCopy.Text = "Copies ?";
             // 
+            // checkMainSalesButton
+            // 
+            this.checkMainSalesButton.AutoSize = true;
+            this.checkMainSalesButton.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkMainSalesButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.checkMainSalesButton.Location = new System.Drawing.Point(482, 201);
+            this.checkMainSalesButton.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.checkMainSalesButton.Name = "checkMainSalesButton";
+            this.checkMainSalesButton.Size = new System.Drawing.Size(217, 26);
+            this.checkMainSalesButton.TabIndex = 56;
+            this.checkMainSalesButton.Text = "Default Sales Button ?";
+            this.checkMainSalesButton.UseVisualStyleBackColor = true;
+            // 
             // frmProduct
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 661);
+            this.Controls.Add(this.checkMainSalesButton);
             this.Controls.Add(this.lbl_PrintCopy);
             this.Controls.Add(this.txt_PrintCopy);
             this.Controls.Add(this.bt_RprintLabel);
@@ -909,5 +924,6 @@
         private SDCafeCommon.Utilities.CustomButton bt_RprintLabel;
         private System.Windows.Forms.TextBox txt_PrintCopy;
         private System.Windows.Forms.Label lbl_PrintCopy;
+        private System.Windows.Forms.CheckBox checkMainSalesButton;
     }
 }

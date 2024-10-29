@@ -13,6 +13,7 @@ using SDCafeCommon.DataAccess;
 using SDCafeCommon.Utilities;
 using SDCafeSales.Properties;
 using SDCafeSales.Views;
+using System.Threading;
 
 namespace SDCafeSales
 {
@@ -55,7 +56,6 @@ namespace SDCafeSales
         public frmLogOn()
         {
             InitializeComponent();
-
         }
 
         private void frmLogOn_Load(object sender, EventArgs e)

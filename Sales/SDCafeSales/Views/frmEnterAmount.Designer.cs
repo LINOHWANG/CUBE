@@ -29,12 +29,6 @@
         private void InitializeComponent()
         {
             this.pnlNumPad = new System.Windows.Forms.Panel();
-            this.txt_Amount = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lblTitle = new System.Windows.Forms.Label();
-            this.lblTest = new System.Windows.Forms.Label();
-            this.bt_Process = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.btNumClear = new SDCafeCommon.Utilities.CustomButton();
             this.btNumDelete = new SDCafeCommon.Utilities.CustomButton();
             this.btNum0 = new SDCafeCommon.Utilities.CustomButton();
@@ -47,6 +41,12 @@
             this.btNum2 = new SDCafeCommon.Utilities.CustomButton();
             this.btNum4 = new SDCafeCommon.Utilities.CustomButton();
             this.btNum1 = new SDCafeCommon.Utilities.CustomButton();
+            this.txt_Amount = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblTitle = new System.Windows.Forms.Label();
+            this.lblTest = new System.Windows.Forms.Label();
+            this.bt_Process = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.pnlNumPad.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,88 +71,6 @@
             this.pnlNumPad.Name = "pnlNumPad";
             this.pnlNumPad.Size = new System.Drawing.Size(451, 209);
             this.pnlNumPad.TabIndex = 27;
-            // 
-            // txt_Amount
-            // 
-            this.txt_Amount.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txt_Amount.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
-            this.txt_Amount.ForeColor = System.Drawing.Color.DarkBlue;
-            this.txt_Amount.Location = new System.Drawing.Point(269, 96);
-            this.txt_Amount.Name = "txt_Amount";
-            this.txt_Amount.ReadOnly = true;
-            this.txt_Amount.Size = new System.Drawing.Size(197, 41);
-            this.txt_Amount.TabIndex = 95;
-            this.txt_Amount.Text = "0.00";
-            this.txt_Amount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label1
-            // 
-            this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.label1.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
-            this.label1.ForeColor = System.Drawing.Color.DarkBlue;
-            this.label1.Location = new System.Drawing.Point(19, 90);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(217, 53);
-            this.label1.TabIndex = 94;
-            this.label1.Text = "Amount";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblTitle
-            // 
-            this.lblTitle.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.lblTitle.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.Black;
-            this.lblTitle.Location = new System.Drawing.Point(19, 9);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(447, 81);
-            this.lblTitle.TabIndex = 96;
-            this.lblTitle.Text = "Title";
-            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblTest
-            // 
-            this.lblTest.BackColor = System.Drawing.Color.Transparent;
-            this.lblTest.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.lblTest.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTest.ForeColor = System.Drawing.Color.DarkBlue;
-            this.lblTest.Location = new System.Drawing.Point(346, -5);
-            this.lblTest.Name = "lblTest";
-            this.lblTest.Size = new System.Drawing.Size(140, 53);
-            this.lblTest.TabIndex = 99;
-            this.lblTest.Text = "Amount";
-            this.lblTest.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // bt_Process
-            // 
-            this.bt_Process.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.bt_Process.CornerRadius = 30;
-            this.bt_Process.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold);
-            this.bt_Process.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.bt_Process.Location = new System.Drawing.Point(15, 365);
-            this.bt_Process.Name = "bt_Process";
-            this.bt_Process.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft) 
-            | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_Process.Size = new System.Drawing.Size(295, 62);
-            this.bt_Process.TabIndex = 98;
-            this.bt_Process.Text = "Process";
-            this.bt_Process.Click += new System.EventHandler(this.bt_Process_Click);
-            // 
-            // bt_Exit
-            // 
-            this.bt_Exit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.bt_Exit.CornerRadius = 30;
-            this.bt_Exit.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold);
-            this.bt_Exit.ForeColor = System.Drawing.Color.Red;
-            this.bt_Exit.Location = new System.Drawing.Point(316, 365);
-            this.bt_Exit.Name = "bt_Exit";
-            this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft) 
-            | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_Exit.Size = new System.Drawing.Size(150, 62);
-            this.bt_Exit.TabIndex = 97;
-            this.bt_Exit.Text = "Cancel";
-            this.bt_Exit.Click += new System.EventHandler(this.bt_Exit_Click);
             // 
             // btNumClear
             // 
@@ -345,6 +263,88 @@
             this.btNum1.TabIndex = 17;
             this.btNum1.Text = "1";
             this.btNum1.Click += new System.EventHandler(this.btNum1_Click);
+            // 
+            // txt_Amount
+            // 
+            this.txt_Amount.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txt_Amount.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.txt_Amount.ForeColor = System.Drawing.Color.DarkBlue;
+            this.txt_Amount.Location = new System.Drawing.Point(269, 96);
+            this.txt_Amount.Name = "txt_Amount";
+            this.txt_Amount.ReadOnly = true;
+            this.txt_Amount.Size = new System.Drawing.Size(197, 41);
+            this.txt_Amount.TabIndex = 95;
+            this.txt_Amount.Text = "0.00";
+            this.txt_Amount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label1
+            // 
+            this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.label1.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.label1.ForeColor = System.Drawing.Color.DarkBlue;
+            this.label1.Location = new System.Drawing.Point(19, 90);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(217, 53);
+            this.label1.TabIndex = 94;
+            this.label1.Text = "Amount";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblTitle
+            // 
+            this.lblTitle.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.lblTitle.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.ForeColor = System.Drawing.Color.Black;
+            this.lblTitle.Location = new System.Drawing.Point(19, 9);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(447, 81);
+            this.lblTitle.TabIndex = 96;
+            this.lblTitle.Text = "Title";
+            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblTest
+            // 
+            this.lblTest.BackColor = System.Drawing.Color.Transparent;
+            this.lblTest.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.lblTest.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTest.ForeColor = System.Drawing.Color.DarkBlue;
+            this.lblTest.Location = new System.Drawing.Point(346, -5);
+            this.lblTest.Name = "lblTest";
+            this.lblTest.Size = new System.Drawing.Size(140, 53);
+            this.lblTest.TabIndex = 99;
+            this.lblTest.Text = "Amount";
+            this.lblTest.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // bt_Process
+            // 
+            this.bt_Process.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.bt_Process.CornerRadius = 30;
+            this.bt_Process.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold);
+            this.bt_Process.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.bt_Process.Location = new System.Drawing.Point(15, 365);
+            this.bt_Process.Name = "bt_Process";
+            this.bt_Process.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_Process.Size = new System.Drawing.Size(295, 62);
+            this.bt_Process.TabIndex = 98;
+            this.bt_Process.Text = "Proceed";
+            this.bt_Process.Click += new System.EventHandler(this.bt_Process_Click);
+            // 
+            // bt_Exit
+            // 
+            this.bt_Exit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.bt_Exit.CornerRadius = 30;
+            this.bt_Exit.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold);
+            this.bt_Exit.ForeColor = System.Drawing.Color.Red;
+            this.bt_Exit.Location = new System.Drawing.Point(316, 365);
+            this.bt_Exit.Name = "bt_Exit";
+            this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_Exit.Size = new System.Drawing.Size(150, 62);
+            this.bt_Exit.TabIndex = 97;
+            this.bt_Exit.Text = "Cancel";
+            this.bt_Exit.Click += new System.EventHandler(this.bt_Exit_Click);
             // 
             // frmEnterAmount
             // 

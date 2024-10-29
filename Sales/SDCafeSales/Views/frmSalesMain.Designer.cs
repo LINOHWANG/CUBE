@@ -101,6 +101,8 @@
             this.bt_ShowSideBar = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Payment = new SDCafeCommon.Utilities.CustomButton();
             this.lblBarCode = new System.Windows.Forms.Label();
+            this.bt_NumTypeToggle = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_LastReprint = new SDCafeCommon.Utilities.CustomButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_Orders)).BeginInit();
             this.pnlPType.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -115,7 +117,7 @@
             this.dgv_Orders.Name = "dgv_Orders";
             this.dgv_Orders.ReadOnly = true;
             this.dgv_Orders.RowHeadersVisible = false;
-            this.dgv_Orders.Size = new System.Drawing.Size(387, 425);
+            this.dgv_Orders.Size = new System.Drawing.Size(387, 432);
             this.dgv_Orders.TabIndex = 7;
             // 
             // pnlMenu
@@ -326,7 +328,7 @@
             this.txtQTY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtQTY.Font = new System.Drawing.Font("Arial Narrow", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtQTY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.txtQTY.Location = new System.Drawing.Point(154, 439);
+            this.txtQTY.Location = new System.Drawing.Point(154, 442);
             this.txtQTY.Name = "txtQTY";
             this.txtQTY.Size = new System.Drawing.Size(136, 38);
             this.txtQTY.TabIndex = 26;
@@ -374,9 +376,9 @@
             this.panel1.Controls.Add(this.bt_EditPrice);
             this.panel1.Controls.Add(this.bt_SetReturn);
             this.panel1.Controls.Add(this.bt_ManualPrice);
-            this.panel1.Location = new System.Drawing.Point(227, 484);
+            this.panel1.Location = new System.Drawing.Point(227, 483);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(164, 157);
+            this.panel1.Size = new System.Drawing.Size(164, 158);
             this.panel1.TabIndex = 49;
             // 
             // bt_SetIOneDollarDiscount
@@ -509,10 +511,10 @@
             this.pnlSideBar.Controls.Add(this.bt_ShowAllMenuItem);
             this.pnlSideBar.Controls.Add(this.bt_SalesCustomer);
             this.pnlSideBar.Controls.Add(this.bt_Stop);
-            this.pnlSideBar.Location = new System.Drawing.Point(861, 4);
+            this.pnlSideBar.Location = new System.Drawing.Point(862, 4);
             this.pnlSideBar.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.pnlSideBar.Name = "pnlSideBar";
-            this.pnlSideBar.Size = new System.Drawing.Size(142, 689);
+            this.pnlSideBar.Size = new System.Drawing.Size(145, 689);
             this.pnlSideBar.TabIndex = 58;
             // 
             // bt_RecallOrder
@@ -727,12 +729,12 @@
             this.bt_Plus.CornerRadius = 20;
             this.bt_Plus.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_Plus.ForeColor = System.Drawing.Color.Blue;
-            this.bt_Plus.Location = new System.Drawing.Point(2, 431);
+            this.bt_Plus.Location = new System.Drawing.Point(2, 439);
             this.bt_Plus.Name = "bt_Plus";
             this.bt_Plus.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_Plus.Size = new System.Drawing.Size(70, 50);
+            this.bt_Plus.Size = new System.Drawing.Size(70, 42);
             this.bt_Plus.TabIndex = 75;
             this.bt_Plus.Text = "Plus (+)";
             this.bt_Plus.Click += new System.EventHandler(this.bt_Plus_Click);
@@ -743,12 +745,12 @@
             this.bt_Minus.CornerRadius = 20;
             this.bt_Minus.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_Minus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.bt_Minus.Location = new System.Drawing.Point(78, 431);
+            this.bt_Minus.Location = new System.Drawing.Point(78, 439);
             this.bt_Minus.Name = "bt_Minus";
             this.bt_Minus.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_Minus.Size = new System.Drawing.Size(70, 50);
+            this.bt_Minus.Size = new System.Drawing.Size(70, 42);
             this.bt_Minus.TabIndex = 74;
             this.bt_Minus.Text = "Minus (-)";
             this.bt_Minus.Click += new System.EventHandler(this.bt_Minus_Click);
@@ -793,12 +795,12 @@
             this.bt_SetQTY.CornerRadius = 20;
             this.bt_SetQTY.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_SetQTY.ForeColor = System.Drawing.Color.Black;
-            this.bt_SetQTY.Location = new System.Drawing.Point(296, 432);
+            this.bt_SetQTY.Location = new System.Drawing.Point(296, 440);
             this.bt_SetQTY.Name = "bt_SetQTY";
             this.bt_SetQTY.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_SetQTY.Size = new System.Drawing.Size(95, 50);
+            this.bt_SetQTY.Size = new System.Drawing.Size(95, 42);
             this.bt_SetQTY.TabIndex = 27;
             this.bt_SetQTY.Text = "Set QTY";
             this.bt_SetQTY.Click += new System.EventHandler(this.bt_SetQTY_Click);
@@ -938,7 +940,7 @@
             this.bt_PrintInvoice.CornerRadius = 5;
             this.bt_PrintInvoice.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
             this.bt_PrintInvoice.ForeColor = System.Drawing.Color.Black;
-            this.bt_PrintInvoice.Location = new System.Drawing.Point(429, 645);
+            this.bt_PrintInvoice.Location = new System.Drawing.Point(429, 626);
             this.bt_PrintInvoice.Name = "bt_PrintInvoice";
             this.bt_PrintInvoice.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -946,6 +948,7 @@
             this.bt_PrintInvoice.Size = new System.Drawing.Size(100, 47);
             this.bt_PrintInvoice.TabIndex = 28;
             this.bt_PrintInvoice.Text = "Invoice";
+            this.bt_PrintInvoice.Visible = false;
             this.bt_PrintInvoice.Click += new System.EventHandler(this.bt_PrintInvoice_Click);
             // 
             // bt_Void
@@ -1009,16 +1012,50 @@
             this.lblBarCode.TabIndex = 72;
             this.lblBarCode.Text = "Bar Code >>";
             // 
+            // bt_NumTypeToggle
+            // 
+            this.bt_NumTypeToggle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.bt_NumTypeToggle.CornerRadius = 20;
+            this.bt_NumTypeToggle.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_NumTypeToggle.ForeColor = System.Drawing.Color.Black;
+            this.bt_NumTypeToggle.Location = new System.Drawing.Point(810, 559);
+            this.bt_NumTypeToggle.Name = "bt_NumTypeToggle";
+            this.bt_NumTypeToggle.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_NumTypeToggle.Size = new System.Drawing.Size(193, 40);
+            this.bt_NumTypeToggle.TabIndex = 77;
+            this.bt_NumTypeToggle.Text = "Num";
+            this.bt_NumTypeToggle.Click += new System.EventHandler(this.bt_NumTypeToggle_Click);
+            // 
+            // bt_LastReprint
+            // 
+            this.bt_LastReprint.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.bt_LastReprint.CornerRadius = 5;
+            this.bt_LastReprint.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
+            this.bt_LastReprint.ForeColor = System.Drawing.Color.Black;
+            this.bt_LastReprint.Location = new System.Drawing.Point(429, 646);
+            this.bt_LastReprint.Name = "bt_LastReprint";
+            this.bt_LastReprint.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_LastReprint.Size = new System.Drawing.Size(100, 47);
+            this.bt_LastReprint.TabIndex = 78;
+            this.bt_LastReprint.Text = "Reprint Last Tran";
+            this.bt_LastReprint.Click += new System.EventHandler(this.bt_LastReprint_Click);
+            // 
             // frmSalesMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.bt_LastReprint);
+            this.Controls.Add(this.pnlSideBar);
+            this.Controls.Add(this.bt_NumTypeToggle);
             this.Controls.Add(this.bt_Plus);
             this.Controls.Add(this.bt_Minus);
             this.Controls.Add(this.lblBarCode2);
             this.Controls.Add(this.lblBarCode);
-            this.Controls.Add(this.pnlSideBar);
             this.Controls.Add(this.bt_cashPayment);
             this.Controls.Add(this.bt_AutoReceipt);
             this.Controls.Add(this.txtBarCode);
@@ -1147,6 +1184,8 @@
         private SDCafeCommon.Utilities.CustomButton bt_Minus;
         private SDCafeCommon.Utilities.CustomButton bt_Plus;
         private System.Windows.Forms.Label lblBarCode;
+        private SDCafeCommon.Utilities.CustomButton bt_NumTypeToggle;
+        private SDCafeCommon.Utilities.CustomButton bt_LastReprint;
     }
 }
 

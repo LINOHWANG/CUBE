@@ -41,5 +41,6 @@ namespace SDCafeCommon.Model
         public string BarCode { get; set; }
 
         public bool IsManualItem { get; set; }
+        public bool IsMainSalesButton { get; set; }
     }
 }

@@ -47,6 +47,7 @@ namespace SDCafeSales.Views
 
         private CustomButton[] btnArray = new CustomButton[10000];
         private CustomButton[] btnTypeArray = new CustomButton[1000];
+        private CustomButton[] btnNumArray = new CustomButton[12];
 
         Utility util = new Utility();
         RawPrinterHelper rawPrt = new RawPrinterHelper();
@@ -201,6 +202,9 @@ namespace SDCafeSales.Views
         private ImageList m_ImageList;
         private bool m_blnPinPadAvailable = false;
         TcpClient tcpClient;
+        private bool m_blnNumState;
+        private int m_intQueryTop;
+
         public bool m_blnPaymentree { get; set; }
 
         public frmSalesMain(Form callingForm) :this()
@@ -258,6 +262,7 @@ namespace SDCafeSales.Views
                 Load_Existing_Orders();
                 PopulateMenuTypeButtons();
                 PopulateMenuButtons();
+                ToggleNumTypeButtons();
                 //Load_RFID_Drivers();
                 //Open_RFID_Connection();
             }
@@ -286,6 +291,7 @@ namespace SDCafeSales.Views
             m_ImageList.Images.Add(Properties.Resources.cd_open_40dp);              //6
             m_ImageList.Images.Add(Properties.Resources.Invoice_40dp);              //7
             m_ImageList.Images.Add(Properties.Resources.payments_40dp);             //8
+            m_ImageList.Images.Add(Properties.Resources.Cash_Refund);             //9
 
             bt_Exit.ImageList = m_ImageList;
             bt_Exit.ImageIndex = 1;
@@ -331,6 +337,13 @@ namespace SDCafeSales.Views
             bt_OpenCashDrawer1.ImageAlign = ContentAlignment.MiddleLeft;
             bt_OpenCashDrawer1.Text = "Open" + System.Environment.NewLine + "C/D";
             bt_OpenCashDrawer1.TextAlign = ContentAlignment.MiddleRight;
+
+            bt_LastReprint.ImageList = m_ImageList;
+            bt_LastReprint.ImageIndex = 7;
+            bt_LastReprint.ImageAlign = ContentAlignment.MiddleLeft;
+            bt_LastReprint.Text = "Re-Print" + System.Environment.NewLine + "Last" + System.Environment.NewLine + "Tran";
+            bt_LastReprint.TextAlign = ContentAlignment.MiddleRight;
+
 
             Check_AutoReceipt(false);
             Show_AutoReceipt_Button();
@@ -387,9 +400,21 @@ namespace SDCafeSales.Views
             }
             this.Text = "Sales Main ( Terminal : " + strHostName + " / " + strStation + " ) Login User : " + strUserName;
 
-            Show_AutoReceipt_Button();
             m_blnPinPadAvailable = Get_PinPad_Information();
 
+            sysconfs = dbPOS.Get_SysConfig_By_Name("PRODUCT_TOP_QUERY_VALUE");
+            if (sysconfs.Count > 0)
+                m_intQueryTop = int.Parse(sysconfs[0].ConfigValue);
+            else
+                m_intQueryTop = 100;
+            sysconfs = dbPOS.Get_SysConfig_By_Name("IS_TYPE_BUTTONS_TO_NUMS");
+
+            if (sysconfs.Count > 0)
+                m_blnNumState = sysconfs[0].ConfigValue == "TRUE" ? true : false;
+            else
+                m_blnNumState = false;
+
+            Show_AutoReceipt_Button();
         }
         private bool Get_PinPad_Information()
         {
@@ -2042,8 +2067,66 @@ namespace SDCafeSales.Views
             if (ptypes.Count > 0)
             {
                 int n = 0;
+                // Add Default Sales Button
+                btnTypeArray[n].Tag = n + 1; // Tag of button 
+                btnTypeArray[n].Width = (pnlPType.Width / 4) - 5; // Width of button 
+                btnTypeArray[n].Height = (pnlPType.Height / 3) - 5; // ((pnlPType.Height - 35) / 2) - 5; // Height of button
+                btnTypeArray[n].Font = new Font("Arial", 11, FontStyle.Bold);
+                //btnArray[n].BackColor = Color.LightSteelBlue;
+                btnTypeArray[n].ForeColor = Color.AntiqueWhite;
+                btnTypeArray[n].CornerRadius = 30;
+                btnTypeArray[n].RoundCorners = Corners.TopLeft | Corners.TopRight | Corners.BottomLeft;
+                /////////////////////////////////////////////////////
+                // 4 Buttons in one line
+                /////////////////////////////////////////////////////
+                if (n >= 4) // Location of second line of buttons: 
+                {
+                    if (n % 4 == 0)
+                    {
+                        xPos = 0;
+                        yPos = yPos + btnTypeArray[n].Height + 5;
+                        iLines++;
+                    }
+                }
+                if ((n) % 12 == 0)
+                {
+                    iTotalTypePages++;
+                }
+                if (iLines > 5)
+                {
+                    iLines = 1;
+                }
+                btnTypeArray[n].BackColor = btTypeColor[iLines];
+                // Location of button: 
+                btnTypeArray[n].Left = xPos;
+                btnTypeArray[n].Top = yPos;
+                // Add buttons to a Panel: E0040150996E1CA8
+                pnlPType.Controls.Add(btnTypeArray[n]);  // Let panel hold the Buttons 
+                xPos = xPos + btnTypeArray[n].Width + 5;    // Left of next button 
+                                                            // Write English Character: 
+                /* **************************************************************** 
+                    Menu item button text
+                //**************************************************************** */
+
+                //btnArray[n].Text = ((char)(n + 65)).ToString() + (n+1).ToString();
+
+                btnTypeArray[n].Text = "DEFAULT";
+                //if (prod.ProductName.Length > 10)
+                //{
+                //    int spaceIndex = prod.ProductName.IndexOf(" ", 10);
+                //    if (spaceIndex > 10)
+                //    {
+                //        btnArray[n].Text = prod.ProductName.Substring(0, spaceIndex) + Environment.NewLine + prod.ProductName.Substring(spaceIndex);
+                //    }
+                //}
+                btnTypeArray[n].Tag = 0;
+
+                // the Event of click Button 
+                btnTypeArray[n].Click += new System.EventHandler(ClickMenuTypeButton);
+                n++;
                 foreach (var ptype in ptypes)
                 {
+
                     btnTypeArray[n].Tag = n + 1; // Tag of button 
                     btnTypeArray[n].Width = (pnlPType.Width / 4) - 5; // Width of button 
                     btnTypeArray[n].Height = (pnlPType.Height / 3) - 5; // ((pnlPType.Height - 35) / 2) - 5; // Height of button
@@ -2108,6 +2191,126 @@ namespace SDCafeSales.Views
             lbl_TypePages.Text = iCurrentTypePage.ToString()+"/" + (iTotalTypePages - 1).ToString();
             pnlPType.Enabled = true; // not need now to this button now 
             //label1.Visible = true;
+
+
+
+        }
+        private void PopulateNumButtons()
+        {
+            int xPos = 0;
+            int yPos = 0;
+            int iLines = 0;
+
+            iCurrentTypePage = 1;
+            iTotalTypePages = 1;
+
+            bt_HideSideBar.PerformClick();
+            //////////////////////////////////////////////////////
+            // Declare and assign number of buttons = 20 
+            //System.Windows.Forms.Button[] btnArray = new System.Windows.Forms.Button[30];
+            //////////////////////////////////////////////////////
+            // Create (12) Buttons: 
+            for (int i = 0; i < 12; i++)
+            {
+                // Initialize one variable 
+                btnNumArray[i] = new CustomButton();
+                btnNumArray[i].Click -= new System.EventHandler(ClickMenuNumButton);
+            }
+
+            pnlPType.Controls.Clear();
+
+            for (int n = 0; n < 12; n++)
+            {
+                btnNumArray[n].Tag = n + 1; // Tag of button 
+                btnNumArray[n].Width = (pnlPType.Width / 4) - 5; // Width of button 
+                btnNumArray[n].Height = (pnlPType.Height / 3) - 5; // ((pnlPType.Height - 35) / 2) - 5; // Height of button
+                btnNumArray[n].Font = new Font("Arial", 18, FontStyle.Bold);
+                btnNumArray[n].ForeColor = Color.AntiqueWhite;
+                btnNumArray[n].CornerRadius = 10;
+                btnNumArray[n].RoundCorners = Corners.TopLeft | Corners.BottomRight | Corners.TopRight | Corners.BottomLeft;
+
+                /////////////////////////////////////////////////////
+                // 4 Buttons in one line
+                /////////////////////////////////////////////////////
+                if (n >= 4) // Location of second line of buttons: 
+                {
+                    if (n % 4 == 0)
+                    {
+                        xPos = 0;
+                        yPos = yPos + btnNumArray[n].Height + 5;
+                        iLines++;
+                    }
+                }
+                if ((n) % 12 == 0)
+                {
+                    iTotalTypePages++;
+                }
+                if (iLines > 5)
+                {
+                    iLines = 1;
+                }
+                btnNumArray[n].BackColor = btTypeColor[0]; //btTypeColor[iLines];
+                // Location of button: 
+                btnNumArray[n].Left = xPos;
+                btnNumArray[n].Top = yPos;
+                // Add buttons to a Panel: E0040150996E1CA8
+                pnlPType.Controls.Add(btnNumArray[n]);  // Let panel hold the Buttons 
+                xPos = xPos + btnNumArray[n].Width + 5;    // Left of next button 
+                                                           // Write English Character: 
+                /* **************************************************************** 
+                    Menu item button text
+                //**************************************************************** */
+                if (n < 10)
+                {
+                    btnNumArray[n].Text = n.ToString();
+                    btnNumArray[n].Tag = n;
+                }
+                else if (n == 10)
+                {
+                    btnNumArray[n].Text = "C";
+                    btnNumArray[n].Tag = "C";
+                    btnNumArray[n].BackColor = btTypeColor[1];
+                }
+                else if (n == 11)
+                {
+                    btnNumArray[n].Text = "<";
+                    btnNumArray[n].Tag = "<";
+                    btnNumArray[n].BackColor = btTypeColor[2];
+                }
+
+                // the Event of click Button 
+                btnNumArray[n].Click += new System.EventHandler(ClickMenuNumButton);
+            }
+            lbl_TypePages.Text = iCurrentTypePage.ToString() + "/" + (iTotalTypePages - 1).ToString();
+            pnlPType.Enabled = true; // not need now to this button now 
+            //label1.Visible = true;
+        }
+
+        private void ClickMenuNumButton(object sender, EventArgs e)
+        {
+            CustomButton btn = (CustomButton)sender;
+            //btn.BackColor = Color.Yellow;
+            //btn.ForeColor = Color.DarkBlue;
+            //if (selectedBTN != null)
+            //{
+                //selectedBTN.BackColor = btColor[2];
+                //selectedBTN.ForeColor = Color.Black;
+            //}
+            if (btn.Tag == "C")
+            {
+                txtBarCode.Text = "";
+            }
+            else if (btn.Tag == "<")
+            {
+                if (txtBarCode.Text.Length > 0)
+                {
+                    txtBarCode.Text = txtBarCode.Text.Substring(0, txtBarCode.Text.Length - 1);
+                }
+            }
+            else
+            {
+                txtBarCode.Text = txtBarCode.Text + btn.Tag;
+            }
         }
 
         private void ClickMenuTypeButton(object sender, EventArgs e)
@@ -2152,7 +2355,9 @@ namespace SDCafeSales.Views
             //CustomButton[] btnArray = new CustomButton[35];
             //////////////////////////////////////////////////////
             // Create (20) Buttons: 
-            for (int i = 0; i < 10000; i++)
+            // redefine array size
+            btnArray = new CustomButton[m_intQueryTop];
+            for (int i = 0; i < m_intQueryTop; i++)
             {
                 // Initialize one variable 
                 //btnArray[i] = new System.Windows.Forms.Button();
@@ -2165,11 +2370,11 @@ namespace SDCafeSales.Views
             DataAccessPOS dbPOS = new DataAccessPOS();
             if (iSelectedProdTypeID > 0)
             {
-                prods = dbPOS.Get_All_Products_By_ProdType_Sortby_Price(iSelectedProdTypeID);
+                prods = dbPOS.Get_All_Products_By_ProdType_Sortby_Price(iSelectedProdTypeID, m_intQueryTop);
             }
             else
             {
-                prods = dbPOS.Get_All_Products();
+                prods = dbPOS.Get_All_DefaultSales_Products();
             }
 
             if (prods.Count > 0)
@@ -2177,7 +2382,7 @@ namespace SDCafeSales.Views
                 int n = 0;
                 foreach (var prod in prods)
                 {
-                    btnArray[n].Tag = n + 1; // Tag of button 
+                    btnArray[n].Tag = n;// + 1; // Tag of button 
                     btnArray[n].Width = (pnlMenu.Width / 5) - 5; // Width of button 
                     btnArray[n].Height = (pnlMenu.Height / 5) - 5; // Height of button
                     btnArray[n].Font = new Font("Arial", 9, FontStyle.Bold);
@@ -2231,6 +2436,10 @@ namespace SDCafeSales.Views
                     //    }
                     //}
                     btnArray[n].Tag = prod.Id;
+                    if (prod.IsManualItem)
+                    {
+                        btnArray[n].ForeColor = Color.DarkRed;
+                    }
 
                     // the Event of click Button 
                     btnArray[n].Click += new System.EventHandler(ClickMenuButton);
@@ -4441,7 +4650,14 @@ namespace SDCafeSales.Views
                         e1.Graphics.DrawString(strContent, fntCard, brsBlack, (RectangleF)txtRect, format2);
                         //////////////////////////////////////////////////////////////////////////
                         // Print a Line ------------------------------------------------------
-                        strTemp1 = " > PURCHASED AMOUNT";
+                        //strTemp1 = " > PURCHASED AMOUNT";
+                        //strTemp1 = " > PURCHASED AMOUNT";
+                        if (receipt.TransactionType == "00")
+                            strTemp1 = " > PURCHASED AMOUNT";
+                        else if (receipt.TransactionType == "03")
+                            strTemp1 = " > REFUND AMOUNT";
+                        else if (receipt.TransactionType == "05")
+                            strTemp1 = " > VOID AMOUNT";
                         fCurrency = (float)System.Convert.ToDouble(receipt.TransactionAmount)/100;
                         strContent = String.Format("{0,-23}", strTemp1) + String.Format("{0,20}", String.Format("{0:C}", fCurrency));
                         iNextLineYPoint = iNextLineYPoint + (itxtHeight * 1);
@@ -4460,7 +4676,13 @@ namespace SDCafeSales.Views
 
                             //////////////////////////////////////////////////////////////////////////
                             // Print a Line ------------------------------------------------------
-                            strTemp1 = " = TOTAL PAID";
+                            //strTemp1 = " = TOTAL PAID";
+                            if (receipt.TransactionType == "00")
+                                strTemp1 = " = TOTAL PAID";
+                            else if (receipt.TransactionType == "03")
+                                strTemp1 = " = TOTAL REFUND";
+                            else if (receipt.TransactionType == "05")
+                                strTemp1 = " = TOTAL VOID";
                             fCurrency = (float)System.Convert.ToDouble(receipt.TotalAmount) / 100;
                             strContent = String.Format("{0,-23}", strTemp1) + String.Format("{0,20}", String.Format("{0:C}", fCurrency));
                             iNextLineYPoint = iNextLineYPoint + iheaderHeight;
@@ -4649,7 +4871,7 @@ namespace SDCafeSales.Views
             //CustomButton[] btnArray = new CustomButton[35];
             //////////////////////////////////////////////////////
             // Create (20) Buttons: 
-            for (int i = 0; i < 300; i++)
+            for (int i = 0; i < 100; i++)
             {
                 // Initialize one variable 
                 //btnArray[i] = new System.Windows.Forms.Button();
@@ -5955,6 +6177,12 @@ namespace SDCafeSales.Views
 
         private bool Add_Order_ManualItem(int pProdID)
         {
+            string strManualName = "";
+            double dblManualPrice = 0;
+            double dblBarCodeAmount = 0;
+            bool bManualTax1 = false;
+            bool bManualTax2 = false;
+            bool bManualTax3 = false;
             int iSeq = 0;
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
@@ -5975,88 +6203,114 @@ namespace SDCafeSales.Views
                 isNewInvoice = true;
             }
 
-            using (var FrmManualPrice = new frmManualPrice(this))
+            List<POS_ProductModel> prods = new List<POS_ProductModel>();
+            prods = dbPOS.Get_Product_By_ID(pProdID);
+
+            try
             {
-                FrmManualPrice.Set_ProductName(dbPOS.Get_ProductName_By_Id(pProdID));
-                FrmManualPrice.Set_Amount(0);
-                
-                List<POS_ProductModel> prods = new List<POS_ProductModel>();
-                prods = dbPOS.Get_Product_By_ID(pProdID);
+                dblBarCodeAmount = Convert.ToInt32(txtBarCode.Text);
+            }
+            catch
+            {
+                dblBarCodeAmount = 0;
+            }
+
+            if (dblBarCodeAmount > 0)
+            {
+                dblManualPrice = dblBarCodeAmount / 100;
                 if (prods.Count > 0)
                 {
-                    FrmManualPrice.p_IsTax1 = prods[0].IsTax1;
-                    FrmManualPrice.p_IsTax2 = prods[0].IsTax2;
-                    FrmManualPrice.p_IsTax3 = prods[0].IsTax3;
+                    strManualName = prods[0].ProductName;
+                    bManualTax1 = prods[0].IsTax1;
+                    bManualTax2 = prods[0].IsTax2;
+                    bManualTax3 = prods[0].IsTax3;
                 }
+            }
+            else
+            {
+                using (var FrmManualPrice = new frmManualPrice(this))
+                {
+                    if (prods.Count > 0)
+                    {
+                        //FrmManualPrice.Set_ProductName(dbPOS.Get_ProductName_By_Id(pProdID));
+                        FrmManualPrice.Set_ProductName(prods[0].ProductName);
+                        FrmManualPrice.Set_Amount(0);
 
-                FrmManualPrice.ShowDialog();
+                        FrmManualPrice.p_IsTax1 = prods[0].IsTax1;
+                        FrmManualPrice.p_IsTax2 = prods[0].IsTax2;
+                        FrmManualPrice.p_IsTax3 = prods[0].IsTax3;
+                    }
 
-                string strManualName = FrmManualPrice.strManualName;
-                double dblManualPrice = FrmManualPrice.dblManualPrice;
-                bool bManualTax1 = FrmManualPrice.bTax1;
-                bool bManualTax2 = FrmManualPrice.bTax2;
-                bool bManualTax3 = FrmManualPrice.bTax3;
+                    FrmManualPrice.ShowDialog();
 
-                if (dblManualPrice > 0)
+                    strManualName = FrmManualPrice.strManualName;
+                    dblManualPrice = FrmManualPrice.dblManualPrice;
+                    bManualTax1 = FrmManualPrice.bTax1;
+                    bManualTax2 = FrmManualPrice.bTax2;
+                    bManualTax3 = FrmManualPrice.bTax3;
+                }
+            }
+
+            if (dblManualPrice > 0)
+            {
+                ////////////////////////////////////////////////
+                // Add the ordered item into Orders table
+                ////////////////////////////////////////////////
+
+                orders.Clear();
+                orders.Add(new POS_OrdersModel()
+                {
+                    TranType = "20",
+                    ProductId = pProdID,
+                    ProductName = strManualName,
+                    SecondName = strManualName,
+                    ProductTypeId = prods[0].ProductTypeId,
+                    InUnitPrice = 0,
+                    OutUnitPrice = (float)dblManualPrice,
+                    IsTax1 = bManualTax1,
+                    IsTax2 = bManualTax2,
+                    IsTax3 = bManualTax3,
+                    Quantity = 1,
+                    Amount = (float)dblManualPrice,
+                    Tax1Rate = TaxRate1,
+                    Tax2Rate = TaxRate2,
+                    Tax3Rate = TaxRate3,
+                    Tax1 = bManualTax1 ? TaxRate1 * (float)dblManualPrice : 0,
+                    Tax2 = bManualTax2 ? TaxRate2 * (float)dblManualPrice : 0,
+                    Tax3 = bManualTax3 ? TaxRate3 * (float)dblManualPrice : 0,
+                    Deposit = 0,
+                    RecyclingFee = 0,
+                    ChillCharge = 0,
+                    InvoiceNo = iNewInvNo,
+                    IsPaidComplete = false,
+                    CompleteDate = "",
+                    CompleteTime = "",
+                    CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), // DateTime.Now.ToShortDateString(),
+                    CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
+                    CreateUserId = System.Convert.ToInt32(strUserID),
+                    CreateUserName = strUserName,
+                    CreateStation = strStation,
+                    LastModDate = "",
+                    LastModTime = "",
+                    LastModUserId = System.Convert.ToInt32(strUserID),
+                    LastModUserName = "",
+                    LastModStation = "",
+                    RFTagId = 0,
+                    ParentId = 0,
+                    OrderCategoryId = 0,
+                    IsDiscounted = false,
+                    BarCode = ""
+                });
+                //if (dbPOS.Insert_Order(orders[0]))
+                int iNewOrderId = dbPOS.Insert_Order(orders[0]);
+                if (iNewOrderId > 0)
                 {
                     ////////////////////////////////////////////////
-                    // Add the ordered item into Orders table
+                    // Add the ordered item into datagrid view
                     ////////////////////////////////////////////////
-
-                    orders.Clear();
-                    orders.Add(new POS_OrdersModel()
-                    {
-                        TranType = "20",
-                        ProductId = pProdID,
-                        ProductName = strManualName,
-                        SecondName = strManualName,
-                        ProductTypeId = prods[0].ProductTypeId,
-                        InUnitPrice = 0,
-                        OutUnitPrice = (float)dblManualPrice,
-                        IsTax1 = bManualTax1,
-                        IsTax2 = bManualTax2,
-                        IsTax3 = bManualTax3,
-                        Quantity = 1,
-                        Amount = (float)dblManualPrice,
-                        Tax1Rate = TaxRate1,
-                        Tax2Rate = TaxRate2,
-                        Tax3Rate = TaxRate3,
-                        Tax1 = bManualTax1 ? TaxRate1 * (float)dblManualPrice : 0,
-                        Tax2 = bManualTax2 ? TaxRate2 * (float)dblManualPrice : 0,
-                        Tax3 = bManualTax3 ? TaxRate3 * (float)dblManualPrice : 0,
-                        Deposit = 0,
-                        RecyclingFee = 0,
-                        ChillCharge = 0,
-                        InvoiceNo = iNewInvNo,
-                        IsPaidComplete = false,
-                        CompleteDate = "",
-                        CompleteTime = "",
-                        CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), // DateTime.Now.ToShortDateString(),
-                        CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
-                        CreateUserId = System.Convert.ToInt32(strUserID),
-                        CreateUserName = strUserName,
-                        CreateStation = strStation,
-                        LastModDate = "",
-                        LastModTime = "",
-                        LastModUserId = System.Convert.ToInt32(strUserID),
-                        LastModUserName = "",
-                        LastModStation = "",
-                        RFTagId = 0,
-                        ParentId = 0,
-                        OrderCategoryId = 0,
-                        IsDiscounted = false,
-                        BarCode = ""
-                    });
-                    //if (dbPOS.Insert_Order(orders[0]))
-                    int iNewOrderId = dbPOS.Insert_Order(orders[0]);
-                    if (iNewOrderId > 0)
-                    {
-                        ////////////////////////////////////////////////
-                        // Add the ordered item into datagrid view
-                        ////////////////////////////////////////////////
-                        float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
-                        iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
-                        this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
+                    float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
+                    iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                    this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                strManualName,
                                                                                "1",
                                                                                orders[0].OutUnitPrice.ToString("0.00"),
@@ -6065,20 +6319,20 @@ namespace SDCafeSales.Views
                                                                                orders[0].ProductId.ToString(),
                                                                                orders[0].BarCode
                             });
-                        this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView_By_ProdID(pProdID);
-                        this.dgv_Orders.Rows[Get_OrderedItem_Index_of_GridView_By_ProdID(pProdID)].Selected = true;
+                    this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView_By_ProdID(pProdID);
+                    this.dgv_Orders.Rows[Get_OrderedItem_Index_of_GridView_By_ProdID(pProdID)].Selected = true;
 
-                    }
-                    else
-                    {
-                        //Error insert order
-                        util.Logger("Error insert order : InvNo = " + iNewInvNo.ToString() + ", ProdId = " + pProdID);
-                        MessageBox.Show("Error insert order : InvNo = " + iNewInvNo.ToString() + ", ProdId = " + pProdID);
-                        return false;
-                    }
                 }
-
+                else
+                {
+                    //Error insert order
+                    util.Logger("Error insert order : InvNo = " + iNewInvNo.ToString() + ", ProdId = " + pProdID);
+                    MessageBox.Show("Error insert order : InvNo = " + iNewInvNo.ToString() + ", ProdId = " + pProdID);
+                    return false;
+                }
             }
+            // clear txtBarCode
+            txtBarCode.Text = "";
 
             Check_Promotions();
             Calculate_Total_Due();
@@ -6496,6 +6750,49 @@ namespace SDCafeSales.Views
             //txtBarCode.Focus();
 
             BarCode_Get_Focus();
+        }
+
+        private void bt_NumTypeToggle_Click(object sender, EventArgs e)
+        {
+            m_blnNumState = !m_blnNumState;
+            
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            sysconfs = dbPOS.Get_SysConfig_By_Name("IS_TYPE_BUTTONS_TO_NUMS");
+            if (sysconfs.Count > 0)
+            {
+                sysconfs[0].ConfigValue = m_blnNumState ? "TRUE" : "FALSE";
+                dbPOS.Update_SysConfig(sysconfs[0]);
+            }
+
+            ToggleNumTypeButtons();
+        }
+
+        private void ToggleNumTypeButtons()
+        {
+            if (m_blnNumState)
+            {
+                bt_NumTypeToggle.Text = "SHOW TYPES";
+                bt_NumTypeToggle.BackColor = Color.DarkRed;
+                bt_NumTypeToggle.ForeColor = Color.White;
+                PopulateNumButtons();
+            }
+            else
+            {
+                bt_NumTypeToggle.Text = "SHOW NUMS";
+                bt_NumTypeToggle.BackColor = Color.LightGoldenrodYellow;
+                bt_NumTypeToggle.ForeColor = Color.DarkRed;
+                PopulateMenuTypeButtons();
+            }
+        }
+
+        private void bt_LastReprint_Click(object sender, EventArgs e)
+        {
+            // Get the last invoice no from POS1 database
+            DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+            POS1_TranCollectionModel col = dbPOS1.Get_Last_TranCollection();
+            iNewInvNo = col.InvoiceNo;
+            Print_Receipt(false, true);
+
         }
     }
     public class TagReportEvent : Object

@@ -871,7 +871,13 @@ namespace SDCafeSales.Views
                         e1.Graphics.DrawString(strContent, fntCard, brsBlack, (RectangleF)txtRect, format2);
                         //////////////////////////////////////////////////////////////////////////
                         // Print a Line ------------------------------------------------------
-                        strTemp1 = " > PURCHASED AMOUNT";
+                        //strTemp1 = " > PURCHASED AMOUNT";
+                        if (receipt.TransactionType == "00")
+                            strTemp1 = " > PURCHASED AMOUNT";
+                        else if (receipt.TransactionType == "03")
+                            strTemp1 = " > REFUND AMOUNT";
+                        else if (receipt.TransactionType == "05")
+                            strTemp1 = " > VOID AMOUNT";
                         fCurrency = (float)System.Convert.ToDouble(receipt.TransactionAmount) / 100;
                         strContent = String.Format("{0,-23}", strTemp1) + String.Format("{0,20}", String.Format("{0:C}", fCurrency));
                         iNextLineYPoint = iNextLineYPoint + (itxtHeight * 1);
@@ -890,7 +896,12 @@ namespace SDCafeSales.Views
 
                             //////////////////////////////////////////////////////////////////////////
                             // Print a Line ------------------------------------------------------
-                            strTemp1 = " = TOTAL PAID";
+                            if (receipt.TransactionType == "00")
+                                strTemp1 = " = TOTAL PAID";
+                            else if (receipt.TransactionType == "03")
+                                strTemp1 = " = TOTAL REFUND";
+                            else if (receipt.TransactionType == "05")
+                                strTemp1 = " = TOTAL VOID";
                             fCurrency = (float)System.Convert.ToDouble(receipt.TotalAmount) / 100;
                             strContent = String.Format("{0,-23}", strTemp1) + String.Format("{0,20}", String.Format("{0:C}", fCurrency));
                             iNextLineYPoint = iNextLineYPoint + iheaderHeight;
@@ -1518,6 +1529,8 @@ namespace SDCafeSales.Views
         {
             int iselectedCollectionId = 0;
             float fRefundableAmt = 0;
+            float fRelatedTotal = 0;
+            float fselectedTotal = 0;
             if (selectedRowCount == 0) return;
             if (p_selectedRowIndex >= 0)
             {
@@ -1550,25 +1563,51 @@ namespace SDCafeSales.Views
                 {
                     bt_CardRefund.Enabled = true;
                     bt_CardVoid.Enabled = true;
+                    // Total Paid is less than zero, then disable the Refund button
+                    if ((trancolSelected.TotalPaid < 0) && (p_blnPaymentree))
+                    {
+                        bt_CardRefund.Enabled = false;
+                        bt_CardVoid.Enabled = false;
+                        bt_SetVoid.Enabled = false;
+                    }
+                    else
+                    {
+                        bt_CardRefund.Enabled = true;
+                        bt_CardVoid.Enabled = true;
+                        bt_SetVoid.Enabled = true;
+                        if (trancolsRelated.Count > 0)
+                        {
+                            fRelatedTotal = (trancolsRelated.Sum(x => (x.TotalPaid))) * -1;
+                            fselectedTotal = trancolSelected.TotalPaid - (m_bExcludeTip ? trancolSelected.TotalTip : 0);
+                            fselectedTotal = (float)Math.Round((Double)fselectedTotal, 2);
+                            if (fselectedTotal == fRelatedTotal)
+                            {
+                                bt_CardRefund.Enabled = false;
+                                bt_CardVoid.Enabled = false;
+                                bt_SetVoid.Enabled = false;
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    bt_CardRefund.Enabled = false;
-                    bt_CardVoid.Enabled = false;
-                }
-                // Total Paid is less than zero, then disable the Refund button
-                if ((trancolSelected.TotalPaid < 0) && (p_blnPaymentree))
-                {
-                    bt_CardRefund.Enabled = false;
-                    bt_CardVoid.Enabled = false;
-                    bt_SetVoid.Enabled = false;
-                }
-                else
-                {
-                    bt_CardRefund.Enabled = true;
-                    bt_CardVoid.Enabled = true;
                     bt_SetVoid.Enabled = true;
+                    bt_CashRefund.Enabled = true;
+                    bt_CardRefund.Enabled = false;
+                    bt_CardVoid.Enabled = false;
+                    if (trancolsRelated.Count > 0)
+                    {
+                        fRelatedTotal = (trancolsRelated.Sum(x => (x.TotalPaid))) * -1;
+                        fselectedTotal = trancolSelected.TotalPaid - (m_bExcludeTip ? trancolSelected.TotalTip : 0);
+                        fselectedTotal = (float)Math.Round((Double)fselectedTotal, 2);
+                        if (fselectedTotal == fRelatedTotal)
+                        {
+                            bt_CashRefund.Enabled = false;
+                            bt_SetVoid.Enabled = false;
+                        }
+                    }
                 }
+
 
                 if (dbPOS1.IsVoidCollection(Convert.ToInt32(strSelInvNo)) == true)
                 {
@@ -1576,6 +1615,11 @@ namespace SDCafeSales.Views
                     bt_SetVoid.BackColor = Color.GreenYellow;
                     bt_CardVoid.Enabled = false;
                     bt_CardRefund.Enabled = false;
+                    // If transaction voided via Card payment, disable Manual Void
+                    if (cardReceipts.Count > 0)
+                    {
+                        bt_SetVoid.Enabled = false;
+                    }
                 }
                 else
                 {
@@ -1689,6 +1733,7 @@ namespace SDCafeSales.Views
             m_imageList.Images.Add(Properties.Resources.void_block_40dp);
             m_imageList.Images.Add(Properties.Resources.receipt_40dp);
             m_imageList.Images.Add(Properties.Resources.logout_40dp);
+            m_imageList.Images.Add(Properties.Resources.Cash_Refund);   // 7
 
             bt_CardVoid.ImageList = m_imageList;
             bt_CardRefund.ImageList = m_imageList;
@@ -1723,6 +1768,11 @@ namespace SDCafeSales.Views
             bt_Exit.ImageIndex = 6;
             bt_Exit.ImageAlign = ContentAlignment.MiddleLeft;
             bt_Exit.TextAlign = ContentAlignment.MiddleCenter;
+
+            bt_CashRefund.ImageList = m_imageList;
+            bt_CashRefund.ImageIndex = 7;
+            bt_CashRefund.ImageAlign = ContentAlignment.MiddleLeft;
+            bt_CashRefund.TextAlign = ContentAlignment.MiddleRight;
 
         }
 
@@ -2308,6 +2358,7 @@ namespace SDCafeSales.Views
             DataAccessCard dbCard = new DataAccessCard();
             POS1_TranCollectionModel col = new POS1_TranCollectionModel();
             CCardReceipt cardReceipt = new CCardReceipt();
+            float fCardTenderAmount = 0;
 
             util.Logger("Process_RefundTran_Collection iInvNo : " + iInvNo);
             util.Logger("Process_RefundTran_Collection fCashAmt : " + fCashAmt);
@@ -2325,7 +2376,7 @@ namespace SDCafeSales.Views
             if ((strPaymentType.Contains("CASH")) & (bIsIPSPayment))
             {
                 util.Logger("Process_RefundTran_Collection IPS Payment : " + strPaymentType);
-                fCashAmt = dbCard.Get_TenderAmount(iInvNo);
+                fCardTenderAmount = dbCard.Get_TenderAmount(iInvNo);
                 fTips = dbCard.Get_TipAmount(iInvNo);
             }
             else
@@ -3016,7 +3067,13 @@ namespace SDCafeSales.Views
 
                             //////////////////////////////////////////////////////////////////////////
                             // Print a Line ------------------------------------------------------
-                            strTemp1 = " = TOTAL PAID";
+                            if (receipt.TransactionType == "00")
+                                strTemp1 = " = TOTAL PAID";
+                            else if (receipt.TransactionType == "03")
+                                strTemp1 = " = TOTAL REFUND";
+                            else if (receipt.TransactionType == "05")
+                                strTemp1 = " = TOTAL VOID";
+                            //strTemp1 = " = TOTAL PAID";
                             fCurrency = (float)System.Convert.ToDouble(receipt.TotalAmount) / 100;
                             strContent = String.Format("{0,-23}", strTemp1) + String.Format("{0,20}", String.Format("{0:C}", fCurrency));
                             iNextLineYPoint = iNextLineYPoint + iheaderHeight;
@@ -3186,6 +3243,86 @@ namespace SDCafeSales.Views
             else
             {
                 row.DefaultCellStyle.BackColor = Color.White;
+            }
+        }
+
+        private void bt_CashRefund_Click(object sender, EventArgs e)
+        {
+            float fCash = 0;
+            float fDebit = 0;
+            float fVisa = 0;
+            float fMaster = 0;
+            float fAmex = 0;
+            float fOthers = 0;
+            float fTip = 0;
+
+            bool bCardRefund = false;
+            bool bFullRefund = false;
+            bool bPartialRefundExists = false;
+            string strMsg = "";
+            m_fRefundAmt = CalculateRefundAmount();
+            bPartialRefundExists = CheckAnyPartialRefundExist();
+
+            if ((m_fRefundAmt == 0) && (bPartialRefundExists == false))
+            {
+                using (var FrmYesNo = new frmYesNo(FrmSalesMain))
+                {
+                    FrmYesNo.Set_Title("Refund");
+
+                    fTip = CheckExcludeTipOnFullRefund();
+                    m_fRefundAmt = GetRefundableAmount(fTip);//trancolSelected.TotalPaid - fTip;
+                    strMsg = "Full Refund ? " + m_fRefundAmt.ToString("C2");
+                    if (fTip > 0)
+                    {
+                        strMsg += System.Environment.NewLine + "Tip Exluded : " + fTip.ToString("C2");
+                    }
+                    FrmYesNo.Set_Message(strMsg);
+                    //FrmYesNo.Set_Message("Set/Unset All selected Invoice ?" + strSelInvNo);
+                    FrmYesNo.StartPosition = FormStartPosition.Manual; // FormStartPosition.CenterScreen; //
+                    FrmYesNo.Location = new Point((Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2,
+                              (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2); //Screen.PrimaryScreen.Bounds.Location;
+                    FrmYesNo.ShowDialog();
+
+                    if (FrmYesNo.bYesNo)
+                    {
+                        bFullRefund = true;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+            }
+            using (var FrmEnterAmount = new frmEnterAmount(this.FrmSalesMain))
+            {
+                this.TopMost = false;
+                FrmEnterAmount.p_Title = "Please confirm Refund Amount !";
+                FrmEnterAmount.StartPosition = FormStartPosition.CenterScreen;
+                //if (trancolSelected != null)
+                if (m_fRefundAmt > 0)
+                {
+                    FrmEnterAmount.p_TenderAmt = m_fRefundAmt; // trancolSelected.TotalPaid;
+                }
+                else
+                {
+                    return;
+                }
+                FrmEnterAmount.TopLevel = true;
+                FrmEnterAmount.ShowDialog();
+
+                this.TopMost = true;
+                bCardRefund = FrmEnterAmount.p_IsRefund;
+                m_fRefundAmt = FrmEnterAmount.p_RefundAmt;
+            }
+            if (m_fRefundAmt > 0)
+            {
+
+                        Process_OrderRefund_Complete(trancolSelected.InvoiceNo, bFullRefund);
+                        fCash = m_fRefundAmt * -1;
+                        Process_RefundTran_Collection(trancolSelected.InvoiceNo, fCash, fDebit, fVisa, fMaster, fAmex, fOthers,
+                                                            0, 0, "CASH", true, bFullRefund);
+                        Print_Receipt(false, true, trancolSelected.InvoiceNo);
+                        util.Logger("--------------- Cash Refund & Printing Receipt is Done : Invoice# " + trancolSelected.InvoiceNo.ToString());
             }
         }
     }

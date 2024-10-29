@@ -232,6 +232,7 @@
     <None Include="Resources\Card_Refund.png" />
     <None Include="Resources\Card_Void.png" />
     <None Include="Resources\download_40dp.png" />
+    <None Include="Resources\Cash_Refund.png" />
     <Content Include="Resources\iCT250 primary_140x60.png" />
     <None Include="Resources\logout_40dp.png" />
     <None Include="Resources\receipt_long_off_40dp.png" />
