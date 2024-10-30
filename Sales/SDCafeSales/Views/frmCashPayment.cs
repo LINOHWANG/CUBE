@@ -46,8 +46,8 @@ namespace SDCafeSales.Views
         public Boolean bAddTip;
         public string strPaymentType { get; set; }
 
-        private float m_fCashDue;
-        private float m_fCashRounding;
+        public float m_fCashDue;
+        public float m_fCashRounding { get; set; }
         public float p_TipAmt { get; set; }
 
         public float p_TenderAmt { get; set; }
@@ -159,16 +159,19 @@ namespace SDCafeSales.Views
             // Set amount info to frmMain
             if (p_CashAmt >= p_TenderAmt)
             {
+                // Exact Cash Amount Payment
                 strPaymentType = "CASH";
                 bPaymentComplete = true;
                 bt_Exit.PerformClick();
             }
             else
             {
+                // Exact Cash Amount Payment
                 if (p_CashAmt == 0)
                 {
                     strPaymentType = "CASH";
-                    p_CashAmt = p_TenderAmt;
+                    //p_CashAmt = p_TenderAmt;
+                    p_CashAmt = m_fCashDue;
                     bPaymentComplete = true;
                     bt_Exit.PerformClick();
                     return;
@@ -259,7 +262,8 @@ namespace SDCafeSales.Views
                 txt_TipAmount.Text = p_TipAmt.ToString("C2");
             }
 
-            p_ChangeAmt = p_TenderAmt - p_CashAmt + p_TipAmt;
+            //p_ChangeAmt = p_TenderAmt - p_CashAmt + p_TipAmt;
+            p_ChangeAmt = m_fCashDue - p_CashAmt + p_TipAmt;
             txt_Changes.Text = p_ChangeAmt.ToString("C2");
             //Feature #2904 ---------------------------------------
             if (p_ChangeAmt <= 0)

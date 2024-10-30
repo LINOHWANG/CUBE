@@ -1521,7 +1521,7 @@ namespace SDCafeSales.Views
                                     LastModStation = "",
                                     RFTagId = rfids[0].Id,
                                     ParentId = iParentId,
-                                    OrderCategoryId = 4,
+                                    OrderCategoryId = 4,    /* Discount */
                                     IsDiscounted = false,
                                     BarCode = prods[0].BarCode
                                 });
@@ -3348,7 +3348,7 @@ namespace SDCafeSales.Views
                         }
                         //Process_Tran_Collection(iNewInvNo, FrmCardPay.p_TenderAmt, 
                         Process_Tran_Collection(iNewInvNo, fCash,fDebit,fVisa,fMaster,fAmex,fOthers,
-                                                            0, FrmCardPay.p_TipAmt, FrmCardPay.strPaymentType, true);
+                                                            0, FrmCardPay.p_TipAmt, 0 /* Rounding */, FrmCardPay.strPaymentType, true);
                         Process_Receipt(false, true);
                         util.Logger("--------------- Card Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString());
                         txtSelectedMenu.Text = "Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString();
@@ -3420,7 +3420,7 @@ namespace SDCafeSales.Views
                             }
 
                             Process_Tran_Collection(iNewInvNo, fCash, fDebit, fVisa, fMaster, fAmex,fOthers,
-                                                            0, FrmCashPay.p_TipAmt, FrmCashPay.strPaymentType, true);
+                                                            0, FrmCashPay.p_TipAmt, 0 /*Rounding*/,FrmCashPay.strPaymentType, true);
                             //Process_Tran_Collection(iNewInvNo, FrmCashPay.p_CashAmt, FrmCashPay.p_ChangeAmt, FrmCashPay.p_TipAmt, FrmCashPay.strPaymentType,false);
                             Process_Receipt(false, true);
 
@@ -3465,8 +3465,60 @@ namespace SDCafeSales.Views
             txt_TotalDue.Text = String.Empty;
             txtCount.Text = String.Empty;
         }
+        private void Process_Rounding_Tran(int iNewInvNo, float p_fCashRounding)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
 
-       private void Process_Order_Complete(int iNewInvNo)
+            orders.Clear();
+            ////////////////////////////////////////////////
+            // Add the ordered item into Orders table
+            ////////////////////////////////////////////////
+            orders.Add(new POS_OrdersModel()
+            {
+                TranType = "20",
+                ProductId = 0,
+                ProductName = "Cash Rounding",
+                SecondName = "Cash Rounding",
+                ProductTypeId = 0,
+                InUnitPrice = 0,
+                OutUnitPrice = 0,
+                IsTax1 = false,
+                IsTax2 = false,
+                IsTax3 = false,
+                Quantity = 1,
+                Amount = p_fCashRounding,
+                Tax1Rate = TaxRate1,
+                Tax2Rate = TaxRate2,
+                Tax3Rate = TaxRate3,
+                Tax1 = 0,
+                Tax2 = 0, // (float)(-iTotalTax2 * (iDiscountRate / 100)),
+                Tax3 = 0, // (float)(-iTotalTax3 * (iDiscountRate / 100)),
+                InvoiceNo = iNewInvNo,
+                IsPaidComplete = false,
+                CompleteDate = "",
+                CompleteTime = "",
+                CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), //DateTime.Now.ToShortDateString(),
+                CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
+                CreateUserId = System.Convert.ToInt32(strUserID),
+                CreateUserName = strUserName,
+                CreateStation = strStation,
+                LastModDate = "",
+                LastModTime = "",
+                LastModUserId = System.Convert.ToInt32(strUserID),
+                LastModUserName = "",
+                LastModStation = "",
+                RFTagId = 0,
+                ParentId = 0,
+                OrderCategoryId = 6    // Rounding
+                ,
+                IsDiscounted = false     // Promotion
+                ,
+                BarCode = ""
+            });
+            int iNewOrderId = dbPOS.Insert_Order(orders[0]);
+            util.Logger(" ## Process_Rounding_Tran : " + orders[0].Id.ToString() + ", PROD=" + orders[0].ProductName + ", New Amount = " + orders[0].Amount.ToString());
+        }
+        private void Process_Order_Complete(int iNewInvNo)
        {
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
@@ -3546,7 +3598,10 @@ namespace SDCafeSales.Views
                                                          float fMasterAmt,
                                                          float fAmexAmt,
                                                          float fOthersAmt,
-                                                         float fChangeAmt, float fTips, string strPaymentType, bool bIsIPSPayment)
+                                                         float fChangeAmt, 
+                                                         float fTips,
+                                                         float fRounding,
+                                                         string strPaymentType, bool bIsIPSPayment)
         {
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
             DataAccessCard dbCard = new DataAccessCard();
@@ -3562,6 +3617,7 @@ namespace SDCafeSales.Views
             util.Logger("Process_Tran_Collection fOthersAmt : " + fOthersAmt);
             util.Logger("Process_Tran_Collection fChangeAmt : " + fChangeAmt);
             util.Logger("Process_Tran_Collection fTips : " + fTips);
+            util.Logger("Process_Tran_Collection fRounding : " + fRounding);
             util.Logger("Process_Tran_Collection strPaymentType : " + strPaymentType);
 
             compOrders = dbPOS1.Get_OrderComplete_by_InvoiceNo(iInvNo);
@@ -3660,7 +3716,7 @@ namespace SDCafeSales.Views
                 col.LastModPasswordName = strUserName;
                 col.LastModStation = strStation;
                 col.IsVoid = false;
-                col.Rounding = 0;
+                col.Rounding = fRounding;
                 col.IsOnline = false;
                 col.ReceiptNo = dbPOS1.Get_MaxReceiptNo_TranCollection();
                 col.InvoiceNo = iInvNo;
@@ -6449,12 +6505,17 @@ namespace SDCafeSales.Views
                 FrmCashPay.Set_InvoiceNo(iNewInvNo);
                 FrmCashPay.Set_Station(strStation);
                 FrmCashPay.Set_UserName(strUserName);
-                FrmCashPay.p_CashAmt = m_fCashDue;
+                //FrmCashPay.p_CashAmt = m_fCashDue;
                 FrmCashPay.ShowDialog();
 
                 if (FrmCashPay.bPaymentComplete)
                 {
                     util.Logger("Cash/Manual Payment completed !" + FrmCashPay.strPaymentType);
+                    // if rounding is not zero, add to Orders table 
+                    if (FrmCashPay.m_fCashRounding != 0)
+                    {
+                        Process_Rounding_Tran(iNewInvNo,FrmCashPay.m_fCashRounding);
+                    }
                     // Move Orders to OrderComplete
                     Process_Order_Complete(iNewInvNo);
                     // Add collection table
@@ -6464,7 +6525,10 @@ namespace SDCafeSales.Views
                                                         FrmCashPay.p_MasterAmt,
                                                         FrmCashPay.p_AmexAmt,
                                                         FrmCashPay.p_OthersAmt,
-                                                        FrmCashPay.p_ChangeAmt, FrmCashPay.p_TipAmt, FrmCashPay.strPaymentType, false);
+                                                        FrmCashPay.p_ChangeAmt, 
+                                                        FrmCashPay.p_TipAmt,
+                                                        FrmCashPay.m_fCashRounding,
+                                                        FrmCashPay.strPaymentType, false);
                     Process_Receipt(false, true);
 
                     util.Logger("--------------- Cash Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString());
@@ -6485,6 +6549,8 @@ namespace SDCafeSales.Views
             }
             BarCode_Get_Focus();
         }
+
+
 
         private void bt_AutoReceipt_Click(object sender, EventArgs e)
         {
