@@ -49,6 +49,8 @@
             this.bt_Start = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Payment = new SDCafeCommon.Utilities.CustomButton();
             this.timer_AdImg = new System.Windows.Forms.Timer(this.components);
+            this.label5 = new System.Windows.Forms.Label();
+            this.txt_CashDue = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_Orders)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pb_Instruction)).BeginInit();
             this.SuspendLayout();
@@ -108,7 +110,7 @@
             this.lbl_SubTotal.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbl_SubTotal.Name = "lbl_SubTotal";
             this.lbl_SubTotal.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lbl_SubTotal.Size = new System.Drawing.Size(159, 32);
+            this.lbl_SubTotal.Size = new System.Drawing.Size(158, 32);
             this.lbl_SubTotal.TabIndex = 85;
             this.lbl_SubTotal.Text = "00000000";
             this.lbl_SubTotal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -121,11 +123,11 @@
             this.lbl_TaxTotal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.lbl_TaxTotal.Font = new System.Drawing.Font("Bookman Old Style", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_TaxTotal.ForeColor = System.Drawing.Color.Purple;
-            this.lbl_TaxTotal.Location = new System.Drawing.Point(223, 582);
+            this.lbl_TaxTotal.Location = new System.Drawing.Point(223, 561);
             this.lbl_TaxTotal.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbl_TaxTotal.Name = "lbl_TaxTotal";
             this.lbl_TaxTotal.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lbl_TaxTotal.Size = new System.Drawing.Size(159, 32);
+            this.lbl_TaxTotal.Size = new System.Drawing.Size(158, 32);
             this.lbl_TaxTotal.TabIndex = 86;
             this.lbl_TaxTotal.Text = "00000000";
             this.lbl_TaxTotal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -138,11 +140,11 @@
             this.lbl_TotalDue.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.lbl_TotalDue.Font = new System.Drawing.Font("Bookman Old Style", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_TotalDue.ForeColor = System.Drawing.Color.Red;
-            this.lbl_TotalDue.Location = new System.Drawing.Point(223, 643);
+            this.lbl_TotalDue.Location = new System.Drawing.Point(223, 600);
             this.lbl_TotalDue.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbl_TotalDue.Name = "lbl_TotalDue";
             this.lbl_TotalDue.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lbl_TotalDue.Size = new System.Drawing.Size(159, 32);
+            this.lbl_TotalDue.Size = new System.Drawing.Size(158, 32);
             this.lbl_TotalDue.TabIndex = 87;
             this.lbl_TotalDue.Text = "00000000";
             this.lbl_TotalDue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -159,7 +161,7 @@
             this.lbl_ItemCount.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbl_ItemCount.Name = "lbl_ItemCount";
             this.lbl_ItemCount.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lbl_ItemCount.Size = new System.Drawing.Size(159, 32);
+            this.lbl_ItemCount.Size = new System.Drawing.Size(158, 32);
             this.lbl_ItemCount.TabIndex = 88;
             this.lbl_ItemCount.Text = "00000000";
             this.lbl_ItemCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -170,7 +172,7 @@
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.DarkBlue;
-            this.label1.Location = new System.Drawing.Point(42, 520);
+            this.label1.Location = new System.Drawing.Point(42, 511);
             this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(167, 41);
@@ -184,7 +186,7 @@
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.Purple;
-            this.label2.Location = new System.Drawing.Point(114, 582);
+            this.label2.Location = new System.Drawing.Point(42, 552);
             this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(76, 41);
@@ -198,7 +200,7 @@
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.Red;
-            this.label3.Location = new System.Drawing.Point(39, 643);
+            this.label3.Location = new System.Drawing.Point(39, 593);
             this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(169, 41);
@@ -240,7 +242,7 @@
             // 
             this.txt_SubTotal.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txt_SubTotal.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_SubTotal.Location = new System.Drawing.Point(210, 520);
+            this.txt_SubTotal.Location = new System.Drawing.Point(210, 511);
             this.txt_SubTotal.Name = "txt_SubTotal";
             this.txt_SubTotal.ReadOnly = true;
             this.txt_SubTotal.Size = new System.Drawing.Size(162, 41);
@@ -253,7 +255,7 @@
             // 
             this.txt_TaxTotal.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txt_TaxTotal.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_TaxTotal.Location = new System.Drawing.Point(210, 582);
+            this.txt_TaxTotal.Location = new System.Drawing.Point(210, 552);
             this.txt_TaxTotal.Name = "txt_TaxTotal";
             this.txt_TaxTotal.ReadOnly = true;
             this.txt_TaxTotal.Size = new System.Drawing.Size(162, 41);
@@ -265,7 +267,7 @@
             // 
             this.txt_TotalDue.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txt_TotalDue.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_TotalDue.Location = new System.Drawing.Point(210, 643);
+            this.txt_TotalDue.Location = new System.Drawing.Point(210, 593);
             this.txt_TotalDue.Name = "txt_TotalDue";
             this.txt_TotalDue.ReadOnly = true;
             this.txt_TotalDue.Size = new System.Drawing.Size(162, 41);
@@ -310,11 +312,39 @@
             this.timer_AdImg.Interval = 2000;
             this.timer_AdImg.Tick += new System.EventHandler(this.timer_AdImg_Tick);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.Color.Transparent;
+            this.label5.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.Red;
+            this.label5.Location = new System.Drawing.Point(40, 634);
+            this.label5.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(168, 41);
+            this.label5.TabIndex = 93;
+            this.label5.Text = "Cash Due";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txt_CashDue
+            // 
+            this.txt_CashDue.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txt_CashDue.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_CashDue.Location = new System.Drawing.Point(210, 634);
+            this.txt_CashDue.Name = "txt_CashDue";
+            this.txt_CashDue.ReadOnly = true;
+            this.txt_CashDue.Size = new System.Drawing.Size(162, 41);
+            this.txt_CashDue.TabIndex = 94;
+            this.txt_CashDue.Text = "0.00";
+            this.txt_CashDue.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // frmSalesCustomer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.txt_CashDue);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.txt_TotalDue);
             this.Controls.Add(this.txt_TaxTotal);
             this.Controls.Add(this.txt_SubTotal);
@@ -365,5 +395,7 @@
         private System.Windows.Forms.TextBox txt_TaxTotal;
         private System.Windows.Forms.TextBox txt_TotalDue;
         private System.Windows.Forms.Timer timer_AdImg;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox txt_CashDue;
     }
 }

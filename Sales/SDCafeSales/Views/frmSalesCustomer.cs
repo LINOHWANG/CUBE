@@ -41,6 +41,8 @@ namespace SDCafeSales.Views
         private int iAdImageX;
         private int iAdImageY;
         private Point pointAdImage;
+        private float m_fCashDue;
+        private float m_fCashRounding;
 
         public frmSalesCustomer(frmSalesMain _FrmSalesMain)
         {
@@ -125,6 +127,13 @@ namespace SDCafeSales.Views
             txt_SubTotal.Text = FrmSalesMain.iSubTotal.ToString("C2");
             txt_TaxTotal.Text = FrmSalesMain.iTaxTotal.ToString("C2");
             txt_TotalDue.Text = FrmSalesMain.iTotalDue.ToString("C2");
+
+
+            // Rounding for Cash Payment
+            m_fCashDue = (float)(Math.Round((FrmSalesMain.iTotalDue / 0.05)) * 0.05);
+            m_fCashRounding = (float)Math.Round(m_fCashDue - FrmSalesMain.iTotalDue, 2);
+            //util.Logger("frmCashPayment Loading ... Rounding ? " + m_fCashRounding.ToString());
+            txt_CashDue.Text = m_fCashDue.ToString("C2");
 
             // Maximize Ad image
             if (FrmSalesMain.iTotalDue == 0)

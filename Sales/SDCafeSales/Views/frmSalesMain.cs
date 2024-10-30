@@ -204,6 +204,9 @@ namespace SDCafeSales.Views
         TcpClient tcpClient;
         private bool m_blnNumState;
         private int m_intQueryTop;
+        private float m_fCashDue;
+        private float m_fCashRounding;
+        private int iTimerCount;
 
         public bool m_blnPaymentree { get; set; }
 
@@ -3369,7 +3372,8 @@ namespace SDCafeSales.Views
                     util.Logger(txtSelectedMenu.Text);
                     using (var FrmCashPay = new frmCashPayment(this))
                     {
-                        FrmCashPay.Set_TenderAmt(Convert.ToDouble(txt_TotalDue.Text.Replace("$", "")));
+                        //FrmCashPay.Set_TenderAmt(Convert.ToDouble(txt_TotalDue.Text.Replace("$", "")));
+                        FrmCashPay.Set_TenderAmt(iTotalDue);
                         FrmCashPay.Set_InvoiceNo(iNewInvNo);
                         FrmCashPay.Set_Station(strStation);
                         FrmCashPay.Set_UserName(strUserName);
@@ -3406,8 +3410,17 @@ namespace SDCafeSales.Views
                                     util.Logger("Unknown Card Type !" + FrmCashPay.strPaymentType);
                                     break;
                             }
+                            // Add Round Transaction when CASH paymenttype, if fCash's decimal 2nd digit is not 0 or 5
+                            if (FrmCashPay.strPaymentType == "CASH")
+                            {
+                                if ((fCash - Math.Truncate(fCash)) != 0.0)
+                                {
+ 
+                                }
+                            }
+
                             Process_Tran_Collection(iNewInvNo, fCash, fDebit, fVisa, fMaster, fAmex,fOthers,
-                                                                0, FrmCashPay.p_TipAmt, FrmCashPay.strPaymentType, true);
+                                                            0, FrmCashPay.p_TipAmt, FrmCashPay.strPaymentType, true);
                             //Process_Tran_Collection(iNewInvNo, FrmCashPay.p_CashAmt, FrmCashPay.p_ChangeAmt, FrmCashPay.p_TipAmt, FrmCashPay.strPaymentType,false);
                             Process_Receipt(false, true);
 
@@ -4965,6 +4978,28 @@ namespace SDCafeSales.Views
         private void timerSetTime_Tick(object sender, EventArgs e)
         {
             textNow.Text = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
+
+            iTimerCount++;
+
+            if (iTimerCount >= 3)
+            {
+                // Rounding for Cash Payment
+                m_fCashDue = (float)(Math.Round((iTotalDue / 0.05)) * 0.05);
+                m_fCashRounding = (float)Math.Round(m_fCashDue - iTotalDue, 2);
+                //util.Logger("frmCashPayment Loading ... Rounding ? " + m_fCashRounding.ToString());
+                if (lblTotalDue.Text != "Total Due")
+                {
+                    lblTotalDue.Text = "Total Due";
+                    txt_TotalDue.Text = iTotalDue.ToString("C2");
+                }
+                else
+                {
+                    lblTotalDue.Text = "Cash Due";
+                    txt_TotalDue.Text = m_fCashDue.ToString("c2");
+                }
+                iTimerCount = 0;
+            }
+
         }
 
         private void bt_SalesCustomer_Click(object sender, EventArgs e)
@@ -6409,10 +6444,12 @@ namespace SDCafeSales.Views
             }
             using (var FrmCashPay = new frmCashPayment(this))
             {
-                FrmCashPay.Set_TenderAmt(Convert.ToDouble(txt_TotalDue.Text.Replace("$", "")));
+                //FrmCashPay.Set_TenderAmt(Convert.ToDouble(txt_TotalDue.Text.Replace("$", "")));
+                FrmCashPay.Set_TenderAmt(iTotalDue);
                 FrmCashPay.Set_InvoiceNo(iNewInvNo);
                 FrmCashPay.Set_Station(strStation);
                 FrmCashPay.Set_UserName(strUserName);
+                FrmCashPay.p_CashAmt = m_fCashDue;
                 FrmCashPay.ShowDialog();
 
                 if (FrmCashPay.bPaymentComplete)

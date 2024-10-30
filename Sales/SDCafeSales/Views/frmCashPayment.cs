@@ -46,6 +46,8 @@ namespace SDCafeSales.Views
         public Boolean bAddTip;
         public string strPaymentType { get; set; }
 
+        private float m_fCashDue;
+        private float m_fCashRounding;
         public float p_TipAmt { get; set; }
 
         public float p_TenderAmt { get; set; }
@@ -78,6 +80,12 @@ namespace SDCafeSales.Views
         {
             p_TenderAmt = (float)pTenderAmt;
             txt_TotalDue.Text = pTenderAmt.ToString("C2");
+
+            // Rounding for Cash Payment
+            m_fCashDue = (float)(Math.Round((p_TenderAmt / 0.05)) * 0.05);
+            m_fCashRounding = (float)Math.Round(m_fCashDue - p_TenderAmt, 2);
+            util.Logger("frmCashPayment Loading ... Rounding ? " + m_fCashRounding.ToString());
+            txt_CashDue.Text = m_fCashDue.ToString("C2");
         }
         public void Set_InvoiceNo(int pInvoiceNo)
         {
@@ -114,6 +122,7 @@ namespace SDCafeSales.Views
             strTipAmount = "";
 
             p_TipAmt = 0;
+
             timer1.Interval = 2000;
             timer1.Enabled = true;
             timer1.Start();
@@ -144,10 +153,13 @@ namespace SDCafeSales.Views
         {
             util.Logger("Cash Payment Cash Amount : " + p_CashAmt);
             util.Logger("Cash Payment Change Amount : " + p_ChangeAmt);
+            util.Logger("Cash Payment Rounding Amount : " + m_fCashRounding);
+
+
             // Set amount info to frmMain
             if (p_CashAmt >= p_TenderAmt)
             {
-                strPaymentType = "Cash";
+                strPaymentType = "CASH";
                 bPaymentComplete = true;
                 bt_Exit.PerformClick();
             }
@@ -155,7 +167,7 @@ namespace SDCafeSales.Views
             {
                 if (p_CashAmt == 0)
                 {
-                    strPaymentType = "Cash";
+                    strPaymentType = "CASH";
                     p_CashAmt = p_TenderAmt;
                     bPaymentComplete = true;
                     bt_Exit.PerformClick();

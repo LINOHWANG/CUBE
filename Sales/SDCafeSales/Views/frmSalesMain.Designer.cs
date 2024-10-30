@@ -36,7 +36,7 @@
             this.txt_TaxTotal = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txt_TotalDue = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblTotalDue = new System.Windows.Forms.Label();
             this.txtSelectedMenu = new System.Windows.Forms.TextBox();
             this.txtCount = new System.Windows.Forms.TextBox();
             this.listView1 = new System.Windows.Forms.ListView();
@@ -192,19 +192,19 @@
             this.txt_TotalDue.TabIndex = 14;
             this.txt_TotalDue.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // label3
+            // lblTotalDue
             // 
-            this.label3.AutoSize = true;
-            this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.label3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.Red;
-            this.label3.Location = new System.Drawing.Point(10, 609);
-            this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(98, 22);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Total Due";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblTotalDue.AutoSize = true;
+            this.lblTotalDue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.lblTotalDue.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalDue.ForeColor = System.Drawing.Color.Red;
+            this.lblTotalDue.Location = new System.Drawing.Point(10, 609);
+            this.lblTotalDue.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblTotalDue.Name = "lblTotalDue";
+            this.lblTotalDue.Size = new System.Drawing.Size(98, 22);
+            this.lblTotalDue.TabIndex = 13;
+            this.lblTotalDue.Text = "Total Due";
+            this.lblTotalDue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // txtSelectedMenu
             // 
@@ -511,7 +511,7 @@
             this.pnlSideBar.Controls.Add(this.bt_ShowAllMenuItem);
             this.pnlSideBar.Controls.Add(this.bt_SalesCustomer);
             this.pnlSideBar.Controls.Add(this.bt_Stop);
-            this.pnlSideBar.Location = new System.Drawing.Point(862, 4);
+            this.pnlSideBar.Location = new System.Drawing.Point(863, 4);
             this.pnlSideBar.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.pnlSideBar.Name = "pnlSideBar";
             this.pnlSideBar.Size = new System.Drawing.Size(145, 689);
@@ -1049,8 +1049,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
-            this.Controls.Add(this.bt_LastReprint);
             this.Controls.Add(this.pnlSideBar);
+            this.Controls.Add(this.bt_LastReprint);
             this.Controls.Add(this.bt_NumTypeToggle);
             this.Controls.Add(this.bt_Plus);
             this.Controls.Add(this.bt_Minus);
@@ -1087,7 +1087,7 @@
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.txtSelectedMenu);
             this.Controls.Add(this.bt_Payment);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.lblTotalDue);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pnlMenu);
@@ -1119,7 +1119,7 @@
         private System.Windows.Forms.TextBox txt_TaxTotal;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txt_TotalDue;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblTotalDue;
         private SDCafeCommon.Utilities.CustomButton bt_Payment;
         private System.Windows.Forms.TextBox txtSelectedMenu;
         private System.Windows.Forms.TextBox txtCount;

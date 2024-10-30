@@ -2453,7 +2453,7 @@ namespace SDCafeSales.Views
                 {
                     if (fCashAmt == 0)
                     {
-                        fCashAmt = fTotalDueAmt;
+                        fCashAmt = (float)Math.Round(fTotalDueAmt,2) * -1;
                     }
                     //col.Cash = fTenderAmt;
                     col.Cash = fCashAmt + fChangeAmt - fTips;
@@ -3317,12 +3317,12 @@ namespace SDCafeSales.Views
             if (m_fRefundAmt > 0)
             {
 
-                        Process_OrderRefund_Complete(trancolSelected.InvoiceNo, bFullRefund);
-                        fCash = m_fRefundAmt * -1;
-                        Process_RefundTran_Collection(trancolSelected.InvoiceNo, fCash, fDebit, fVisa, fMaster, fAmex, fOthers,
-                                                            0, 0, "CASH", true, bFullRefund);
-                        Print_Receipt(false, true, trancolSelected.InvoiceNo);
-                        util.Logger("--------------- Cash Refund & Printing Receipt is Done : Invoice# " + trancolSelected.InvoiceNo.ToString());
+                Process_OrderRefund_Complete(trancolSelected.InvoiceNo, bFullRefund);
+                fCash = m_fRefundAmt * -1;
+                Process_RefundTran_Collection(trancolSelected.InvoiceNo, fCash, fDebit, fVisa, fMaster, fAmex, fOthers,
+                                                    0, 0, "CASH", false, bFullRefund);
+                Print_Receipt(false, true, trancolSelected.InvoiceNo);
+                util.Logger("--------------- Cash Refund & Printing Receipt is Done : Invoice# " + trancolSelected.InvoiceNo.ToString());
             }
         }
     }
