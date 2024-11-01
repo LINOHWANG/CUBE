@@ -559,7 +559,7 @@
             this.Controls.Add(this.dgvData);
             this.Controls.Add(this.dgvItems);
             this.Name = "frmSalesHistory";
-            this.Text = "Sales History / Reprint / Void";
+            this.Text = "Sales History / Reprint / Void / Refund";
             this.Load += new System.EventHandler(this.frmSalesHistory_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).EndInit();

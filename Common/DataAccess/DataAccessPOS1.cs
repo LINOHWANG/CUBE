@@ -233,7 +233,7 @@ namespace SDCafeCommon.DataAccess
             {
                 string query = "select * from OrderComplete where CompleteDate >= '" + strStartDate + "' and CompleteDate <= '" + strEndDate + "' " +
                                                                            " And CompleteTime >= '" + strStartTime + "' and CompleteTime <= '" + strEndTime + "' " +
-                                                                           " And (IsVoid Is NULL) " +
+                                                                           " And (Isvoid < 1 or IsVoid Is NULL) " +
                                                                            " order by ProductTypeId, ProductId";
                 var output = connection.Query<POS1_OrderCompleteModel>(query).ToList();
                 return output;
@@ -271,6 +271,33 @@ namespace SDCafeCommon.DataAccess
                                 "WHERE InvoiceNo=" + iSelInvNo.ToString();
                 var count1 = connection.Execute(query);
 
+                List<POS1_OrderCompleteModel> pos1_OrderComps = new List<POS1_OrderCompleteModel>();
+                POS_ProductModel prod = new POS_ProductModel();
+
+                pos1_OrderComps = Get_OrderComplete_by_InvoiceNo(iSelInvNo);
+                foreach (POS1_OrderCompleteModel pos1_OrderComp in pos1_OrderComps)
+                {
+                    DataAccessPOS dbPOS = new DataAccessPOS();
+                    if (pos1_OrderComp.Quantity != 0)
+                    {
+                        try
+                        {
+                            prod = dbPOS.Get_Product_By_ID(pos1_OrderComp.ProductId)[0];
+                            if (prod != null)
+                            {
+                                prod.Balance = prod.Balance + pos1_OrderComp.Quantity;
+                                // Inventory Balance update
+                                dbPOS.Update_Product_Balance(prod);
+
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                    }
+                }
+
                 query = "UPDATE TranCollection SET IsVoid = 1, VoidDate='" + DateTime.Now.ToString("yyyy-MM-dd") + "', VoidTime='" + DateTime.Now.ToString("hh:mm:ss") + "' " +
                                 "WHERE InvoiceNo=" + iSelInvNo.ToString();
                 var count2 = connection.Execute(query);
@@ -285,6 +312,31 @@ namespace SDCafeCommon.DataAccess
                 string query = "UPDATE OrderComplete SET IsVoid = 0, VoidDate='" + DateTime.Now.ToString("yyyy-MM-dd") + "', VoidTime='" + DateTime.Now.ToString("hh:mm:ss") + "' " +
                                 "WHERE InvoiceNo=" + iSelInvNo.ToString();
                 var count1 = connection.Execute(query);
+
+                List<POS1_OrderCompleteModel> pos1_OrderComps = new List<POS1_OrderCompleteModel>();
+                POS_ProductModel prod = new POS_ProductModel();
+
+                pos1_OrderComps = Get_OrderComplete_by_InvoiceNo(iSelInvNo);
+                foreach (POS1_OrderCompleteModel pos1_OrderComp in pos1_OrderComps)
+                {
+                    DataAccessPOS dbPOS = new DataAccessPOS();
+                    if (pos1_OrderComp.Quantity != 0)
+                    {
+                        try
+                        {
+                            prod = dbPOS.Get_Product_By_ID(pos1_OrderComp.ProductId)[0];
+                            if (prod != null)
+                            {
+                                prod.Balance = prod.Balance - pos1_OrderComp.Quantity;
+                                dbPOS.Update_Product_Balance(prod);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                    }
+                }
 
                 query = "UPDATE TranCollection SET IsVoid = 0, VoidDate='" + DateTime.Now.ToString("yyyy-MM-dd") + "', VoidTime='" + DateTime.Now.ToString("hh:mm:ss") + "' " +
                                 "WHERE InvoiceNo=" + iSelInvNo.ToString();

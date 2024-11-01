@@ -100,6 +100,12 @@ namespace SDCafeSales.Views
                 {
                     iRowCount++;
 
+                    if (iRowCount == 1)
+                    {
+                        iSelInvNo = trancol.InvoiceNo;
+                        strSelInvNo = iSelInvNo.ToString();
+                    }
+
                     this.dgvData.Rows.Add(new String[] { trancol.CreateDate.ToString() + " " + trancol.CreateTime.ToString(),
                                                          trancol.InvoiceNo.ToString(),
                                                          trancol.CollectionType,
@@ -112,6 +118,9 @@ namespace SDCafeSales.Views
                                                          //trancol.TotalTip.ToString("0.00"),
                                                          trancol.IsVoid.ToString()
                     });
+                    trancol.Tax1 = (float)Math.Round(trancol.Tax1, 2);
+                    trancol.Tax2 = (float)Math.Round(trancol.Tax2, 2);
+                    trancol.Tax3 = (float)Math.Round(trancol.Tax3, 2);
                     // set the row tag with trancol's id
                     this.dgvData.Rows[iRowCount - 1].Tag = trancol.Id.ToString();
 
@@ -136,6 +145,7 @@ namespace SDCafeSales.Views
                     {
                         iRefundCount++;
                         iRefundSales = iRefundSales + (trancol.Amount + trancol.Tax1 + trancol.Tax2 + trancol.Tax3);
+                        iRefundSales = (float)Math.Round(iRefundSales, 2);
                         iRefundTips = iRefundTips + trancol.TotalTip;
                         for (int i = 0; i < 9; i++)
                         {
@@ -201,6 +211,9 @@ namespace SDCafeSales.Views
                          "</html>" + System.Environment.NewLine;
                     util.SendEmail("Sales History Query", strHTMLBody, "");
                 }
+                // click the first row
+                ShowOrderItems(iSelInvNo);
+
             }
             if (dgvData.RowCount > 0)
             {
@@ -2091,7 +2104,7 @@ namespace SDCafeSales.Views
                     util.Logger("Payment Void is not done yet!");
 
                 }
-
+                bt_Query.PerformClick();
             }
         }
 
@@ -2241,6 +2254,7 @@ namespace SDCafeSales.Views
                         //Load_Existing_Orders();
                         //bt_Stop.PerformClick();
                         //bCashPayment = false;
+                        bt_Query.PerformClick();
                     }
                     else
                     {
@@ -2316,14 +2330,14 @@ namespace SDCafeSales.Views
                     iOrderId = Convert.ToInt32(row.Tag);
                     POS1_OrderCompleteModel orderComp = new POS1_OrderCompleteModel();
                     orderComp = dbPOS1.Get_OrderComplete_by_Id(iOrderId);
-                    if (Convert.ToInt32(row.Cells[11].Value.ToString()) > 0)
-                    {
+                    //if (Convert.ToInt32(row.Cells[11].Value.ToString()) > 0)
+                    //{
                         fOrderItemAmt = ((float)System.Convert.ToDouble(row.Cells[3].Value) * Convert.ToInt32(row.Cells[11].Value.ToString()));
                         fOrderItemTaxAmt = (orderComp.IsTax1 ? (orderComp.Tax1Rate * fOrderItemAmt) : 0) +
                                                   (orderComp.IsTax2 ? (orderComp.Tax2Rate * fOrderItemAmt) : 0) +
                                                   (orderComp.IsTax3 ? (orderComp.Tax3Rate * fOrderItemAmt) : 0);
                         fRefundAmt += (fOrderItemAmt + fOrderItemTaxAmt);
-                    }
+                    //}
                 }
             }
             fRefundAmt = (float)Math.Round((Double)fRefundAmt, 2);
@@ -2335,7 +2349,9 @@ namespace SDCafeSales.Views
             int iOrderId = 0;
             int iRefundQty = 0;
             // Set OrderComplete to Void
+            DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+            List<POS_ProductModel> prodsInv = new List<POS_ProductModel>();
             //dbPOS1.Set_Void_OrderCoplete_by_InvoiceNo(p_invoiceNo);
             if (p_bFullRefund)
             { // Full Refund
@@ -2349,27 +2365,35 @@ namespace SDCafeSales.Views
                     orderComp = dbPOS1.Get_OrderComplete_by_Id(iOrderId);
                     if (orderComp != null)
                     {
-                        if (orderComp.Quantity > 0)
+                        //if (orderComp.Quantity > 0)
+                        //{
+                        orderComp.Quantity = orderComp.Quantity * -1;
+                        orderComp.Amount = orderComp.OutUnitPrice * orderComp.Quantity;
+                        orderComp.Tax1 = (orderComp.IsTax1 ? (orderComp.Tax1Rate * orderComp.Amount) : 0);
+                        orderComp.Tax2 = (orderComp.IsTax2 ? (orderComp.Tax2Rate * orderComp.Amount) : 0);
+                        orderComp.Tax3 = (orderComp.IsTax3 ? (orderComp.Tax3Rate * orderComp.Amount) : 0);
+                        orderComp.CreateDate = DateTime.Now.ToString("yyyy-MM-dd");
+                        orderComp.CreateTime = DateTime.Now.ToString("HH:mm:ss");
+                        orderComp.CreateUserId = p_intLoginUserId;
+                        orderComp.CreateUserName = p_strUserName;
+                        orderComp.CreateStation = p_strStation;
+                        orderComp.LastModDate = DateTime.Now.ToString("yyyy-MM-dd");
+                        orderComp.LastModTime = DateTime.Now.ToString("HH:mm:ss");
+                        orderComp.LastModUserId = p_intLoginUserId;
+                        orderComp.LastModUserName = p_strUserName;
+                        orderComp.LastModStation = p_strStation;
+                        orderComp.CompleteDate = DateTime.Now.ToString("yyyy-MM-dd");
+                        orderComp.CompleteTime = DateTime.Now.ToString("HH:mm:ss");
+                        dbPOS1.Insert_OrderComplete(orderComp);
+                        // Inventory Balance update
+
+                        prodsInv = dbPOS.Get_Product_By_ID(orderComp.ProductId);
+                        if (prodsInv.Count > 0)
                         {
-                            orderComp.Quantity = orderComp.Quantity * -1;
-                            orderComp.Amount = orderComp.OutUnitPrice * orderComp.Quantity;
-                            orderComp.Tax1 = (orderComp.IsTax1 ? (orderComp.Tax1Rate * orderComp.Amount) : 0);
-                            orderComp.Tax2 = (orderComp.IsTax2 ? (orderComp.Tax2Rate * orderComp.Amount) : 0);
-                            orderComp.Tax3 = (orderComp.IsTax3 ? (orderComp.Tax3Rate * orderComp.Amount) : 0);
-                            orderComp.CreateDate = DateTime.Now.ToString("yyyy-MM-dd");
-                            orderComp.CreateTime = DateTime.Now.ToString("HH:mm:ss");
-                            orderComp.CreateUserId = p_intLoginUserId;
-                            orderComp.CreateUserName = p_strUserName;
-                            orderComp.CreateStation = p_strStation;
-                            orderComp.LastModDate = DateTime.Now.ToString("yyyy-MM-dd");
-                            orderComp.LastModTime = DateTime.Now.ToString("HH:mm:ss");
-                            orderComp.LastModUserId = p_intLoginUserId;
-                            orderComp.LastModUserName = p_strUserName;
-                            orderComp.LastModStation = p_strStation;
-                            orderComp.CompleteDate = DateTime.Now.ToString("yyyy-MM-dd");
-                            orderComp.CompleteTime = DateTime.Now.ToString("HH:mm:ss");
-                            dbPOS1.Insert_OrderComplete(orderComp);
+                            prodsInv[0].Balance = prodsInv[0].Balance + (orderComp.Quantity * -1); 
+                            dbPOS.Update_Product_Balance(prodsInv[0]);
                         }
+                        //}
                     }
                 }
             }
@@ -2383,28 +2407,36 @@ namespace SDCafeSales.Views
                         iOrderId = Convert.ToInt32(row.Tag);
                         POS1_OrderCompleteModel orderComp = new POS1_OrderCompleteModel();
                         orderComp = dbPOS1.Get_OrderComplete_by_Id(iOrderId);
-                        if (Convert.ToInt32(row.Cells[11].Value.ToString()) > 0)
+                        //if (Convert.ToInt32(row.Cells[11].Value.ToString()) > 0)
+                        //{
+                        iRefundQty = Convert.ToInt32(row.Cells[11].Value.ToString());
+                        orderComp.Quantity = iRefundQty * -1;
+                        orderComp.Amount = orderComp.OutUnitPrice * orderComp.Quantity;
+                        orderComp.Tax1 = (orderComp.IsTax1 ? (orderComp.Tax1Rate * orderComp.Amount) : 0);
+                        orderComp.Tax2 = (orderComp.IsTax2 ? (orderComp.Tax2Rate * orderComp.Amount) : 0);
+                        orderComp.Tax3 = (orderComp.IsTax3 ? (orderComp.Tax3Rate * orderComp.Amount) : 0);
+                        orderComp.CreateDate = DateTime.Now.ToString("yyyy-MM-dd");
+                        orderComp.CreateTime = DateTime.Now.ToString("HH:mm:ss");
+                        orderComp.CreateUserId = p_intLoginUserId;
+                        orderComp.CreateUserName = p_strUserName;
+                        orderComp.CreateStation = p_strStation;
+                        orderComp.LastModDate = DateTime.Now.ToString("yyyy-MM-dd");
+                        orderComp.LastModTime = DateTime.Now.ToString("HH:mm:ss");
+                        orderComp.LastModUserId = p_intLoginUserId;
+                        orderComp.LastModUserName = p_strUserName;
+                        orderComp.LastModStation = p_strStation;
+                        orderComp.CompleteDate = DateTime.Now.ToString("yyyy-MM-dd");
+                        orderComp.CompleteTime = DateTime.Now.ToString("HH:mm:ss");
+                        dbPOS1.Insert_OrderComplete(orderComp);
+                        // Inventory Balance update
+
+                        prodsInv = dbPOS.Get_Product_By_ID(orderComp.ProductId);
+                        if (prodsInv.Count > 0)
                         {
-                            iRefundQty = Convert.ToInt32(row.Cells[11].Value.ToString());
-                            orderComp.Quantity = iRefundQty * -1;
-                            orderComp.Amount = orderComp.OutUnitPrice * orderComp.Quantity;
-                            orderComp.Tax1 = (orderComp.IsTax1 ? (orderComp.Tax1Rate * orderComp.Amount) : 0);
-                            orderComp.Tax2 = (orderComp.IsTax2 ? (orderComp.Tax2Rate * orderComp.Amount) : 0);
-                            orderComp.Tax3 = (orderComp.IsTax3 ? (orderComp.Tax3Rate * orderComp.Amount) : 0);
-                            orderComp.CreateDate = DateTime.Now.ToString("yyyy-MM-dd");
-                            orderComp.CreateTime = DateTime.Now.ToString("HH:mm:ss");
-                            orderComp.CreateUserId = p_intLoginUserId;
-                            orderComp.CreateUserName = p_strUserName;
-                            orderComp.CreateStation = p_strStation;
-                            orderComp.LastModDate = DateTime.Now.ToString("yyyy-MM-dd");
-                            orderComp.LastModTime = DateTime.Now.ToString("HH:mm:ss");
-                            orderComp.LastModUserId = p_intLoginUserId;
-                            orderComp.LastModUserName = p_strUserName;
-                            orderComp.LastModStation = p_strStation;
-                            orderComp.CompleteDate = DateTime.Now.ToString("yyyy-MM-dd");
-                            orderComp.CompleteTime = DateTime.Now.ToString("HH:mm:ss");
-                            dbPOS1.Insert_OrderComplete(orderComp);
+                            prodsInv[0].Balance = prodsInv[0].Balance + iRefundQty;
+                            dbPOS.Update_Product_Balance(prodsInv[0]);
                         }
+                        //}
                     }
                 }
             }
@@ -2494,17 +2526,21 @@ namespace SDCafeSales.Views
                             int iOrderId = Convert.ToInt32(row.Tag);
                             POS1_OrderCompleteModel orderComp = new POS1_OrderCompleteModel();
                             orderComp = dbPOS1.Get_OrderComplete_by_Id(iOrderId);
-                            if (Convert.ToInt32(row.Cells[11].Value.ToString()) > 0)
-                            {
+//                            if (Convert.ToInt32(row.Cells[11].Value.ToString()) > 0)
+                            //{
                                 fOrderItemAmt = ((float)System.Convert.ToDouble(row.Cells[3].Value) * Convert.ToInt32(row.Cells[11].Value.ToString()));
                                 fTax1 += (orderComp.IsTax1 ? (orderComp.Tax1Rate * fOrderItemAmt) : 0);
                                 fTax2 += (orderComp.IsTax2 ? (orderComp.Tax2Rate * fOrderItemAmt) : 0);
                                 fTax3 += (orderComp.IsTax3 ? (orderComp.Tax3Rate * fOrderItemAmt) : 0);
                                 fAmount += (fOrderItemAmt);
-                            }
+                            //}
                         }
                     }
                 }
+                fTax1 = (float)Math.Round(fTax1, 2);
+                fTax2 = (float)Math.Round(fTax2, 2);
+                fTax3 = (float)Math.Round(fTax3, 2);
+                fAmount = (float)Math.Round(fAmount, 2);
                 fTotalDueAmt = fAmount + fTax1 + fTax2 + fTax3;
 
                 col.Amount = fAmount * -1;   // Sub Total without Tax
@@ -3420,6 +3456,8 @@ namespace SDCafeSales.Views
                                                     0, 0, "CASH", false, bFullRefund);
                 Print_Receipt(false, true, trancolSelected.InvoiceNo);
                 util.Logger("--------------- Cash Refund & Printing Receipt is Done : Invoice# " + trancolSelected.InvoiceNo.ToString());
+
+                bt_Query.PerformClick();
             }
         }
     }

@@ -121,7 +121,7 @@ namespace SDCafeOffice
             this.dgvData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvData.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            this.dgvData.ColumnCount = 11;
+            this.dgvData.ColumnCount = 15;
             this.dgvData.Columns[0].Name = "Id";
             this.dgvData.Columns[0].Width = 50;
             this.dgvData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -153,13 +153,26 @@ namespace SDCafeOffice
             this.dgvData.Columns[9].Width = 80;
             this.dgvData.Columns[9].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvData.Columns[10].Name = "BarCode";
-            this.dgvData.Columns[10].Width = 80;
+            this.dgvData.Columns[10].Width = 100;
             this.dgvData.Columns[10].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            this.dgvData.DefaultCellStyle.Font = new Font("Arial", 16F, GraphicsUnit.Pixel);
+            this.dgvData.Columns[11].Name = "Promo Start";
+            this.dgvData.Columns[11].Width = 100;
+            this.dgvData.Columns[11].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.Columns[12].Name = "Promo End";
+            this.dgvData.Columns[12].Width = 100;
+            this.dgvData.Columns[12].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.Columns[13].Name = "Promo QTY";
+            this.dgvData.Columns[13].Width = 80;
+            this.dgvData.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.Columns[14].Name = "Promo Unit Price";
+            this.dgvData.Columns[14].Width = 80;
+            this.dgvData.Columns[14].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            this.dgvData.DefaultCellStyle.Font = new Font("Arial", 12F, GraphicsUnit.Pixel);
 
             this.dgvData.EnableHeadersVisualStyles = false;
-            this.dgvData.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 18F, GraphicsUnit.Pixel);
+            this.dgvData.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 14F, GraphicsUnit.Pixel);
             this.dgvData.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvData.ColumnHeadersDefaultCellStyle.BackColor = Color.LightBlue;
             // fix the row height
@@ -172,6 +185,7 @@ namespace SDCafeOffice
 
         private void bt_Product_Click(object sender, EventArgs e)
         {
+            int iPCount = 0;
             //pnl_Product.Show();
             //pnl_User.Hide();
             bt_Product.BackColor = Color.Yellow;
@@ -218,9 +232,22 @@ namespace SDCafeOffice
             dgvData_Prod_Initialize();
             if (prods.Count > 0)
             {
+                Cursor.Current = Cursors.WaitCursor;
+                //show progressbar
+                progBarExport.Visible = true;
+                progBarExport.Maximum = prods.Count;
+                progBarExport.Value = 0;
+                // set backcolor of progressbar
+                progBarExport.BackColor = Color.LightGreen;
+                progBarExport.Style = ProgressBarStyle.Continuous;
+
                 bt_ProductExport.Enabled = true;
                 foreach (var prod in prods)
                 {
+                    iPCount++;
+                    progBarExport.Value = iPCount;
+                    progBarExport.Refresh();
+
                     this.dgvData.Rows.Add(new String[] { prod.Id.ToString(),
                                                          prod.ProductName,
                                                          prod.SecondName,
@@ -229,13 +256,17 @@ namespace SDCafeOffice
                                                          prod.IsTax1.ToString(),
                                                          prod.IsTax2.ToString(),
                                                          prod.IsTax3.ToString(),
-                                                         prod.InUnitPrice.ToString(),
+                                                         prod.InUnitPrice.ToString("C2"),
                                                          prod.Balance.ToString(),
-                                                         prod.BarCode
+                                                         prod.BarCode,
+                                                         prod.PromoStartDate,
+                                                         prod.PromoEndDate,
+                                                         prod.PromoDay1.ToString(),
+                                                         prod.PromoPrice1.ToString("C2")
                     });
                     if (prod.IsTax1) 
                     { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[5].Style.BackColor = Color.Green; 
+                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[5].Style.BackColor = Color.LightGreen; 
                     }
                     else 
                     { 
@@ -243,7 +274,7 @@ namespace SDCafeOffice
                     };
                     if (prod.IsTax2) 
                     { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[6].Style.BackColor = Color.Green; 
+                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[6].Style.BackColor = Color.LightGreen; 
                     }
                     else 
                     { 
@@ -251,17 +282,45 @@ namespace SDCafeOffice
                     };
                     if (prod.IsTax3) 
                     { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[7].Style.BackColor = Color.Green; 
+                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[7].Style.BackColor = Color.LightGreen; 
                     }
                     else 
                     { 
                         this.dgvData.Rows[dgvData.RowCount - 2].Cells[7].Style.BackColor = Color.LightSalmon; 
                     };
+                    // Check Promotion and Change Color if Promotion is meet
+                    if (IsProductPromotion(prod))
+                    {
+                        // Set the row color to LightPink
+                        this.dgvData.Rows[dgvData.RowCount - 2].DefaultCellStyle.BackColor = Color.Yellow;
+                        // Set the row font to bold
+                        this.dgvData.Rows[dgvData.RowCount - 2].DefaultCellStyle.Font = new Font("Arial", 12F, FontStyle.Bold,GraphicsUnit.Pixel);
 
+
+                    }
                     this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
                 }
+                progBarExport.Visible = false;
+                Cursor.Current = Cursors.Default;
             }
         }
+
+        private bool IsProductPromotion(POS_ProductModel p_Product)
+        {
+            // Check weather p_Product is promotion product
+            if (p_Product.PromoStartDate != "" && p_Product.PromoEndDate != "")
+            {
+                DateTime dtStartDate = DateTime.Parse(p_Product.PromoStartDate);
+                DateTime dtEndDate = DateTime.Parse(p_Product.PromoEndDate);
+                DateTime dtNow = DateTime.Now;
+                if (dtNow >= dtStartDate && dtNow <= dtEndDate)
+                    return true;
+                else
+                    return false;
+            }
+            return false;
+        }
+
         private void dgvData_LoginUser_Initialize()
         {
             dgvData_Adjustment();
@@ -627,13 +686,13 @@ namespace SDCafeOffice
             this.dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvData.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             this.dgvData.ColumnCount = 7;
-            this.dgvData.Columns[0].Name = "ComputerName";
-            this.dgvData.Columns[0].Width = 10;
+            this.dgvData.Columns[0].Name = "Computer Name";
+            this.dgvData.Columns[0].Width = 150;
             this.dgvData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvData.Columns[1].Name = "Station";
             this.dgvData.Columns[1].Width = 100;
             this.dgvData.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[2].Name = "StationName";
+            this.dgvData.Columns[2].Name = "Station Name";
             this.dgvData.Columns[2].Width = 200;
             this.dgvData.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvData.Columns[3].Name = "StationNo";
@@ -1100,6 +1159,14 @@ namespace SDCafeOffice
                         // cells format to text
                         worksheet.Cells[i + 2, j + 1].NumberFormat = "@";
                         worksheet.Cells[i + 2, j + 1] = dgvData.Rows[i].Cells[j].Value.ToString();
+                        // Set the same background color on worksheet as dgvData's colume
+                        //worksheet.Rows[i + 2].Interior.Color = dgvData.Rows[i].Cells[j].Style.BackColor;
+                        Color cellColor = dgvData.Rows[i].Cells[j].Style.BackColor;
+                        Color rowColor = dgvData.Rows[i].DefaultCellStyle.BackColor;//Color.FromArgb(0, 0, 0, 0);
+                        if (!rowColor.IsEmpty)
+                            worksheet.Cells[i + 2, j + 1].Interior.Color = rowColor;
+                        if (!cellColor.IsEmpty)
+                            worksheet.Cells[i + 2, j + 1].Interior.Color = cellColor;
                     }
                 }
 

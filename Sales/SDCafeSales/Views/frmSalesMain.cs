@@ -1923,7 +1923,7 @@ namespace SDCafeSales.Views
                     //}
                 }
             }
-            iTotalItems = dbPOS.Get_ParentOrders_by_Station(strStation).Count;
+            //iTotalItems = dbPOS.Get_ParentOrders_by_Station(strStation).Count;
             fTotDue = iTotalItems;
             txtCount.Text = iTotalItems.ToString("0");
             txt_SubTotal.Text = iSubTotal.ToString("c2");
@@ -2506,6 +2506,7 @@ namespace SDCafeSales.Views
         {
             int iSeq = 0;
             bool bQTYPromotionProduct = false;
+            int iOrderQty = 1;
 
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
@@ -2533,12 +2534,25 @@ namespace SDCafeSales.Views
                     return true;
                 }
 
+                if ((txtQTY.Text != "") && (txtQTY.Text != "0"))
+                {
+                    try
+                    {
+                        iOrderQty = Int32.Parse(txtQTY.Text);
+                    }
+                    catch
+                    {
+                        iOrderQty = 1;
+                    }
+                    txtQTY.Text = "";
+                }
+
                 orders.Clear();
                 //Get_Order_By_ProdId(iNewInvNo, pProdID);
                 orders = dbPOS.Get_NonRFID_Order_By_ProdId(iNewInvNo, pProdID);
                 if (orders.Count == 1)
                 {
-                    orders[0].Quantity++;
+                    orders[0].Quantity += iOrderQty;
                     bQTYPromotionProduct = Check_QTY_Promotion_Product(prods[0], orders[0].Quantity);
                     if (bQTYPromotionProduct)
                     {
@@ -2574,7 +2588,7 @@ namespace SDCafeSales.Views
                                 if (rowIndex > -1) // found the product
                                 {
                                     // update datagrid veiw
-                                    childOrder.Quantity++;
+                                    childOrder.Quantity += iOrderQty;
                                     dgv_Orders.Rows[rowIndex].Cells[2].Value = childOrder.Quantity.ToString();
                                     iAmount = childOrder.Quantity * childOrder.OutUnitPrice;
                                     dgv_Orders.Rows[rowIndex].Cells[4].Value = iAmount.ToString("0.00");
@@ -2615,14 +2629,14 @@ namespace SDCafeSales.Views
                         IsTax1 = prods[0].IsTax1,
                         IsTax2 = prods[0].IsTax2,
                         IsTax3 = prods[0].IsTax3,
-                        Quantity = 1,
-                        Amount = prods[0].OutUnitPrice * 1,
+                        Quantity = iOrderQty,
+                        Amount = prods[0].OutUnitPrice * iOrderQty,
                         Tax1Rate = TaxRate1,
                         Tax2Rate = TaxRate2,
                         Tax3Rate = TaxRate3,
-                        Tax1 = prods[0].IsTax1 ? TaxRate1 * prods[0].OutUnitPrice : 0,
-                        Tax2 = prods[0].IsTax2 ? TaxRate2 * prods[0].OutUnitPrice : 0,
-                        Tax3 = prods[0].IsTax3 ? TaxRate3 * prods[0].OutUnitPrice : 0,
+                        Tax1 = prods[0].IsTax1 ? TaxRate1 * (prods[0].OutUnitPrice * iOrderQty) : 0,
+                        Tax2 = prods[0].IsTax2 ? TaxRate2 * (prods[0].OutUnitPrice * iOrderQty) : 0,
+                        Tax3 = prods[0].IsTax3 ? TaxRate3 * (prods[0].OutUnitPrice * iOrderQty) : 0,
                         Deposit = prods[0].Deposit,
                         RecyclingFee = prods[0].RecyclingFee,
                         ChillCharge = prods[0].ChillCharge,
@@ -2658,7 +2672,7 @@ namespace SDCafeSales.Views
                         iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
                         this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                prods[0].ProductName,
-                                                                               "1",
+                                                                               orders[0].Quantity.ToString("0"),
                                                                                prods[0].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
                                                                                iNewOrderId.ToString(),
@@ -2687,8 +2701,8 @@ namespace SDCafeSales.Views
                                 IsTax1 = prods[0].IsTax1,
                                 IsTax2 = prods[0].IsTax2,
                                 IsTax3 = prods[0].IsTax3,
-                                Quantity = 1,
-                                Amount = prods[0].Deposit,
+                                Quantity = iOrderQty,
+                                Amount = prods[0].Deposit * iOrderQty,
                                 Tax1Rate = TaxRate1,
                                 Tax2Rate = TaxRate2,
                                 Tax3Rate = TaxRate3,
@@ -2761,8 +2775,8 @@ namespace SDCafeSales.Views
                                 IsTax1 = prods[0].IsTax1,
                                 IsTax2 = prods[0].IsTax2,
                                 IsTax3 = prods[0].IsTax3,
-                                Quantity = 1,
-                                Amount = prods[0].RecyclingFee,
+                                Quantity = iOrderQty,
+                                Amount = prods[0].RecyclingFee * iOrderQty,
                                 Tax1Rate = TaxRate1,
                                 Tax2Rate = TaxRate2,
                                 Tax3Rate = TaxRate3,
@@ -3532,7 +3546,7 @@ namespace SDCafeSales.Views
                 SecondName = "Cash Rounding",
                 ProductTypeId = 0,
                 InUnitPrice = 0,
-                OutUnitPrice = 0,
+                OutUnitPrice = p_fCashRounding,
                 IsTax1 = false,
                 IsTax2 = false,
                 IsTax3 = false,
@@ -4106,7 +4120,7 @@ namespace SDCafeSales.Views
             }
 
             DataAccessPOS dbPOS = new DataAccessPOS();
-            if (!string.IsNullOrEmpty(txtQTY.Text))
+            if ((!string.IsNullOrEmpty(txtQTY.Text)) && (txtQTY.Text != "0"))
             {
                 int iQTY = 0;
                 try
@@ -4194,6 +4208,11 @@ namespace SDCafeSales.Views
                     txtSelectedMenu.Text = "QTY is not set or No ordered items to update!";
                 }
                 //txtBarCode.Focus();
+            }
+            else
+            {
+                txtQTY.Text = txtBarCode.Text;
+                txtBarCode.Text = "";
             }
             BarCode_Get_Focus();
         }
@@ -5160,11 +5179,13 @@ namespace SDCafeSales.Views
                 {
                     lblTotalDue.Text = "Total Due";
                     txt_TotalDue.Text = iTotalDue.ToString("C2");
+                    txt_TotalDue.BackColor = Color.Yellow;
                 }
                 else
                 {
                     lblTotalDue.Text = "Cash Due";
                     txt_TotalDue.Text = m_fCashDue.ToString("c2");
+                    txt_TotalDue.BackColor = Color.LightSalmon;
                 }
                 iTimerCount = 0;
             }
@@ -6388,6 +6409,20 @@ namespace SDCafeSales.Views
             bool bManualTax2 = false;
             bool bManualTax3 = false;
             int iSeq = 0;
+            int iOrderQty = 1;
+
+            if ((txtQTY.Text != "") && (txtQTY.Text != "0"))
+            {
+                try
+                {
+                    iOrderQty = Int32.Parse(txtQTY.Text);
+                }
+                catch
+                {
+                    iOrderQty = 1;
+                }
+                txtQTY.Text = "";
+            }
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
 
@@ -6474,14 +6509,14 @@ namespace SDCafeSales.Views
                     IsTax1 = bManualTax1,
                     IsTax2 = bManualTax2,
                     IsTax3 = bManualTax3,
-                    Quantity = 1,
-                    Amount = (float)dblManualPrice,
+                    Quantity = iOrderQty,
+                    Amount = (float)dblManualPrice * iOrderQty,
                     Tax1Rate = TaxRate1,
                     Tax2Rate = TaxRate2,
                     Tax3Rate = TaxRate3,
-                    Tax1 = bManualTax1 ? TaxRate1 * (float)dblManualPrice : 0,
-                    Tax2 = bManualTax2 ? TaxRate2 * (float)dblManualPrice : 0,
-                    Tax3 = bManualTax3 ? TaxRate3 * (float)dblManualPrice : 0,
+                    Tax1 = bManualTax1 ? TaxRate1 * (float)(dblManualPrice * iOrderQty) : 0,
+                    Tax2 = bManualTax2 ? TaxRate2 * (float)(dblManualPrice * iOrderQty) : 0,
+                    Tax3 = bManualTax3 ? TaxRate3 * (float)(dblManualPrice * iOrderQty) : 0,
                     Deposit = 0,
                     RecyclingFee = 0,
                     ChillCharge = 0,
@@ -6517,7 +6552,7 @@ namespace SDCafeSales.Views
                     iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
                     this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                strManualName,
-                                                                               "1",
+                                                                               orders[0].Quantity.ToString("0"),
                                                                                orders[0].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
                                                                                iNewOrderId.ToString(),

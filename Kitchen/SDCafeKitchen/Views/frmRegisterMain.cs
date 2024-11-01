@@ -879,7 +879,7 @@ namespace SDCafeKitchen.Views
                 //}
                 //listView1.Items[i].SubItems[3].Text = counter.ToString();
             }
-            txtCount.Text = listView1.Items.Count.ToString();
+            //txtCount.Text = listView1.Items.Count.ToString();
             
             /* you can try to read or write tag below */
             //int iret ;

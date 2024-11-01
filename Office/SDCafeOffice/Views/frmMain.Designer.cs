@@ -35,6 +35,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.text_PName = new System.Windows.Forms.TextBox();
+            this.progBarExport = new System.Windows.Forms.ProgressBar();
             this.bt_ProductExport = new SDCafeCommon.Utilities.CustomButton();
             this.bt_TimeReport = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Promotion = new SDCafeCommon.Utilities.CustomButton();
@@ -47,7 +48,6 @@
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_LoginUser = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Product = new SDCafeCommon.Utilities.CustomButton();
-            this.progBarExport = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -126,6 +126,19 @@
             this.text_PName.Size = new System.Drawing.Size(204, 29);
             this.text_PName.TabIndex = 41;
             this.text_PName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.text_PName_KeyPress);
+            // 
+            // progBarExport
+            // 
+            this.progBarExport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progBarExport.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.progBarExport.Location = new System.Drawing.Point(3, 698);
+            this.progBarExport.Name = "progBarExport";
+            this.progBarExport.Size = new System.Drawing.Size(1003, 29);
+            this.progBarExport.Step = 1;
+            this.progBarExport.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progBarExport.TabIndex = 45;
+            this.progBarExport.Visible = false;
             // 
             // bt_ProductExport
             // 
@@ -296,19 +309,6 @@
             this.bt_Product.TabIndex = 3;
             this.bt_Product.Text = "Product";
             this.bt_Product.Click += new System.EventHandler(this.bt_Product_Click);
-            // 
-            // progBarExport
-            // 
-            this.progBarExport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.progBarExport.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.progBarExport.Location = new System.Drawing.Point(3, 698);
-            this.progBarExport.Name = "progBarExport";
-            this.progBarExport.Size = new System.Drawing.Size(1003, 29);
-            this.progBarExport.Step = 1;
-            this.progBarExport.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.progBarExport.TabIndex = 45;
-            this.progBarExport.Visible = false;
             // 
             // frmMain
             // 
