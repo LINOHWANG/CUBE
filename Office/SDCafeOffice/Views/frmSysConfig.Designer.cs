@@ -195,7 +195,7 @@
             this.Controls.Add(this.txt_ConfigID);
             this.Controls.Add(this.bt_Save);
             this.Name = "frmSysConfig";
-            this.Text = "frmSysConfig";
+            this.Text = "System Configuration";
             this.ResumeLayout(false);
             this.PerformLayout();
 

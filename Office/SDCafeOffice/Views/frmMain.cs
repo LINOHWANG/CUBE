@@ -853,17 +853,17 @@ namespace SDCafeOffice
                 }
                 if (isPromotion)
                 {
-                    //if (dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value == null)
-                    //{
-                    //    strPromoId = String.Empty;
-                    //}
-                    //else
-                    //{
-                    //    strPromoId = dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value.ToString();
-                    // }
-                    //FrmPromotion = new frmPromotion(strPromoId);
-                    //FrmPromotion.ShowDialog();
-                    //bt_Promotion.PerformClick();
+                    if (dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value == null)
+                    {
+                        strPromoId = String.Empty;
+                    }
+                    else
+                    {
+                        strPromoId = dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value.ToString();
+                    }
+                    FrmPromotion = new frmPromotion(strPromoId);
+                    FrmPromotion.ShowDialog();
+                    bt_Promotion.PerformClick();
                 }
             }
         }
@@ -1180,5 +1180,6 @@ namespace SDCafeOffice
                 GC.Collect();
             }
         }
+
     }
 }

@@ -49,12 +49,12 @@
             this.bt_AddOne = new System.Windows.Forms.Button();
             this.bt_DelAll = new System.Windows.Forms.Button();
             this.bt_DelOne = new System.Windows.Forms.Button();
+            this.lbl_AllProds = new System.Windows.Forms.Label();
+            this.lbl_SelectedProds = new System.Windows.Forms.Label();
             this.bt_Delete = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Add = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
-            this.lbl_AllProds = new System.Windows.Forms.Label();
-            this.lbl_SelectedProds = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDataFrom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDataTo)).BeginInit();
             this.SuspendLayout();
@@ -76,7 +76,7 @@
             this.txt_PromoName.Location = new System.Drawing.Point(194, 47);
             this.txt_PromoName.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_PromoName.Name = "txt_PromoName";
-            this.txt_PromoName.Size = new System.Drawing.Size(625, 29);
+            this.txt_PromoName.Size = new System.Drawing.Size(504, 29);
             this.txt_PromoName.TabIndex = 4;
             this.txt_PromoName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -97,27 +97,27 @@
             this.cb_PromoType.FormattingEnabled = true;
             this.cb_PromoType.Location = new System.Drawing.Point(194, 84);
             this.cb_PromoType.Name = "cb_PromoType";
-            this.cb_PromoType.Size = new System.Drawing.Size(233, 30);
+            this.cb_PromoType.Size = new System.Drawing.Size(198, 30);
             this.cb_PromoType.TabIndex = 33;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(10, 125);
+            this.label3.Location = new System.Drawing.Point(357, 129);
             this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(61, 22);
+            this.label3.Size = new System.Drawing.Size(177, 22);
             this.label3.TabIndex = 35;
-            this.label3.Text = "Value";
+            this.label3.Text = "Each Promo Price";
             // 
             // txt_PromoValue
             // 
             this.txt_PromoValue.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_PromoValue.Location = new System.Drawing.Point(194, 122);
+            this.txt_PromoValue.Location = new System.Drawing.Point(546, 126);
             this.txt_PromoValue.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_PromoValue.Name = "txt_PromoValue";
-            this.txt_PromoValue.Size = new System.Drawing.Size(233, 29);
+            this.txt_PromoValue.Size = new System.Drawing.Size(152, 29);
             this.txt_PromoValue.TabIndex = 34;
             this.txt_PromoValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -125,7 +125,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(469, 125);
+            this.label4.Location = new System.Drawing.Point(357, 165);
             this.label4.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(142, 22);
@@ -135,10 +135,10 @@
             // txt_PromoQTY
             // 
             this.txt_PromoQTY.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_PromoQTY.Location = new System.Drawing.Point(680, 122);
+            this.txt_PromoQTY.Location = new System.Drawing.Point(546, 161);
             this.txt_PromoQTY.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_PromoQTY.Name = "txt_PromoQTY";
-            this.txt_PromoQTY.Size = new System.Drawing.Size(139, 29);
+            this.txt_PromoQTY.Size = new System.Drawing.Size(152, 29);
             this.txt_PromoQTY.TabIndex = 36;
             this.txt_PromoQTY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -147,20 +147,20 @@
             this.dttm_PromoStart.CalendarFont = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dttm_PromoStart.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dttm_PromoStart.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dttm_PromoStart.Location = new System.Drawing.Point(240, 160);
+            this.dttm_PromoStart.Location = new System.Drawing.Point(194, 124);
             this.dttm_PromoStart.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.dttm_PromoStart.Name = "dttm_PromoStart";
-            this.dttm_PromoStart.Size = new System.Drawing.Size(139, 29);
+            this.dttm_PromoStart.Size = new System.Drawing.Size(151, 29);
             this.dttm_PromoStart.TabIndex = 38;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(10, 165);
+            this.label5.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(10, 129);
             this.label5.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(156, 22);
+            this.label5.Size = new System.Drawing.Size(168, 22);
             this.label5.TabIndex = 39;
             this.label5.Text = "Promo Start Date";
             // 
@@ -169,20 +169,20 @@
             this.dttm_PromoEnd.CalendarFont = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dttm_PromoEnd.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dttm_PromoEnd.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dttm_PromoEnd.Location = new System.Drawing.Point(680, 161);
+            this.dttm_PromoEnd.Location = new System.Drawing.Point(194, 161);
             this.dttm_PromoEnd.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.dttm_PromoEnd.Name = "dttm_PromoEnd";
-            this.dttm_PromoEnd.Size = new System.Drawing.Size(139, 29);
+            this.dttm_PromoEnd.Size = new System.Drawing.Size(151, 29);
             this.dttm_PromoEnd.TabIndex = 40;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(469, 165);
+            this.label6.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(10, 165);
             this.label6.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(151, 22);
+            this.label6.Size = new System.Drawing.Size(161, 22);
             this.label6.TabIndex = 41;
             this.label6.Text = "Promo End Date";
             // 
@@ -190,26 +190,26 @@
             // 
             this.dgvDataFrom.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvDataFrom.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvDataFrom.Location = new System.Drawing.Point(14, 256);
+            this.dgvDataFrom.Location = new System.Drawing.Point(14, 231);
             this.dgvDataFrom.MultiSelect = false;
             this.dgvDataFrom.Name = "dgvDataFrom";
             this.dgvDataFrom.ReadOnly = true;
             this.dgvDataFrom.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvDataFrom.ShowEditingIcon = false;
-            this.dgvDataFrom.Size = new System.Drawing.Size(450, 423);
+            this.dgvDataFrom.Size = new System.Drawing.Size(450, 448);
             this.dgvDataFrom.TabIndex = 42;
             // 
             // dgvDataTo
             // 
             this.dgvDataTo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvDataTo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvDataTo.Location = new System.Drawing.Point(546, 256);
+            this.dgvDataTo.Location = new System.Drawing.Point(546, 231);
             this.dgvDataTo.MultiSelect = false;
             this.dgvDataTo.Name = "dgvDataTo";
             this.dgvDataTo.ReadOnly = true;
             this.dgvDataTo.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvDataTo.ShowEditingIcon = false;
-            this.dgvDataTo.Size = new System.Drawing.Size(450, 423);
+            this.dgvDataTo.Size = new System.Drawing.Size(450, 448);
             this.dgvDataTo.TabIndex = 43;
             // 
             // txtMessage
@@ -240,7 +240,7 @@
             this.txt_PromoID.Location = new System.Drawing.Point(194, 8);
             this.txt_PromoID.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_PromoID.Name = "txt_PromoID";
-            this.txt_PromoID.Size = new System.Drawing.Size(233, 29);
+            this.txt_PromoID.Size = new System.Drawing.Size(198, 29);
             this.txt_PromoID.TabIndex = 82;
             this.txt_PromoID.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -248,7 +248,7 @@
             // 
             this.bt_Add_All.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.bt_Add_All.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_Add_All.Location = new System.Drawing.Point(470, 364);
+            this.bt_Add_All.Location = new System.Drawing.Point(470, 355);
             this.bt_Add_All.Name = "bt_Add_All";
             this.bt_Add_All.Size = new System.Drawing.Size(70, 50);
             this.bt_Add_All.TabIndex = 84;
@@ -261,7 +261,7 @@
             // 
             this.bt_AddOne.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
             this.bt_AddOne.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_AddOne.Location = new System.Drawing.Point(470, 420);
+            this.bt_AddOne.Location = new System.Drawing.Point(470, 411);
             this.bt_AddOne.Name = "bt_AddOne";
             this.bt_AddOne.Size = new System.Drawing.Size(70, 50);
             this.bt_AddOne.TabIndex = 85;
@@ -273,7 +273,7 @@
             // 
             this.bt_DelAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.bt_DelAll.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_DelAll.Location = new System.Drawing.Point(470, 532);
+            this.bt_DelAll.Location = new System.Drawing.Point(470, 523);
             this.bt_DelAll.Name = "bt_DelAll";
             this.bt_DelAll.Size = new System.Drawing.Size(70, 50);
             this.bt_DelAll.TabIndex = 87;
@@ -286,7 +286,7 @@
             // 
             this.bt_DelOne.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.bt_DelOne.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_DelOne.Location = new System.Drawing.Point(470, 476);
+            this.bt_DelOne.Location = new System.Drawing.Point(470, 467);
             this.bt_DelOne.Name = "bt_DelOne";
             this.bt_DelOne.Size = new System.Drawing.Size(70, 50);
             this.bt_DelOne.TabIndex = 86;
@@ -294,12 +294,36 @@
             this.bt_DelOne.UseVisualStyleBackColor = false;
             this.bt_DelOne.Click += new System.EventHandler(this.bt_DelOne_Click);
             // 
+            // lbl_AllProds
+            // 
+            this.lbl_AllProds.AutoSize = true;
+            this.lbl_AllProds.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_AllProds.ForeColor = System.Drawing.Color.Blue;
+            this.lbl_AllProds.Location = new System.Drawing.Point(10, 206);
+            this.lbl_AllProds.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lbl_AllProds.Name = "lbl_AllProds";
+            this.lbl_AllProds.Size = new System.Drawing.Size(123, 22);
+            this.lbl_AllProds.TabIndex = 88;
+            this.lbl_AllProds.Text = "All Products";
+            // 
+            // lbl_SelectedProds
+            // 
+            this.lbl_SelectedProds.AutoSize = true;
+            this.lbl_SelectedProds.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_SelectedProds.ForeColor = System.Drawing.Color.Blue;
+            this.lbl_SelectedProds.Location = new System.Drawing.Point(542, 206);
+            this.lbl_SelectedProds.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lbl_SelectedProds.Name = "lbl_SelectedProds";
+            this.lbl_SelectedProds.Size = new System.Drawing.Size(180, 22);
+            this.lbl_SelectedProds.TabIndex = 89;
+            this.lbl_SelectedProds.Text = "Selected Products";
+            // 
             // bt_Delete
             // 
             this.bt_Delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.bt_Delete.CornerRadius = 30;
             this.bt_Delete.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Delete.Location = new System.Drawing.Point(854, 181);
+            this.bt_Delete.Location = new System.Drawing.Point(748, 65);
             this.bt_Delete.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Delete.Name = "bt_Delete";
             this.bt_Delete.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -314,7 +338,7 @@
             this.bt_Add.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.bt_Add.CornerRadius = 30;
             this.bt_Add.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Add.Location = new System.Drawing.Point(854, 124);
+            this.bt_Add.Location = new System.Drawing.Point(748, 8);
             this.bt_Add.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Add.Name = "bt_Add";
             this.bt_Add.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -330,11 +354,12 @@
             this.bt_Exit.CornerRadius = 30;
             this.bt_Exit.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
             this.bt_Exit.ForeColor = System.Drawing.Color.White;
-            this.bt_Exit.Location = new System.Drawing.Point(854, 12);
+            this.bt_Exit.Location = new System.Drawing.Point(899, 8);
             this.bt_Exit.Name = "bt_Exit";
-            this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Exit.Size = new System.Drawing.Size(142, 47);
+            this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_Exit.Size = new System.Drawing.Size(97, 159);
             this.bt_Exit.TabIndex = 79;
             this.bt_Exit.Text = "Exit";
             this.bt_Exit.Click += new System.EventHandler(this.bt_Exit_Click);
@@ -343,7 +368,7 @@
             // 
             this.bt_Save.CornerRadius = 30;
             this.bt_Save.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Save.Location = new System.Drawing.Point(854, 67);
+            this.bt_Save.Location = new System.Drawing.Point(748, 120);
             this.bt_Save.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Save.Name = "bt_Save";
             this.bt_Save.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -352,30 +377,6 @@
             this.bt_Save.TabIndex = 78;
             this.bt_Save.Text = "Save";
             this.bt_Save.Click += new System.EventHandler(this.bt_Save_Click);
-            // 
-            // lbl_AllProds
-            // 
-            this.lbl_AllProds.AutoSize = true;
-            this.lbl_AllProds.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_AllProds.ForeColor = System.Drawing.Color.Blue;
-            this.lbl_AllProds.Location = new System.Drawing.Point(165, 231);
-            this.lbl_AllProds.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            this.lbl_AllProds.Name = "lbl_AllProds";
-            this.lbl_AllProds.Size = new System.Drawing.Size(123, 22);
-            this.lbl_AllProds.TabIndex = 88;
-            this.lbl_AllProds.Text = "All Products";
-            // 
-            // lbl_SelectedProds
-            // 
-            this.lbl_SelectedProds.AutoSize = true;
-            this.lbl_SelectedProds.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_SelectedProds.ForeColor = System.Drawing.Color.Blue;
-            this.lbl_SelectedProds.Location = new System.Drawing.Point(692, 231);
-            this.lbl_SelectedProds.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            this.lbl_SelectedProds.Name = "lbl_SelectedProds";
-            this.lbl_SelectedProds.Size = new System.Drawing.Size(180, 22);
-            this.lbl_SelectedProds.TabIndex = 89;
-            this.lbl_SelectedProds.Text = "Selected Products";
             // 
             // frmPromotion
             // 
@@ -410,7 +411,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txt_PromoName);
             this.Name = "frmPromotion";
-            this.Text = "frmPromotion";
+            this.Text = "Assorted Promotion Setting";
             ((System.ComponentModel.ISupportInitialize)(this.dgvDataFrom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDataTo)).EndInit();
             this.ResumeLayout(false);

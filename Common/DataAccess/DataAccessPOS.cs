@@ -8,6 +8,7 @@ using Dapper;
 using SDCafeCommon.Utilities;
 using SDCafeCommon.Model;
 using System.Data;
+using System.Windows.Forms;
 
 namespace SDCafeCommon.DataAccess
 {
@@ -168,9 +169,11 @@ namespace SDCafeCommon.DataAccess
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 string query = "INSERT INTO Promotion (PromoName, PromoType, PromoValue, PromoQTY, PromoStartDttm, PromoEndDttm) " +
-                                    "VALUES (@PromoName, @PromoType, @PromoValue, @PromoQTY, @PromoStartDttm, @PromoEndDttm)";
-                var count = connection.Execute(query, pOS_PromotionModel);
-                return count;
+                                    "VALUES (@PromoName, @PromoType, CAST(@PromoValue as decimal(10,2)), @PromoQTY, @PromoStartDttm, @PromoEndDttm);" +
+                                    "SELECT CAST(SCOPE_IDENTITY() as int)";
+                //var id = connection.Execute(query, pOS_PromotionModel);
+                var id = connection.QuerySingle<int>(query, pOS_PromotionModel);
+                return id;
             }
         }
 
@@ -805,7 +808,7 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                string query = "UPDATE Orders SET Quantity =@Quantity, Amount=CAST(@Amount as decimal(10,2)), " +
+                string query = "UPDATE Orders SET OutUnitPrice = CAST(@OutUnitPrice as decimal(10,2)), Quantity =@Quantity, Amount=CAST(@Amount as decimal(10,2)), " +
                                         "Tax1=CAST(@Tax1 as decimal(10,2)), " +
                                         "Tax2=CAST(@Tax2 as decimal(10,2)), " +
                                         "Tax3=CAST(@Tax3 as decimal(10,2)), " +
@@ -1361,6 +1364,30 @@ namespace SDCafeCommon.DataAccess
                 var count = connection.Execute(query, pos_ProductModel);
                 return count;
             }
+        }
+
+        public bool Check_Assorted_PromotionName(string p_PromoName)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_PromotionModel>($"select * from Promotion where PromoName = '{p_PromoName}' ").ToList();
+                if (output.Count > 0)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
+        public string Get_Tax_Name(int p_iTax)
+        {
+            string strConfigName = "Tax" + p_iTax.ToString();
+            List<POS_SysConfigModel> sysConfigs = new List<POS_SysConfigModel>();
+            sysConfigs = Get_SysConfig_By_Name(strConfigName);
+            if (sysConfigs.Count > 0)
+            {
+                return sysConfigs[0].ConfigValue;
+            }
+            return "Unkown";
         }
     }
 }

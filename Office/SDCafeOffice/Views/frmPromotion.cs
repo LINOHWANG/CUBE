@@ -164,6 +164,8 @@ namespace SDCafeOffice.Views
         }
         private void Update_Promotion_From_View()
         {
+            float fValuePrice = 0;
+            int iQTY = 0;
             DataAccessPOS dbPOS = new DataAccessPOS();
 
             //if (String.IsNullOrEmpty(txt_ConfigName.Text)) txt_ConfigName.Text = "";
@@ -179,13 +181,19 @@ namespace SDCafeOffice.Views
                 }
             }
             ppromos.Clear();
+            if (txt_PromoValue.Text != "")
+            {
+                fValuePrice = float.Parse(txt_PromoValue.Text);
+            }
+            if (txt_PromoQTY.Text != "")
+                iQTY = int.Parse(txt_PromoQTY.Text);
             ppromos.Add(new POS_PromotionModel()
             {
                 Id = int.Parse(txt_PromoID.Text),
                 PromoName = txt_PromoName.Text,
                 PromoType = ipTypeId,
-                PromoValue = float.Parse(txt_PromoValue.Text),
-                PromoQTY = int.Parse(txt_PromoQTY.Text),
+                PromoValue = (float)Math.Round(fValuePrice,2),
+                PromoQTY = iQTY,
                 PromoStartDttm = dttm_PromoStart.Value,
                 PromoEndDttm = dttm_PromoEnd.Value
             });
@@ -197,7 +205,8 @@ namespace SDCafeOffice.Views
         private void Insert_Promotion_From_View()
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
-
+            float fValuePrice = 0;
+            int iQTY = 0;
             //if (String.IsNullOrEmpty(txt_ConfigName.Text)) txt_ConfigName.Text = "";
             //if (String.IsNullOrEmpty(txt_ConfigValue.Text)) txt_ConfigValue.Text = "";
             //if (String.IsNullOrEmpty(txt_ConfigDesc.Text)) txt_ConfigDesc.Text = "";
@@ -211,19 +220,49 @@ namespace SDCafeOffice.Views
                 }
             }
             ppromos.Clear();
+            if (txt_PromoValue.Text != "")
+            {
+                fValuePrice = float.Parse(txt_PromoValue.Text);
+            }
+            if (txt_PromoQTY.Text != "")
+                iQTY = int.Parse(txt_PromoQTY.Text);
             ppromos.Add(new POS_PromotionModel()
             {
                 Id = 0,
                 PromoName = txt_PromoName.Text,
                 PromoType = ipTypeId,
-                PromoValue = float.Parse(txt_PromoValue.Text),
-                PromoQTY = int.Parse(txt_PromoQTY.Text),
+                PromoValue = (float)Math.Round(fValuePrice,2),
+                PromoQTY = iQTY,
                 PromoStartDttm = dttm_PromoStart.Value,
                 PromoEndDttm = dttm_PromoEnd.Value
             });
-            int iCnt = dbPOS.Insert_Promotion(ppromos[0]);
+            int iPromoId = dbPOS.Insert_Promotion(ppromos[0]);
+            if (iPromoId > 0)
+            {
+                txt_PromoID.Text = iPromoId.ToString();
+                AddPromotionProducts(iPromoId);
+            }
             txtMessage.Text = "Promotion successfully Added : " + txt_PromoName.Text;
             txtMessage.ForeColor = Color.White;
+        }
+
+        private void AddPromotionProducts(int p_iPromoId)
+        {
+            if (dgvDataTo.RowCount > 1)
+            {
+                foreach(DataGridViewRow row in dgvDataTo.Rows)
+                {
+                    if (row.IsNewRow) continue;
+                    pprods.Clear();
+                    pprods.Add(new POS_PromoProductsModel()
+                    {
+                        PromoId = p_iPromoId,
+                        ProdId = Convert.ToInt32(row.Cells[0].Value.ToString())
+                    });
+                    DataAccessPOS dbPOS = new DataAccessPOS();
+                    dbPOS.Insert_PromoProduct(pprods[0]);
+                }
+            }
         }
 
         private void bt_Exit_Click(object sender, EventArgs e)
@@ -242,6 +281,13 @@ namespace SDCafeOffice.Views
 
         private void bt_Add_Click(object sender, EventArgs e)
         {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            bool bIsPromoExist = dbPOS.Check_Assorted_PromotionName(txt_PromoName.Text);
+            if (bIsPromoExist)
+            {
+                MessageBox.Show("Promotion Name already exists. Please use another name!");
+                return;
+            }
             Insert_Promotion_From_View();
         }
 
@@ -385,6 +431,7 @@ namespace SDCafeOffice.Views
                 double dblFirstProdPrice = dbPOS.Get_The_First_Product_Price_From_PromoProduct(iSelectedPromoId);
                 if (dblFirstProdPrice > 0)
                 {
+                    dblFirstProdPrice = Math.Round(dblFirstProdPrice, 2);
                     if (dblFirstProdPrice != dblProdPrice)
                     {
                         MessageBox.Show("Unit Price Should be the same! " + dblProdPrice.ToString() + " is Not Equal to " + dblFirstProdPrice.ToString());
@@ -454,5 +501,7 @@ namespace SDCafeOffice.Views
         {
 
         }
+
+
     }
 }

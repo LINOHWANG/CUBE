@@ -372,6 +372,9 @@ namespace SDCafeSales.Views
             float iSubTot = 0;
             float iTaxTot = 0;
             float iTotDue = 0;
+            float fTax1Tot = 0;
+            float fTax2Tot = 0;
+            float fTax3Tot = 0;
 
             PrintDocument p = new PrintDocument();
 
@@ -497,6 +500,9 @@ namespace SDCafeSales.Views
                                     iAmount = order.Quantity * order.OutUnitPrice;
                                     iSubTot = iSubTot + iAmount;
                                     iTaxTot = iTaxTot + order.Tax1 + order.Tax2 + order.Tax3;
+                                    fTax1Tot += order.Tax1;
+                                    fTax2Tot += order.Tax2;
+                                    fTax3Tot += order.Tax3;
                                     strProd = order.ProductName;
 
                                     if (order.ProductName.Length > 20)
@@ -512,6 +518,9 @@ namespace SDCafeSales.Views
                                     iAmount = order.Amount;
                                     iSubTot = iSubTot + iAmount;
                                     iTaxTot = iTaxTot + order.Tax1 + order.Tax2 + order.Tax3;
+                                    fTax1Tot += order.Tax1;
+                                    fTax2Tot += order.Tax2;
+                                    fTax3Tot += order.Tax3;
                                     strProd = order.ProductName;
 
                                     if (order.ProductName.Length > 20)
@@ -549,6 +558,30 @@ namespace SDCafeSales.Views
                         iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                         txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                         e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                        if (FrmSalesMain.m_blnPrintTaxDetails)
+                        {
+                            if (fTax1Tot > 0)
+                            {
+                                strContent = String.Format("{0,25}", FrmSalesMain.strTax1Name + " :") + String.Format("{0,15}", fTax1Tot.ToString("0.00"));
+                                iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                            }
+                            if (fTax2Tot > 0)
+                            {
+                                strContent = String.Format("{0,25}", FrmSalesMain.strTax2Name + " :") + String.Format("{0,15}", fTax2Tot.ToString("0.00"));
+                                iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                            }
+                            if (fTax3Tot > 0)
+                            {
+                                strContent = String.Format("{0,25}", FrmSalesMain.strTax3Name + " :") + String.Format("{0,15}", fTax3Tot.ToString("0.00"));
+                                iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                            }
+                        }
                         //////////////////////////////////////////////////////////////////////////
                         // Print a Line ------------------------------------------------------
                         strContent = String.Format("{0,25}", "Total Due :") + String.Format("{0,15}", iTotDue.ToString("0.00"));
@@ -615,6 +648,9 @@ namespace SDCafeSales.Views
                                     iAmount = order.Quantity * order.OutUnitPrice;
                                     iSubTot = iSubTot + iAmount;
                                     iTaxTot = iTaxTot + order.Tax1 + order.Tax2 + order.Tax3;
+                                    fTax1Tot += order.Tax1;
+                                    fTax2Tot += order.Tax2;
+                                    fTax3Tot += order.Tax3;
                                     strProd = order.ProductName;
                                     if (strProd.Length < 21)
                                     {
@@ -634,6 +670,9 @@ namespace SDCafeSales.Views
                                     iAmount = order.Amount;
                                     iSubTot = iSubTot + iAmount;
                                     iTaxTot = iTaxTot + order.Tax1 + order.Tax2 + order.Tax3;
+                                    fTax1Tot += order.Tax1;
+                                    fTax2Tot += order.Tax2;
+                                    fTax3Tot += order.Tax3;
                                     strProd = order.ProductName;
                                     if (strProd.Length < 21)
                                     {
@@ -685,6 +724,30 @@ namespace SDCafeSales.Views
                             txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
 
+                            if (FrmSalesMain.m_blnPrintTaxDetails)
+                            {
+                                if (fTax1Tot > 0)
+                                {
+                                    strContent = String.Format("{0,25}", FrmSalesMain.strTax1Name + " :") + String.Format("{0,15}", fTax1Tot.ToString("0.00"));
+                                    iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                    txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                    e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                                }
+                                if (fTax2Tot > 0)
+                                {
+                                    strContent = String.Format("{0,25}", FrmSalesMain.strTax2Name + " :") + String.Format("{0,15}", fTax2Tot.ToString("0.00"));
+                                    iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                    txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                    e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                                }
+                                if (fTax3Tot > 0)
+                                {
+                                    strContent = String.Format("{0,25}", FrmSalesMain.strTax3Name + " :") + String.Format("{0,15}", fTax3Tot.ToString("0.00"));
+                                    iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                    txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                    e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                                }
+                            }
                             List<POS1_TranCollectionModel> cols = new List<POS1_TranCollectionModel>();
                             cols = dbPOS1.Get_TranCollection_by_InvoiceNo(iSelInvNo);
 
@@ -2543,6 +2606,10 @@ namespace SDCafeSales.Views
             float iTaxTot = 0;
             float iTotDue = 0;
 
+            float fTax1Tot = 0;
+            float fTax2Tot = 0;
+            float fTax3Tot = 0;
+
             PrintDocument p = new PrintDocument();
 
             // Construct 2 new StringFormat objects
@@ -2668,6 +2735,9 @@ namespace SDCafeSales.Views
                                     iAmount = order.Quantity * order.OutUnitPrice;
                                     iSubTot = iSubTot + iAmount;
                                     iTaxTot = iTaxTot + order.Tax1 + order.Tax2 + order.Tax3;
+                                    fTax1Tot += order.Tax1;
+                                    fTax2Tot += order.Tax2;
+                                    fTax3Tot += order.Tax3;
                                     strProd = order.ProductName;
 
                                     if (order.ProductName.Length > 20)
@@ -2683,6 +2753,9 @@ namespace SDCafeSales.Views
                                     iAmount = order.Amount;
                                     iSubTot = iSubTot + iAmount;
                                     iTaxTot = iTaxTot + order.Tax1 + order.Tax2 + order.Tax3;
+                                    fTax1Tot += order.Tax1;
+                                    fTax2Tot += order.Tax2;
+                                    fTax3Tot += order.Tax3;
                                     strProd = order.ProductName;
 
                                     if (order.ProductName.Length > 20)
@@ -2720,6 +2793,30 @@ namespace SDCafeSales.Views
                         iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                         txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                         e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                        if (FrmSalesMain.m_blnPrintTaxDetails)
+                        {
+                            if (fTax1Tot > 0)
+                            {
+                                strContent = String.Format("{0,25}", FrmSalesMain.strTax1Name + " :") + String.Format("{0,15}", fTax1Tot.ToString("0.00"));
+                                iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                            }
+                            if (fTax2Tot > 0)
+                            {
+                                strContent = String.Format("{0,25}", FrmSalesMain.strTax2Name + " :") + String.Format("{0,15}", fTax2Tot.ToString("0.00"));
+                                iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                            }
+                            if (fTax3Tot > 0)
+                            {
+                                strContent = String.Format("{0,25}", FrmSalesMain.strTax3Name + " :") + String.Format("{0,15}", fTax3Tot.ToString("0.00"));
+                                iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                            }
+                        }
                         //////////////////////////////////////////////////////////////////////////
                         // Print a Line ------------------------------------------------------
                         strContent = String.Format("{0,25}", "Total Due :") + String.Format("{0,15}", iTotDue.ToString("0.00"));

@@ -80,15 +80,16 @@
             this.checkManual = new System.Windows.Forms.CheckBox();
             this.label19 = new System.Windows.Forms.Label();
             this.txt_Balance = new System.Windows.Forms.TextBox();
+            this.txt_BarCode = new System.Windows.Forms.TextBox();
+            this.txt_PrintCopy = new System.Windows.Forms.TextBox();
+            this.lbl_PrintCopy = new System.Windows.Forms.Label();
+            this.checkMainSalesButton = new System.Windows.Forms.CheckBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.bt_RprintLabel = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Delete = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Add = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
-            this.txt_BarCode = new System.Windows.Forms.TextBox();
-            this.bt_RprintLabel = new SDCafeCommon.Utilities.CustomButton();
-            this.txt_PrintCopy = new System.Windows.Forms.TextBox();
-            this.lbl_PrintCopy = new System.Windows.Forms.Label();
-            this.checkMainSalesButton = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -96,10 +97,10 @@
             // 
             this.txt_ProductName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.txt_ProductName.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_ProductName.Location = new System.Drawing.Point(195, 46);
+            this.txt_ProductName.Location = new System.Drawing.Point(205, 46);
             this.txt_ProductName.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_ProductName.Name = "txt_ProductName";
-            this.txt_ProductName.Size = new System.Drawing.Size(249, 29);
+            this.txt_ProductName.Size = new System.Drawing.Size(239, 29);
             this.txt_ProductName.TabIndex = 2;
             this.txt_ProductName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -128,10 +129,10 @@
             // txt_SecondName
             // 
             this.txt_SecondName.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_SecondName.Location = new System.Drawing.Point(195, 84);
+            this.txt_SecondName.Location = new System.Drawing.Point(205, 84);
             this.txt_SecondName.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_SecondName.Name = "txt_SecondName";
-            this.txt_SecondName.Size = new System.Drawing.Size(249, 29);
+            this.txt_SecondName.Size = new System.Drawing.Size(239, 29);
             this.txt_SecondName.TabIndex = 4;
             this.txt_SecondName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -142,17 +143,17 @@
             this.label3.Location = new System.Drawing.Point(11, 163);
             this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(174, 22);
+            this.label3.Size = new System.Drawing.Size(193, 22);
             this.label3.TabIndex = 7;
-            this.label3.Text = "Internal Unit Price";
+            this.label3.Text = "Purchase Unit Price";
             // 
             // txt_IUnitPrice
             // 
             this.txt_IUnitPrice.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_IUnitPrice.Location = new System.Drawing.Point(195, 161);
+            this.txt_IUnitPrice.Location = new System.Drawing.Point(205, 161);
             this.txt_IUnitPrice.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_IUnitPrice.Name = "txt_IUnitPrice";
-            this.txt_IUnitPrice.Size = new System.Drawing.Size(250, 29);
+            this.txt_IUnitPrice.Size = new System.Drawing.Size(240, 29);
             this.txt_IUnitPrice.TabIndex = 6;
             this.txt_IUnitPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -163,18 +164,18 @@
             this.label4.Location = new System.Drawing.Point(11, 201);
             this.label4.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(181, 22);
+            this.label4.Size = new System.Drawing.Size(155, 22);
             this.label4.TabIndex = 9;
-            this.label4.Text = "External Unit Price";
+            this.label4.Text = "Retail Unit Price";
             // 
             // txt_OUnitPrice
             // 
             this.txt_OUnitPrice.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.txt_OUnitPrice.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_OUnitPrice.Location = new System.Drawing.Point(195, 198);
+            this.txt_OUnitPrice.Location = new System.Drawing.Point(205, 198);
             this.txt_OUnitPrice.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_OUnitPrice.Name = "txt_OUnitPrice";
-            this.txt_OUnitPrice.Size = new System.Drawing.Size(249, 29);
+            this.txt_OUnitPrice.Size = new System.Drawing.Size(239, 29);
             this.txt_OUnitPrice.TabIndex = 8;
             this.txt_OUnitPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -182,7 +183,7 @@
             // 
             this.checkTax1.AutoSize = true;
             this.checkTax1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkTax1.Location = new System.Drawing.Point(195, 250);
+            this.checkTax1.Location = new System.Drawing.Point(205, 250);
             this.checkTax1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkTax1.Name = "checkTax1";
             this.checkTax1.Size = new System.Drawing.Size(74, 26);
@@ -194,7 +195,7 @@
             // 
             this.checkTax2.AutoSize = true;
             this.checkTax2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkTax2.Location = new System.Drawing.Point(278, 250);
+            this.checkTax2.Location = new System.Drawing.Point(288, 250);
             this.checkTax2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkTax2.Name = "checkTax2";
             this.checkTax2.Size = new System.Drawing.Size(74, 26);
@@ -206,7 +207,7 @@
             // 
             this.checkTax3.AutoSize = true;
             this.checkTax3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkTax3.Location = new System.Drawing.Point(365, 250);
+            this.checkTax3.Location = new System.Drawing.Point(375, 250);
             this.checkTax3.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkTax3.Name = "checkTax3";
             this.checkTax3.Size = new System.Drawing.Size(74, 26);
@@ -218,7 +219,7 @@
             // 
             this.checkTaxInv.AutoSize = true;
             this.checkTaxInv.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkTaxInv.Location = new System.Drawing.Point(452, 250);
+            this.checkTaxInv.Location = new System.Drawing.Point(462, 250);
             this.checkTaxInv.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkTaxInv.Name = "checkTaxInv";
             this.checkTaxInv.Size = new System.Drawing.Size(151, 26);
@@ -230,7 +231,7 @@
             // 
             this.checkPRT4.AutoSize = true;
             this.checkPRT4.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT4.Location = new System.Drawing.Point(452, 286);
+            this.checkPRT4.Location = new System.Drawing.Point(462, 286);
             this.checkPRT4.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT4.Name = "checkPRT4";
             this.checkPRT4.Size = new System.Drawing.Size(79, 26);
@@ -242,7 +243,7 @@
             // 
             this.checkPRT3.AutoSize = true;
             this.checkPRT3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT3.Location = new System.Drawing.Point(365, 286);
+            this.checkPRT3.Location = new System.Drawing.Point(375, 286);
             this.checkPRT3.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT3.Name = "checkPRT3";
             this.checkPRT3.Size = new System.Drawing.Size(79, 26);
@@ -254,7 +255,7 @@
             // 
             this.checkPRT2.AutoSize = true;
             this.checkPRT2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT2.Location = new System.Drawing.Point(278, 286);
+            this.checkPRT2.Location = new System.Drawing.Point(288, 286);
             this.checkPRT2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT2.Name = "checkPRT2";
             this.checkPRT2.Size = new System.Drawing.Size(79, 26);
@@ -266,7 +267,7 @@
             // 
             this.checkPRT1.AutoSize = true;
             this.checkPRT1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT1.Location = new System.Drawing.Point(195, 286);
+            this.checkPRT1.Location = new System.Drawing.Point(205, 286);
             this.checkPRT1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT1.Name = "checkPRT1";
             this.checkPRT1.Size = new System.Drawing.Size(79, 26);
@@ -278,7 +279,7 @@
             // 
             this.checkPRT5.AutoSize = true;
             this.checkPRT5.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT5.Location = new System.Drawing.Point(543, 286);
+            this.checkPRT5.Location = new System.Drawing.Point(553, 286);
             this.checkPRT5.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT5.Name = "checkPRT5";
             this.checkPRT5.Size = new System.Drawing.Size(79, 26);
@@ -291,7 +292,7 @@
             this.dttm_PromStart.CalendarFont = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dttm_PromStart.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dttm_PromStart.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dttm_PromStart.Location = new System.Drawing.Point(184, 51);
+            this.dttm_PromStart.Location = new System.Drawing.Point(198, 32);
             this.dttm_PromStart.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.dttm_PromStart.Name = "dttm_PromStart";
             this.dttm_PromStart.Size = new System.Drawing.Size(139, 29);
@@ -301,7 +302,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(14, 54);
+            this.label5.Location = new System.Drawing.Point(28, 35);
             this.label5.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(156, 22);
@@ -312,7 +313,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(14, 88);
+            this.label6.Location = new System.Drawing.Point(28, 69);
             this.label6.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(151, 22);
@@ -324,7 +325,7 @@
             this.dttm_PromEnd.CalendarFont = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dttm_PromEnd.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dttm_PromEnd.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dttm_PromEnd.Location = new System.Drawing.Point(184, 85);
+            this.dttm_PromEnd.Location = new System.Drawing.Point(198, 66);
             this.dttm_PromEnd.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.dttm_PromEnd.Name = "dttm_PromEnd";
             this.dttm_PromEnd.Size = new System.Drawing.Size(139, 29);
@@ -334,119 +335,135 @@
             // 
             this.cb_PromDay1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cb_PromDay1.FormattingEnabled = true;
-            this.cb_PromDay1.Location = new System.Drawing.Point(337, 50);
+            this.cb_PromDay1.Location = new System.Drawing.Point(591, 32);
             this.cb_PromDay1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.cb_PromDay1.Name = "cb_PromDay1";
-            this.cb_PromDay1.Size = new System.Drawing.Size(126, 30);
+            this.cb_PromDay1.Size = new System.Drawing.Size(179, 30);
             this.cb_PromDay1.TabIndex = 24;
+            this.cb_PromDay1.TextChanged += new System.EventHandler(this.cb_PromDay1_TextChanged);
             // 
             // txt_PromPrice1
             // 
             this.txt_PromPrice1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_PromPrice1.Location = new System.Drawing.Point(337, 85);
+            this.txt_PromPrice1.Location = new System.Drawing.Point(591, 66);
             this.txt_PromPrice1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_PromPrice1.Name = "txt_PromPrice1";
-            this.txt_PromPrice1.Size = new System.Drawing.Size(126, 29);
+            this.txt_PromPrice1.Size = new System.Drawing.Size(179, 29);
             this.txt_PromPrice1.TabIndex = 25;
             this.txt_PromPrice1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // groupBox1
             // 
+            this.groupBox1.BackColor = System.Drawing.Color.Transparent;
+            this.groupBox1.Controls.Add(this.label20);
+            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.txt_PromPrice1);
+            this.groupBox1.Controls.Add(this.cb_PromDay1);
             this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.txt_PromPrice3);
             this.groupBox1.Controls.Add(this.cb_PromDay3);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.txt_PromPrice2);
             this.groupBox1.Controls.Add(this.cb_PromDay2);
-            this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.dttm_PromStart);
-            this.groupBox1.Controls.Add(this.txt_PromPrice1);
             this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.cb_PromDay1);
             this.groupBox1.Controls.Add(this.dttm_PromEnd);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.groupBox1.Location = new System.Drawing.Point(15, 491);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.groupBox1.Size = new System.Drawing.Size(765, 128);
+            this.groupBox1.Size = new System.Drawing.Size(854, 109);
             this.groupBox1.TabIndex = 26;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Promotion";
+            this.groupBox1.Text = "QTY Promotion";
             // 
             // label9
             // 
             this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.label9.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(646, 19);
+            this.label9.Location = new System.Drawing.Point(782, 19);
             this.label9.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(59, 22);
             this.label9.TabIndex = 32;
             this.label9.Text = "Day 3";
+            this.label9.Visible = false;
             // 
             // txt_PromPrice3
             // 
+            this.txt_PromPrice3.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.txt_PromPrice3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_PromPrice3.Location = new System.Drawing.Point(617, 85);
+            this.txt_PromPrice3.Location = new System.Drawing.Point(786, 85);
             this.txt_PromPrice3.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_PromPrice3.Name = "txt_PromPrice3";
             this.txt_PromPrice3.Size = new System.Drawing.Size(126, 29);
             this.txt_PromPrice3.TabIndex = 31;
             this.txt_PromPrice3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_PromPrice3.Visible = false;
             // 
             // cb_PromDay3
             // 
+            this.cb_PromDay3.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.cb_PromDay3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cb_PromDay3.FormattingEnabled = true;
-            this.cb_PromDay3.Location = new System.Drawing.Point(617, 50);
+            this.cb_PromDay3.Location = new System.Drawing.Point(786, 50);
             this.cb_PromDay3.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.cb_PromDay3.Name = "cb_PromDay3";
             this.cb_PromDay3.Size = new System.Drawing.Size(126, 30);
             this.cb_PromDay3.TabIndex = 30;
+            this.cb_PromDay3.Visible = false;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.label8.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(508, 21);
+            this.label8.Location = new System.Drawing.Point(711, 19);
             this.label8.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(59, 22);
             this.label8.TabIndex = 29;
             this.label8.Text = "Day 2";
+            this.label8.Visible = false;
             // 
             // txt_PromPrice2
             // 
+            this.txt_PromPrice2.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.txt_PromPrice2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_PromPrice2.Location = new System.Drawing.Point(477, 85);
+            this.txt_PromPrice2.Location = new System.Drawing.Point(786, 72);
             this.txt_PromPrice2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_PromPrice2.Name = "txt_PromPrice2";
             this.txt_PromPrice2.Size = new System.Drawing.Size(126, 29);
             this.txt_PromPrice2.TabIndex = 28;
             this.txt_PromPrice2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_PromPrice2.Visible = false;
             // 
             // cb_PromDay2
             // 
+            this.cb_PromDay2.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.cb_PromDay2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cb_PromDay2.FormattingEnabled = true;
-            this.cb_PromDay2.Location = new System.Drawing.Point(477, 50);
+            this.cb_PromDay2.Location = new System.Drawing.Point(782, 37);
             this.cb_PromDay2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.cb_PromDay2.Name = "cb_PromDay2";
             this.cb_PromDay2.Size = new System.Drawing.Size(126, 30);
             this.cb_PromDay2.TabIndex = 27;
+            this.cb_PromDay2.Visible = false;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(370, 22);
+            this.label7.Location = new System.Drawing.Point(371, 37);
             this.label7.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(59, 22);
+            this.label7.Size = new System.Drawing.Size(205, 22);
             this.label7.TabIndex = 26;
-            this.label7.Text = "Day 1";
+            this.label7.Text = "QTY (Greater or Equal)";
             // 
             // checkSoldOut
             // 
@@ -474,10 +491,10 @@
             // txt_ProdId
             // 
             this.txt_ProdId.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_ProdId.Location = new System.Drawing.Point(195, 8);
+            this.txt_ProdId.Location = new System.Drawing.Point(205, 8);
             this.txt_ProdId.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_ProdId.Name = "txt_ProdId";
-            this.txt_ProdId.Size = new System.Drawing.Size(249, 29);
+            this.txt_ProdId.Size = new System.Drawing.Size(239, 29);
             this.txt_ProdId.TabIndex = 28;
             this.txt_ProdId.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -496,9 +513,9 @@
             // 
             this.cb_ProdType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.cb_ProdType.FormattingEnabled = true;
-            this.cb_ProdType.Location = new System.Drawing.Point(195, 122);
+            this.cb_ProdType.Location = new System.Drawing.Point(205, 122);
             this.cb_ProdType.Name = "cb_ProdType";
-            this.cb_ProdType.Size = new System.Drawing.Size(249, 30);
+            this.cb_ProdType.Size = new System.Drawing.Size(239, 30);
             this.cb_ProdType.TabIndex = 32;
             // 
             // txtMessage
@@ -506,7 +523,7 @@
             this.txtMessage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.txtMessage.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMessage.ForeColor = System.Drawing.SystemColors.Info;
-            this.txtMessage.Location = new System.Drawing.Point(3, 627);
+            this.txtMessage.Location = new System.Drawing.Point(1, 608);
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.Size = new System.Drawing.Size(881, 32);
             this.txtMessage.TabIndex = 33;
@@ -548,10 +565,10 @@
             // txt_Deposit
             // 
             this.txt_Deposit.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Deposit.Location = new System.Drawing.Point(195, 333);
+            this.txt_Deposit.Location = new System.Drawing.Point(205, 333);
             this.txt_Deposit.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Deposit.Name = "txt_Deposit";
-            this.txt_Deposit.Size = new System.Drawing.Size(249, 29);
+            this.txt_Deposit.Size = new System.Drawing.Size(239, 29);
             this.txt_Deposit.TabIndex = 37;
             this.txt_Deposit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -569,10 +586,10 @@
             // txt_RecyclingFee
             // 
             this.txt_RecyclingFee.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_RecyclingFee.Location = new System.Drawing.Point(195, 372);
+            this.txt_RecyclingFee.Location = new System.Drawing.Point(205, 372);
             this.txt_RecyclingFee.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_RecyclingFee.Name = "txt_RecyclingFee";
-            this.txt_RecyclingFee.Size = new System.Drawing.Size(249, 29);
+            this.txt_RecyclingFee.Size = new System.Drawing.Size(239, 29);
             this.txt_RecyclingFee.TabIndex = 39;
             this.txt_RecyclingFee.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -590,10 +607,10 @@
             // txt_ChillCharge
             // 
             this.txt_ChillCharge.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_ChillCharge.Location = new System.Drawing.Point(195, 411);
+            this.txt_ChillCharge.Location = new System.Drawing.Point(205, 411);
             this.txt_ChillCharge.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_ChillCharge.Name = "txt_ChillCharge";
-            this.txt_ChillCharge.Size = new System.Drawing.Size(249, 29);
+            this.txt_ChillCharge.Size = new System.Drawing.Size(239, 29);
             this.txt_ChillCharge.TabIndex = 41;
             this.txt_ChillCharge.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -615,7 +632,7 @@
             this.txt_Memo.Location = new System.Drawing.Point(482, 361);
             this.txt_Memo.Multiline = true;
             this.txt_Memo.Name = "txt_Memo";
-            this.txt_Memo.Size = new System.Drawing.Size(390, 124);
+            this.txt_Memo.Size = new System.Drawing.Size(390, 118);
             this.txt_Memo.TabIndex = 46;
             // 
             // label18
@@ -670,12 +687,83 @@
             // 
             this.txt_Balance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.txt_Balance.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Balance.Location = new System.Drawing.Point(195, 450);
+            this.txt_Balance.Location = new System.Drawing.Point(205, 450);
             this.txt_Balance.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Balance.Name = "txt_Balance";
-            this.txt_Balance.Size = new System.Drawing.Size(249, 29);
+            this.txt_Balance.Size = new System.Drawing.Size(239, 29);
             this.txt_Balance.TabIndex = 50;
             this.txt_Balance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // txt_BarCode
+            // 
+            this.txt_BarCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.txt_BarCode.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_BarCode.Location = new System.Drawing.Point(456, 46);
+            this.txt_BarCode.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_BarCode.Name = "txt_BarCode";
+            this.txt_BarCode.Size = new System.Drawing.Size(249, 29);
+            this.txt_BarCode.TabIndex = 52;
+            this.txt_BarCode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // txt_PrintCopy
+            // 
+            this.txt_PrintCopy.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_PrintCopy.Location = new System.Drawing.Point(730, 270);
+            this.txt_PrintCopy.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_PrintCopy.Name = "txt_PrintCopy";
+            this.txt_PrintCopy.Size = new System.Drawing.Size(142, 29);
+            this.txt_PrintCopy.TabIndex = 54;
+            this.txt_PrintCopy.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // lbl_PrintCopy
+            // 
+            this.lbl_PrintCopy.AutoSize = true;
+            this.lbl_PrintCopy.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_PrintCopy.Location = new System.Drawing.Point(726, 243);
+            this.lbl_PrintCopy.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lbl_PrintCopy.Name = "lbl_PrintCopy";
+            this.lbl_PrintCopy.Size = new System.Drawing.Size(150, 22);
+            this.lbl_PrintCopy.TabIndex = 55;
+            this.lbl_PrintCopy.Text = "PRINT Copies ?";
+            // 
+            // checkMainSalesButton
+            // 
+            this.checkMainSalesButton.AutoSize = true;
+            this.checkMainSalesButton.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkMainSalesButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.checkMainSalesButton.Location = new System.Drawing.Point(482, 201);
+            this.checkMainSalesButton.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.checkMainSalesButton.Name = "checkMainSalesButton";
+            this.checkMainSalesButton.Size = new System.Drawing.Size(217, 26);
+            this.checkMainSalesButton.TabIndex = 56;
+            this.checkMainSalesButton.Text = "Default Sales Button ?";
+            this.checkMainSalesButton.UseVisualStyleBackColor = true;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label20.Location = new System.Drawing.Point(371, 69);
+            this.label20.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(116, 22);
+            this.label20.TabIndex = 33;
+            this.label20.Text = "Promo Price";
+            // 
+            // bt_RprintLabel
+            // 
+            this.bt_RprintLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.bt_RprintLabel.CornerRadius = 30;
+            this.bt_RprintLabel.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
+            this.bt_RprintLabel.Location = new System.Drawing.Point(730, 306);
+            this.bt_RprintLabel.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_RprintLabel.Name = "bt_RprintLabel";
+            this.bt_RprintLabel.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_RprintLabel.Size = new System.Drawing.Size(142, 47);
+            this.bt_RprintLabel.TabIndex = 53;
+            this.bt_RprintLabel.Text = "Print Label";
+            this.bt_RprintLabel.Click += new System.EventHandler(this.bt_RprintLabel_Click);
             // 
             // bt_Delete
             // 
@@ -736,71 +824,11 @@
             this.bt_Save.Text = "Save";
             this.bt_Save.Click += new System.EventHandler(this.bt_Save_Click);
             // 
-            // txt_BarCode
-            // 
-            this.txt_BarCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.txt_BarCode.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_BarCode.Location = new System.Drawing.Point(456, 46);
-            this.txt_BarCode.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.txt_BarCode.Name = "txt_BarCode";
-            this.txt_BarCode.Size = new System.Drawing.Size(249, 29);
-            this.txt_BarCode.TabIndex = 52;
-            this.txt_BarCode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // bt_RprintLabel
-            // 
-            this.bt_RprintLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.bt_RprintLabel.CornerRadius = 30;
-            this.bt_RprintLabel.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_RprintLabel.Location = new System.Drawing.Point(730, 306);
-            this.bt_RprintLabel.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_RprintLabel.Name = "bt_RprintLabel";
-            this.bt_RprintLabel.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_RprintLabel.Size = new System.Drawing.Size(142, 47);
-            this.bt_RprintLabel.TabIndex = 53;
-            this.bt_RprintLabel.Text = "Print Label";
-            this.bt_RprintLabel.Click += new System.EventHandler(this.bt_RprintLabel_Click);
-            // 
-            // txt_PrintCopy
-            // 
-            this.txt_PrintCopy.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_PrintCopy.Location = new System.Drawing.Point(730, 270);
-            this.txt_PrintCopy.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.txt_PrintCopy.Name = "txt_PrintCopy";
-            this.txt_PrintCopy.Size = new System.Drawing.Size(142, 29);
-            this.txt_PrintCopy.TabIndex = 54;
-            this.txt_PrintCopy.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // lbl_PrintCopy
-            // 
-            this.lbl_PrintCopy.AutoSize = true;
-            this.lbl_PrintCopy.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_PrintCopy.Location = new System.Drawing.Point(759, 243);
-            this.lbl_PrintCopy.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            this.lbl_PrintCopy.Name = "lbl_PrintCopy";
-            this.lbl_PrintCopy.Size = new System.Drawing.Size(87, 22);
-            this.lbl_PrintCopy.TabIndex = 55;
-            this.lbl_PrintCopy.Text = "Copies ?";
-            // 
-            // checkMainSalesButton
-            // 
-            this.checkMainSalesButton.AutoSize = true;
-            this.checkMainSalesButton.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkMainSalesButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.checkMainSalesButton.Location = new System.Drawing.Point(482, 201);
-            this.checkMainSalesButton.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.checkMainSalesButton.Name = "checkMainSalesButton";
-            this.checkMainSalesButton.Size = new System.Drawing.Size(217, 26);
-            this.checkMainSalesButton.TabIndex = 56;
-            this.checkMainSalesButton.Text = "Default Sales Button ?";
-            this.checkMainSalesButton.UseVisualStyleBackColor = true;
-            // 
             // frmProduct
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 661);
+            this.ClientSize = new System.Drawing.Size(884, 643);
             this.Controls.Add(this.checkMainSalesButton);
             this.Controls.Add(this.lbl_PrintCopy);
             this.Controls.Add(this.txt_PrintCopy);
@@ -925,5 +953,6 @@
         private System.Windows.Forms.TextBox txt_PrintCopy;
         private System.Windows.Forms.Label lbl_PrintCopy;
         private System.Windows.Forms.CheckBox checkMainSalesButton;
+        private System.Windows.Forms.Label label20;
     }
 }

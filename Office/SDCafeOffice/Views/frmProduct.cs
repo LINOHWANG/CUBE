@@ -150,10 +150,24 @@ namespace SDCafeOffice.Views
                     bt_RprintLabel.Enabled = false;
                     txt_PrintCopy.Enabled = false;
                 }
+                // Add to Combo Boxes
+                if (prods[0].PromoDay1 > 0)
+                {
+                    cb_PromDay1.Items.Add(prods[0].PromoDay1.ToString());
+                    cb_PromDay1.SelectedIndex = 0;
+                }
+                if (prods[0].PromoDay2 > 0)
+                {
+                    cb_PromDay2.Items.Add(prods[0].PromoDay2.ToString());
+                    cb_PromDay2.SelectedIndex = 0;
+                }
+                if (prods[0].PromoDay2 > 0)
+                {
+                    cb_PromDay3.Items.Add(prods[0].PromoDay3.ToString());
+                    cb_PromDay3.SelectedIndex = 0;
+                }
 
-                //cb_PromDay1.Items[]
-                //cb_PromDay2.Items[]
-                //cb_PromDay3.Items[]
+
             }
 
         }
@@ -470,7 +484,13 @@ namespace SDCafeOffice.Views
             // Setting Printer
             // Create an object that contains printer settings.
             PrinterSettings printerSettings = new PrinterSettings();
-            string strPrinterName = @"LeftHans2 LH-560";
+            string strPrinterName = "";
+            sysConfs.Clear();
+            sysConfs = dbPOS.Get_SysConfig_By_Name("LABEL_PRINTER_NAME"); //@"LeftHans2 LH-560";
+            if (sysConfs.Count == 1)
+            {
+                strPrinterName = sysConfs[0].ConfigValue;
+            }
             // Define the printer to use.
             printerSettings.PrinterName = strPrinterName;
             //xlApp.ActivePrinter.StartsWith(strPrinterName);
@@ -497,6 +517,20 @@ namespace SDCafeOffice.Views
             Marshal.ReleaseComObject(xlWorkBook);
             Marshal.ReleaseComObject(xlApp);
 
+        }
+
+        private void cb_PromDay1_TextChanged(object sender, EventArgs e)
+        {
+            // QTY must be greater than 1
+            if (cb_PromDay1.Text.Length > 0)
+            {
+                if (int.Parse(cb_PromDay1.Text) < 2)
+                {
+                    cb_PromDay1.Text = "2";
+                    // Show Messagebox with warning msg
+                    MessageBox.Show("Promotion QTY must be greater than 1!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
         }
     }
 }
