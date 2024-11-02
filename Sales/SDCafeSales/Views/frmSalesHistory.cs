@@ -1897,9 +1897,11 @@ namespace SDCafeSales.Views
         }
         private void Create_Excel_Sales_Report()
         {
+            int iInvNo = 0;
+            int iCurrentSheetRow = 0;
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Excel Documents (*.xls)|*.xls";
-            sfd.FileName = "Sales_History_" + DateTime.Now.ToString("yyyyMMddHHMMss") + ".xls";
+            sfd.FileName = "Sales_History_" + DateTime.Now.ToString("yyyyMMddhhmmsstt") + ".xls";
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 Cursor.Current = Cursors.WaitCursor;
@@ -1930,6 +1932,7 @@ namespace SDCafeSales.Views
                 }
                 // Set backcolor of the Header row
                 worksheet.Rows[1].Interior.Color = Color.LightGray;
+                worksheet.Rows[1].Font.Bold = true;
                 // storing Each row and column value to excel sheet  
                 //set progBarExport maximum value
                 progBarExport.Maximum = dgvData.Rows.Count - 1;
@@ -1937,12 +1940,25 @@ namespace SDCafeSales.Views
                 {
                     progBarExport.Value = i;
                     progBarExport.Refresh();
-
+                    if (i == 0)
+                    {
+                        iCurrentSheetRow = 2;
+                    }
                     for (int j = 0; j < dgvData.Columns.Count; j++)
                     {
                         // cells format to text
-                        worksheet.Cells[i + 2, j + 1].NumberFormat = "@";
-                        worksheet.Cells[i + 2, j + 1] = dgvData.Rows[i].Cells[j].Value.ToString();
+                        //worksheet.Cells[i + 2, j + 1].NumberFormat = "@";
+                        //worksheet.Cells[i + 2, j + 1] = dgvData.Rows[i].Cells[j].Value.ToString();
+                        worksheet.Cells[iCurrentSheetRow, j + 1].NumberFormat = "@";
+                        worksheet.Cells[iCurrentSheetRow, j + 1] = dgvData.Rows[i].Cells[j].Value.ToString();
+                    }
+                    worksheet.Rows[iCurrentSheetRow].Font.Bold = true;
+                    worksheet.Rows[iCurrentSheetRow].Interior.Color = Color.LightSkyBlue;
+                    iCurrentSheetRow++;
+                    iInvNo = Convert.ToInt32(dgvData.Rows[i].Cells[1].Value.ToString());
+                    if (iInvNo>0)
+                    {
+                        iCurrentSheetRow = AddOrdersIntoWorkSheet(worksheet, iInvNo, iCurrentSheetRow);
                     }
                 }
                 // insert Title row on top of the sheet
@@ -2003,6 +2019,46 @@ namespace SDCafeSales.Views
                 }
             }
 
+        }
+
+        private int AddOrdersIntoWorkSheet(Excel._Worksheet worksheet, int p_iInvNo, int iCurrentSheetRow)
+        {
+            int iSeq = 0;
+            DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+            List<POS1_OrderCompleteModel> orders = new List<POS1_OrderCompleteModel>();
+            orders = dbPOS1.Get_OrderComplete_by_InvoiceNo(p_iInvNo);
+            if (orders.Count > 0)
+            {
+                // Add Header of order items
+                worksheet.Cells[iCurrentSheetRow, 0 + 1] = "Seq";
+                worksheet.Cells[iCurrentSheetRow, 1 + 1] = "ProductName";
+                worksheet.Cells[iCurrentSheetRow, 2 + 1] = "UnitPrice";
+                worksheet.Cells[iCurrentSheetRow, 3 + 1] = "QTY";
+                worksheet.Cells[iCurrentSheetRow, 4 + 1] = "Amount";
+                worksheet.Cells[iCurrentSheetRow, 5 + 1] = FrmSalesMain.strTax1Name;
+                worksheet.Cells[iCurrentSheetRow, 6 + 1] = FrmSalesMain.strTax2Name;
+                worksheet.Cells[iCurrentSheetRow, 7 + 1] = FrmSalesMain.strTax3Name;
+                worksheet.Cells[iCurrentSheetRow, 8 + 1] = "Total";
+                worksheet.Cells[iCurrentSheetRow, 9 + 1] = "VOID";
+                worksheet.Rows[iCurrentSheetRow].Interior.Color = Color.LightGreen;
+                iCurrentSheetRow++;
+                foreach (var order in orders)
+                {
+                    iSeq++;
+                    worksheet.Cells[iCurrentSheetRow, 0 + 1] = iSeq.ToString();
+                    worksheet.Cells[iCurrentSheetRow, 1 + 1] = order.ProductName;
+                    worksheet.Cells[iCurrentSheetRow, 2 + 1] = order.OutUnitPrice.ToString("0.00");
+                    worksheet.Cells[iCurrentSheetRow, 3 + 1] = order.Quantity;
+                    worksheet.Cells[iCurrentSheetRow, 4 + 1] = order.Amount.ToString("0.00");
+                    worksheet.Cells[iCurrentSheetRow, 5 + 1] = order.Tax1.ToString("0.00");
+                    worksheet.Cells[iCurrentSheetRow, 6 + 1] = order.Tax2.ToString("0.00");
+                    worksheet.Cells[iCurrentSheetRow, 7 + 1] = order.Tax3.ToString("0.00");
+                    worksheet.Cells[iCurrentSheetRow, 8 + 1] = (order.Amount + order.Tax1 + order.Tax2 + order.Tax3).ToString("0.00");
+                    worksheet.Cells[iCurrentSheetRow, 9 + 1] = order.IsVoid;
+                    iCurrentSheetRow++;
+                }
+            }
+            return iCurrentSheetRow;
         }
         private void releaseObject(object obj)
         {
