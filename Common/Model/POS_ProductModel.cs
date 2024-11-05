@@ -42,5 +42,6 @@ namespace SDCafeCommon.Model
 
         public bool IsManualItem { get; set; }
         public bool IsMainSalesButton { get; set; }
+        public bool IsSalesButton { get; set; }
     }
 }

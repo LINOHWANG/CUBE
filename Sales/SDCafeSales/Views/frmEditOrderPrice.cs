@@ -70,7 +70,12 @@ namespace SDCafeSales.Views
 
         private void cb_Tax2_CheckedChanged(object sender, EventArgs e)
         {
-            bTax1 = cb_Tax2.Checked;
+            bTax2 = cb_Tax2.Checked;
+        }
+
+        private void cb_Tax3_CheckedChanged(object sender, EventArgs e)
+        {
+            bTax3 = cb_Tax3.Checked;
         }
 
         private void frmEditOrderPrice_Load(object sender, EventArgs e)
@@ -172,9 +177,13 @@ namespace SDCafeSales.Views
             bTax2 = p_IsTax2;
             bTax3 = p_IsTax3;
 
+            cb_Tax1.Text = FrmSalesMain.strTax1Name;
+            cb_Tax2.Text = FrmSalesMain.strTax2Name;
+            cb_Tax3.Text = FrmSalesMain.strTax3Name;
+
             cb_Tax1.Checked = bTax1;
             cb_Tax2.Checked = bTax2;
-            //cb_Tax3.Checked = bTax3;
+            cb_Tax3.Checked = bTax3;
 
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BringToFront();

@@ -36,6 +36,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.text_PName = new System.Windows.Forms.TextBox();
             this.progBarExport = new System.Windows.Forms.ProgressBar();
+            this.chk_IsManual = new System.Windows.Forms.CheckBox();
+            this.chk_IsMainSales = new System.Windows.Forms.CheckBox();
+            this.chk_IsSales = new System.Windows.Forms.CheckBox();
+            this.bt_ProductImport = new SDCafeCommon.Utilities.CustomButton();
             this.bt_ProductExport = new SDCafeCommon.Utilities.CustomButton();
             this.bt_TimeReport = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Promotion = new SDCafeCommon.Utilities.CustomButton();
@@ -48,7 +52,6 @@
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_LoginUser = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Product = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_ProductImport = new SDCafeCommon.Utilities.CustomButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,7 +59,7 @@
             // 
             this.dgvData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvData.Location = new System.Drawing.Point(160, 65);
+            this.dgvData.Location = new System.Drawing.Point(160, 171);
             this.dgvData.MultiSelect = false;
             this.dgvData.Name = "dgvData";
             this.dgvData.ReadOnly = true;
@@ -140,6 +143,49 @@
             this.progBarExport.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progBarExport.TabIndex = 45;
             this.progBarExport.Visible = false;
+            // 
+            // chk_IsManual
+            // 
+            this.chk_IsManual.AutoSize = true;
+            this.chk_IsManual.Location = new System.Drawing.Point(192, 118);
+            this.chk_IsManual.Name = "chk_IsManual";
+            this.chk_IsManual.Size = new System.Drawing.Size(158, 28);
+            this.chk_IsManual.TabIndex = 47;
+            this.chk_IsManual.Text = "Manual Price";
+            this.chk_IsManual.UseVisualStyleBackColor = true;
+            // 
+            // chk_IsMainSales
+            // 
+            this.chk_IsMainSales.AutoSize = true;
+            this.chk_IsMainSales.Location = new System.Drawing.Point(388, 118);
+            this.chk_IsMainSales.Name = "chk_IsMainSales";
+            this.chk_IsMainSales.Size = new System.Drawing.Size(316, 28);
+            this.chk_IsMainSales.TabIndex = 48;
+            this.chk_IsMainSales.Text = "Show on Main Sales Buttons";
+            this.chk_IsMainSales.UseVisualStyleBackColor = true;
+            // 
+            // chk_IsSales
+            // 
+            this.chk_IsSales.AutoSize = true;
+            this.chk_IsSales.Location = new System.Drawing.Point(736, 118);
+            this.chk_IsSales.Name = "chk_IsSales";
+            this.chk_IsSales.Size = new System.Drawing.Size(231, 28);
+            this.chk_IsSales.TabIndex = 49;
+            this.chk_IsSales.Text = "Show Sales Buttons";
+            this.chk_IsSales.UseVisualStyleBackColor = true;
+            // 
+            // bt_ProductImport
+            // 
+            this.bt_ProductImport.BackColor = System.Drawing.Color.Tomato;
+            this.bt_ProductImport.CornerRadius = 30;
+            this.bt_ProductImport.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_ProductImport.Location = new System.Drawing.Point(12, 224);
+            this.bt_ProductImport.Name = "bt_ProductImport";
+            this.bt_ProductImport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_ProductImport.Size = new System.Drawing.Size(142, 47);
+            this.bt_ProductImport.TabIndex = 46;
+            this.bt_ProductImport.Text = "Prod. Import";
             // 
             // bt_ProductExport
             // 
@@ -311,19 +357,6 @@
             this.bt_Product.Text = "Product";
             this.bt_Product.Click += new System.EventHandler(this.bt_Product_Click);
             // 
-            // bt_ProductImport
-            // 
-            this.bt_ProductImport.BackColor = System.Drawing.Color.Tomato;
-            this.bt_ProductImport.CornerRadius = 30;
-            this.bt_ProductImport.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_ProductImport.Location = new System.Drawing.Point(12, 224);
-            this.bt_ProductImport.Name = "bt_ProductImport";
-            this.bt_ProductImport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_ProductImport.Size = new System.Drawing.Size(142, 47);
-            this.bt_ProductImport.TabIndex = 46;
-            this.bt_ProductImport.Text = "Prod. Import";
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 24F);
@@ -350,6 +383,9 @@
             this.Controls.Add(this.bt_Exit);
             this.Controls.Add(this.bt_LoginUser);
             this.Controls.Add(this.bt_Product);
+            this.Controls.Add(this.chk_IsSales);
+            this.Controls.Add(this.chk_IsMainSales);
+            this.Controls.Add(this.chk_IsManual);
             this.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.Name = "frmMain";
@@ -384,5 +420,8 @@
         private SDCafeCommon.Utilities.CustomButton bt_ProductExport;
         private System.Windows.Forms.ProgressBar progBarExport;
         private SDCafeCommon.Utilities.CustomButton bt_ProductImport;
+        private System.Windows.Forms.CheckBox chk_IsManual;
+        private System.Windows.Forms.CheckBox chk_IsMainSales;
+        private System.Windows.Forms.CheckBox chk_IsSales;
     }
 }

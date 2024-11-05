@@ -187,6 +187,13 @@ namespace SDCafeSales.Views
             bTax1 = p_IsTax1;
             bTax2 = p_IsTax2;
             bTax3 = p_IsTax3;
+            
+            cb_Tax1.Visible = bTax1;
+            cb_Tax2.Visible = bTax2;
+            cb_Tax3.Visible = bTax3;
+            cb_Tax1.Text = FrmSalesMain.strTax1Name;
+            cb_Tax2.Text = FrmSalesMain.strTax2Name;
+            cb_Tax3.Text = FrmSalesMain.strTax3Name;
 
             cb_Tax1.Checked = bTax1;
             cb_Tax2.Checked = bTax2;

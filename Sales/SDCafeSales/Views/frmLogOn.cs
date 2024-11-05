@@ -417,8 +417,8 @@ namespace SDCafeSales
         private void Initialize_ClockInOut_List()
         {
             listBoxClockInOut.Items.Clear();
-            listBoxClockInOut.MultiColumn = true;
-            String columns = "{0, -25}{1, -25}";
+            //listBoxClockInOut.MultiColumn = true;
+            //String columns = "{0, -25}{1, -25}";
             try
             {
                 DataAccessPOS dbPOS = new DataAccessPOS();
@@ -431,8 +431,8 @@ namespace SDCafeSales
                         if (loginUsers.Count > 0)
                         {
                             string strUserName = loginUsers[0].FirstName + " " + loginUsers[0].LastName;
-                            string strStartTime = "@ " + tt.DateTimeStarted.ToString();
-                            listBoxClockInOut.Items.Add(string.Format(columns,strUserName,strStartTime));
+                            string strStartTime = tt.DateTimeStarted.ToString();
+                            listBoxClockInOut.Items.Add(strStartTime + " " + strUserName);
                         }
                     }
                 }

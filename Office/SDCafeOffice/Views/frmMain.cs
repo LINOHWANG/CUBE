@@ -74,7 +74,12 @@ namespace SDCafeOffice
             //pnl_User.Hide();
             //pnl_Product.Hide();
             iDataGridHeight = dgvData.Height;
-            iDataGridTop = dgvData.Top;
+            iDataGridTop = bt_ProdType.Top; // dgvData.Top;
+
+            chk_IsMainSales.Checked = false;
+            chk_IsSales.Checked = true;
+            chk_IsManual.Checked = false;
+
             Load_System_Info();
             Load_PType_Combo_Contents();
             dgvData_Adjustment();
@@ -148,8 +153,8 @@ namespace SDCafeOffice
 
             if (isProduct)
             {
-                dgvData.Height = iDataGridHeight - cb_PType.Height - 20;
-                dgvData.Top = iDataGridTop + cb_PType.Height + 20;
+                dgvData.Height = iDataGridHeight - cb_PType.Height - 20 - chk_IsManual.Height - 20;
+                dgvData.Top = iDataGridTop + cb_PType.Height + chk_IsManual.Height + 20 + 20;
             }
             else
             {
@@ -236,6 +241,9 @@ namespace SDCafeOffice
         private void bt_Product_Click(object sender, EventArgs e)
         {
             int iPCount = 0;
+            bool bIsManual = chk_IsManual.Checked;
+            bool bIsMainSales = chk_IsMainSales.Checked;
+            bool bIsSales = chk_IsSales.Checked;
             //pnl_Product.Show();
             //pnl_User.Hide();
             bt_Product.BackColor = Color.Yellow;
@@ -253,16 +261,16 @@ namespace SDCafeOffice
                     if (String.IsNullOrEmpty(text_BarCode.Text))
                     {
                         //prods = dbPOS.Get_All_Products();
-                        prods = dbPOS.Get_All_Products_Sortby_Name();
+                        prods = dbPOS.Get_All_Products_Sortby_Name(bIsManual, bIsMainSales, bIsSales);
                     }
                     else
                     {
-                        prods = dbPOS.Get_All_Products_By_BarCode(text_BarCode.Text);
+                        prods = dbPOS.Get_All_Products_By_BarCode(text_BarCode.Text, bIsManual, bIsMainSales, bIsSales);
                     }
                 }
                 else
                 {
-                    prods = dbPOS.Get_All_Products_By_ProdName(text_PName.Text);
+                    prods = dbPOS.Get_All_Products_By_ProdName(text_PName.Text, bIsManual, bIsMainSales, bIsSales);
                 }
 
             }

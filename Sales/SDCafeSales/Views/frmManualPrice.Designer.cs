@@ -130,7 +130,6 @@
             this.cb_Tax3.TabIndex = 23;
             this.cb_Tax3.Text = "HST";
             this.cb_Tax3.UseVisualStyleBackColor = true;
-            this.cb_Tax3.Visible = false;
             this.cb_Tax3.CheckedChanged += new System.EventHandler(this.cb_Tax3_Changed);
             // 
             // label3

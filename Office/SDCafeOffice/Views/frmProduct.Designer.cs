@@ -87,15 +87,16 @@
             this.checkMainSalesButton = new System.Windows.Forms.CheckBox();
             this.txt_Receiving = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label23 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
             this.bt_Receiving = new SDCafeCommon.Utilities.CustomButton();
             this.bt_RprintLabel = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Delete = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Add = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
+            this.checkSalesButton = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -226,7 +227,7 @@
             // 
             this.checkTaxInv.AutoSize = true;
             this.checkTaxInv.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkTaxInv.Location = new System.Drawing.Point(462, 233);
+            this.checkTaxInv.Location = new System.Drawing.Point(462, 305);
             this.checkTaxInv.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkTaxInv.Name = "checkTaxInv";
             this.checkTaxInv.Size = new System.Drawing.Size(126, 22);
@@ -487,7 +488,7 @@
             // 
             this.checkSoldOut.AutoSize = true;
             this.checkSoldOut.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkSoldOut.Location = new System.Drawing.Point(462, 163);
+            this.checkSoldOut.Location = new System.Drawing.Point(462, 156);
             this.checkSoldOut.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkSoldOut.Name = "checkSoldOut";
             this.checkSoldOut.Size = new System.Drawing.Size(100, 22);
@@ -751,12 +752,12 @@
             this.checkMainSalesButton.AutoSize = true;
             this.checkMainSalesButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkMainSalesButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.checkMainSalesButton.Location = new System.Drawing.Point(462, 200);
+            this.checkMainSalesButton.Location = new System.Drawing.Point(462, 188);
             this.checkMainSalesButton.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkMainSalesButton.Name = "checkMainSalesButton";
-            this.checkMainSalesButton.Size = new System.Drawing.Size(181, 22);
+            this.checkMainSalesButton.Size = new System.Drawing.Size(230, 22);
             this.checkMainSalesButton.TabIndex = 56;
-            this.checkMainSalesButton.Text = "Default Sales Button ?";
+            this.checkMainSalesButton.Text = "Show on Main Sales Button ?";
             this.checkMainSalesButton.UseVisualStyleBackColor = true;
             // 
             // txt_Receiving
@@ -789,6 +790,18 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "QTY Balance (Inventory)";
             // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("Arial Narrow", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.label23.Location = new System.Drawing.Point(112, 103);
+            this.label23.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(137, 20);
+            this.label23.TabIndex = 62;
+            this.label23.Text = "Press Enter to Apply";
+            // 
             // label22
             // 
             this.label22.AutoSize = true;
@@ -810,18 +823,6 @@
             this.label21.Size = new System.Drawing.Size(94, 22);
             this.label21.TabIndex = 60;
             this.label21.Text = "Receiving";
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Font = new System.Drawing.Font("Arial Narrow", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.label23.Location = new System.Drawing.Point(112, 103);
-            this.label23.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(137, 20);
-            this.label23.TabIndex = 62;
-            this.label23.Text = "Press Enter to Apply";
             // 
             // bt_Receiving
             // 
@@ -913,11 +914,25 @@
             this.bt_Save.Text = "Save";
             this.bt_Save.Click += new System.EventHandler(this.bt_Save_Click);
             // 
+            // checkSalesButton
+            // 
+            this.checkSalesButton.AutoSize = true;
+            this.checkSalesButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkSalesButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.checkSalesButton.Location = new System.Drawing.Point(462, 220);
+            this.checkSalesButton.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.checkSalesButton.Name = "checkSalesButton";
+            this.checkSalesButton.Size = new System.Drawing.Size(192, 22);
+            this.checkSalesButton.TabIndex = 60;
+            this.checkSalesButton.Text = "Show on Sales Button ?";
+            this.checkSalesButton.UseVisualStyleBackColor = true;
+            // 
             // frmProduct
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 643);
+            this.Controls.Add(this.checkSalesButton);
             this.Controls.Add(this.txt_PrintCopy);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.checkMainSalesButton);
@@ -1050,5 +1065,6 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.CheckBox checkSalesButton;
     }
 }

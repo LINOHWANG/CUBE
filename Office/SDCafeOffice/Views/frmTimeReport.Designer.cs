@@ -47,6 +47,8 @@ namespace SDCafeOffice.Views
             this.bt_Print = new SDCafeCommon.Utilities.CustomButton();
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.bt_Delete = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_PrintAll = new SDCafeCommon.Utilities.CustomButton();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -157,11 +159,13 @@ namespace SDCafeOffice.Views
             this.cb_UserName.Size = new System.Drawing.Size(316, 30);
             this.cb_UserName.TabIndex = 60;
             this.cb_UserName.SelectedIndexChanged += new System.EventHandler(this.cb_UserName_SelectedIndexChanged);
+            this.cb_UserName.TextChanged += new System.EventHandler(this.cb_UserName_TextChanged);
             // 
             // chkbox_Unresolved
             // 
             this.chkbox_Unresolved.AutoSize = true;
             this.chkbox_Unresolved.Font = new System.Drawing.Font("Arial", 14.25F);
+            this.chkbox_Unresolved.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.chkbox_Unresolved.Location = new System.Drawing.Point(279, 128);
             this.chkbox_Unresolved.Name = "chkbox_Unresolved";
             this.chkbox_Unresolved.Size = new System.Drawing.Size(151, 26);
@@ -188,7 +192,7 @@ namespace SDCafeOffice.Views
             // 
             this.bt_Excel.CornerRadius = 30;
             this.bt_Excel.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Excel.Location = new System.Drawing.Point(702, 62);
+            this.bt_Excel.Location = new System.Drawing.Point(857, 62);
             this.bt_Excel.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Excel.Name = "bt_Excel";
             this.bt_Excel.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -229,9 +233,10 @@ namespace SDCafeOffice.Views
             // 
             // bt_Print
             // 
+            this.bt_Print.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
             this.bt_Print.CornerRadius = 30;
             this.bt_Print.Enabled = false;
-            this.bt_Print.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
+            this.bt_Print.Font = new System.Drawing.Font("Arial Narrow", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_Print.Location = new System.Drawing.Point(702, 14);
             this.bt_Print.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Print.Name = "bt_Print";
@@ -239,7 +244,7 @@ namespace SDCafeOffice.Views
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
             this.bt_Print.Size = new System.Drawing.Size(142, 47);
             this.bt_Print.TabIndex = 53;
-            this.bt_Print.Text = "Print";
+            this.bt_Print.Text = "Print Selected";
             this.bt_Print.Click += new System.EventHandler(this.bt_Print_Click);
             // 
             // txtMessage
@@ -268,11 +273,40 @@ namespace SDCafeOffice.Views
             this.bt_Delete.Text = "Delete";
             this.bt_Delete.Click += new System.EventHandler(this.bt_Delete_Click);
             // 
+            // bt_PrintAll
+            // 
+            this.bt_PrintAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.bt_PrintAll.CornerRadius = 30;
+            this.bt_PrintAll.Enabled = false;
+            this.bt_PrintAll.Font = new System.Drawing.Font("Arial Narrow", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_PrintAll.Location = new System.Drawing.Point(703, 62);
+            this.bt_PrintAll.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_PrintAll.Name = "bt_PrintAll";
+            this.bt_PrintAll.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_PrintAll.Size = new System.Drawing.Size(142, 47);
+            this.bt_PrintAll.TabIndex = 65;
+            this.bt_PrintAll.Text = "Print All";
+            this.bt_PrintAll.Click += new System.EventHandler(this.bt_PrintAll_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Arial Narrow", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label3.Location = new System.Drawing.Point(544, 131);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(337, 20);
+            this.label3.TabIndex = 66;
+            this.label3.Text = "Double Click Clock-In/Out Dates Columns to Update !";
+            // 
             // frmTimeReport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.bt_PrintAll);
             this.Controls.Add(this.bt_Delete);
             this.Controls.Add(this.txtMessage);
             this.Controls.Add(this.bt_Update);
@@ -320,5 +354,7 @@ namespace SDCafeOffice.Views
         private SDCafeCommon.Utilities.CustomButton bt_Update;
         private System.Windows.Forms.TextBox txtMessage;
         private SDCafeCommon.Utilities.CustomButton bt_Delete;
+        private SDCafeCommon.Utilities.CustomButton bt_PrintAll;
+        private System.Windows.Forms.Label label3;
     }
 }

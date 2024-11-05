@@ -38,6 +38,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.cb_Tax2 = new System.Windows.Forms.CheckBox();
             this.cb_Tax1 = new System.Windows.Forms.CheckBox();
+            this.cb_Tax3 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // txt_ProductName
@@ -128,7 +129,7 @@
             // 
             this.cb_Tax2.AutoSize = true;
             this.cb_Tax2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cb_Tax2.Location = new System.Drawing.Point(314, 131);
+            this.cb_Tax2.Location = new System.Drawing.Point(299, 131);
             this.cb_Tax2.Name = "cb_Tax2";
             this.cb_Tax2.Size = new System.Drawing.Size(68, 26);
             this.cb_Tax2.TabIndex = 26;
@@ -148,11 +149,24 @@
             this.cb_Tax1.UseVisualStyleBackColor = true;
             this.cb_Tax1.CheckedChanged += new System.EventHandler(this.cb_Tax1_CheckedChanged);
             // 
+            // cb_Tax3
+            // 
+            this.cb_Tax3.AutoSize = true;
+            this.cb_Tax3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cb_Tax3.Location = new System.Drawing.Point(413, 132);
+            this.cb_Tax3.Name = "cb_Tax3";
+            this.cb_Tax3.Size = new System.Drawing.Size(68, 26);
+            this.cb_Tax3.TabIndex = 28;
+            this.cb_Tax3.Text = "PST";
+            this.cb_Tax3.UseVisualStyleBackColor = true;
+            this.cb_Tax3.CheckedChanged += new System.EventHandler(this.cb_Tax3_CheckedChanged);
+            // 
             // frmEditOrderPrice
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(506, 538);
+            this.Controls.Add(this.cb_Tax3);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cb_Tax2);
             this.Controls.Add(this.cb_Tax1);
@@ -182,5 +196,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox cb_Tax2;
         private System.Windows.Forms.CheckBox cb_Tax1;
+        private System.Windows.Forms.CheckBox cb_Tax3;
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -180,13 +181,31 @@ namespace SDCafeOffice.Views
 
         private void cb_UserName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cb_UserName.SelectedIndex > 0)
+            if (cb_UserName.SelectedIndex >= 0)
             {
                 iSelectedUserId = (int)(cb_UserName.SelectedItem as UserComboboxItem).Value;
                 chkbox_All.Checked = false;
             }
+            else
+            {
+                iSelectedUserId = 0;
+                chkbox_All.Checked = true;
+            }
         }
 
+        private void cb_UserName_TextChanged(object sender, EventArgs e)
+        {
+            if (cb_UserName.SelectedIndex >= 0)
+            {
+                iSelectedUserId = (int)(cb_UserName.SelectedItem as UserComboboxItem).Value;
+                chkbox_All.Checked = false;
+            }
+            else
+            {
+                iSelectedUserId = 0;
+                chkbox_All.Checked = true;
+            }
+        }
         private void chkbox_All_CheckedChanged(object sender, EventArgs e)
         {
             if (chkbox_All.Checked)
@@ -313,17 +332,157 @@ namespace SDCafeOffice.Views
 
         private void dgvData_SelectionChanged(object sender, EventArgs e)
         {
-            if (dgvData.CurrentCell.RowIndex > 0)
+            if (dgvData.CurrentCell.RowIndex >= 0)
             {
+                EnableDisableButtons(true);
                 // get the selected row
                 m_iSelectedRow = dgvData.CurrentCell.RowIndex;
-                m_iSelectedId = int.Parse(dgvData.Rows[m_iSelectedRow - 1].Cells[7].Value.ToString());
+                if (dgvData.Rows[m_iSelectedRow].Cells[7].Value != "")
+                    m_iSelectedId = int.Parse(dgvData.Rows[m_iSelectedRow].Cells[7].Value.ToString());
+                else
+                    m_iSelectedId = 0;
             }
+        }
+
+        private void EnableDisableButtons(bool v)
+        {
+            bt_Print.Enabled = v;
+            bt_Exit.Enabled = v;
+            bt_Delete.Enabled = v;
+            bt_PrintAll.Enabled = v;
         }
 
         private void bt_Print_Click(object sender, EventArgs e)
         {
+            if (m_iSelectedId > 0)
+            {
+                DataAccessPOS dbPOS = new DataAccessPOS();
+                POS_TimeTableModel timeTable = new POS_TimeTableModel();
+                timeTable = dbPOS.Get_TimeTable_by_Id(m_iSelectedId);
+                if (timeTable.Id == m_iSelectedId)
+                {
+                    Print_TimeReport(timeTable, true);
+                }
+            }
+        }
 
+        private void Print_TimeReport(POS_TimeTableModel timeTable, bool p_blnIsPrintOnlyOne )
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+
+            PrintDocument p = new PrintDocument();
+            p.PrinterSettings.PrinterName = "EPSON-1";
+            Font fntTitle = new Font("Arial", 12, FontStyle.Bold);
+            Font fntHeader = new Font("Courier New", 9);
+            Font fntFooter = new Font("Courier New", 10, FontStyle.Bold);
+            Font fntContents = new Font("Courier New", 8);
+            Font fntTotals = new Font("Courier New", 8, FontStyle.Bold);
+            Font fntCard = new Font("Consolas", 8);
+            SolidBrush brsBlack = new SolidBrush(Color.Black);
+
+            // Construct 2 new StringFormat objects
+            StringFormat format1 = new StringFormat(StringFormatFlags.NoClip);
+            StringFormat format2 = new StringFormat(format1);
+
+            // Set the LineAlignment and Alignment properties for
+            // both StringFormat objects to different values.
+            format1.LineAlignment = StringAlignment.Near;
+            format1.Alignment = StringAlignment.Center;
+            format2.LineAlignment = StringAlignment.Center;
+            format2.Alignment = StringAlignment.Near;
+
+            p.PrintPage += delegate (object sender1, PrintPageEventArgs e1)
+            {
+                string strHeader = "header";
+                string strFooter = "footer";
+                string strContent = "1234567890123456789012345678901234567890";
+                string strLine = "----------------------------------------";
+                string strTemp= "";
+
+                int iNextLineYPoint = 0;
+                int iLogoHeight = 80;
+                int itxtHeight = 12;
+                int iheaderHeight = 14;
+                int ititleHeight = 17;
+
+                Rectangle txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, ititleHeight));
+                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, ititleHeight));
+                //e1.Graphics.DrawRectangle(Pens.Black, txtRect);
+                e1.Graphics.DrawString(dbPOS.Get_SysConfig_By_Name("BIZ_TITLE")[0].ConfigValue, fntTitle, brsBlack, (RectangleF)txtRect, format1);
+                // Print Header ------------------------------------------------------
+                iNextLineYPoint = iNextLineYPoint + ititleHeight;
+                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight));
+                e1.Graphics.DrawString(dbPOS.Get_SysConfig_By_Name("BIZ_ADDR1")[0].ConfigValue, fntHeader, brsBlack, (RectangleF)txtRect, format1);
+                // Print Header ------------------------------------------------------
+                iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight));
+                e1.Graphics.DrawString(dbPOS.Get_SysConfig_By_Name("BIZ_ADDR2")[0].ConfigValue, fntHeader, brsBlack, (RectangleF)txtRect, format1);
+                // Print Header ------------------------------------------------------
+                iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight));
+                e1.Graphics.DrawString(dbPOS.Get_SysConfig_By_Name("BIZ_PHONE_NO")[0].ConfigValue, fntHeader, brsBlack, (RectangleF)txtRect, format1);
+                // Print Header ------------------------------------------------------
+                iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight));
+                e1.Graphics.DrawString(dbPOS.Get_SysConfig_By_Name("BIZ_REG_NO")[0].ConfigValue, fntHeader, brsBlack, (RectangleF)txtRect, format1);
+
+                strContent = String.Format("{0,-17}", "Issued:" + DateTime.Now.ToString("MM/dd/yyyy hh:mm tt"));
+                iNextLineYPoint = iNextLineYPoint + (iheaderHeight * 2);
+                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+
+                strContent = String.Format("{0,-17}", "Time Report");
+                iNextLineYPoint = iNextLineYPoint + (iheaderHeight * 2);
+                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+
+                //////////////////////////////////////////////////////////////////////////
+                // Print a Line ------------------------------------------------------
+                iNextLineYPoint = iNextLineYPoint + (itxtHeight * 1);
+                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                e1.Graphics.DrawString(strLine, fntContents, brsBlack, (RectangleF)txtRect, format2);
+                POS_LoginUserModel loginUser = new POS_LoginUserModel();
+                List<POS_TimeTableModel> tTables = new List<POS_TimeTableModel>();
+
+                if (p_blnIsPrintOnlyOne)
+                {
+                    tTables.Add(timeTable);
+                }
+                else
+                {
+                    tTables = timeTables;
+                }
+                foreach(POS_TimeTableModel tTable in tTables)
+                {
+                    loginUser = dbPOS.Get_LoginUser_By_ID(timeTable.UserId)[0];
+                    strContent = String.Format("{0,15}", "Staff Name :") + String.Format("{0,25}", loginUser.FirstName + " " + loginUser.LastName);
+                    iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                    txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                    e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+
+                    strContent = String.Format("{0,15}", "Clock In :") + String.Format("{0,25}", tTable.DateTimeStarted.Value.ToString("yyyy-MM-dd hh:mm:ss tt"));
+                    iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                    txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                    e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                    strContent = String.Format("{0,15}", "Clock Out :") + String.Format("{0,25}", tTable.DateTimeFinished.Value.ToString("yyyy-MM-dd hh:mm:ss tt"));
+                    iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                    txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                    e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                    //////////////////////////////////////////////////////////////////////////
+                    // Print a Line ------------------------------------------------------
+                    iNextLineYPoint = iNextLineYPoint + itxtHeight;
+                    txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                    e1.Graphics.DrawString(strLine, fntContents, brsBlack, (RectangleF)txtRect, format2);
+                }
+            };
+            try
+            {
+                p.Print();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Exception Occured While Printing", ex);
+            }
         }
 
         private void bt_Delete_Click(object sender, EventArgs e)
@@ -356,5 +515,13 @@ namespace SDCafeOffice.Views
                 txtMessage.Text = "Please select a valid row!";
             }
         }
+
+        private void bt_PrintAll_Click(object sender, EventArgs e)
+        {
+            if (timeTables.Count > 0)
+                Print_TimeReport(timeTables[0], false);
+        }
+
+
     }
 }

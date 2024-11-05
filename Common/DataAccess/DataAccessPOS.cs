@@ -245,11 +245,17 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
-        public List<POS_ProductModel> Get_All_Products_Sortby_Name()
+        public List<POS_ProductModel> Get_All_Products_Sortby_Name(bool p_bIsManual, bool p_bIsMainSales, bool p_bIsSales)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                var output = connection.Query<POS_ProductModel>($"select * from Product Order By IsManualItem Desc, ProductName").ToList();
+                string query = $"select * from Product ";
+                string strWhere = " Where ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0") + 
+                                    " AND ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
+                                    " AND ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
+                string strOrderby = " Order By IsManualItem Desc, ProductName";
+                query += strWhere + strOrderby;
+                var output = connection.Query<POS_ProductModel>(query).ToList();
                 return output;
             }
         }
@@ -298,7 +304,7 @@ namespace SDCafeCommon.DataAccess
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 string strNow = DateTime.Now.ToString("yyyy/MM/dd") + " 00:00:00";
-                string query = "select * from TimeTable where DateTimeStarted >= '" + strNow + "' And DateTimeFinished Is NULL";
+                string query = "select * from TimeTable where DateTimeStarted >= '" + strNow + "' And DateTimeFinished Is NULL order by DateTimeStarted desc;";
                 var output = connection.Query<POS_TimeTableModel>(query).ToList();
                 return output;
             }
@@ -1108,22 +1114,37 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
-        public List<POS_ProductModel> Get_All_Products_By_BarCode(string p_strBarCode)
+        public List<POS_ProductModel> Get_All_Products_By_BarCode(string p_strBarCode, bool p_bIsManual, bool p_bIsMainSales, bool p_bIsSales)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                var output = connection.Query<POS_ProductModel>($"select * from Product WHERE BarCode = '{p_strBarCode.Trim()}'").ToList();
+                //$"select * from Product WHERE BarCode = '{p_strBarCode.Trim()}'"
+                string query = $"select * from Product ";
+                string strWhere = $" Where BarCode = '{p_strBarCode.Trim()}' " +
+                                    " And ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0") +
+                                    " And ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
+                                    " And ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
+                string strOrderby = " Order By ProductName";
+                query += strWhere + strOrderby;
+                var output = connection.Query<POS_ProductModel>(query).ToList();
                 return output;
             }
 
         }
 
-        public List<POS_ProductModel> Get_All_Products_By_ProdName(string p_strProdName)
+        public List<POS_ProductModel> Get_All_Products_By_ProdName(string p_strProdName, bool p_bIsManual, bool p_bIsMainSales, bool p_bIsSales)
         {
             p_strProdName = '%' + p_strProdName.Trim() + '%';
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                var output = connection.Query<POS_ProductModel>($"select * from Product WHERE ProductName like '{p_strProdName}'").ToList();
+                string query = $"select * from Product ";
+                string strWhere = $" Where ProductName like '{p_strProdName}' " +
+                                    " And ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0") +
+                                    " And ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
+                                    " And ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
+                string strOrderby = " Order By ProductName";
+                query += strWhere + strOrderby;
+                var output = connection.Query<POS_ProductModel>(query).ToList();
                 return output;
             }
 
@@ -1406,7 +1427,14 @@ namespace SDCafeCommon.DataAccess
             }
             return "Unkown";
         }
-
+        public List<POS_TaxModel> Get_Tax_By_Code(string p_strTaxCode)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_TaxModel>($"select * from Tax Where Code = '{p_strTaxCode}'").ToList();
+                return output;
+            }
+        }
         public bool Update_Product_Inventory(POS_ProductModel p_ProductModel, int p_iLogTypeId, float fBeforeQTY, float fAfterQTY, string p_PassCode, string p_Station)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -1459,5 +1487,7 @@ namespace SDCafeCommon.DataAccess
                     return false;
             }
         }
+
+
     }
 }
