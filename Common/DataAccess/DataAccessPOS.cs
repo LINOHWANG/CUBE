@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using Dapper;
 using SDCafeCommon.Utilities;
 using SDCafeCommon.Model;
+using SDCafeCommon.DataAccess;
 using System.Data;
 using System.Windows.Forms;
 
@@ -1388,6 +1389,34 @@ namespace SDCafeCommon.DataAccess
                 return sysConfigs[0].ConfigValue;
             }
             return "Unkown";
+        }
+
+        public bool Update_Product_Inventory(POS_ProductModel p_ProductModel, int p_iLogTypeId, float fBeforeQTY, float fAfterQTY, string p_PassCode, string p_Station)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "UPDATE Product SET Balance = @Balance " +
+                            "WHERE Id = @Id";
+                var count = connection.Execute(query, p_ProductModel);
+
+                if (count > 0)
+                {
+                    DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+                    dbPOS1.Insert_ProductInventoryLog(p_ProductModel, p_iLogTypeId, fBeforeQTY, fAfterQTY, p_PassCode, p_Station);
+                    return true;
+                }
+                return false;
+
+            }
+        }
+
+        public List<POS_TimeTableModel> Get_Last_ClockIn(int p_UserId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_TimeTableModel>($"select * from TimeTable where UserId = {p_UserId} And DateTimeFinished IS NULL;").ToList();
+                return output;
+            }
         }
     }
 }

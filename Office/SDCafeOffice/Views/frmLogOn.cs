@@ -158,6 +158,7 @@ namespace SDCafeOffice
                 {
                     this.Hide();
                     FrmMain = new frmMain();
+                    FrmMain.Set_PassCode(txtPassCode.Text);
                     FrmMain.Show();
                     strPassCode = string.Empty;
                     txtPassCode.Text = strPassCode;

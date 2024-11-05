@@ -57,6 +57,7 @@
     <Compile Include="Model\CCardTran.cs" />
     <Compile Include="Model\POS1_CardReceiptCompleteModel.cs" />
     <Compile Include="Model\POS1_CardTranCompleteModel.cs" />
+    <Compile Include="Model\POS1_InventoryLogModel.cs" />
     <Compile Include="Model\POS1_OrderCompleteModel.cs" />
     <Compile Include="Model\POS1_ProductPopModel.cs" />
     <Compile Include="Model\POS1_TranCollectionModel.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="PinPad\CTTenderTypes.cs" />
     <Compile Include="PinPad\CTTransactionStatuses.cs" />
     <Compile Include="PinPad\CTTransactionTypes.cs" />
+    <Compile Include="Utilities\AesEncryption.cs" />
     <Compile Include="Utilities\CustomButton.cs">
       <SubType>Component</SubType>
     </Compile>

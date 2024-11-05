@@ -77,6 +77,7 @@ namespace SDCafeCommon.Utilities
         }
         public bool SendEmail(string strSubject, string strBody, string strAttachmentFile)
         {
+            Utility util = new Utility();
             DataAccessPOS dbPOS = new DataAccessPOS();
             MailAddress from = null;
             MailAddress to = null;
@@ -100,6 +101,18 @@ namespace SDCafeCommon.Utilities
             smtp.Host = dbPOS.Get_SysConfig_By_Name("CON_EMAIL_SMTPSERVER")[0].ConfigValue.Trim();
             string strUser = dbPOS.Get_SysConfig_By_Name("CON_EMAIL_SENDUSERNAME")[0].ConfigValue.Trim();
             string strpassword = dbPOS.Get_SysConfig_By_Name("CON_EMAIL_SENDPASSWORD")[0].ConfigValue.Trim();
+            
+            AesEncryption aes = new AesEncryption();
+            // Encrypt Feature #3593
+            //var key = "1234567890123456"; // 16 bytes (128bits)
+            var key =   "tsent2011tsent20";
+            var encryptedString = aes.EncryptString(key, strpassword);
+            util.Logger("Encrypted String: " + encryptedString);
+            // Decrypt
+            var decryptedString = aes.DecryptString(key, strpassword);
+            //util.Logger("Decrypted String: " + decryptedString);
+            strpassword = decryptedString;
+
             smtp.Port = 587; // 25;
             smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtp.UseDefaultCredentials = false;

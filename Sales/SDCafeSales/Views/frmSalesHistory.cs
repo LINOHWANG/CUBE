@@ -2446,8 +2446,10 @@ namespace SDCafeSales.Views
                         prodsInv = dbPOS.Get_Product_By_ID(orderComp.ProductId);
                         if (prodsInv.Count > 0)
                         {
+                            float fBeforeQTY = prodsInv[0].Balance;
                             prodsInv[0].Balance = prodsInv[0].Balance + (orderComp.Quantity * -1); 
                             dbPOS.Update_Product_Balance(prodsInv[0]);
+                            dbPOS1.Insert_ProductInventoryLog(prodsInv[0], 4 /* p_iLogTypeId : Refund */, fBeforeQTY, prodsInv[0].Balance, p_strUserPassCode, p_strStation);
                         }
                         //}
                     }
@@ -2489,8 +2491,10 @@ namespace SDCafeSales.Views
                         prodsInv = dbPOS.Get_Product_By_ID(orderComp.ProductId);
                         if (prodsInv.Count > 0)
                         {
+                            float fBeforeQTY = prodsInv[0].Balance;
                             prodsInv[0].Balance = prodsInv[0].Balance + iRefundQty;
                             dbPOS.Update_Product_Balance(prodsInv[0]);
+                            dbPOS1.Insert_ProductInventoryLog(prodsInv[0], 4 /* p_iLogTypeId : Refund */, fBeforeQTY, prodsInv[0].Balance, p_strUserPassCode, p_strStation);
                         }
                         //}
                     }

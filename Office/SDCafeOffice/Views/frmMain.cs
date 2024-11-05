@@ -52,6 +52,15 @@ namespace SDCafeOffice
         private string p_strSelectedTypeName;
 
         public frmTimeReport FrmTimeReport;
+        public string strStation;
+        public string strHostName;
+        public string strTax1Name;
+        public string strTax2Name;
+        public string strTax3Name;
+        public string strUserPass;
+        public string strUserID;
+        public string strUserName;
+
         //private bool isSystem = false;
         public frmMain()
         {
@@ -66,10 +75,51 @@ namespace SDCafeOffice
             //pnl_Product.Hide();
             iDataGridHeight = dgvData.Height;
             iDataGridTop = dgvData.Top;
+            Load_System_Info();
             Load_PType_Combo_Contents();
             dgvData_Adjustment();
         }
+        private void Load_System_Info()
+        {
+            string hostName = System.Net.Dns.GetHostName();
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            stations = dbPOS.Get_Station_By_HostName(hostName);
+            if (stations.Count > 0)
+            {
+                strStation = stations[0].Station;
+                strHostName = stations[0].ComputerName;
+                util.Logger("Load_System_Info strStation : " + strStation);
+                util.Logger("Load_System_Info strHostName : " + strHostName);
+            }
+            else
+            {
+                strStation = "";
+                strHostName = hostName;
+                util.Logger("Error getting Station Info : " + hostName);
+                MessageBox.Show("Error getting Station Info. Please call system admin!", "Error");
+                this.Close();
+            }
+            loginUsers = dbPOS.UserLogin(strUserPass);
+            if (loginUsers.Count > 0)
+            {
+                strUserID = loginUsers[0].Id.ToString();
+                strUserName = loginUsers[0].FirstName + " " + loginUsers[0].LastName;
+                strUserPass = loginUsers[0].PassWord;
+                util.Logger("Load_System_Info strUserID : " + strUserID + "," + strUserName);
+            }
+            else
+            {
+                util.Logger("Error getting Login Info : " + strUserPass);
+                MessageBox.Show("Error getting Login Info. Please call system admin!", "Error");
+                this.Close();
+            }
 
+            strTax1Name = dbPOS.Get_Tax_Name(1);
+            strTax2Name = dbPOS.Get_Tax_Name(2);
+            strTax3Name = dbPOS.Get_Tax_Name(3);
+
+
+        }
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             FrmLogOn = new frmLogOn();
@@ -849,6 +899,8 @@ namespace SDCafeOffice
                         strSelProdId = row.Cells[0].Value.ToString();
                     }
                     FrmProd = new frmProduct(strSelProdId);
+                    FrmProd.m_strStation = strStation;
+                    FrmProd.m_strUserPass =  strUserPass;
                     FrmProd.ShowDialog();
                     bt_Product.PerformClick();
                 }
@@ -1248,5 +1300,9 @@ namespace SDCafeOffice
             }
         }
 
+        internal void Set_PassCode(string p_PassCode)
+        {
+            strUserPass = p_PassCode;
+        }
     }
 }

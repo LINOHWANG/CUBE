@@ -85,12 +85,19 @@
             this.txt_PrintCopy = new System.Windows.Forms.TextBox();
             this.lbl_PrintCopy = new System.Windows.Forms.Label();
             this.checkMainSalesButton = new System.Windows.Forms.CheckBox();
+            this.txt_Receiving = new System.Windows.Forms.TextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
+            this.bt_Receiving = new SDCafeCommon.Utilities.CustomButton();
             this.bt_RprintLabel = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Delete = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Add = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // txt_ProductName
@@ -100,7 +107,7 @@
             this.txt_ProductName.Location = new System.Drawing.Point(205, 46);
             this.txt_ProductName.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_ProductName.Name = "txt_ProductName";
-            this.txt_ProductName.Size = new System.Drawing.Size(239, 29);
+            this.txt_ProductName.Size = new System.Drawing.Size(500, 29);
             this.txt_ProductName.TabIndex = 2;
             this.txt_ProductName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -108,7 +115,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(11, 49);
+            this.label1.Location = new System.Drawing.Point(12, 49);
             this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(141, 22);
@@ -119,7 +126,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(11, 87);
+            this.label2.Location = new System.Drawing.Point(12, 87);
             this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(138, 22);
@@ -132,7 +139,7 @@
             this.txt_SecondName.Location = new System.Drawing.Point(205, 84);
             this.txt_SecondName.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_SecondName.Name = "txt_SecondName";
-            this.txt_SecondName.Size = new System.Drawing.Size(239, 29);
+            this.txt_SecondName.Size = new System.Drawing.Size(500, 29);
             this.txt_SecondName.TabIndex = 4;
             this.txt_SecondName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -140,7 +147,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(11, 163);
+            this.label3.Location = new System.Drawing.Point(12, 163);
             this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(193, 22);
@@ -161,7 +168,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(11, 201);
+            this.label4.Location = new System.Drawing.Point(12, 201);
             this.label4.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(155, 22);
@@ -182,11 +189,11 @@
             // checkTax1
             // 
             this.checkTax1.AutoSize = true;
-            this.checkTax1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkTax1.Location = new System.Drawing.Point(205, 250);
+            this.checkTax1.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkTax1.Location = new System.Drawing.Point(205, 233);
             this.checkTax1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkTax1.Name = "checkTax1";
-            this.checkTax1.Size = new System.Drawing.Size(74, 26);
+            this.checkTax1.Size = new System.Drawing.Size(63, 22);
             this.checkTax1.TabIndex = 10;
             this.checkTax1.Text = "Tax 1";
             this.checkTax1.UseVisualStyleBackColor = true;
@@ -194,11 +201,11 @@
             // checkTax2
             // 
             this.checkTax2.AutoSize = true;
-            this.checkTax2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkTax2.Location = new System.Drawing.Point(288, 250);
+            this.checkTax2.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkTax2.Location = new System.Drawing.Point(288, 233);
             this.checkTax2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkTax2.Name = "checkTax2";
-            this.checkTax2.Size = new System.Drawing.Size(74, 26);
+            this.checkTax2.Size = new System.Drawing.Size(63, 22);
             this.checkTax2.TabIndex = 11;
             this.checkTax2.Text = "Tax 2";
             this.checkTax2.UseVisualStyleBackColor = true;
@@ -206,11 +213,11 @@
             // checkTax3
             // 
             this.checkTax3.AutoSize = true;
-            this.checkTax3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkTax3.Location = new System.Drawing.Point(375, 250);
+            this.checkTax3.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkTax3.Location = new System.Drawing.Point(375, 233);
             this.checkTax3.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkTax3.Name = "checkTax3";
-            this.checkTax3.Size = new System.Drawing.Size(74, 26);
+            this.checkTax3.Size = new System.Drawing.Size(63, 22);
             this.checkTax3.TabIndex = 12;
             this.checkTax3.Text = "Tax 3";
             this.checkTax3.UseVisualStyleBackColor = true;
@@ -218,11 +225,11 @@
             // checkTaxInv
             // 
             this.checkTaxInv.AutoSize = true;
-            this.checkTaxInv.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkTaxInv.Location = new System.Drawing.Point(462, 250);
+            this.checkTaxInv.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkTaxInv.Location = new System.Drawing.Point(462, 233);
             this.checkTaxInv.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkTaxInv.Name = "checkTaxInv";
-            this.checkTaxInv.Size = new System.Drawing.Size(151, 26);
+            this.checkTaxInv.Size = new System.Drawing.Size(126, 22);
             this.checkTaxInv.TabIndex = 13;
             this.checkTaxInv.Text = "Inv Calculation";
             this.checkTaxInv.UseVisualStyleBackColor = true;
@@ -230,11 +237,11 @@
             // checkPRT4
             // 
             this.checkPRT4.AutoSize = true;
-            this.checkPRT4.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT4.Location = new System.Drawing.Point(462, 286);
+            this.checkPRT4.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkPRT4.Location = new System.Drawing.Point(462, 269);
             this.checkPRT4.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT4.Name = "checkPRT4";
-            this.checkPRT4.Size = new System.Drawing.Size(79, 26);
+            this.checkPRT4.Size = new System.Drawing.Size(67, 22);
             this.checkPRT4.TabIndex = 17;
             this.checkPRT4.Text = "PRT4";
             this.checkPRT4.UseVisualStyleBackColor = true;
@@ -242,11 +249,11 @@
             // checkPRT3
             // 
             this.checkPRT3.AutoSize = true;
-            this.checkPRT3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT3.Location = new System.Drawing.Point(375, 286);
+            this.checkPRT3.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkPRT3.Location = new System.Drawing.Point(375, 269);
             this.checkPRT3.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT3.Name = "checkPRT3";
-            this.checkPRT3.Size = new System.Drawing.Size(79, 26);
+            this.checkPRT3.Size = new System.Drawing.Size(67, 22);
             this.checkPRT3.TabIndex = 16;
             this.checkPRT3.Text = "PRT3";
             this.checkPRT3.UseVisualStyleBackColor = true;
@@ -254,11 +261,11 @@
             // checkPRT2
             // 
             this.checkPRT2.AutoSize = true;
-            this.checkPRT2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT2.Location = new System.Drawing.Point(288, 286);
+            this.checkPRT2.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkPRT2.Location = new System.Drawing.Point(288, 269);
             this.checkPRT2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT2.Name = "checkPRT2";
-            this.checkPRT2.Size = new System.Drawing.Size(79, 26);
+            this.checkPRT2.Size = new System.Drawing.Size(67, 22);
             this.checkPRT2.TabIndex = 15;
             this.checkPRT2.Text = "PRT2";
             this.checkPRT2.UseVisualStyleBackColor = true;
@@ -266,11 +273,11 @@
             // checkPRT1
             // 
             this.checkPRT1.AutoSize = true;
-            this.checkPRT1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT1.Location = new System.Drawing.Point(205, 286);
+            this.checkPRT1.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkPRT1.Location = new System.Drawing.Point(205, 269);
             this.checkPRT1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT1.Name = "checkPRT1";
-            this.checkPRT1.Size = new System.Drawing.Size(79, 26);
+            this.checkPRT1.Size = new System.Drawing.Size(67, 22);
             this.checkPRT1.TabIndex = 14;
             this.checkPRT1.Text = "PRT1";
             this.checkPRT1.UseVisualStyleBackColor = true;
@@ -278,11 +285,11 @@
             // checkPRT5
             // 
             this.checkPRT5.AutoSize = true;
-            this.checkPRT5.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT5.Location = new System.Drawing.Point(553, 286);
+            this.checkPRT5.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkPRT5.Location = new System.Drawing.Point(553, 269);
             this.checkPRT5.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT5.Name = "checkPRT5";
-            this.checkPRT5.Size = new System.Drawing.Size(79, 26);
+            this.checkPRT5.Size = new System.Drawing.Size(67, 22);
             this.checkPRT5.TabIndex = 18;
             this.checkPRT5.Text = "PRT5";
             this.checkPRT5.UseVisualStyleBackColor = true;
@@ -479,11 +486,11 @@
             // checkSoldOut
             // 
             this.checkSoldOut.AutoSize = true;
-            this.checkSoldOut.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkSoldOut.Location = new System.Drawing.Point(482, 162);
+            this.checkSoldOut.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkSoldOut.Location = new System.Drawing.Point(462, 163);
             this.checkSoldOut.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkSoldOut.Name = "checkSoldOut";
-            this.checkSoldOut.Size = new System.Drawing.Size(119, 26);
+            this.checkSoldOut.Size = new System.Drawing.Size(100, 22);
             this.checkSoldOut.TabIndex = 27;
             this.checkSoldOut.Text = "Sold Out ?";
             this.checkSoldOut.UseVisualStyleBackColor = true;
@@ -492,7 +499,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(11, 11);
+            this.label10.Location = new System.Drawing.Point(12, 11);
             this.label10.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(101, 22);
@@ -513,7 +520,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(11, 125);
+            this.label11.Location = new System.Drawing.Point(12, 125);
             this.label11.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(135, 22);
@@ -544,7 +551,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(11, 250);
+            this.label12.Location = new System.Drawing.Point(12, 233);
             this.label12.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(95, 22);
@@ -555,7 +562,7 @@
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(11, 287);
+            this.label13.Location = new System.Drawing.Point(12, 270);
             this.label13.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(73, 22);
@@ -566,7 +573,7 @@
             // 
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(11, 336);
+            this.label14.Location = new System.Drawing.Point(12, 308);
             this.label14.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(140, 22);
@@ -576,7 +583,7 @@
             // txt_Deposit
             // 
             this.txt_Deposit.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Deposit.Location = new System.Drawing.Point(205, 333);
+            this.txt_Deposit.Location = new System.Drawing.Point(206, 305);
             this.txt_Deposit.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Deposit.Name = "txt_Deposit";
             this.txt_Deposit.Size = new System.Drawing.Size(239, 29);
@@ -587,7 +594,7 @@
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.Location = new System.Drawing.Point(11, 375);
+            this.label15.Location = new System.Drawing.Point(12, 338);
             this.label15.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(140, 22);
@@ -597,7 +604,7 @@
             // txt_RecyclingFee
             // 
             this.txt_RecyclingFee.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_RecyclingFee.Location = new System.Drawing.Point(205, 372);
+            this.txt_RecyclingFee.Location = new System.Drawing.Point(205, 335);
             this.txt_RecyclingFee.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_RecyclingFee.Name = "txt_RecyclingFee";
             this.txt_RecyclingFee.Size = new System.Drawing.Size(239, 29);
@@ -608,7 +615,7 @@
             // 
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label16.Location = new System.Drawing.Point(11, 414);
+            this.label16.Location = new System.Drawing.Point(12, 368);
             this.label16.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(124, 22);
@@ -618,7 +625,7 @@
             // txt_ChillCharge
             // 
             this.txt_ChillCharge.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_ChillCharge.Location = new System.Drawing.Point(205, 411);
+            this.txt_ChillCharge.Location = new System.Drawing.Point(205, 365);
             this.txt_ChillCharge.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_ChillCharge.Name = "txt_ChillCharge";
             this.txt_ChillCharge.Size = new System.Drawing.Size(239, 29);
@@ -629,7 +636,7 @@
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(478, 336);
+            this.label17.Location = new System.Drawing.Point(12, 395);
             this.label17.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(67, 22);
@@ -640,10 +647,11 @@
             // 
             this.txt_Memo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.txt_Memo.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Memo.Location = new System.Drawing.Point(482, 361);
+            this.txt_Memo.Location = new System.Drawing.Point(80, 395);
             this.txt_Memo.Multiline = true;
             this.txt_Memo.Name = "txt_Memo";
-            this.txt_Memo.Size = new System.Drawing.Size(390, 118);
+            this.txt_Memo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txt_Memo.Size = new System.Drawing.Size(364, 97);
             this.txt_Memo.TabIndex = 46;
             // 
             // label18
@@ -662,7 +670,7 @@
             this.txt_BarCode2.AcceptsTab = true;
             this.txt_BarCode2.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.txt_BarCode2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_BarCode2.Location = new System.Drawing.Point(456, 84);
+            this.txt_BarCode2.Location = new System.Drawing.Point(456, 62);
             this.txt_BarCode2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_BarCode2.Name = "txt_BarCode2";
             this.txt_BarCode2.ReadOnly = true;
@@ -674,11 +682,11 @@
             // checkManual
             // 
             this.checkManual.AutoSize = true;
-            this.checkManual.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkManual.Location = new System.Drawing.Point(482, 126);
+            this.checkManual.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkManual.Location = new System.Drawing.Point(462, 124);
             this.checkManual.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkManual.Name = "checkManual";
-            this.checkManual.Size = new System.Drawing.Size(196, 26);
+            this.checkManual.Size = new System.Drawing.Size(164, 22);
             this.checkManual.TabIndex = 49;
             this.checkManual.Text = "Manual Price Item ?";
             this.checkManual.UseVisualStyleBackColor = true;
@@ -687,21 +695,20 @@
             // 
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label19.Location = new System.Drawing.Point(11, 453);
+            this.label19.Location = new System.Drawing.Point(10, 26);
             this.label19.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(131, 22);
+            this.label19.Size = new System.Drawing.Size(0, 22);
             this.label19.TabIndex = 51;
-            this.label19.Text = "QTY Balance";
             // 
             // txt_Balance
             // 
             this.txt_Balance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.txt_Balance.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Balance.Location = new System.Drawing.Point(205, 450);
+            this.txt_Balance.Location = new System.Drawing.Point(116, 30);
             this.txt_Balance.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Balance.Name = "txt_Balance";
-            this.txt_Balance.Size = new System.Drawing.Size(239, 29);
+            this.txt_Balance.Size = new System.Drawing.Size(294, 29);
             this.txt_Balance.TabIndex = 50;
             this.txt_Balance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -709,53 +716,135 @@
             // 
             this.txt_BarCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.txt_BarCode.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_BarCode.Location = new System.Drawing.Point(456, 46);
+            this.txt_BarCode.Location = new System.Drawing.Point(548, 8);
             this.txt_BarCode.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_BarCode.Name = "txt_BarCode";
-            this.txt_BarCode.Size = new System.Drawing.Size(249, 29);
+            this.txt_BarCode.Size = new System.Drawing.Size(157, 29);
             this.txt_BarCode.TabIndex = 52;
             this.txt_BarCode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txt_PrintCopy
             // 
-            this.txt_PrintCopy.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_PrintCopy.Location = new System.Drawing.Point(730, 270);
+            this.txt_PrintCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.txt_PrintCopy.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_PrintCopy.Location = new System.Drawing.Point(730, 308);
             this.txt_PrintCopy.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_PrintCopy.Name = "txt_PrintCopy";
-            this.txt_PrintCopy.Size = new System.Drawing.Size(142, 29);
+            this.txt_PrintCopy.Size = new System.Drawing.Size(142, 26);
             this.txt_PrintCopy.TabIndex = 54;
             this.txt_PrintCopy.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lbl_PrintCopy
             // 
             this.lbl_PrintCopy.AutoSize = true;
-            this.lbl_PrintCopy.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_PrintCopy.Location = new System.Drawing.Point(726, 243);
+            this.lbl_PrintCopy.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_PrintCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.lbl_PrintCopy.Location = new System.Drawing.Point(749, 285);
             this.lbl_PrintCopy.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbl_PrintCopy.Name = "lbl_PrintCopy";
-            this.lbl_PrintCopy.Size = new System.Drawing.Size(150, 22);
+            this.lbl_PrintCopy.Size = new System.Drawing.Size(107, 20);
             this.lbl_PrintCopy.TabIndex = 55;
             this.lbl_PrintCopy.Text = "PRINT Copies ?";
             // 
             // checkMainSalesButton
             // 
             this.checkMainSalesButton.AutoSize = true;
-            this.checkMainSalesButton.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkMainSalesButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkMainSalesButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.checkMainSalesButton.Location = new System.Drawing.Point(482, 201);
+            this.checkMainSalesButton.Location = new System.Drawing.Point(462, 200);
             this.checkMainSalesButton.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkMainSalesButton.Name = "checkMainSalesButton";
-            this.checkMainSalesButton.Size = new System.Drawing.Size(217, 26);
+            this.checkMainSalesButton.Size = new System.Drawing.Size(181, 22);
             this.checkMainSalesButton.TabIndex = 56;
             this.checkMainSalesButton.Text = "Default Sales Button ?";
             this.checkMainSalesButton.UseVisualStyleBackColor = true;
+            // 
+            // txt_Receiving
+            // 
+            this.txt_Receiving.BackColor = System.Drawing.Color.Silver;
+            this.txt_Receiving.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Receiving.Location = new System.Drawing.Point(116, 69);
+            this.txt_Receiving.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_Receiving.Name = "txt_Receiving";
+            this.txt_Receiving.Size = new System.Drawing.Size(136, 29);
+            this.txt_Receiving.TabIndex = 57;
+            this.txt_Receiving.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_Receiving.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_Receiving_KeyPress);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label23);
+            this.groupBox2.Controls.Add(this.label22);
+            this.groupBox2.Controls.Add(this.label21);
+            this.groupBox2.Controls.Add(this.label19);
+            this.groupBox2.Controls.Add(this.bt_Receiving);
+            this.groupBox2.Controls.Add(this.txt_Balance);
+            this.groupBox2.Controls.Add(this.txt_Receiving);
+            this.groupBox2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold);
+            this.groupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.groupBox2.Location = new System.Drawing.Point(456, 357);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(419, 135);
+            this.groupBox2.TabIndex = 59;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "QTY Balance (Inventory)";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label22.Location = new System.Drawing.Point(25, 33);
+            this.label22.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(72, 22);
+            this.label22.TabIndex = 61;
+            this.label22.Text = "Current";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label21.Location = new System.Drawing.Point(25, 73);
+            this.label21.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(94, 22);
+            this.label21.TabIndex = 60;
+            this.label21.Text = "Receiving";
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("Arial Narrow", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.label23.Location = new System.Drawing.Point(112, 103);
+            this.label23.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(137, 20);
+            this.label23.TabIndex = 62;
+            this.label23.Text = "Press Enter to Apply";
+            // 
+            // bt_Receiving
+            // 
+            this.bt_Receiving.BackColor = System.Drawing.Color.DarkGray;
+            this.bt_Receiving.CornerRadius = 30;
+            this.bt_Receiving.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
+            this.bt_Receiving.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.bt_Receiving.Location = new System.Drawing.Point(268, 69);
+            this.bt_Receiving.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_Receiving.Name = "bt_Receiving";
+            this.bt_Receiving.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Receiving.Size = new System.Drawing.Size(142, 54);
+            this.bt_Receiving.TabIndex = 58;
+            this.bt_Receiving.Text = "Receiving";
+            this.bt_Receiving.Click += new System.EventHandler(this.bt_Receiving_Click);
             // 
             // bt_RprintLabel
             // 
             this.bt_RprintLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.bt_RprintLabel.CornerRadius = 30;
             this.bt_RprintLabel.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_RprintLabel.Location = new System.Drawing.Point(730, 306);
+            this.bt_RprintLabel.Location = new System.Drawing.Point(730, 233);
             this.bt_RprintLabel.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_RprintLabel.Name = "bt_RprintLabel";
             this.bt_RprintLabel.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -829,15 +918,13 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 643);
+            this.Controls.Add(this.txt_PrintCopy);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.checkMainSalesButton);
             this.Controls.Add(this.lbl_PrintCopy);
-            this.Controls.Add(this.txt_PrintCopy);
             this.Controls.Add(this.bt_RprintLabel);
             this.Controls.Add(this.txt_BarCode);
-            this.Controls.Add(this.label19);
-            this.Controls.Add(this.txt_Balance);
             this.Controls.Add(this.checkManual);
-            this.Controls.Add(this.txt_BarCode2);
             this.Controls.Add(this.label18);
             this.Controls.Add(this.txt_Memo);
             this.Controls.Add(this.label17);
@@ -877,6 +964,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txt_ProductName);
             this.Controls.Add(this.bt_Save);
+            this.Controls.Add(this.txt_BarCode2);
             this.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
@@ -885,6 +973,8 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.form_KeyDown);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -954,5 +1044,11 @@
         private System.Windows.Forms.Label lbl_PrintCopy;
         private System.Windows.Forms.CheckBox checkMainSalesButton;
         private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox txt_Receiving;
+        private SDCafeCommon.Utilities.CustomButton bt_Receiving;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label23;
     }
 }

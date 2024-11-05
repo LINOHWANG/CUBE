@@ -30,6 +30,10 @@ namespace SDCafeOffice.Views
         List<POS_SysConfigModel> sysConfs = new List<POS_SysConfigModel>();
         Utility util = new Utility();
         String[] strTaxes = new String[3];
+        public string m_strUserPass;
+        public string m_strStation;
+        private bool m_blnOnSave;
+
         public frmProduct()
         {
             InitializeComponent();
@@ -200,6 +204,8 @@ namespace SDCafeOffice.Views
 
         private bool Update_Product_From_View()
         {
+            m_blnOnSave = true;
+
             DataAccessPOS dbPOS = new DataAccessPOS();
             int iTypeId = 0;
 
@@ -292,12 +298,14 @@ namespace SDCafeOffice.Views
                 Update_Product_BarCode(prods[0].Id, prods[0]);
             }
             Load_Product_Info(prods[0].Id.ToString());
+            m_blnOnSave = false;
             return true;
         }
 
 
         private bool Insert_Product_From_View()
         {
+            m_blnOnSave = true;
             DataAccessPOS dbPOS = new DataAccessPOS();
             int iTypeId = 0;
 
@@ -387,6 +395,8 @@ namespace SDCafeOffice.Views
                 Update_Product_BarCode(iProdId, prods[0]);
             }
             Load_Product_Info(iProdId.ToString());
+            m_blnOnSave = false;
+
             return true;
         }
 
@@ -521,6 +531,7 @@ namespace SDCafeOffice.Views
 
         private void cb_PromDay1_TextChanged(object sender, EventArgs e)
         {
+            if (m_blnOnSave) return;
             // QTY must be greater than 1
             if (cb_PromDay1.Text.Length > 0)
             {
@@ -531,6 +542,53 @@ namespace SDCafeOffice.Views
                     MessageBox.Show("Promotion QTY must be greater than 1!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
+        }
+
+        private void txt_Receiving_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            float fBeforeQTY = 0;
+            // if enter key is pressed, update the product balance quantity with the entered value
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                if (String.IsNullOrEmpty(txt_ProdId.Text))
+                {
+                    txtMessage.Text = "No product was selected. Insert(Save) mode is on!";
+                    txt_ProdId.Focus();
+                    return;
+                }
+                if (String.IsNullOrEmpty(txt_Receiving.Text))
+                {
+                    txt_Receiving.Text = "0";
+                    txtMessage.Text = "Please enter valid Receiving Quantity !";
+                    txt_Receiving.Focus();
+                    return;
+                }
+                if (int.Parse(txt_Receiving.Text) < 0)
+                {
+                    txtMessage.Text = "Please enter Positive Receiving Quantity !";
+                    txt_Receiving.Focus();
+                    return;
+                }
+                DataAccessPOS dbPOS = new DataAccessPOS();
+                prods.Clear();
+                prods = dbPOS.Get_Product_By_ID(int.Parse(txt_ProdId.Text));
+                if (prods.Count == 1)
+                {
+                    fBeforeQTY = prods[0].Balance;
+                    prods[0].Balance += int.Parse(txt_Receiving.Text);
+                    dbPOS.Update_Product_Inventory(prods[0], 1 /*Recieving*/, fBeforeQTY, prods[0].Balance, m_strUserPass, m_strStation);
+
+                    txt_Balance.Text = prods[0].Balance.ToString();
+                    txt_Receiving.Text = "";
+                    txtMessage.Text = "Product Balance Updated!";
+                    txtMessage.Refresh();
+                }
+            }
+        }
+
+        private void bt_Receiving_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

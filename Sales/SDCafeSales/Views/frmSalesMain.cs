@@ -3649,8 +3649,11 @@ namespace SDCafeSales.Views
                     prods = dbPOS.Get_Product_By_ID(order.ProductId);
                     if (prods.Count == 1)
                     {
+                        float fBeforeQTY = prods[0].Balance;
                         prods[0].Balance = prods[0].Balance - order.Quantity;
                         dbPOS.Update_Product_Balance(prods[0]);
+                        dbPOS1.Insert_ProductInventoryLog(prods[0], 2 /* Sale */, fBeforeQTY, prods[0].Balance, strUserPass, strStation);
+
                     }
                     //////////////////////////////////////////////////////////
                 }

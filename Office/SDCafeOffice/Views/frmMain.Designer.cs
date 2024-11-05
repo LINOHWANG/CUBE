@@ -48,6 +48,7 @@
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_LoginUser = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Product = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_ProductImport = new SDCafeCommon.Utilities.CustomButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -310,11 +311,25 @@
             this.bt_Product.Text = "Product";
             this.bt_Product.Click += new System.EventHandler(this.bt_Product_Click);
             // 
+            // bt_ProductImport
+            // 
+            this.bt_ProductImport.BackColor = System.Drawing.Color.Tomato;
+            this.bt_ProductImport.CornerRadius = 30;
+            this.bt_ProductImport.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_ProductImport.Location = new System.Drawing.Point(12, 224);
+            this.bt_ProductImport.Name = "bt_ProductImport";
+            this.bt_ProductImport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_ProductImport.Size = new System.Drawing.Size(142, 47);
+            this.bt_ProductImport.TabIndex = 46;
+            this.bt_ProductImport.Text = "Prod. Import";
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.bt_ProductImport);
             this.Controls.Add(this.progBarExport);
             this.Controls.Add(this.bt_ProductExport);
             this.Controls.Add(this.bt_TimeReport);
@@ -368,5 +383,6 @@
         private SDCafeCommon.Utilities.CustomButton bt_TimeReport;
         private SDCafeCommon.Utilities.CustomButton bt_ProductExport;
         private System.Windows.Forms.ProgressBar progBarExport;
+        private SDCafeCommon.Utilities.CustomButton bt_ProductImport;
     }
 }

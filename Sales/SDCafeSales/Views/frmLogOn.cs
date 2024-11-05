@@ -257,12 +257,24 @@ namespace SDCafeSales
         private bool UserLoginWithPassCode(string strPassCode)
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
+
             try
             {
                 loginUsers = dbPOS.UserLogin(strPassCode);
 
                 if (loginUsers.Count == 1)
                 {
+                    // If User is not clock in, then clock in
+                    timeTables = dbPOS.Get_Last_ClockIn(loginUsers[0].Id);
+                    if (timeTables.Count == 0)
+                    {
+                        timeTable.UserId = loginUsers[0].Id;
+                        timeTable.DateTimeStarted = DateTime.Now;
+                        timeTable.DateTimeFinished = null;
+                        timeTable.InCount = 1;
+                        timeTable.Wage = loginUsers[0].Wage;
+                        dbPOS.Insert_TimeTable(timeTable);
+                    }
                     return true;
                 }
                 util.Logger("UserLogin Failed with PassCode :" + strPassCode);
@@ -316,7 +328,7 @@ namespace SDCafeSales
 
                 if (loginUsers.Count == 1)
                 {
-                    timeTables = dbPOS.Get_Today_ClockInOut(loginUsers[0].Id);
+                    timeTables = dbPOS.Get_Last_ClockIn(loginUsers[0].Id);
                     if (timeTables.Count == 0)
                     {
                         timeTable.UserId = loginUsers[0].Id;
@@ -361,7 +373,7 @@ namespace SDCafeSales
 
                 if (loginUsers.Count == 1)
                 {
-                    timeTables = dbPOS.Get_Today_ClockInOut(loginUsers[0].Id);
+                    timeTables = dbPOS.Get_Last_ClockIn(loginUsers[0].Id);
                     if (timeTables.Count > 0)
                     {
                         timeTable.UserId = loginUsers[0].Id;

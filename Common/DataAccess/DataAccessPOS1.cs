@@ -106,7 +106,8 @@ namespace SDCafeCommon.DataAccess
                                 "@BatchNumber,@TerminalId,@DemoMode,@MerchId,@MerchCurrencyCode,@ReceiptHeader1,@ReceiptHeader2,@ReceiptHeader3,@ReceiptHeader4," +
                                 "@ReceiptHeader5,@ReceiptHeader6,@ReceiptHeader7,@ReceiptFooter1,@ReceiptFooter2,@ReceiptFooter3,@ReceiptFooter4,@ReceiptFooter5," +
                                 "@ReceiptFooter6,@ReceiptFooter7,@EndorsementLine1,@EndorsementLine2,@EndorsementLine3,@EndorsementLine4,@EndorsementLine5," +
-                                "@EndorsementLine6,@EmvRespCode,@TransactionData,@CreateInvoiceNo,@CreateDate,@CreateTime,@CreateUserId,@CreateUserName,@CreateStation)"; var count = connection.Execute(query, pos1_CardReceiptCompleteModel);
+                                "@EndorsementLine6,@EmvRespCode,@TransactionData,@CreateInvoiceNo,@CreateDate,@CreateTime,@CreateUserId,@CreateUserName,@CreateStation)"; 
+                var count = connection.Execute(query, pos1_CardReceiptCompleteModel);
                 return count;
             }
         }
@@ -402,6 +403,27 @@ namespace SDCafeCommon.DataAccess
             {
                 var output = connection.Query<POS1_TranCollectionModel>($"SELECT TOP (1) * from TranCollection WHERE TotalPaid > 0 And ISNULL(IsVoid,0) = 0 order by CreateDate desc, createtime desc").ToList();
                 return output[0];
+            }
+        }
+
+        public void Insert_ProductInventoryLog(POS_ProductModel p_Prod, int p_iLogTypeId, float fBeforeQTY, float fAfterQTY, string p_PassCode, string p_Station)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS1")))
+            {
+                string query = "INSERT INTO InventoryLog (ProductID, ProductTypeId, LogTypeId, BeforeQTY, AfterQTY, CreateStation, CreatePassCode, DateTimeCreated) VALUES " +
+                                "(@ProductID, @ProductTypeId, @LogTypeId, @BeforeQTY, @AfterQTY, @CreateStation, @CreatePassCode, @DateTimeCreated);";
+
+                POS1_InventoryLogModel invLog = new POS1_InventoryLogModel();
+                invLog.ProductId = p_Prod.Id;
+                invLog.ProductTypeId = p_Prod.ProductTypeId;
+                invLog.LogTypeId = p_iLogTypeId;
+                invLog.BeforeQTY = fBeforeQTY;
+                invLog.AfterQTY = fAfterQTY;
+                invLog.CreateStation = p_Station;
+                invLog.CreatePassCode = p_PassCode;
+                invLog.DateTimeCreated = DateTime.Now;
+
+                var count2 = connection.Execute(query, invLog);
             }
         }
     }
