@@ -147,6 +147,12 @@
     <Compile Include="Views\frmTimeReport.Designer.cs">
       <DependentUpon>frmTimeReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\frmYesNo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\frmYesNo.Designer.cs">
+      <DependentUpon>frmYesNo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\UserComboboxItem.cs" />
     <EmbeddedResource Include="Views\frmLoginUser.resx">
       <DependentUpon>frmLoginUser.cs</DependentUpon>
@@ -183,6 +189,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\frmTimeReport.resx">
       <DependentUpon>frmTimeReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\frmYesNo.resx">
+      <DependentUpon>frmYesNo.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

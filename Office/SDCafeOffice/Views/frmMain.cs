@@ -1140,7 +1140,7 @@ namespace SDCafeOffice
         {
             bt_ProductExport.Enabled = false;
 
-            FrmTimeReport = new frmTimeReport();
+            FrmTimeReport = new frmTimeReport(this);
             FrmTimeReport.ShowDialog();
         }
 

@@ -15,13 +15,19 @@ namespace SDCafeOffice.Views
 {
     public partial class frmTimeReport : Form
     {
+        frmMain FrmMain;
         List<POS_TimeTableModel> timeTables = new List<POS_TimeTableModel>();
         List<POS_LoginUserModel> loginUsers = new List<POS_LoginUserModel>();
         Utility util = new Utility();
         int iSelectedUserId = 0;
-        public frmTimeReport()
+        private bool m_blnUnresolved;
+        private int m_iSelectedRow;
+        private int m_iSelectedId;
+
+        public frmTimeReport(frmMain _frmMain)
         {
             InitializeComponent();
+            this.FrmMain = _frmMain;
         }
 
         private void frmTimeReport_Load(object sender, EventArgs e)
@@ -40,6 +46,7 @@ namespace SDCafeOffice.Views
             dttm_TranEndTime.Value = Convert.ToDateTime("23:59:59");
 
             chkbox_All.Checked = true;
+            chkbox_Unresolved.Checked = false;
         }
         private void dgvData_Initialize()
         {
@@ -112,13 +119,16 @@ namespace SDCafeOffice.Views
         {
             dgvData_Initialize();
             DataAccessPOS dbPOS = new DataAccessPOS();
+            
+            string strStartTime = dttm_TranStart.Value.ToString("yyyy-MM-dd") + " " + dttm_TranStartTime.Value.ToString("HH:mm:ss");
+            string strEndTime = dttm_TranEnd.Value.ToString("yyyy-MM-dd") + " " + dttm_TranEndTime.Value.ToString("HH:mm:ss");
             if (iSelectedUserId > 0)
             {
-                timeTables = dbPOS.Get_TimeTable_by_Date_UserId(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranEnd.Value.ToString("yyyy-MM-dd"), iSelectedUserId);
+                timeTables = dbPOS.Get_TimeTable_by_Date_UserId(strStartTime, strEndTime, iSelectedUserId, m_blnUnresolved);
             }
             else
             {
-                timeTables = dbPOS.Get_TimeTable_by_Date(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranEnd.Value.ToString("yyyy-MM-dd"));
+                timeTables = dbPOS.Get_TimeTable_by_Date(strStartTime, strEndTime, m_blnUnresolved);
             }
             if (timeTables.Count> 0)
             {
@@ -165,7 +175,7 @@ namespace SDCafeOffice.Views
                     this.dgvData.Rows[dgvData.RowCount - 2].Cells[i].Style.Font = new System.Drawing.Font(this.dgvData.DefaultCellStyle.Font, FontStyle.Bold);
                 }
             }
-
+            txtMessage.Text = "Query Successful!";
         }
 
         private void cb_UserName_SelectedIndexChanged(object sender, EventArgs e)
@@ -242,6 +252,108 @@ namespace SDCafeOffice.Views
                 workbook.SaveAs(sfd.FileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
                 // Exit from the application  
                 app.Quit();
+            }
+        }
+
+        private void chkbox_Unresolved_CheckedChanged(object sender, EventArgs e)
+        {
+            m_blnUnresolved = chkbox_Unresolved.Checked;
+        }
+
+        private void dgvData_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            int iSelectedColumn = e.ColumnIndex;
+            // If the cell is datetimefinished, then allow update the value
+            // Start and Finish time
+            if (((iSelectedColumn == 2) || (iSelectedColumn == 3)) && (dgvData.Rows[e.RowIndex].Cells[7].Value != ""))
+            {
+                if (dgvData.Rows[e.RowIndex].Cells[iSelectedColumn].Value.ToString() == "")
+                {
+                    dgvData.Rows[e.RowIndex].Cells[iSelectedColumn].Value = DateTime.Now.ToString();
+                }
+                dgvData.CurrentCell = dgvData.Rows[e.RowIndex].Cells[iSelectedColumn];
+                dgvData.ReadOnly = false;
+                dgvData.BeginEdit(true);
+            }
+        }
+
+        private void dgvData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            dgvData.ReadOnly = true;
+            dgvData.BeginEdit(false);
+            // Update the timetable record with 
+            int iSelectedColumn = e.ColumnIndex;
+            int iSelectedRow = e.RowIndex;
+            int iTimeTableId = 0;
+            try
+            {
+                iTimeTableId = int.Parse((string)dgvData.Rows[iSelectedRow].Cells[7].Value);
+            }
+            catch (Exception ex)
+            {
+                iTimeTableId = 0;
+            }
+            if (iTimeTableId > 0)
+            {
+                DataAccessPOS dbPOS = new DataAccessPOS();
+                POS_TimeTableModel timeTable = new POS_TimeTableModel();
+                timeTable = dbPOS.Get_TimeTable_by_Id(iTimeTableId);
+                if (iSelectedColumn == 2)
+                {
+                    timeTable.DateTimeStarted = Convert.ToDateTime(dgvData.Rows[iSelectedRow].Cells[iSelectedColumn].Value);
+                }
+                else if (iSelectedColumn == 3)
+                {
+                    timeTable.DateTimeFinished = Convert.ToDateTime(dgvData.Rows[iSelectedRow].Cells[iSelectedColumn].Value);
+                }
+                dbPOS.Update_TimeTable(timeTable);
+                txtMessage.Text = "TimeTable record updated successfully!";
+            }
+        }
+
+        private void dgvData_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvData.CurrentCell.RowIndex > 0)
+            {
+                // get the selected row
+                m_iSelectedRow = dgvData.CurrentCell.RowIndex;
+                m_iSelectedId = int.Parse(dgvData.Rows[m_iSelectedRow - 1].Cells[7].Value.ToString());
+            }
+        }
+
+        private void bt_Print_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void bt_Delete_Click(object sender, EventArgs e)
+        {
+            if (m_iSelectedId > 0)
+            {
+                using (var FrmYesNo = new frmYesNo(FrmMain))
+                {
+                    FrmYesNo.Set_Title("Delete Time Table");
+                    FrmYesNo.Set_Message("Do you really want to delete?");
+                    FrmYesNo.StartPosition = FormStartPosition.Manual; // FormStartPosition.CenterScreen; //
+                    FrmYesNo.Location = new Point((Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2,
+                              (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2); //Screen.PrimaryScreen.Bounds.Location;
+                    FrmYesNo.ShowDialog();
+
+                    if (FrmYesNo.bYesNo)
+                    {
+                        DataAccessPOS dbPOS = new DataAccessPOS();
+                        bool blnDeleted = dbPOS.Delete_TimeTable(m_iSelectedId);
+                        txtMessage.Text = "TimeTable record deleted successfully!";
+                        m_iSelectedId = 0;
+                        bt_Query.PerformClick();
+                        return;
+                    }
+                    txtMessage.Text = "TimeTable record deletion canceled!";
+                }
+            }
+            else
+            {
+                txtMessage.Text = "Please select a valid row!";
             }
         }
     }

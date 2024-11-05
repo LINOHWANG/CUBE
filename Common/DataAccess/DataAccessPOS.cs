@@ -303,21 +303,37 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
-        public List<POS_TimeTableModel> Get_TimeTable_by_Date(string strStartDate, string strEndDate)
+        public List<POS_TimeTableModel> Get_TimeTable_by_Date(string strStartDate, string strEndDate, bool m_blnUnresolved)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                var output = connection.Query<POS_TimeTableModel>($"select * from TimeTable where DateTimeStarted >= '{strStartDate}' and DateTimeStarted <= '{strEndDate}' " +
-                                                                        "order by DateTimeStarted, UserId").ToList();
+                string query = "";
+                if (m_blnUnresolved)
+                    query = $"select * from TimeTable where DateTimeStarted >= '{strStartDate}' and DateTimeStarted <= '{strEndDate}'  " +
+                                            "And DateTimeFinished Is NULL " + 
+                                            "order by DateTimeStarted, UserId";
+                else
+                    query = $"select * from TimeTable where DateTimeStarted >= '{strStartDate}' and DateTimeStarted <= '{strEndDate}' " +
+                                            "And DateTimeFinished Is NOT NULL " +
+                                            "order by DateTimeStarted, UserId";
+                var output = connection.Query<POS_TimeTableModel>(query).ToList();
                 return output;
             }
         }
-        public List<POS_TimeTableModel> Get_TimeTable_by_Date_UserId(string strStartDate, string strEndDate, int iUserId)
+        public List<POS_TimeTableModel> Get_TimeTable_by_Date_UserId(string strStartDate, string strEndDate, int iUserId, bool m_blnUnresolved)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                string query = $"select * from TimeTable where UserId = " + iUserId.ToString() +
+                string query = "";
+                if (m_blnUnresolved)
+                    query = $"select * from TimeTable where UserId = " + iUserId.ToString() +
                                           "And DateTimeStarted >= '" + strStartDate + "' and DateTimeStarted <= '" + strEndDate + "' " +
+                                          "And DateTimeFinished Is NULL " +
+                                          "order by DateTimeStarted";
+                else
+                    query = $"select * from TimeTable where UserId = " + iUserId.ToString() +
+                                          "And DateTimeStarted >= '" + strStartDate + "' and DateTimeStarted <= '" + strEndDate + "' " +
+                                          "And DateTimeFinished Is NOT NULL " +
                                           "order by DateTimeStarted";
                 var output = connection.Query<POS_TimeTableModel>(query).ToList();
                 return output;
@@ -1416,6 +1432,31 @@ namespace SDCafeCommon.DataAccess
             {
                 var output = connection.Query<POS_TimeTableModel>($"select * from TimeTable where UserId = {p_UserId} And DateTimeFinished IS NULL;").ToList();
                 return output;
+            }
+        }
+
+        public POS_TimeTableModel Get_TimeTable_by_Id(int p_iTimeTableId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "";
+
+                query = $"select * from TimeTable where Id = " + p_iTimeTableId.ToString() + ";";
+                var output = connection.QuerySingle<POS_TimeTableModel>(query);
+                return output;
+            }
+        }
+
+        public bool Delete_TimeTable(int p_iSelectedId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "DELETE from TimeTable WHERE id=" + p_iSelectedId;
+                var count = connection.Execute(query);
+                if (count > 0)
+                    return true;
+                else
+                    return false;
             }
         }
     }

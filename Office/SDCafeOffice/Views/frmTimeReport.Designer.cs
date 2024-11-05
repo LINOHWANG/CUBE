@@ -39,10 +39,14 @@ namespace SDCafeOffice.Views
             this.label2 = new System.Windows.Forms.Label();
             this.chkbox_All = new System.Windows.Forms.CheckBox();
             this.cb_UserName = new System.Windows.Forms.ComboBox();
+            this.chkbox_Unresolved = new System.Windows.Forms.CheckBox();
+            this.bt_Update = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Excel = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Query = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Print = new SDCafeCommon.Utilities.CustomButton();
+            this.txtMessage = new System.Windows.Forms.TextBox();
+            this.bt_Delete = new SDCafeCommon.Utilities.CustomButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -50,7 +54,7 @@ namespace SDCafeOffice.Views
             // 
             this.dttm_TranEndTime.Font = new System.Drawing.Font("Arial", 14.25F);
             this.dttm_TranEndTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.dttm_TranEndTime.Location = new System.Drawing.Point(279, 68);
+            this.dttm_TranEndTime.Location = new System.Drawing.Point(279, 57);
             this.dttm_TranEndTime.Name = "dttm_TranEndTime";
             this.dttm_TranEndTime.Size = new System.Drawing.Size(155, 29);
             this.dttm_TranEndTime.TabIndex = 52;
@@ -68,7 +72,7 @@ namespace SDCafeOffice.Views
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(15, 73);
+            this.label1.Location = new System.Drawing.Point(15, 62);
             this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(89, 22);
@@ -90,7 +94,7 @@ namespace SDCafeOffice.Views
             // 
             this.dttm_TranEnd.Font = new System.Drawing.Font("Arial", 14.25F);
             this.dttm_TranEnd.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dttm_TranEnd.Location = new System.Drawing.Point(118, 68);
+            this.dttm_TranEnd.Location = new System.Drawing.Point(118, 57);
             this.dttm_TranEnd.Name = "dttm_TranEnd";
             this.dttm_TranEnd.Size = new System.Drawing.Size(155, 29);
             this.dttm_TranEnd.TabIndex = 48;
@@ -108,20 +112,24 @@ namespace SDCafeOffice.Views
             // 
             this.dgvData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvData.Location = new System.Drawing.Point(9, 122);
+            this.dgvData.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+            this.dgvData.Location = new System.Drawing.Point(9, 160);
             this.dgvData.MultiSelect = false;
             this.dgvData.Name = "dgvData";
             this.dgvData.ReadOnly = true;
             this.dgvData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvData.ShowEditingIcon = false;
-            this.dgvData.Size = new System.Drawing.Size(990, 595);
+            this.dgvData.Size = new System.Drawing.Size(990, 532);
             this.dgvData.TabIndex = 57;
+            this.dgvData.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvData_CellDoubleClick);
+            this.dgvData.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvData_CellEndEdit);
+            this.dgvData.SelectionChanged += new System.EventHandler(this.dgvData_SelectionChanged);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(443, 27);
+            this.label2.Location = new System.Drawing.Point(15, 95);
             this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(102, 22);
@@ -132,11 +140,11 @@ namespace SDCafeOffice.Views
             // 
             this.chkbox_All.AutoSize = true;
             this.chkbox_All.Font = new System.Drawing.Font("Arial", 14.25F);
-            this.chkbox_All.Location = new System.Drawing.Point(568, 25);
+            this.chkbox_All.Location = new System.Drawing.Point(118, 128);
             this.chkbox_All.Name = "chkbox_All";
-            this.chkbox_All.Size = new System.Drawing.Size(50, 26);
+            this.chkbox_All.Size = new System.Drawing.Size(105, 26);
             this.chkbox_All.TabIndex = 59;
-            this.chkbox_All.Text = "All";
+            this.chkbox_All.Text = "All Users";
             this.chkbox_All.UseVisualStyleBackColor = true;
             this.chkbox_All.CheckedChanged += new System.EventHandler(this.chkbox_All_CheckedChanged);
             // 
@@ -144,17 +152,43 @@ namespace SDCafeOffice.Views
             // 
             this.cb_UserName.Font = new System.Drawing.Font("Arial", 14.25F);
             this.cb_UserName.FormattingEnabled = true;
-            this.cb_UserName.Location = new System.Drawing.Point(447, 67);
+            this.cb_UserName.Location = new System.Drawing.Point(118, 92);
             this.cb_UserName.Name = "cb_UserName";
-            this.cb_UserName.Size = new System.Drawing.Size(235, 30);
+            this.cb_UserName.Size = new System.Drawing.Size(316, 30);
             this.cb_UserName.TabIndex = 60;
             this.cb_UserName.SelectedIndexChanged += new System.EventHandler(this.cb_UserName_SelectedIndexChanged);
+            // 
+            // chkbox_Unresolved
+            // 
+            this.chkbox_Unresolved.AutoSize = true;
+            this.chkbox_Unresolved.Font = new System.Drawing.Font("Arial", 14.25F);
+            this.chkbox_Unresolved.Location = new System.Drawing.Point(279, 128);
+            this.chkbox_Unresolved.Name = "chkbox_Unresolved";
+            this.chkbox_Unresolved.Size = new System.Drawing.Size(151, 26);
+            this.chkbox_Unresolved.TabIndex = 61;
+            this.chkbox_Unresolved.Text = "All Unresolved";
+            this.chkbox_Unresolved.UseVisualStyleBackColor = true;
+            this.chkbox_Unresolved.CheckedChanged += new System.EventHandler(this.chkbox_Unresolved_CheckedChanged);
+            // 
+            // bt_Update
+            // 
+            this.bt_Update.CornerRadius = 30;
+            this.bt_Update.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
+            this.bt_Update.Location = new System.Drawing.Point(857, 62);
+            this.bt_Update.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_Update.Name = "bt_Update";
+            this.bt_Update.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Update.Size = new System.Drawing.Size(142, 47);
+            this.bt_Update.TabIndex = 62;
+            this.bt_Update.Text = "Update";
+            this.bt_Update.Visible = false;
             // 
             // bt_Excel
             // 
             this.bt_Excel.CornerRadius = 30;
             this.bt_Excel.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Excel.Location = new System.Drawing.Point(854, 67);
+            this.bt_Excel.Location = new System.Drawing.Point(702, 62);
             this.bt_Excel.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Excel.Name = "bt_Excel";
             this.bt_Excel.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -168,7 +202,7 @@ namespace SDCafeOffice.Views
             // 
             this.bt_Query.CornerRadius = 30;
             this.bt_Query.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Query.Location = new System.Drawing.Point(703, 12);
+            this.bt_Query.Location = new System.Drawing.Point(548, 14);
             this.bt_Query.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Query.Name = "bt_Query";
             this.bt_Query.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -198,7 +232,7 @@ namespace SDCafeOffice.Views
             this.bt_Print.CornerRadius = 30;
             this.bt_Print.Enabled = false;
             this.bt_Print.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Print.Location = new System.Drawing.Point(703, 67);
+            this.bt_Print.Location = new System.Drawing.Point(702, 14);
             this.bt_Print.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Print.Name = "bt_Print";
             this.bt_Print.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -206,12 +240,43 @@ namespace SDCafeOffice.Views
             this.bt_Print.Size = new System.Drawing.Size(142, 47);
             this.bt_Print.TabIndex = 53;
             this.bt_Print.Text = "Print";
+            this.bt_Print.Click += new System.EventHandler(this.bt_Print_Click);
+            // 
+            // txtMessage
+            // 
+            this.txtMessage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtMessage.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMessage.ForeColor = System.Drawing.SystemColors.Info;
+            this.txtMessage.Location = new System.Drawing.Point(9, 698);
+            this.txtMessage.Name = "txtMessage";
+            this.txtMessage.Size = new System.Drawing.Size(990, 32);
+            this.txtMessage.TabIndex = 63;
+            this.txtMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // bt_Delete
+            // 
+            this.bt_Delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.bt_Delete.CornerRadius = 30;
+            this.bt_Delete.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
+            this.bt_Delete.Location = new System.Drawing.Point(548, 62);
+            this.bt_Delete.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_Delete.Name = "bt_Delete";
+            this.bt_Delete.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Delete.Size = new System.Drawing.Size(142, 47);
+            this.bt_Delete.TabIndex = 64;
+            this.bt_Delete.Text = "Delete";
+            this.bt_Delete.Click += new System.EventHandler(this.bt_Delete_Click);
             // 
             // frmTimeReport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.bt_Delete);
+            this.Controls.Add(this.txtMessage);
+            this.Controls.Add(this.bt_Update);
+            this.Controls.Add(this.chkbox_Unresolved);
             this.Controls.Add(this.cb_UserName);
             this.Controls.Add(this.chkbox_All);
             this.Controls.Add(this.label2);
@@ -251,5 +316,9 @@ namespace SDCafeOffice.Views
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox chkbox_All;
         private System.Windows.Forms.ComboBox cb_UserName;
+        private System.Windows.Forms.CheckBox chkbox_Unresolved;
+        private SDCafeCommon.Utilities.CustomButton bt_Update;
+        private System.Windows.Forms.TextBox txtMessage;
+        private SDCafeCommon.Utilities.CustomButton bt_Delete;
     }
 }
