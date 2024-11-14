@@ -90,15 +90,24 @@
             this.label23 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
+            this.checkSalesButton = new System.Windows.Forms.CheckBox();
+            this.picForeColor = new System.Windows.Forms.PictureBox();
+            this.label24 = new System.Windows.Forms.Label();
+            this.picBackColor = new System.Windows.Forms.PictureBox();
+            this.label25 = new System.Windows.Forms.Label();
             this.bt_Receiving = new SDCafeCommon.Utilities.CustomButton();
             this.bt_RprintLabel = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Delete = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Add = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
-            this.checkSalesButton = new System.Windows.Forms.CheckBox();
+            this.btButtonColor = new SDCafeCommon.Utilities.CustomButton();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picForeColor)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBackColor)).BeginInit();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // txt_ProductName
@@ -227,7 +236,7 @@
             // 
             this.checkTaxInv.AutoSize = true;
             this.checkTaxInv.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkTaxInv.Location = new System.Drawing.Point(462, 305);
+            this.checkTaxInv.Location = new System.Drawing.Point(461, 292);
             this.checkTaxInv.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkTaxInv.Name = "checkTaxInv";
             this.checkTaxInv.Size = new System.Drawing.Size(126, 22);
@@ -239,7 +248,7 @@
             // 
             this.checkPRT4.AutoSize = true;
             this.checkPRT4.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT4.Location = new System.Drawing.Point(462, 269);
+            this.checkPRT4.Location = new System.Drawing.Point(461, 257);
             this.checkPRT4.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT4.Name = "checkPRT4";
             this.checkPRT4.Size = new System.Drawing.Size(67, 22);
@@ -251,7 +260,7 @@
             // 
             this.checkPRT3.AutoSize = true;
             this.checkPRT3.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT3.Location = new System.Drawing.Point(375, 269);
+            this.checkPRT3.Location = new System.Drawing.Point(374, 257);
             this.checkPRT3.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT3.Name = "checkPRT3";
             this.checkPRT3.Size = new System.Drawing.Size(67, 22);
@@ -263,7 +272,7 @@
             // 
             this.checkPRT2.AutoSize = true;
             this.checkPRT2.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT2.Location = new System.Drawing.Point(288, 269);
+            this.checkPRT2.Location = new System.Drawing.Point(287, 257);
             this.checkPRT2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT2.Name = "checkPRT2";
             this.checkPRT2.Size = new System.Drawing.Size(67, 22);
@@ -275,7 +284,7 @@
             // 
             this.checkPRT1.AutoSize = true;
             this.checkPRT1.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT1.Location = new System.Drawing.Point(205, 269);
+            this.checkPRT1.Location = new System.Drawing.Point(204, 257);
             this.checkPRT1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT1.Name = "checkPRT1";
             this.checkPRT1.Size = new System.Drawing.Size(67, 22);
@@ -287,7 +296,7 @@
             // 
             this.checkPRT5.AutoSize = true;
             this.checkPRT5.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT5.Location = new System.Drawing.Point(553, 269);
+            this.checkPRT5.Location = new System.Drawing.Point(552, 257);
             this.checkPRT5.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT5.Name = "checkPRT5";
             this.checkPRT5.Size = new System.Drawing.Size(67, 22);
@@ -563,7 +572,7 @@
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(12, 270);
+            this.label13.Location = new System.Drawing.Point(11, 258);
             this.label13.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(73, 22);
@@ -574,7 +583,7 @@
             // 
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(12, 308);
+            this.label14.Location = new System.Drawing.Point(11, 292);
             this.label14.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(140, 22);
@@ -584,7 +593,7 @@
             // txt_Deposit
             // 
             this.txt_Deposit.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Deposit.Location = new System.Drawing.Point(206, 305);
+            this.txt_Deposit.Location = new System.Drawing.Point(205, 289);
             this.txt_Deposit.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Deposit.Name = "txt_Deposit";
             this.txt_Deposit.Size = new System.Drawing.Size(239, 29);
@@ -595,7 +604,7 @@
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.Location = new System.Drawing.Point(12, 338);
+            this.label15.Location = new System.Drawing.Point(11, 322);
             this.label15.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(140, 22);
@@ -605,7 +614,7 @@
             // txt_RecyclingFee
             // 
             this.txt_RecyclingFee.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_RecyclingFee.Location = new System.Drawing.Point(205, 335);
+            this.txt_RecyclingFee.Location = new System.Drawing.Point(204, 319);
             this.txt_RecyclingFee.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_RecyclingFee.Name = "txt_RecyclingFee";
             this.txt_RecyclingFee.Size = new System.Drawing.Size(239, 29);
@@ -616,7 +625,7 @@
             // 
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label16.Location = new System.Drawing.Point(12, 368);
+            this.label16.Location = new System.Drawing.Point(11, 352);
             this.label16.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(124, 22);
@@ -626,7 +635,7 @@
             // txt_ChillCharge
             // 
             this.txt_ChillCharge.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_ChillCharge.Location = new System.Drawing.Point(205, 365);
+            this.txt_ChillCharge.Location = new System.Drawing.Point(204, 349);
             this.txt_ChillCharge.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_ChillCharge.Name = "txt_ChillCharge";
             this.txt_ChillCharge.Size = new System.Drawing.Size(239, 29);
@@ -637,7 +646,7 @@
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(12, 395);
+            this.label17.Location = new System.Drawing.Point(12, 377);
             this.label17.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(67, 22);
@@ -648,11 +657,11 @@
             // 
             this.txt_Memo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.txt_Memo.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Memo.Location = new System.Drawing.Point(80, 395);
+            this.txt_Memo.Location = new System.Drawing.Point(80, 377);
             this.txt_Memo.Multiline = true;
             this.txt_Memo.Name = "txt_Memo";
             this.txt_Memo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txt_Memo.Size = new System.Drawing.Size(364, 97);
+            this.txt_Memo.Size = new System.Drawing.Size(364, 106);
             this.txt_Memo.TabIndex = 46;
             // 
             // label18
@@ -706,10 +715,10 @@
             // 
             this.txt_Balance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.txt_Balance.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Balance.Location = new System.Drawing.Point(116, 30);
+            this.txt_Balance.Location = new System.Drawing.Point(100, 26);
             this.txt_Balance.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Balance.Name = "txt_Balance";
-            this.txt_Balance.Size = new System.Drawing.Size(294, 29);
+            this.txt_Balance.Size = new System.Drawing.Size(136, 29);
             this.txt_Balance.TabIndex = 50;
             this.txt_Balance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -728,7 +737,7 @@
             // 
             this.txt_PrintCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.txt_PrintCopy.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_PrintCopy.Location = new System.Drawing.Point(730, 308);
+            this.txt_PrintCopy.Location = new System.Drawing.Point(733, 281);
             this.txt_PrintCopy.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_PrintCopy.Name = "txt_PrintCopy";
             this.txt_PrintCopy.Size = new System.Drawing.Size(142, 26);
@@ -740,7 +749,7 @@
             this.lbl_PrintCopy.AutoSize = true;
             this.lbl_PrintCopy.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_PrintCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.lbl_PrintCopy.Location = new System.Drawing.Point(749, 285);
+            this.lbl_PrintCopy.Location = new System.Drawing.Point(749, 307);
             this.lbl_PrintCopy.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbl_PrintCopy.Name = "lbl_PrintCopy";
             this.lbl_PrintCopy.Size = new System.Drawing.Size(107, 20);
@@ -764,7 +773,7 @@
             // 
             this.txt_Receiving.BackColor = System.Drawing.Color.Silver;
             this.txt_Receiving.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Receiving.Location = new System.Drawing.Point(116, 69);
+            this.txt_Receiving.Location = new System.Drawing.Point(100, 61);
             this.txt_Receiving.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Receiving.Name = "txt_Receiving";
             this.txt_Receiving.Size = new System.Drawing.Size(136, 29);
@@ -781,11 +790,11 @@
             this.groupBox2.Controls.Add(this.bt_Receiving);
             this.groupBox2.Controls.Add(this.txt_Balance);
             this.groupBox2.Controls.Add(this.txt_Receiving);
-            this.groupBox2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold);
-            this.groupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.groupBox2.Location = new System.Drawing.Point(456, 357);
+            this.groupBox2.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox2.ForeColor = System.Drawing.Color.Black;
+            this.groupBox2.Location = new System.Drawing.Point(456, 352);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(419, 135);
+            this.groupBox2.Size = new System.Drawing.Size(249, 131);
             this.groupBox2.TabIndex = 59;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "QTY Balance (Inventory)";
@@ -795,7 +804,7 @@
             this.label23.AutoSize = true;
             this.label23.Font = new System.Drawing.Font("Arial Narrow", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.label23.Location = new System.Drawing.Point(112, 103);
+            this.label23.Location = new System.Drawing.Point(99, 97);
             this.label23.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(137, 20);
@@ -805,24 +814,81 @@
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label22.Location = new System.Drawing.Point(25, 33);
+            this.label22.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label22.Location = new System.Drawing.Point(9, 29);
             this.label22.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(72, 22);
+            this.label22.Size = new System.Drawing.Size(67, 23);
             this.label22.TabIndex = 61;
             this.label22.Text = "Current";
             // 
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label21.Location = new System.Drawing.Point(25, 73);
+            this.label21.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label21.Location = new System.Drawing.Point(9, 67);
             this.label21.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(94, 22);
+            this.label21.Size = new System.Drawing.Size(85, 23);
             this.label21.TabIndex = 60;
             this.label21.Text = "Receiving";
+            // 
+            // checkSalesButton
+            // 
+            this.checkSalesButton.AutoSize = true;
+            this.checkSalesButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkSalesButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.checkSalesButton.Location = new System.Drawing.Point(462, 220);
+            this.checkSalesButton.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.checkSalesButton.Name = "checkSalesButton";
+            this.checkSalesButton.Size = new System.Drawing.Size(192, 22);
+            this.checkSalesButton.TabIndex = 60;
+            this.checkSalesButton.Text = "Show on Sales Button ?";
+            this.checkSalesButton.UseVisualStyleBackColor = true;
+            // 
+            // picForeColor
+            // 
+            this.picForeColor.BackColor = System.Drawing.Color.Black;
+            this.picForeColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.picForeColor.Location = new System.Drawing.Point(99, 28);
+            this.picForeColor.Name = "picForeColor";
+            this.picForeColor.Size = new System.Drawing.Size(35, 29);
+            this.picForeColor.TabIndex = 61;
+            this.picForeColor.TabStop = false;
+            this.picForeColor.Click += new System.EventHandler(this.picForeColor_Click);
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label24.Location = new System.Drawing.Point(18, 31);
+            this.label24.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(75, 20);
+            this.label24.TabIndex = 62;
+            this.label24.Text = "Fore Color";
+            // 
+            // picBackColor
+            // 
+            this.picBackColor.BackColor = System.Drawing.Color.White;
+            this.picBackColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.picBackColor.Location = new System.Drawing.Point(99, 57);
+            this.picBackColor.Name = "picBackColor";
+            this.picBackColor.Size = new System.Drawing.Size(35, 29);
+            this.picBackColor.TabIndex = 63;
+            this.picBackColor.TabStop = false;
+            this.picBackColor.Click += new System.EventHandler(this.picBackColor_Click);
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label25.Location = new System.Drawing.Point(18, 61);
+            this.label25.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(77, 20);
+            this.label25.TabIndex = 64;
+            this.label25.Text = "Back Color";
             // 
             // bt_Receiving
             // 
@@ -830,14 +896,15 @@
             this.bt_Receiving.CornerRadius = 30;
             this.bt_Receiving.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
             this.bt_Receiving.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.bt_Receiving.Location = new System.Drawing.Point(268, 69);
+            this.bt_Receiving.Location = new System.Drawing.Point(271, 54);
             this.bt_Receiving.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Receiving.Name = "bt_Receiving";
             this.bt_Receiving.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Receiving.Size = new System.Drawing.Size(142, 54);
+            this.bt_Receiving.Size = new System.Drawing.Size(142, 44);
             this.bt_Receiving.TabIndex = 58;
             this.bt_Receiving.Text = "Receiving";
+            this.bt_Receiving.Visible = false;
             this.bt_Receiving.Click += new System.EventHandler(this.bt_Receiving_Click);
             // 
             // bt_RprintLabel
@@ -845,7 +912,7 @@
             this.bt_RprintLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.bt_RprintLabel.CornerRadius = 30;
             this.bt_RprintLabel.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_RprintLabel.Location = new System.Drawing.Point(730, 233);
+            this.bt_RprintLabel.Location = new System.Drawing.Point(730, 232);
             this.bt_RprintLabel.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_RprintLabel.Name = "bt_RprintLabel";
             this.bt_RprintLabel.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -860,7 +927,7 @@
             this.bt_Delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.bt_Delete.CornerRadius = 30;
             this.bt_Delete.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Delete.Location = new System.Drawing.Point(730, 176);
+            this.bt_Delete.Location = new System.Drawing.Point(733, 176);
             this.bt_Delete.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Delete.Name = "bt_Delete";
             this.bt_Delete.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -914,24 +981,43 @@
             this.bt_Save.Text = "Save";
             this.bt_Save.Click += new System.EventHandler(this.bt_Save_Click);
             // 
-            // checkSalesButton
+            // btButtonColor
             // 
-            this.checkSalesButton.AutoSize = true;
-            this.checkSalesButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkSalesButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.checkSalesButton.Location = new System.Drawing.Point(462, 220);
-            this.checkSalesButton.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.checkSalesButton.Name = "checkSalesButton";
-            this.checkSalesButton.Size = new System.Drawing.Size(192, 22);
-            this.checkSalesButton.TabIndex = 60;
-            this.checkSalesButton.Text = "Show on Sales Button ?";
-            this.checkSalesButton.UseVisualStyleBackColor = true;
+            this.btButtonColor.BackColor = System.Drawing.Color.DarkGray;
+            this.btButtonColor.CornerRadius = 5;
+            this.btButtonColor.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btButtonColor.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btButtonColor.Location = new System.Drawing.Point(16, 89);
+            this.btButtonColor.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.btButtonColor.Name = "btButtonColor";
+            this.btButtonColor.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.btButtonColor.Size = new System.Drawing.Size(129, 29);
+            this.btButtonColor.TabIndex = 65;
+            this.btButtonColor.Text = "TEST";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.btButtonColor);
+            this.groupBox3.Controls.Add(this.label25);
+            this.groupBox3.Controls.Add(this.label24);
+            this.groupBox3.Controls.Add(this.picBackColor);
+            this.groupBox3.Controls.Add(this.picForeColor);
+            this.groupBox3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold);
+            this.groupBox3.Location = new System.Drawing.Point(711, 352);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(158, 131);
+            this.groupBox3.TabIndex = 66;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Button Color";
             // 
             // frmProduct
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 643);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.checkSalesButton);
             this.Controls.Add(this.txt_PrintCopy);
             this.Controls.Add(this.groupBox2);
@@ -990,6 +1076,10 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picForeColor)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBackColor)).EndInit();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1066,5 +1156,11 @@
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.CheckBox checkSalesButton;
+        private System.Windows.Forms.PictureBox picForeColor;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.PictureBox picBackColor;
+        private System.Windows.Forms.Label label25;
+        private SDCafeCommon.Utilities.CustomButton btButtonColor;
+        private System.Windows.Forms.GroupBox groupBox3;
     }
 }

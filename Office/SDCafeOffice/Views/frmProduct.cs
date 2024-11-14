@@ -33,6 +33,8 @@ namespace SDCafeOffice.Views
         public string m_strUserPass;
         public string m_strStation;
         private bool m_blnOnSave;
+        private Color m_ButtonBackColor;
+        private Color m_ButtonForeColor;
 
         public frmProduct()
         {
@@ -166,12 +168,37 @@ namespace SDCafeOffice.Views
                     cb_PromDay2.Items.Add(prods[0].PromoDay2.ToString());
                     cb_PromDay2.SelectedIndex = 0;
                 }
-                if (prods[0].PromoDay2 > 0)
+                if (prods[0].PromoDay3 > 0)
                 {
                     cb_PromDay3.Items.Add(prods[0].PromoDay3.ToString());
                     cb_PromDay3.SelectedIndex = 0;
                 }
 
+                if (string.IsNullOrEmpty(prods[0].ForeColor))
+                {
+                    picForeColor.BackColor = Color.Black;
+                    m_ButtonForeColor = Color.Black;
+                }
+                else
+                {
+                    // convert prods[0].ForeColor rgb string to color
+                    picForeColor.BackColor = Color.FromArgb(int.Parse(prods[0].ForeColor));
+                    m_ButtonForeColor = Color.FromArgb(int.Parse(prods[0].ForeColor));
+                }
+                if (string.IsNullOrEmpty(prods[0].BackColor))
+                {
+                    picBackColor.BackColor = Color.White;
+                    m_ButtonBackColor = Color.White;
+                }
+                else
+                {
+                    // convert prods[0].BackColor rgb string to color
+                    picBackColor.BackColor = Color.FromArgb(int.Parse(prods[0].BackColor));
+                    m_ButtonBackColor = Color.FromArgb(int.Parse(prods[0].BackColor));
+                }
+                btButtonColor.BackColor = m_ButtonBackColor;
+                btButtonColor.ForeColor = m_ButtonForeColor;
+                btButtonColor.Text = prods[0].ProductName;
 
             }
 
@@ -257,6 +284,7 @@ namespace SDCafeOffice.Views
 
             if (txt_Memo.Text.Length > 500) txt_Memo.Text = txt_Memo.Text.Substring(0, 500);
 
+
             prods.Clear();
             prods.Add(new POS_ProductModel()
             {
@@ -292,7 +320,9 @@ namespace SDCafeOffice.Views
                 Balance = int.Parse(txt_Balance.Text),
                 BarCode = txt_BarCode.Text,
                 IsMainSalesButton = checkMainSalesButton.Checked,
-                IsSalesButton = checkSalesButton.Checked
+                IsSalesButton = checkSalesButton.Checked,
+                ForeColor = m_ButtonForeColor.ToArgb().ToString(),
+                BackColor = m_ButtonBackColor.ToArgb().ToString()
             });
             int iProdCnt = dbPOS.Update_Product(prods[0]);
             if (string.IsNullOrEmpty(txt_BarCode.Text))
@@ -355,7 +385,8 @@ namespace SDCafeOffice.Views
             if (String.IsNullOrEmpty(txt_Balance.Text)) txt_Balance.Text = "0";
 
             if (txt_Memo.Text.Length > 500) txt_Memo.Text = txt_Memo.Text.Substring(0, 500);
-                
+
+
             prods.Add(new POS_ProductModel()
             {
                 ProductName = txt_ProductName.Text,
@@ -389,7 +420,9 @@ namespace SDCafeOffice.Views
                 IsManualItem = checkManual.Checked,
                 Balance = int.Parse(txt_Balance.Text),
                 IsMainSalesButton = checkMainSalesButton.Checked,
-                IsSalesButton = checkSalesButton.Checked
+                IsSalesButton = checkSalesButton.Checked,
+                ForeColor = m_ButtonForeColor.ToArgb().ToString(),
+                BackColor = m_ButtonBackColor.ToArgb().ToString()
 
             });
             int iProdId = dbPOS.Insert_Product(prods[0]);
@@ -591,7 +624,35 @@ namespace SDCafeOffice.Views
 
         private void bt_Receiving_Click(object sender, EventArgs e)
         {
+            txt_Receiving_KeyPress(sender, new KeyPressEventArgs((char)Keys.Enter));
+        }
 
+        private void picForeColor_Click(object sender, EventArgs e)
+        {
+            ColorDialog clrDialog = new ColorDialog();
+
+            //show the colour dialog and check that user clicked ok
+            if (clrDialog.ShowDialog() == DialogResult.OK)
+            {
+                //save the colour that the user chose
+                m_ButtonForeColor = clrDialog.Color;
+                picForeColor.BackColor = m_ButtonForeColor;
+            }
+            btButtonColor.ForeColor = m_ButtonForeColor;
+        }
+
+        private void picBackColor_Click(object sender, EventArgs e)
+        {
+            ColorDialog clrDialog = new ColorDialog();
+
+            //show the colour dialog and check that user clicked ok
+            if (clrDialog.ShowDialog() == DialogResult.OK)
+            {
+                //save the colour that the user chose
+                m_ButtonBackColor = clrDialog.Color;
+                picBackColor.BackColor = m_ButtonBackColor;
+            }
+            btButtonColor.BackColor = m_ButtonBackColor;
         }
     }
 }
