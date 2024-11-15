@@ -69,6 +69,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.lbl_TypePages = new System.Windows.Forms.Label();
             this.pnlSideBar = new System.Windows.Forms.Panel();
+            this.bt_Office = new SDCafeCommon.Utilities.CustomButton();
             this.bt_RecallOrder = new SDCafeCommon.Utilities.CustomButton();
             this.bt_SaveOrder = new SDCafeCommon.Utilities.CustomButton();
             this.bt_OpenCashDrawer = new SDCafeCommon.Utilities.CustomButton();
@@ -501,6 +502,7 @@
             // 
             this.pnlSideBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.pnlSideBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlSideBar.Controls.Add(this.bt_Office);
             this.pnlSideBar.Controls.Add(this.bt_RecallOrder);
             this.pnlSideBar.Controls.Add(this.bt_SaveOrder);
             this.pnlSideBar.Controls.Add(this.bt_OpenCashDrawer);
@@ -516,6 +518,23 @@
             this.pnlSideBar.Name = "pnlSideBar";
             this.pnlSideBar.Size = new System.Drawing.Size(145, 689);
             this.pnlSideBar.TabIndex = 58;
+            // 
+            // bt_Office
+            // 
+            this.bt_Office.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.bt_Office.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.bt_Office.CornerRadius = 5;
+            this.bt_Office.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
+            this.bt_Office.ForeColor = System.Drawing.Color.Black;
+            this.bt_Office.Location = new System.Drawing.Point(13, 239);
+            this.bt_Office.Name = "bt_Office";
+            this.bt_Office.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_Office.Size = new System.Drawing.Size(116, 47);
+            this.bt_Office.TabIndex = 68;
+            this.bt_Office.Text = "Back Office";
+            this.bt_Office.Click += new System.EventHandler(this.bt_SalesReport_Click);
             // 
             // bt_RecallOrder
             // 
@@ -1186,6 +1205,7 @@
         private System.Windows.Forms.Label lblBarCode;
         private SDCafeCommon.Utilities.CustomButton bt_NumTypeToggle;
         private SDCafeCommon.Utilities.CustomButton bt_LastReprint;
+        private SDCafeCommon.Utilities.CustomButton bt_Office;
     }
 }
 

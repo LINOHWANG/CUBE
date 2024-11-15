@@ -299,6 +299,7 @@ namespace SDCafeSales.Views
             m_ImageList.Images.Add(Properties.Resources.Invoice_40dp);              //7
             m_ImageList.Images.Add(Properties.Resources.payments_40dp);             //8
             m_ImageList.Images.Add(Properties.Resources.Cash_Refund);             //9
+            m_ImageList.Images.Add(Properties.Resources.settings_42x42_Black);             //10
 
             bt_Exit.ImageList = m_ImageList;
             bt_Exit.ImageIndex = 1;
@@ -351,6 +352,11 @@ namespace SDCafeSales.Views
             bt_LastReprint.Text = "Re-Print" + System.Environment.NewLine + "Last" + System.Environment.NewLine + "Tran";
             bt_LastReprint.TextAlign = ContentAlignment.MiddleRight;
 
+            bt_Office.ImageList = m_ImageList;
+            bt_Office.ImageIndex = 10;
+            bt_Office.ImageAlign = ContentAlignment.MiddleLeft;
+            bt_Office.Text = "Office";
+            bt_Office.TextAlign = ContentAlignment.MiddleRight;
 
             Check_AutoReceipt(false);
             Show_AutoReceipt_Button();
@@ -3282,7 +3288,38 @@ namespace SDCafeSales.Views
             {
                 // Error 
                 util.Logger("Product does not exits : barCode = " + strBarCode);
-                MessageBox.Show("Product does not exits : barCode = " + strBarCode);
+                //MessageBox.Show("Product does not exits : barCode = " + strBarCode);
+                //
+                using (var FrmYesNo = new frmYesNo(this))
+                {
+                    FrmYesNo.Set_Title("POS Sales Main");
+                    FrmYesNo.Set_Message("Product does not exits !" + System.Environment.NewLine + "BarCode = " + strBarCode + System.Environment.NewLine + "Do you want to Add this Product ?");
+                    FrmYesNo.StartPosition = FormStartPosition.Manual; // FormStartPosition.CenterScreen; //
+                    FrmYesNo.Location = new Point((Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2,
+                              (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2); //Screen.PrimaryScreen.Bounds.Location;
+                    FrmYesNo.ShowDialog();
+
+                    if (FrmYesNo.bYesNo)
+                    {
+                        // Open frmAddProduct
+                        using (var FrmAddProduct = new frmAddProduct(this))
+                        {
+                            FrmAddProduct.Set_BarCode(strBarCode);
+                            FrmAddProduct.StartPosition = FormStartPosition.Manual; // FormStartPosition.CenterScreen; //
+                            FrmAddProduct.Location = new Point((Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2,
+                                      (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2); //Screen.PrimaryScreen.Bounds.Location;
+                            FrmAddProduct.ShowDialog();
+
+                            if (FrmAddProduct.m_bAddNow == true)
+                            {
+                                // Add Order
+                                int iNewProdId = dbPOS.Insert_Product(FrmAddProduct.p_NewProduct);
+                                if (iNewProdId > 0) Add_Order_BarCode(strBarCode);
+                            }
+                        }
+
+                    }
+                }
                 strBarCode = "";
                 txtBarCode.Text = "";   //Bug #2551
                 return false;
@@ -4050,8 +4087,10 @@ namespace SDCafeSales.Views
                 {
                     if (row.Selected)
                     {
-                        int iSelectedProdId = System.Convert.ToInt32(row.Cells[0].Value.ToString());
-                        int iSelectedOrderId = System.Convert.ToInt32(row.Cells[5].Value.ToString());
+                        //int iSelectedProdId = System.Convert.ToInt32(row.Cells[0].Value.ToString());
+                        //int iSelectedOrderId = System.Convert.ToInt32(row.Cells[5].Value.ToString());
+                        int iSelectedProdId = System.Convert.ToInt32(row.Cells[7].Value.ToString());
+                        int iSelectedOrderId = System.Convert.ToInt32(row.Cells[6].Value.ToString());
                         int iSelectedTagId = 0;
                         if (row.Tag!=null)
                         {
@@ -6110,8 +6149,10 @@ namespace SDCafeSales.Views
                 {
                     if (row.Selected)
                     {
-                        int iSelectedProdId = System.Convert.ToInt32(row.Cells[0].Value.ToString());
-                        int iSelectedOrderId = System.Convert.ToInt32(row.Cells[5].Value.ToString());
+                        //int iSelectedProdId = System.Convert.ToInt32(row.Cells[0].Value.ToString());
+                        //int iSelectedOrderId = System.Convert.ToInt32(row.Cells[5].Value.ToString());
+                        int iSelectedProdId = System.Convert.ToInt32(row.Cells[7].Value.ToString());
+                        int iSelectedOrderId = System.Convert.ToInt32(row.Cells[6].Value.ToString());
 
                         DataAccessPOS dbPOS = new DataAccessPOS();
                         Double dblDueAmount = dbPOS.Get_Order_Amount_By_OrderId(iNewInvNo, iSelectedOrderId);
@@ -7191,6 +7232,34 @@ namespace SDCafeSales.Views
             POS1_TranCollectionModel col = dbPOS1.Get_Last_TranCollection();
             iNewInvNo = col.InvoiceNo;
             Print_Receipt(false, true);
+
+        }
+
+        private void bt_SalesReport_Click(object sender, EventArgs e)
+        {
+            this.TopMost = false;
+            this.Hide();
+            // Open Sales Report Form frmSalesReport on SDCafeKitchen project
+            SDCafeOffice.frmLogOn frmOffice = new SDCafeOffice.frmLogOn();
+            // show the form on the center of primary monitor 
+            frmOffice.StartPosition = FormStartPosition.CenterScreen;
+            frmOffice.ShowDialog();
+
+            // get all forms opened
+            FormCollection fc = Application.OpenForms;
+            foreach (Form frm in fc)
+            {
+                if ((frm.Name == "frmLogOn") && (frm.ProductName == "SDCafeOffice"))
+                {
+                    frm.WindowState = FormWindowState.Normal;
+                    frm.Dispose();
+                    break;
+                }
+            }
+
+            this.Show();
+            this.TopMost = true;
+            this.BringToFront();
 
         }
     }

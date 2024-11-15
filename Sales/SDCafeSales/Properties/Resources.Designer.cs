@@ -273,6 +273,26 @@ namespace SDCafeSales.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap settings_32x32_Black {
+            get {
+                object obj = ResourceManager.GetObject("settings_32x32_Black", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap settings_42x42_Black {
+            get {
+                object obj = ResourceManager.GetObject("settings_42x42_Black", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap Shopping_Basket_with_Foods {
             get {
                 object obj = ResourceManager.GetObject("Shopping_Basket_with_Foods", resourceCulture);

@@ -48,6 +48,7 @@ namespace SDCafeOffice
 
         private void frmLogOn_Load(object sender, EventArgs e)
         {
+            CenterScreen(this);
             //this.Top = Screen.PrimaryScreen.WorkingArea.Size.Height / 2 - (this.Height / 2);
             //this.Left = Screen.PrimaryScreen.WorkingArea.Size.Width / 2 - (this.Width / 2);
             //lbl_Titie.Text = "Welcom to AB SD Cafeteria Office Module";
@@ -139,6 +140,22 @@ namespace SDCafeOffice
             txtPassCode.Focus();
             pnlNums.Enabled = true; // not need now to this button now 
         }
+        private void CenterScreen(Form frm)
+        {
+            // Get the Width and Height of the form
+            int frm_width = frm.Width;
+            int frm_height = frm.Height;
+
+            //Get the Width and Height (resolution) 
+            //     of the screen
+            System.Windows.Forms.Screen src = System.Windows.Forms.Screen.PrimaryScreen;
+            int src_height = src.Bounds.Height;
+            int src_width = src.Bounds.Width;
+
+            //put the form in the center
+            frm.Left = (src_width - frm_width) / 2;
+            frm.Top = (src_height - frm_height) / 2;
+        }
         public void ClickNumberButton(Object sender, System.EventArgs e)
         {
             //Button btn = (Button)sender;
@@ -159,9 +176,12 @@ namespace SDCafeOffice
                     this.Hide();
                     FrmMain = new frmMain();
                     FrmMain.Set_PassCode(txtPassCode.Text);
-                    FrmMain.Show();
+                    FrmMain.ShowDialog();
                     strPassCode = string.Empty;
                     txtPassCode.Text = strPassCode;
+
+                    this.Close();
+
                 }
                 else
                 {
@@ -178,7 +198,7 @@ namespace SDCafeOffice
             if (btn.Text == "Exit")  // OK
             {
                 this.Close();
-                Application.Exit();
+                //Application.Exit();
                 return;
             }
 

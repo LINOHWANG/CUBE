@@ -103,6 +103,12 @@
     <Compile Include="Views\frmLogOn.Designer.cs">
       <DependentUpon>frmLogOn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\frmAddProduct.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\frmAddProduct.Designer.cs">
+      <DependentUpon>frmAddProduct.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\frmManualPrice.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -160,6 +166,9 @@
     <EmbeddedResource Include="Views\frmLogOn.resx">
       <DependentUpon>frmLogOn.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\frmAddProduct.resx">
+      <DependentUpon>frmAddProduct.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\frmManualPrice.resx">
       <DependentUpon>frmManualPrice.cs</DependentUpon>
     </EmbeddedResource>
@@ -206,6 +215,10 @@
       <Project>{7A4349FD-7477-462F-A50C-979AF1E0E5FB}</Project>
       <Name>SDCafeKitchen</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Office\SDCafeOffice\SDCafeOffice.csproj">
+      <Project>{3c6bb662-25e3-4af6-942e-6af32d7b692c}</Project>
+      <Name>SDCafeOffice</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Alberta-logo-goa.png" />
@@ -244,6 +257,8 @@
     <None Include="Resources\receipt_40dp.png" />
     <None Include="Resources\search_40dp.png" />
     <None Include="Resources\void_block_40dp.png" />
+    <None Include="Resources\settings_32x32_Black.png" />
+    <None Include="Resources\settings_42x42_Black.png" />
     <Content Include="tse_sales_20200707.ico" />
   </ItemGroup>
   <ItemGroup>
