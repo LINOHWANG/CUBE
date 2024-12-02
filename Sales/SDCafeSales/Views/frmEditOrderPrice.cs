@@ -207,9 +207,20 @@ namespace SDCafeSales.Views
             {
                 //this.Show();
                 strNewPrice = txt_NewPrice.Text;
-                dblNewAmount = Convert.ToDouble(strNewPrice);
-                bEditNow = true;
-                this.Close();
+                if (strNewPrice != "")
+                {
+                    dblNewAmount = Convert.ToDouble(strNewPrice);
+                    bEditNow = true;
+                    this.Close();
+                    return;
+                }
+                else
+                {
+                    dblNewAmount = p_Amount;
+                    bEditNow = true;
+                    this.Close();
+                    return;
+                }
                 return;
             }
             if (btn.Text == "DEL")  // DELETE

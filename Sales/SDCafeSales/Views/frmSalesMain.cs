@@ -6496,19 +6496,34 @@ namespace SDCafeSales.Views
                         {
                             orders[0].Tax1 = (float)(dblNewAmount * orders[0].Tax1Rate);
                         }
-                        else orders[0].Tax1 = 0;
+                        else
+                        {
+                            orders[0].Tax1 = 0;
+                        }
                         if (bManualTax2)
                         {
                             orders[0].Tax2 = (float)(dblNewAmount * orders[0].Tax2Rate);
                         }
-                        else orders[0].Tax2 = 0;
+                        else
+                        {
+                            orders[0].Tax2 = 0;
+                        }
                         if (bManualTax3)
                         {
                             orders[0].Tax3 = (float)(dblNewAmount * orders[0].Tax3Rate);
                         }
-                        else orders[0].Tax3 = 0;
+                        else
+                        {
+                            orders[0].Tax3 = 0;
+                        }
+                        orders[0].IsTax1 = bManualTax1;
+                        orders[0].IsTax2 = bManualTax2;
+                        orders[0].IsTax3 = bManualTax3;
+                        // Update Tax column of selected dgv_orders row
+
                         dbPOS.Update_Orders_Amount_Qty(orders[0]);
                         util.Logger(" ## Edit Price : " + orders[0].Id.ToString() + ", PRODID=" + orders[0].ProductId + ", New Amount = " + dblNewAmount.ToString());
+                        Calculate_Total_Due();
                     }
                 }
             }
@@ -6694,9 +6709,9 @@ namespace SDCafeSales.Views
                     ////////////////////////////////////////////////
                     float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
                     iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
-                    strTaxShort += prods[0].IsTax1 ? strTax1Name.Substring(0, 1) : "";
-                    strTaxShort += prods[0].IsTax2 ? strTax2Name.Substring(0, 1) : "";
-                    strTaxShort += prods[0].IsTax3 ? strTax3Name.Substring(0, 1) : "";
+                    strTaxShort += orders[0].IsTax1 ? strTax1Name.Substring(0, 1) : "";
+                    strTaxShort += orders[0].IsTax2 ? strTax2Name.Substring(0, 1) : "";
+                    strTaxShort += orders[0].IsTax3 ? strTax3Name.Substring(0, 1) : "";
                     this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                strManualName,
                                                                                orders[0].Quantity.ToString("0"),

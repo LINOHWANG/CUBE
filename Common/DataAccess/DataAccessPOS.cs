@@ -836,6 +836,9 @@ namespace SDCafeCommon.DataAccess
                                         "Tax1=CAST(@Tax1 as decimal(10,2)), " +
                                         "Tax2=CAST(@Tax2 as decimal(10,2)), " +
                                         "Tax3=CAST(@Tax3 as decimal(10,2)), " +
+                                        "IsTax1=@IsTax1, " +
+                                        "IsTax2=@IsTax2, " +
+                                        "IsTax3=@IsTax3, " +
                                         "OrderCategoryId=@OrderCategoryId " +
                             " WHERE Id=@Id";
                 var count = connection.Execute(query, pos_OrdersModel);

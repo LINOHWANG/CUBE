@@ -14,6 +14,7 @@ using SDCafeOffice.Views;
 using SDCafeOffice;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
+using System.Threading;
 
 namespace SDCafeOffice
 {
@@ -61,6 +62,7 @@ namespace SDCafeOffice
         public string strUserID;
         public string strUserName;
 
+        private bool _stopLoop;
         //private bool isSystem = false;
         public frmMain()
         {
@@ -79,6 +81,8 @@ namespace SDCafeOffice
             chk_IsMainSales.Checked = false;
             chk_IsSales.Checked = true;
             chk_IsManual.Checked = false;
+
+            bt_Stop.Visible = false;
 
             Load_System_Info();
             Load_PType_Combo_Contents();
@@ -1172,87 +1176,32 @@ namespace SDCafeOffice
             }
         }
 
-        private void bt_ProductExport_Click(object sender, EventArgs e)
+        private async void bt_ProductExport_Click(object sender, EventArgs e)
         {
+            EnableDisableButtons(false);
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Excel Documents (*.xls)|*.xls";
-            sfd.FileName = "Product_Inventory_" + DateTime.Now.ToString("yyyyMMddHHMMss") + ".xls";
+            sfd.FileName = "Product_Inventory_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                Cursor.Current = Cursors.WaitCursor;
+                _stopLoop = false;
+                bt_Stop.Visible = true;
+
                 //show progressbar
                 progBarExport.Visible = true;
                 progBarExport.Value = 0;
                 // set backcolor of progressbar
                 progBarExport.BackColor = Color.LightGreen;
                 progBarExport.Style = ProgressBarStyle.Continuous;
-                // creating Excel Application  
-                Microsoft.Office.Interop.Excel._Application app = new Microsoft.Office.Interop.Excel.Application();
-                // creating new WorkBook within Excel application  
-                Microsoft.Office.Interop.Excel._Workbook workbook = app.Workbooks.Add(Type.Missing);
-                // creating new Excelsheet in workbook  
-                Microsoft.Office.Interop.Excel._Worksheet worksheet = null;
-                // see the excel sheet behind the program  
-                app.Visible = false;
-                // get the reference of first sheet. By default its name is Sheet1.  
-                // store its reference to worksheet  
-                worksheet = workbook.Sheets["Sheet1"];
-                worksheet = workbook.ActiveSheet;
-                // changing the name of active sheet  
-                worksheet.Name = "Exported from gridview";
-                // storing header part in Excel  
-                for (int i = 1; i < dgvData.Columns.Count + 1; i++)
-                {
-                    worksheet.Cells[1, i] = dgvData.Columns[i - 1].HeaderText;
-                }
-                // set background color of the header cell
-                worksheet.Rows[1].Interior.Color = Color.LightBlue;
-                // storing Each row and column value to excel sheet  
-                //set progBarExport maximum value
-                progBarExport.Maximum = dgvData.Rows.Count -1;
-                for (int i = 0; i < dgvData.Rows.Count - 1; i++)
-                {
-                    progBarExport.Value = i;
-                    progBarExport.Refresh();
-                    for (int j = 0; j < dgvData.Columns.Count; j++)
-                    {
-                        // cells format to text
-                        worksheet.Cells[i + 2, j + 1].NumberFormat = "@";
-                        worksheet.Cells[i + 2, j + 1] = dgvData.Rows[i].Cells[j].Value.ToString();
-                        // Set the same background color on worksheet as dgvData's colume
-                        //worksheet.Rows[i + 2].Interior.Color = dgvData.Rows[i].Cells[j].Style.BackColor;
-                        Color cellColor = dgvData.Rows[i].Cells[j].Style.BackColor;
-                        Color rowColor = dgvData.Rows[i].DefaultCellStyle.BackColor;//Color.FromArgb(0, 0, 0, 0);
-                        if (!rowColor.IsEmpty)
-                            worksheet.Cells[i + 2, j + 1].Interior.Color = rowColor;
-                        if (!cellColor.IsEmpty)
-                            worksheet.Cells[i + 2, j + 1].Interior.Color = cellColor;
-                    }
-                }
+                string strPtype = cb_PType.Text;
 
-                // insert Title row on top of the sheet
-                worksheet.Rows[1].Insert();
-                worksheet.Cells[1, 1] = "Date/Time Exported : " + DateTime.Now.ToString("G");
-                worksheet.Rows[1].Insert();
-                worksheet.Cells[1, 1] = "Product Inventory : " + cb_PType.Text;
-                // set bold font for the title
-                worksheet.Cells[1, 1].Font.Bold = true;
-
-                // save the application  
-                workbook.SaveAs(sfd.FileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                // Exit from the application  
-                app.Visible = false;
-                app.Quit();
-
-                releaseObject(worksheet);
-                releaseObject(workbook);
-                releaseObject(app);
-
+                await Task.Run(() => ExportProduct(sfd, strPtype));
+                
                 progBarExport.Visible = false;
-                Cursor.Current = Cursors.Default;
+                bt_Stop.Visible = false;
                 // Open the newly saved excel file
                 if (File.Exists(sfd.FileName))
-                { 
+                {
                     // copy the file to the temp folder
                     string strTempPath = Path.GetTempPath();
                     string strTempFile = strTempPath + Path.GetFileName(sfd.FileName);
@@ -1288,8 +1237,96 @@ namespace SDCafeOffice
                 }
 
             }
+            EnableDisableButtons(true);
 
         }
+
+        private void EnableDisableButtons(bool p_Enable)
+        {
+            bt_ProductExport.Enabled = p_Enable;
+            bt_Product.Enabled = p_Enable;
+            bt_ProductImport.Enabled = p_Enable;
+        }
+
+        private void ExportProduct(SaveFileDialog p_sfd, string p_strPType)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+
+            // creating Excel Application  
+            Microsoft.Office.Interop.Excel._Application app = new Microsoft.Office.Interop.Excel.Application();
+            // creating new WorkBook within Excel application  
+            Microsoft.Office.Interop.Excel._Workbook workbook = app.Workbooks.Add(Type.Missing);
+            // creating new Excelsheet in workbook  
+            Microsoft.Office.Interop.Excel._Worksheet worksheet = null;
+            // see the excel sheet behind the program  
+            app.Visible = false;
+            // get the reference of first sheet. By default its name is Sheet1.  
+            // store its reference to worksheet  
+            worksheet = workbook.Sheets["Sheet1"];
+            worksheet = workbook.ActiveSheet;
+            // changing the name of active sheet  
+            worksheet.Name = "Exported from gridview";
+            // storing header part in Excel  
+            for (int i = 1; i < dgvData.Columns.Count + 1; i++)
+            {
+                worksheet.Cells[1, i] = dgvData.Columns[i - 1].HeaderText;
+            }
+            // set background color of the header cell
+            worksheet.Rows[1].Interior.Color = Color.LightBlue;
+            // storing Each row and column value to excel sheet  
+            //set progBarExport maximum value
+            progBarExport.Maximum = dgvData.Rows.Count - 1;
+            for (int i = 0; i < dgvData.Rows.Count - 1; i++)
+            {
+
+                if (_stopLoop) break;
+                float fPercent = ((float)i / (float)dgvData.Rows.Count) * 100;
+                Invoke(new Action(() =>
+                {
+                    progBarExport.Value = i;
+                    progBarExport.Refresh();
+                    // show percentage of progress on the bt_Stop
+                    bt_Stop.Text = "Stop ( Exporting " + fPercent.ToString("0.00") + "% ... )";
+                }));
+                
+                for (int j = 0; j < dgvData.Columns.Count; j++)
+                {
+                    // cells format to text
+                    worksheet.Cells[i + 2, j + 1].NumberFormat = "@";
+                    worksheet.Cells[i + 2, j + 1] = dgvData.Rows[i].Cells[j].Value.ToString();
+                    // Set the same background color on worksheet as dgvData's colume
+                    //worksheet.Rows[i + 2].Interior.Color = dgvData.Rows[i].Cells[j].Style.BackColor;
+                    Color cellColor = dgvData.Rows[i].Cells[j].Style.BackColor;
+                    Color rowColor = dgvData.Rows[i].DefaultCellStyle.BackColor;//Color.FromArgb(0, 0, 0, 0);
+                    if (!rowColor.IsEmpty)
+                        worksheet.Cells[i + 2, j + 1].Interior.Color = rowColor;
+                    if (!cellColor.IsEmpty)
+                        worksheet.Cells[i + 2, j + 1].Interior.Color = cellColor;
+                }
+            }
+
+            // insert Title row on top of the sheet
+            worksheet.Rows[1].Insert();
+            worksheet.Cells[1, 1] = "Date/Time Exported : " + DateTime.Now.ToString("G");
+            worksheet.Rows[1].Insert();
+            worksheet.Cells[1, 1] = "Product Inventory : " + p_strPType;
+            // set bold font for the title
+            worksheet.Cells[1, 1].Font.Bold = true;
+
+            // save the application  
+            workbook.SaveAs(p_sfd.FileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            // Exit from the application  
+            app.Visible = false;
+            app.Quit();
+
+            releaseObject(worksheet);
+            releaseObject(workbook);
+            releaseObject(app);
+
+            Cursor.Current = Cursors.Default;
+        }
+
+
         private void releaseObject(object obj)
         {
             try
@@ -1311,6 +1348,11 @@ namespace SDCafeOffice
         internal void Set_PassCode(string p_PassCode)
         {
             strUserPass = p_PassCode;
+        }
+
+        private void bt_Stop_Click(object sender, EventArgs e)
+        {
+            _stopLoop = true;
         }
     }
 }

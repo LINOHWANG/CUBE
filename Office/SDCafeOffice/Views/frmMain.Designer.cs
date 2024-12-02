@@ -52,6 +52,7 @@
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_LoginUser = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Product = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_Stop = new SDCafeCommon.Utilities.CustomButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -357,11 +358,28 @@
             this.bt_Product.Text = "Product";
             this.bt_Product.Click += new System.EventHandler(this.bt_Product_Click);
             // 
+            // bt_Stop
+            // 
+            this.bt_Stop.BackColor = System.Drawing.Color.DarkRed;
+            this.bt_Stop.CornerRadius = 30;
+            this.bt_Stop.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_Stop.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.bt_Stop.Location = new System.Drawing.Point(433, 660);
+            this.bt_Stop.Name = "bt_Stop";
+            this.bt_Stop.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_Stop.Size = new System.Drawing.Size(295, 29);
+            this.bt_Stop.TabIndex = 50;
+            this.bt_Stop.Text = "Stop";
+            this.bt_Stop.Click += new System.EventHandler(this.bt_Stop_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.bt_Stop);
             this.Controls.Add(this.bt_ProductImport);
             this.Controls.Add(this.progBarExport);
             this.Controls.Add(this.bt_ProductExport);
@@ -423,5 +441,6 @@
         private System.Windows.Forms.CheckBox chk_IsManual;
         private System.Windows.Forms.CheckBox chk_IsMainSales;
         private System.Windows.Forms.CheckBox chk_IsSales;
+        private SDCafeCommon.Utilities.CustomButton bt_Stop;
     }
 }
