@@ -39,6 +39,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txt_BarCode = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cbBox_Category = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // pnlNums
@@ -48,16 +50,16 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlNums.AutoSize = true;
             this.pnlNums.BackColor = System.Drawing.SystemColors.Desktop;
-            this.pnlNums.Location = new System.Drawing.Point(12, 150);
+            this.pnlNums.Location = new System.Drawing.Point(12, 202);
             this.pnlNums.Name = "pnlNums";
-            this.pnlNums.Size = new System.Drawing.Size(459, 352);
+            this.pnlNums.Size = new System.Drawing.Size(459, 324);
             this.pnlNums.TabIndex = 16;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(11, 44);
+            this.label1.Location = new System.Drawing.Point(11, 84);
             this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(141, 22);
@@ -68,10 +70,10 @@
             // 
             this.txt_ProdlName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txt_ProdlName.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_ProdlName.Location = new System.Drawing.Point(164, 41);
+            this.txt_ProdlName.Location = new System.Drawing.Point(181, 81);
             this.txt_ProdlName.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_ProdlName.Name = "txt_ProdlName";
-            this.txt_ProdlName.Size = new System.Drawing.Size(307, 29);
+            this.txt_ProdlName.Size = new System.Drawing.Size(290, 29);
             this.txt_ProdlName.TabIndex = 17;
             this.txt_ProdlName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txt_ProdlName.Click += new System.EventHandler(this.txt_ProductName_Click);
@@ -80,7 +82,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(11, 116);
+            this.label2.Location = new System.Drawing.Point(11, 156);
             this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(99, 22);
@@ -91,18 +93,19 @@
             // 
             this.txt_UnitlPrice.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txt_UnitlPrice.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_UnitlPrice.Location = new System.Drawing.Point(164, 113);
+            this.txt_UnitlPrice.Location = new System.Drawing.Point(181, 153);
             this.txt_UnitlPrice.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_UnitlPrice.Name = "txt_UnitlPrice";
-            this.txt_UnitlPrice.Size = new System.Drawing.Size(307, 29);
+            this.txt_UnitlPrice.Size = new System.Drawing.Size(290, 29);
             this.txt_UnitlPrice.TabIndex = 19;
             this.txt_UnitlPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_UnitlPrice.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_UnitlPrice_KeyPress);
             // 
             // cb_Tax1
             // 
             this.cb_Tax1.AutoSize = true;
             this.cb_Tax1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cb_Tax1.Location = new System.Drawing.Point(164, 79);
+            this.cb_Tax1.Location = new System.Drawing.Point(181, 119);
             this.cb_Tax1.Name = "cb_Tax1";
             this.cb_Tax1.Size = new System.Drawing.Size(70, 26);
             this.cb_Tax1.TabIndex = 21;
@@ -114,7 +117,7 @@
             // 
             this.cb_Tax2.AutoSize = true;
             this.cb_Tax2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cb_Tax2.Location = new System.Drawing.Point(281, 79);
+            this.cb_Tax2.Location = new System.Drawing.Point(293, 119);
             this.cb_Tax2.Name = "cb_Tax2";
             this.cb_Tax2.Size = new System.Drawing.Size(68, 26);
             this.cb_Tax2.TabIndex = 22;
@@ -126,7 +129,7 @@
             // 
             this.cb_Tax3.AutoSize = true;
             this.cb_Tax3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cb_Tax3.Location = new System.Drawing.Point(403, 79);
+            this.cb_Tax3.Location = new System.Drawing.Point(403, 119);
             this.cb_Tax3.Name = "cb_Tax3";
             this.cb_Tax3.Size = new System.Drawing.Size(68, 26);
             this.cb_Tax3.TabIndex = 23;
@@ -138,7 +141,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(11, 79);
+            this.label3.Location = new System.Drawing.Point(11, 119);
             this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(44, 22);
@@ -160,18 +163,41 @@
             // 
             this.txt_BarCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txt_BarCode.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_BarCode.Location = new System.Drawing.Point(164, 5);
+            this.txt_BarCode.Location = new System.Drawing.Point(181, 5);
             this.txt_BarCode.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_BarCode.Name = "txt_BarCode";
-            this.txt_BarCode.Size = new System.Drawing.Size(307, 29);
+            this.txt_BarCode.Size = new System.Drawing.Size(290, 29);
             this.txt_BarCode.TabIndex = 25;
             this.txt_BarCode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(11, 46);
+            this.label5.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(156, 22);
+            this.label5.TabIndex = 27;
+            this.label5.Text = "Category / Type";
+            // 
+            // cbBox_Category
+            // 
+            this.cbBox_Category.Font = new System.Drawing.Font("Arial", 14.25F);
+            this.cbBox_Category.FormattingEnabled = true;
+            this.cbBox_Category.Location = new System.Drawing.Point(181, 43);
+            this.cbBox_Category.Name = "cbBox_Category";
+            this.cbBox_Category.Size = new System.Drawing.Size(290, 30);
+            this.cbBox_Category.TabIndex = 28;
+            this.cbBox_Category.SelectedIndexChanged += new System.EventHandler(this.cbBox_Category_SelectedIndexChanged);
             // 
             // frmAddProduct
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 514);
+            this.ClientSize = new System.Drawing.Size(484, 538);
+            this.Controls.Add(this.cbBox_Category);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txt_BarCode);
             this.Controls.Add(this.label3);
@@ -204,5 +230,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txt_BarCode;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox cbBox_Category;
     }
 }

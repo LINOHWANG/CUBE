@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using OpenFoodFacts4Net.Json;
+using SDCafeCommon.DataAccess;
 
 namespace SDCafeSales.Views
 {
@@ -31,6 +33,13 @@ namespace SDCafeSales.Views
         public bool p_IsTax1 { get; set; }
         public bool p_IsTax2 { get; set; }
         public bool p_IsTax3 { get; set; }
+        public string p_strCategory { get; set; }
+        //public string p_strSelectedType { get; set; }
+
+        OpenFoodFacts4Net.ApiClient.Client off_Apiclient = new OpenFoodFacts4Net.ApiClient.Client(); //Feature #3632
+        List<OpenFoodFacts4Net.Json.Data.Product> off_Products = new List<OpenFoodFacts4Net.Json.Data.Product>(); //Feature #3632
+        //List<OpenFoodFacts4Net.Json.Data.GetProductResponse> off_ProdResp = new List<OpenFoodFacts4Net.Json.Data.GetProductResponse>();
+        Task<OpenFoodFacts4Net.Json.Data.GetProductResponse> off_ProdResp = null; //Feature #3632
 
         public Color[] btColor =
 {
@@ -52,6 +61,7 @@ namespace SDCafeSales.Views
         private Process proc;
 
         public POS_ProductModel p_NewProduct = new POS_ProductModel();
+        private string p_strImageUrl;
 
         public frmAddProduct(frmSalesMain _FrmSalesMain)
         {
@@ -97,7 +107,7 @@ namespace SDCafeSales.Views
             txt_ProdlName.SelectAll();
         }
 
-        private void frmAddProduct_Load(object sender, EventArgs e)
+        private async void frmAddProduct_Load(object sender, EventArgs e)
         {
             //this.Top = Screen.PrimaryScreen.WorkingArea.Size.Height / 2 - (this.Height / 2);
             //this.Left = Screen.PrimaryScreen.WorkingArea.Size.Width / 2 - (this.Width / 2);
@@ -190,7 +200,9 @@ namespace SDCafeSales.Views
                 btnNums[n].Click += new System.EventHandler(ClickNumberButton);
                 n++;
             }
-            txt_UnitlPrice.Focus();
+
+            LookUpProductFromOpenFoodFacts();
+
             pnlNums.Enabled = true; // not need now to this button now 
 
             bTax1 = p_IsTax1;
@@ -208,11 +220,102 @@ namespace SDCafeSales.Views
             cb_Tax2.Checked = bTax2;
             cb_Tax3.Checked = bTax3;
 
+            LoadProductCategories();
+
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BringToFront();
             this.TopMost = true;
             this.TopMost = false;
         }
+        ////Feature #3632
+        private async void LookUpProductFromOpenFoodFacts()
+        {
+            try
+            {
+                off_ProdResp = off_Apiclient.GetProductAsync(m_strBarCode);
+                await Task.WhenAll(off_ProdResp);
+            }
+            catch (Exception ex)
+            {
+                util.Logger("Barcode Not found : " + ex.Message);
+                off_ProdResp = null;
+            }
+
+            if (off_ProdResp != null)
+            {
+                if (off_ProdResp.Result != null)
+                {
+                    if (off_ProdResp.Result.Product.ProductName != null)
+                        util.Logger("Product found : Product = " + off_ProdResp.Result.Product.ProductName);
+                    if (off_ProdResp.Result.Product.Categories != null)
+                        util.Logger("Product found : Categories = " + off_ProdResp.Result.Product.Categories);
+                    if (off_ProdResp.Result.Product.ImageUrl != null)
+                        util.Logger("Product found : ImageUrl = " + off_ProdResp.Result.Product.ImageUrl);
+                    if (off_ProdResp.Result.Product.ServingSize != null)
+                        util.Logger("Product found : ServingSize = " + off_ProdResp.Result.Product.ServingSize);
+
+                    if (off_ProdResp.Result.Product.Categories != "")
+                        p_strCategory = off_ProdResp.Result.Product.Categories;
+                    else
+                        p_strCategory = "";
+                    if (off_ProdResp.Result.Product.ImageUrl != "")
+                        p_strImageUrl = off_ProdResp.Result.Product.ImageUrl;
+                    else
+                        p_strImageUrl = "";
+                    if (off_ProdResp.Result.Product.ProductName != null)
+                    {
+                        if (off_ProdResp.Result.Product.ProductName != "")
+                            txt_ProdlName.Text = off_ProdResp.Result.Product.ProductName;
+                        else
+                            txt_ProdlName.Text = "";
+                    }
+                    txt_UnitlPrice.Focus();
+                }
+                else
+                {
+                    txt_ProdlName.Text = "";
+                    txt_ProdlName.Focus();
+                }
+            }
+            else
+            {
+                txt_ProdlName.Focus();
+            }
+        }
+
+        private void cbBox_Category_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox cmb = (ComboBox)sender;
+            int selectedIndex = cmb.SelectedIndex;
+            p_strCategory = (string)cmb.SelectedItem.ToString();
+        }
+
+        private void txt_UnitlPrice_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // if enter key is pressed
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                CustomButton btn = new CustomButton();
+                btn.Text = "OK";
+                ClickNumberButton(btn, e);
+            }
+        }
+
+        private void LoadProductCategories()
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            List<POS_ProductTypeModel>  prodTypes = new List<POS_ProductTypeModel>();
+            prodTypes = dbPOS.Get_All_ProductTypes();
+            if (prodTypes.Count > 0)
+            {
+                cbBox_Category.Items.Clear();
+                foreach (POS_ProductTypeModel prodType in prodTypes)
+                {
+                    cbBox_Category.Items.Add(prodType.TypeName);
+                }
+            }
+        }
+
         private void ClickNumberButton(object sender, EventArgs e)
         {
             //Button btn = (Button)sender;
@@ -231,6 +334,7 @@ namespace SDCafeSales.Views
                 //this.Show();
                 m_strProductName = txt_ProdlName.Text;
                 m_strNewPrice = txt_UnitlPrice.Text;
+                if (m_strNewPrice == "") return;
                 m_dblUnitPrice = Convert.ToDouble(m_strNewPrice);
                 bTax1 = cb_Tax1.Checked;
                 bTax2 = cb_Tax2.Checked;
@@ -268,9 +372,25 @@ namespace SDCafeSales.Views
                 p_NewProduct.PromoPrice2 = 0;
                 p_NewProduct.PromoPrice3 = 0;
                 p_NewProduct.IsTaxInverseCalculation = false;
-
-
-
+                // Check Product Type
+                if (p_strCategory != "")
+                {
+                    DataAccessPOS dbPOS = new DataAccessPOS();
+                    List<POS_ProductTypeModel> prodTypes = new List<POS_ProductTypeModel>();
+                    prodTypes = dbPOS.Get_ProductTypeId_By_TypeName(p_strCategory);
+                    if (prodTypes.Count > 0)
+                    {
+                        p_NewProduct.ProductTypeId = prodTypes[0].Id;
+                    }
+                    else
+                    {
+                        p_NewProduct.ProductTypeId = 0;
+                    }
+                }
+                else
+                {
+                    p_NewProduct.ProductTypeId = 0;
+                }
                 m_bAddNow = true;
                 this.Close();
                 return;
