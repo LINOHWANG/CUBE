@@ -2517,13 +2517,21 @@ namespace SDCafeSales.Views
                     pnlMenu.Controls.Add(btnArray[n]);  // Let panel hold the Buttons 
                     xPos = xPos + btnArray[n].Width + 5;    // Left of next button 
                                                             // Write English Character: 
-                                                            /* **************************************************************** 
-                                                                Menu item button text
-                                                            //**************************************************************** */
+                    /* **************************************************************** 
+                        Menu item button text
+                    //**************************************************************** */
 
                     //btnArray[n].Text = ((char)(n + 65)).ToString() + (n+1).ToString();
 
-                    btnArray[n].Text = prod.ProductName + Environment.NewLine + prod.OutUnitPrice.ToString("c2");
+                    if (prod.IsManualItem)
+                    {
+                        btnArray[n].ForeColor = Color.DarkRed;
+                        btnArray[n].Text = prod.ProductName;
+                    }
+                    else
+                    { 
+                        btnArray[n].Text = prod.ProductName + Environment.NewLine + prod.OutUnitPrice.ToString("c2");
+                    }
                     //if (prod.ProductName.Length > 10)
                     //{
                     //    int spaceIndex = prod.ProductName.IndexOf(" ", 10);
@@ -2533,10 +2541,7 @@ namespace SDCafeSales.Views
                     //    }
                     //}
                     btnArray[n].Tag = prod.Id;
-                    if (prod.IsManualItem)
-                    {
-                        btnArray[n].ForeColor = Color.DarkRed;
-                    }
+
 
                     // the Event of click Button 
                     btnArray[n].Click += new System.EventHandler(ClickMenuButton);

@@ -251,8 +251,8 @@ namespace SDCafeCommon.DataAccess
             {
                 string query = $"select * from Product ";
                 string strWhere = " Where ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0") + 
-                                    " AND ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
-                                    " AND ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
+                                    " OR ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
+                                    " OR ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
                 string strOrderby = " Order By IsManualItem Desc, ProductName";
                 query += strWhere + strOrderby;
                 var output = connection.Query<POS_ProductModel>(query).ToList();
@@ -1124,10 +1124,11 @@ namespace SDCafeCommon.DataAccess
             {
                 //$"select * from Product WHERE BarCode = '{p_strBarCode.Trim()}'"
                 string query = $"select * from Product ";
-                string strWhere = $" Where BarCode = '{p_strBarCode.Trim()}' " +
-                                    " And ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0") +
-                                    " And ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
-                                    " And ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
+                string strWhere = $" Where BarCode = '{p_strBarCode.Trim()}'";
+                //+
+                //                    " And ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0") +
+                //                    " And ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
+                //                    " And ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
                 string strOrderby = " Order By ProductName";
                 query += strWhere + strOrderby;
                 var output = connection.Query<POS_ProductModel>(query).ToList();
@@ -1142,10 +1143,11 @@ namespace SDCafeCommon.DataAccess
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 string query = $"select * from Product ";
-                string strWhere = $" Where ProductName like '{p_strProdName}' " +
-                                    " And ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0") +
-                                    " And ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
-                                    " And ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
+                string strWhere = $" Where ProductName like '{p_strProdName}' ";
+                //+
+                                    //" And ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0") +
+                                    //" And ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
+                                    //" And ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
                 string strOrderby = " Order By ProductName";
                 query += strWhere + strOrderby;
                 var output = connection.Query<POS_ProductModel>(query).ToList();
@@ -1492,6 +1494,51 @@ namespace SDCafeCommon.DataAccess
             }
         }
 
+        public int Update_Tax(POS_TaxModel pos_Tax)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = $"UPDATE Tax SET Tax1 = {pos_Tax.Tax1}, Tax2 = {pos_Tax.Tax2}, Tax3 = {pos_Tax.Tax3} " +
+                                $"WHERE Code = '" + pos_Tax.Code + "'";
+                var count = connection.Execute(query);
+                return count;
+            }
+        }
 
+        public int Insert_Tax(POS_TaxModel pos_Tax)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = $"INSERT INTO Tax (Code, Tax1, Tax2, Tax3) VALUES " +
+                                $"('{pos_Tax.Code}', {pos_Tax.Tax1},{pos_Tax.Tax2},{pos_Tax.Tax3} );";
+                var count = connection.Execute(query);
+                return count;
+            }
+        }
+
+        public bool Check_Tax_Exists(string strTaxCode)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_TaxModel>($"select * from Tax where Code = '{strTaxCode}'").ToList();
+                if (output.Count > 0)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
+        public bool Delete_Tax(string strTaxCode)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = $"DELETE from Tax WHERE Code= '{strTaxCode}';";
+                var count = connection.Execute(query);
+                if (count > 0)
+                    return true;
+                else
+                    return false;
+            }
+        }
     }
 }

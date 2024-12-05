@@ -39,6 +39,8 @@
             this.chk_IsManual = new System.Windows.Forms.CheckBox();
             this.chk_IsMainSales = new System.Windows.Forms.CheckBox();
             this.chk_IsSales = new System.Windows.Forms.CheckBox();
+            this.chk_IsAll = new System.Windows.Forms.CheckBox();
+            this.bt_Stop = new SDCafeCommon.Utilities.CustomButton();
             this.bt_ProductImport = new SDCafeCommon.Utilities.CustomButton();
             this.bt_ProductExport = new SDCafeCommon.Utilities.CustomButton();
             this.bt_TimeReport = new SDCafeCommon.Utilities.CustomButton();
@@ -52,7 +54,6 @@
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_LoginUser = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Product = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_Stop = new SDCafeCommon.Utilities.CustomButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -148,9 +149,10 @@
             // chk_IsManual
             // 
             this.chk_IsManual.AutoSize = true;
-            this.chk_IsManual.Location = new System.Drawing.Point(192, 118);
+            this.chk_IsManual.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chk_IsManual.Location = new System.Drawing.Point(367, 118);
             this.chk_IsManual.Name = "chk_IsManual";
-            this.chk_IsManual.Size = new System.Drawing.Size(158, 28);
+            this.chk_IsManual.Size = new System.Drawing.Size(126, 23);
             this.chk_IsManual.TabIndex = 47;
             this.chk_IsManual.Text = "Manual Price";
             this.chk_IsManual.UseVisualStyleBackColor = true;
@@ -158,9 +160,10 @@
             // chk_IsMainSales
             // 
             this.chk_IsMainSales.AutoSize = true;
-            this.chk_IsMainSales.Location = new System.Drawing.Point(388, 118);
+            this.chk_IsMainSales.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chk_IsMainSales.Location = new System.Drawing.Point(524, 118);
             this.chk_IsMainSales.Name = "chk_IsMainSales";
-            this.chk_IsMainSales.Size = new System.Drawing.Size(316, 28);
+            this.chk_IsMainSales.Size = new System.Drawing.Size(247, 23);
             this.chk_IsMainSales.TabIndex = 48;
             this.chk_IsMainSales.Text = "Show on Main Sales Buttons";
             this.chk_IsMainSales.UseVisualStyleBackColor = true;
@@ -168,12 +171,42 @@
             // chk_IsSales
             // 
             this.chk_IsSales.AutoSize = true;
-            this.chk_IsSales.Location = new System.Drawing.Point(736, 118);
+            this.chk_IsSales.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chk_IsSales.Location = new System.Drawing.Point(788, 118);
             this.chk_IsSales.Name = "chk_IsSales";
-            this.chk_IsSales.Size = new System.Drawing.Size(231, 28);
+            this.chk_IsSales.Size = new System.Drawing.Size(183, 23);
             this.chk_IsSales.TabIndex = 49;
             this.chk_IsSales.Text = "Show Sales Buttons";
             this.chk_IsSales.UseVisualStyleBackColor = true;
+            // 
+            // chk_IsAll
+            // 
+            this.chk_IsAll.AutoSize = true;
+            this.chk_IsAll.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chk_IsAll.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.chk_IsAll.Location = new System.Drawing.Point(243, 118);
+            this.chk_IsAll.Name = "chk_IsAll";
+            this.chk_IsAll.Size = new System.Drawing.Size(47, 23);
+            this.chk_IsAll.TabIndex = 51;
+            this.chk_IsAll.Text = "All";
+            this.chk_IsAll.UseVisualStyleBackColor = true;
+            this.chk_IsAll.CheckedChanged += new System.EventHandler(this.chk_IsAll_CheckedChanged);
+            // 
+            // bt_Stop
+            // 
+            this.bt_Stop.BackColor = System.Drawing.Color.DarkRed;
+            this.bt_Stop.CornerRadius = 30;
+            this.bt_Stop.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_Stop.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.bt_Stop.Location = new System.Drawing.Point(433, 660);
+            this.bt_Stop.Name = "bt_Stop";
+            this.bt_Stop.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_Stop.Size = new System.Drawing.Size(295, 29);
+            this.bt_Stop.TabIndex = 50;
+            this.bt_Stop.Text = "Stop";
+            this.bt_Stop.Click += new System.EventHandler(this.bt_Stop_Click);
             // 
             // bt_ProductImport
             // 
@@ -207,7 +240,7 @@
             this.bt_TimeReport.BackColor = System.Drawing.Color.Khaki;
             this.bt_TimeReport.CornerRadius = 30;
             this.bt_TimeReport.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_TimeReport.Location = new System.Drawing.Point(12, 536);
+            this.bt_TimeReport.Location = new System.Drawing.Point(12, 436);
             this.bt_TimeReport.Name = "bt_TimeReport";
             this.bt_TimeReport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -221,7 +254,7 @@
             this.bt_Promotion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.bt_Promotion.CornerRadius = 30;
             this.bt_Promotion.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_Promotion.Location = new System.Drawing.Point(12, 589);
+            this.bt_Promotion.Location = new System.Drawing.Point(12, 277);
             this.bt_Promotion.Name = "bt_Promotion";
             this.bt_Promotion.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -235,7 +268,7 @@
             this.bt_SalesReport.BackColor = System.Drawing.Color.DarkGray;
             this.bt_SalesReport.CornerRadius = 30;
             this.bt_SalesReport.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_SalesReport.Location = new System.Drawing.Point(12, 642);
+            this.bt_SalesReport.Location = new System.Drawing.Point(12, 383);
             this.bt_SalesReport.Name = "bt_SalesReport";
             this.bt_SalesReport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -291,7 +324,7 @@
             this.bt_RFIDTags.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.bt_RFIDTags.CornerRadius = 30;
             this.bt_RFIDTags.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_RFIDTags.Location = new System.Drawing.Point(12, 536);
+            this.bt_RFIDTags.Location = new System.Drawing.Point(12, 645);
             this.bt_RFIDTags.Name = "bt_RFIDTags";
             this.bt_RFIDTags.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -358,22 +391,6 @@
             this.bt_Product.Text = "Product";
             this.bt_Product.Click += new System.EventHandler(this.bt_Product_Click);
             // 
-            // bt_Stop
-            // 
-            this.bt_Stop.BackColor = System.Drawing.Color.DarkRed;
-            this.bt_Stop.CornerRadius = 30;
-            this.bt_Stop.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_Stop.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.bt_Stop.Location = new System.Drawing.Point(433, 660);
-            this.bt_Stop.Name = "bt_Stop";
-            this.bt_Stop.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft) 
-            | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_Stop.Size = new System.Drawing.Size(295, 29);
-            this.bt_Stop.TabIndex = 50;
-            this.bt_Stop.Text = "Stop";
-            this.bt_Stop.Click += new System.EventHandler(this.bt_Stop_Click);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 24F);
@@ -404,6 +421,7 @@
             this.Controls.Add(this.chk_IsSales);
             this.Controls.Add(this.chk_IsMainSales);
             this.Controls.Add(this.chk_IsManual);
+            this.Controls.Add(this.chk_IsAll);
             this.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.Name = "frmMain";
@@ -442,5 +460,6 @@
         private System.Windows.Forms.CheckBox chk_IsMainSales;
         private System.Windows.Forms.CheckBox chk_IsSales;
         private SDCafeCommon.Utilities.CustomButton bt_Stop;
+        private System.Windows.Forms.CheckBox chk_IsAll;
     }
 }

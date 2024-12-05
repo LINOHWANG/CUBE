@@ -123,8 +123,17 @@ namespace SDCafeOffice.Views
                 checkPRT5.Checked = prods[0].IsPrinter5;
                 checkTaxInv.Checked = prods[0].IsTaxInverseCalculation;
                 checkSoldOut.Checked = prods[0].IsSoldOut;
-                dttm_PromStart.Value = DateTime.ParseExact(prods[0].PromoStartDate.ToString(),"yyyy-MM-dd", CultureInfo.InvariantCulture);
-                dttm_PromEnd.Value = DateTime.ParseExact(prods[0].PromoEndDate.ToString(), "yyyy-MM-dd", CultureInfo.InvariantCulture); //prods[0].PromoEndDate.ToString("yyyy-MM-dd");
+                try
+                {
+                    dttm_PromStart.Value = DateTime.ParseExact(prods[0].PromoStartDate.ToString(), "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    dttm_PromEnd.Value = DateTime.ParseExact(prods[0].PromoEndDate.ToString(), "yyyy-MM-dd", CultureInfo.InvariantCulture); //prods[0].PromoEndDate.ToString("yyyy-MM-dd");
+                }
+                catch (Exception ex)
+                {
+                    dttm_PromStart.Value = DateTime.Now;
+                    dttm_PromEnd.Value = DateTime.Now;
+                }
+
                 txt_Deposit.Text = prods[0].Deposit.ToString();
                 txt_RecyclingFee.Text = prods[0].RecyclingFee.ToString();
                 txt_ChillCharge.Text = prods[0].ChillCharge.ToString();

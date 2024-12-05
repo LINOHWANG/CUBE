@@ -46,6 +46,7 @@ namespace SDCafeOffice
         public frmLoginUser FrmLoginUser;
         public frmStations FrmStations;
         public frmPromotion FrmPromotion;
+        public frmTax FrmTax;
 
         public frmSalesReport FrmSalesReport;
         private int iDataGridHeight;
@@ -59,6 +60,7 @@ namespace SDCafeOffice
         public string strTax2Name;
         public string strTax3Name;
         public string strUserPass;
+        private string strGrade;
         public string strUserID;
         public string strUserName;
 
@@ -114,6 +116,7 @@ namespace SDCafeOffice
                 strUserID = loginUsers[0].Id.ToString();
                 strUserName = loginUsers[0].FirstName + " " + loginUsers[0].LastName;
                 strUserPass = loginUsers[0].PassWord;
+                strGrade = loginUsers[0].Grade;
                 util.Logger("Load_System_Info strUserID : " + strUserID + "," + strUserName);
             }
             else
@@ -127,7 +130,41 @@ namespace SDCafeOffice
             strTax2Name = dbPOS.Get_Tax_Name(2);
             strTax3Name = dbPOS.Get_Tax_Name(3);
 
+            if (strGrade == "2")
+            {
+                bt_LoginUser.Enabled = false;
+                bt_Tax.Enabled = false;
+                bt_Station.Enabled = false;
+                bt_SysConfig.Enabled = false;
 
+                bool blnOK = dbPOS.Get_SysConfig_By_Name("IS_ALLOW_MANGER_TIMEREPORT")[0].ConfigValue == "TRUE"? true:false;
+                if (blnOK)
+                {
+                    bt_TimeReport.Enabled = true;
+                }
+                else
+                {
+                    bt_TimeReport.Enabled = false;
+                }
+                blnOK = dbPOS.Get_SysConfig_By_Name("IS_ALLOW_MANGER_PROMOTION")[0].ConfigValue == "TRUE" ? true : false;
+                if (blnOK)
+                {
+                    bt_Promotion.Enabled = true;
+                }
+                else
+                {
+                    bt_Promotion.Enabled = false;
+                }
+                blnOK = dbPOS.Get_SysConfig_By_Name("IS_ALLOW_MANGER_SALESREPORT")[0].ConfigValue == "TRUE" ? true : false;
+                if (blnOK)
+                {
+                    bt_SalesReport.Enabled = true;
+                }
+                else
+                {
+                    bt_SalesReport.Enabled = false;
+                }
+            }
         }
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -834,13 +871,13 @@ namespace SDCafeOffice
             this.dgvData.Columns[0].Name = "Code";
             this.dgvData.Columns[0].Width = 150;
             this.dgvData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[1].Name = "Tax1";
+            this.dgvData.Columns[1].Name = strTax1Name;// "Tax1";
             this.dgvData.Columns[1].Width = 100;
             this.dgvData.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[2].Name = "Tax2";
+            this.dgvData.Columns[2].Name = strTax2Name;// "Tax2";
             this.dgvData.Columns[2].Width = 100;
             this.dgvData.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[3].Name = "Tax3";
+            this.dgvData.Columns[3].Name = strTax3Name;// "Tax3";
             this.dgvData.Columns[3].Width = 100;
             this.dgvData.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvData.DefaultCellStyle.Font = new Font("Arial", 16F, GraphicsUnit.Pixel);
@@ -870,6 +907,8 @@ namespace SDCafeOffice
             String strTypeId = String.Empty;
             String strHostName = String.Empty;
             String strPromoId = String.Empty;
+            String strSelTaxCode = String.Empty;
+            
 
   /*          Int32 selectedRowCount =
                 dgvData.Rows.GetRowCount(DataGridViewElementStates.Selected);
@@ -987,6 +1026,20 @@ namespace SDCafeOffice
                     FrmPromotion = new frmPromotion(strPromoId);
                     FrmPromotion.ShowDialog();
                     bt_Promotion.PerformClick();
+                }
+                if (isTax)
+                {
+                    if (row.Cells[0].Value == null)
+                    {
+                        strSelTaxCode = String.Empty;
+                    }
+                    else
+                    {
+                        strSelTaxCode = row.Cells[0].Value.ToString(); //dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value.ToString();
+                    }
+                    FrmTax = new frmTax(this, strSelTaxCode, strTax1Name, strTax2Name, strTax3Name);
+                    FrmTax.ShowDialog();
+                    bt_Tax.PerformClick();
                 }
             }
         }
@@ -1353,6 +1406,22 @@ namespace SDCafeOffice
         private void bt_Stop_Click(object sender, EventArgs e)
         {
             _stopLoop = true;
+        }
+
+        private void chk_IsAll_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chk_IsAll.Checked)
+            {
+                chk_IsMainSales.Checked = true;
+                chk_IsSales.Checked = true;
+                chk_IsManual.Checked = true;
+            }
+            else
+            {
+                chk_IsMainSales.Checked = false;
+                chk_IsSales.Checked = false;
+                chk_IsManual.Checked = false;
+            }
         }
     }
 }

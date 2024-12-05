@@ -131,7 +131,7 @@ namespace SDCafeOffice
             }
 
             DataAccessPOS dbPOS = new DataAccessPOS();
-            sysConfigs = dbPOS.Get_SysConfig_By_Name("SCREEN_LOGO_IMAGE");
+            sysConfigs = dbPOS.Get_SysConfig_By_Name("SCREEN_OFFICE_LOGO_IMAGE");
             if (sysConfigs.Count > 0)
             {
                 pictureBoxLogo.Image = Image.FromFile(sysConfigs[0].ConfigValue);
@@ -218,7 +218,7 @@ namespace SDCafeOffice
 
                 if (loginUsers.Count == 1)
                 {
-                    if (Convert.ToInt32(loginUsers[0].Grade) < 2)
+                    if (Convert.ToInt32(loginUsers[0].Grade) < 3)
                     {
                         return true;
                     }
@@ -228,7 +228,7 @@ namespace SDCafeOffice
                         //strPassCode = string.Empty;
                         //txtPassCode.Text = strPassCode;
                         //Console.Beep(3000, 1000);
-                        util.Logger("UserLogin grade should be 0 or 1 : " + strPassCode + " (Grade = " + loginUsers[0].Grade + ")");
+                        util.Logger("UserLogin grade should be 0 or 1 or 2 : " + strPassCode + " (Grade = " + loginUsers[0].Grade + ")");
                         return false;
                     }
                 }

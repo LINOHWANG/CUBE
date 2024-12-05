@@ -109,7 +109,7 @@
             this.txt_ConfigName.Location = new System.Drawing.Point(191, 55);
             this.txt_ConfigName.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_ConfigName.Name = "txt_ConfigName";
-            this.txt_ConfigName.Size = new System.Drawing.Size(249, 29);
+            this.txt_ConfigName.Size = new System.Drawing.Size(419, 29);
             this.txt_ConfigName.TabIndex = 39;
             this.txt_ConfigName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
