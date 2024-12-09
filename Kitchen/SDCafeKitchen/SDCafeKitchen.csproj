@@ -8,8 +8,8 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SDCafeKitchen</RootNamespace>
-    <AssemblyName>SeafairKitchen</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <AssemblyName>SSRetailKitchen</AssemblyName>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PublishUrl>publish\</PublishUrl>
@@ -53,7 +53,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>tse_kitchen_20200707.ico</ApplicationIcon>
+    <ApplicationIcon>tse_office_20241209.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Dapper, Version=1.60.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -173,6 +173,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="tse_office_20241209.ico" />
     <None Include="Resources\Cube_Logo_RECEIPT_20200707.png" />
     <Content Include="tse_kitchen_20200707.ico" />
   </ItemGroup>
