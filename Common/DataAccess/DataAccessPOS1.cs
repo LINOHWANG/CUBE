@@ -362,7 +362,7 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS1")))
             {
-                string[] strTenders = connection.Query<string>($"Select distinct CollectionType FROM [db1SSShop].[dbo].[TranCollection] " +
+                string[] strTenders = connection.Query<string>($"Select distinct CollectionType FROM TranCollection " +
                                                                 $"where CollectionType not like '%/%' And CollectionType <> '' Order By CollectionType").ToArray();
                 if (strTenders.Length > 0)
                     return strTenders;

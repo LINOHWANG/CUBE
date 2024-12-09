@@ -8,8 +8,8 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SDCafeSales</RootNamespace>
-    <AssemblyName>SeafairSales</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <AssemblyName>SSRetailSales</AssemblyName>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>tse_sales_20200707.ico</ApplicationIcon>
+    <ApplicationIcon>tse_sales_20241209.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Dapper, Version=1.60.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -245,6 +245,7 @@
     <None Include="Resources\Cube_Image_04.PNG" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="tse_sales_20241209.ico" />
     <None Include="Resources\CUBE_LOGO2.png" />
     <None Include="Resources\shutterstock_Receipt+Vector_238191226 [Converted].eps.jpg" />
     <None Include="Resources\Card_Terminal_POS_100x100.png" />
