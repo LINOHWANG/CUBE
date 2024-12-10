@@ -5365,7 +5365,7 @@ namespace SDCafeSales.Views
             }
             else
             {
-                MessageBox.Show("No External Display is Available");
+                //MessageBox.Show("No External Display is Available");
             }
             BarCode_Get_Focus();
         }

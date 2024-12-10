@@ -15,6 +15,10 @@ using SDCafeOffice;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
 using System.Threading;
+using System.Security.Cryptography;
+using System.Data.OleDb;
+using System.Runtime.InteropServices;
+using System.Diagnostics.PerformanceData;
 
 namespace SDCafeOffice
 {
@@ -65,6 +69,8 @@ namespace SDCafeOffice
         public string strUserName;
 
         private bool _stopLoop;
+        private bool bProdExist;
+
         //private bool isSystem = false;
         public frmMain()
         {
@@ -1422,6 +1428,307 @@ namespace SDCafeOffice
                 chk_IsSales.Checked = false;
                 chk_IsManual.Checked = false;
             }
+        }
+
+        private async void bt_ProductImport_Click(object sender, EventArgs e)
+        {
+            EnableDisableButtons(false);
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Excel Documents (*.xls)|*.xls";
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                _stopLoop = false;
+                bt_Stop.Visible = true;
+
+                //show progressbar
+                progBarExport.Visible = true;
+                progBarExport.Value = 0;
+                // set backcolor of progressbar
+                progBarExport.BackColor = Color.LightGreen;
+                progBarExport.Style = ProgressBarStyle.Continuous;
+                //string strPtype = cb_PType.Text;
+                util.Logger("Product Importing started.." + ofd.FileName);
+                if (File.Exists(ofd.FileName))
+                {
+
+                    await Task.Run(() => ImportProduct(ofd, ofd.FileName));
+                    System.Diagnostics.Process.Start(ofd.FileName);
+                }
+
+                progBarExport.Visible = false;
+                bt_Stop.Visible = false;
+                util.Logger("Product Importing finished.." + ofd.FileName);
+            }
+            EnableDisableButtons(true);
+        }
+
+        private void ImportProduct(object p_ofd, string p_strFileName)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            POS_ProductModel prod = new POS_ProductModel();
+            List<POS_ProductModel> prodBarcodes = new List<POS_ProductModel>();
+            List<POS_ProductModel> prods = new List<POS_ProductModel>();
+            List<POS_ProductTypeModel> pTypes = new List<POS_ProductTypeModel>();
+            bool _bHeader = false;
+            bool _bErrBreak = false;
+
+            int iUpdateCount = 0;
+            int iInsertCount = 0;
+            int iBarcodeDupCount = 0;
+            //Create COM Objects. Create a COM object for everything that is referenced
+            Excel.Application xlApp = new Excel.Application();
+            Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(p_strFileName,null,true); // Readonly =  true
+            Excel._Worksheet xlWorksheet = xlWorkbook.Sheets[1];
+            Excel.Range xlRange = xlWorksheet.UsedRange;
+
+            int rowCount = xlRange.Rows.Count;
+            int colCount = xlRange.Columns.Count;
+
+            string strTypeName = "";
+            string strTemp = "";
+
+            //iterate over the rows and columns and print to the console as it appears in the file
+            //excel is not zero based!!
+            for (int i = 1; i <= rowCount; i++)
+            {
+                float fPercent = ((float)i / (float)rowCount) * 100;
+                Invoke(new Action(() =>
+                {
+                    progBarExport.Maximum = rowCount;
+                    progBarExport.Value = i;
+                    progBarExport.Refresh();
+                    // show percentage of progress on the bt_Stop
+                    bt_Stop.Text = "Stop ( Importing " + fPercent.ToString("0.00") + "% ... )";
+                }));
+
+                for (int j = 1; j <= colCount; j++)
+                {
+                    //new line
+                    //if (j == 1)
+                    //    Console.Write("\r\n");
+
+                    if (_stopLoop) break;
+
+                    //write the value to the console
+                    if (xlRange.Cells[i, j] != null && xlRange.Cells[i, j].Value2 != null)
+                    {
+                        //Console.Write("[" + i.ToString() + "," + j.ToString() + "] : " + xlRange.Cells[i, j].Value2.ToString() + "\t");
+                        // The first Row of the excel file
+                        if ((i == 1) && (j == 1))
+                        {
+                            if (xlRange.Cells[i, j].Value2.ToString().Contains("Product Inventory"))
+                            {
+                                _bHeader = true;
+                                break;
+                            }
+                            else
+                            {
+                                _bErrBreak = true;
+                            }
+                        }
+                        // The second Row of the excel file
+                        if ((i == 2) && (j == 1))
+                        {
+                            if (xlRange.Cells[i, j].Value2.ToString().Contains("Date/Time Exported"))
+                            {
+                                _bHeader = true;
+                                break;
+                            }
+                            else
+                            {
+                                _bErrBreak = true;
+                            }
+                        }
+                        // The thired Row of the excel file (Header)
+                        if ((i == 3) && (j == 1))
+                        {
+                            if (xlRange.Cells[i, j].Value2.ToString().Contains("Id"))
+                            {
+                                _bHeader = true;
+                                break;
+                            }
+                            else
+                            {
+                                _bErrBreak = true;
+                            }
+                        }
+                        _bHeader = false;
+                    }
+                }
+                if (_bErrBreak)
+                {
+                    break;
+                }
+                if (_bHeader)
+                {
+                    continue;
+                }
+                // if Id value is nothing or empty, then 
+                try
+                {
+                    if (xlRange.Cells[i, 1].Value2.ToString() != null)
+                        strTemp = xlRange.Cells[i, 1].Value2.ToString();
+                    else
+                        strTemp = "0";
+                }
+                catch (Exception ex)
+                {
+                    util.Logger("Null ID found.. Row = " + i.ToString());
+                    strTemp = "0";
+                }
+
+                prod.Id = int.Parse(strTemp);
+                prods.Clear();
+                if (prod.Id > 0)
+                {
+                    prods = dbPOS.Get_Product_By_ID(prod.Id);
+                }
+                if (prods.Count == 0)
+                {
+                    prod.Id = 0;
+                    prod = new POS_ProductModel();
+                    bProdExist = false;
+                }
+                else
+                {
+                    prod = prods[0];
+                    bProdExist = true;
+                }
+
+                strTemp = xlRange.Cells[i, 2].Value2.ToString();
+                if (strTemp != "")
+                {
+                    prod.ProductName = xlRange.Cells[i, 2].Value2.ToString();
+                    util.Logger(" Product Name is " + strTemp + " " +  i.ToString());
+                }
+                else
+                {
+                    util.Logger(" [Error] Product Name is empty.. Row = " + i.ToString());
+                    continue;
+                }
+
+                strTemp = xlRange.Cells[i, 3].Value2.ToString();
+                if (strTemp != "")
+                    prod.SecondName = xlRange.Cells[i, 3].Value2.ToString();
+
+                strTypeName = xlRange.Cells[i, 4].Value2.ToString();
+                if (strTypeName != "")
+                {
+                    pTypes = dbPOS.Get_ProductTypeId_By_TypeName(strTypeName);
+                    if (pTypes.Count > 0)
+                    {
+                        prod.ProductTypeId = pTypes[0].Id;
+                    }
+                    else
+                    {
+                        pTypes[0].TypeName = strTypeName;
+                        pTypes[0].IsLiquor = false;
+                        pTypes[0].Id = 0;
+                        dbPOS.Insert_ProductType(pTypes[0]);
+                        pTypes = dbPOS.Get_ProductTypeId_By_TypeName(strTypeName);
+                        if (pTypes.Count > 0)
+                        {
+                            prod.ProductTypeId = pTypes[0].Id;
+                        }
+                    }
+                }
+                strTemp = xlRange.Cells[i, 5].Value2.ToString();
+                if (strTemp != "")
+                    prod.OutUnitPrice = float.Parse(strTemp.Replace("$",""));
+
+                prod.IsTax1 = bool.Parse(xlRange.Cells[i, 6].Value2.ToString());
+                prod.IsTax2 = bool.Parse(xlRange.Cells[i, 7].Value2.ToString());
+                prod.IsTax3 = bool.Parse(xlRange.Cells[i, 8].Value2.ToString());
+                strTemp = xlRange.Cells[i, 9].Value2.ToString();
+                if (strTemp != "")
+                    prod.InUnitPrice = float.Parse(strTemp.Replace("$", ""));
+                strTemp = xlRange.Cells[i, 10].Value2.ToString();
+                if (strTemp != "")
+                    prod.Balance = int.Parse(xlRange.Cells[i, 10].Value2.ToString());
+
+                strTemp = xlRange.Cells[i, 11].Value2.ToString();
+                if (strTemp != "")
+                    prod.BarCode = xlRange.Cells[i, 11].Value2.ToString();
+
+                strTemp = xlRange.Cells[i, 12].Value2.ToString();
+                if (strTemp != "")
+                    prod.PromoStartDate = strTemp;
+                strTemp = xlRange.Cells[i, 13].Value2.ToString();
+                if (strTemp != "")
+                    prod.PromoEndDate = strTemp; // DateTime.Parse(xlRange.Cells[i, 13].Value2.ToString());
+                strTemp = xlRange.Cells[i, 14].Value2.ToString();
+                if (strTemp != "")
+                    prod.PromoDay1 = int.Parse(xlRange.Cells[i, 14].Value2.ToString());
+                strTemp = xlRange.Cells[i, 15].Value2.ToString();
+                if (strTemp != "")
+                    prod.PromoPrice1 = float.Parse(strTemp.Replace("$", ""));
+
+                // check barcode conflict with existing product ?
+                if (!bProdExist)
+                {
+                    prodBarcodes = dbPOS.Get_Product_By_BarCode(prod.BarCode);
+                    if (prodBarcodes.Count > 0)
+                    {
+                        // skip
+                        util.Logger(prod.Id.ToString() + " Duplicate barcode.." + prod.BarCode);
+                        iBarcodeDupCount++;
+                        continue;
+                    }
+                }
+                if (bProdExist)
+                {
+                    dbPOS.Update_Product(prod);
+                    util.Logger(prod.Id.ToString() + " Updated..");
+                    iUpdateCount++;
+                }
+                else
+                {
+                    
+                    dbPOS.Insert_Product(prod);
+                    util.Logger(prod.Id.ToString() + " Inserted..");
+                    iInsertCount++;
+                }
+            }
+
+            util.Logger(" Total Inserted : " + iInsertCount.ToString());
+            util.Logger(" Total Updated : " + iUpdateCount.ToString());
+            util.Logger(" Total Barcode Duplicate : " + iBarcodeDupCount.ToString());
+
+            //cleanup
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            //rule of thumb for releasing com objects:
+            //  never use two dots, all COM objects must be referenced and released individually
+            //  ex: [somthing].[something].[something] is bad
+
+            //release com objects to fully kill excel process from running in the background
+            Marshal.ReleaseComObject(xlRange);
+            Marshal.ReleaseComObject(xlWorksheet);
+
+            //close and release
+            xlWorkbook.Close();
+            Marshal.ReleaseComObject(xlWorkbook);
+
+            //quit and release
+            xlApp.Quit();
+            Marshal.ReleaseComObject(xlApp);
+            
+            Cursor.Current = Cursors.Default;
+
+            if (_bErrBreak)
+            {
+                MessageBox.Show("ERROR : Invalid Inventory Template File..!");
+                return;
+            }
+            MessageBox.Show("Inserted : " + iInsertCount.ToString() + System.Environment.NewLine +
+                            "Updated : " + iUpdateCount.ToString() + System.Environment.NewLine +
+                            "Total imported " + (iInsertCount + iUpdateCount).ToString() + System.Environment.NewLine +
+                            "Barcode Duplicate : " + iBarcodeDupCount.ToString());
+
         }
     }
 }

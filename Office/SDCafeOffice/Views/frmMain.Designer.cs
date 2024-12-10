@@ -198,7 +198,7 @@
             this.bt_Stop.CornerRadius = 30;
             this.bt_Stop.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_Stop.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.bt_Stop.Location = new System.Drawing.Point(433, 660);
+            this.bt_Stop.Location = new System.Drawing.Point(352, 698);
             this.bt_Stop.Name = "bt_Stop";
             this.bt_Stop.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -220,6 +220,7 @@
             this.bt_ProductImport.Size = new System.Drawing.Size(142, 47);
             this.bt_ProductImport.TabIndex = 46;
             this.bt_ProductImport.Text = "Prod. Import";
+            this.bt_ProductImport.Click += new System.EventHandler(this.bt_ProductImport_Click);
             // 
             // bt_ProductExport
             // 
