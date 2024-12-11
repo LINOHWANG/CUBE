@@ -46,6 +46,7 @@ namespace SDCafeOffice.Views
                 txt_Tax1.Text = "0";
                 txt_Tax2.Text = "0";
                 txt_Tax3.Text = "0";
+                chkTax3IncTax1.Checked = false;
 
                 m_blnNew = true;
             }
@@ -67,6 +68,7 @@ namespace SDCafeOffice.Views
                 txt_Tax1.Text = taxes[0].Tax1.ToString();
                 txt_Tax2.Text = taxes[0].Tax2.ToString();
                 txt_Tax3.Text = taxes[0].Tax3.ToString();
+                chkTax3IncTax1.Checked = taxes[0].IsTax3IncTax1;
             }
         }
 
@@ -131,7 +133,8 @@ namespace SDCafeOffice.Views
                 Code = txt_TaxCode.Text,
                 Tax1 = fT1,
                 Tax2 = fT2,
-                Tax3 = fT3
+                Tax3 = fT3,
+                IsTax3IncTax1 = chkTax3IncTax1.Checked
             });
             int iTaxCnt = dbPOS.Update_Tax(taxes[0]);
         }
@@ -187,7 +190,8 @@ namespace SDCafeOffice.Views
                 Code = txt_TaxCode.Text,
                 Tax1 = fT1,
                 Tax2 = fT2,
-                Tax3 = fT3
+                Tax3 = fT3,
+                IsTax3IncTax1 = chkTax3IncTax1.Checked
             });
             int iTaxCnt = dbPOS.Insert_Tax(taxes[0]);
         }
@@ -233,6 +237,7 @@ namespace SDCafeOffice.Views
                         txt_Tax1.Text = "";
                         txt_Tax2.Text = "";
                         txt_Tax3.Text = "";
+                        chkTax3IncTax1.Checked = false;
                     }
                     else
                     {

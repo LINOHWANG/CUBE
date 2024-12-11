@@ -1498,7 +1498,8 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                string query = $"UPDATE Tax SET Tax1 = {pos_Tax.Tax1}, Tax2 = {pos_Tax.Tax2}, Tax3 = {pos_Tax.Tax3} " +
+                int bIsTax3IncTax = pos_Tax.IsTax3IncTax1 ? 1 : 0;
+                string query = $"UPDATE Tax SET Tax1 = {pos_Tax.Tax1}, Tax2 = {pos_Tax.Tax2}, Tax3 = {pos_Tax.Tax3}, IsTax3IncTax1 = {bIsTax3IncTax.ToString()} " +
                                 $"WHERE Code = '" + pos_Tax.Code + "'";
                 var count = connection.Execute(query);
                 return count;
@@ -1509,8 +1510,9 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                string query = $"INSERT INTO Tax (Code, Tax1, Tax2, Tax3) VALUES " +
-                                $"('{pos_Tax.Code}', {pos_Tax.Tax1},{pos_Tax.Tax2},{pos_Tax.Tax3} );";
+                int bIsTax3IncTax = pos_Tax.IsTax3IncTax1 ? 1 : 0;
+                string query = $"INSERT INTO Tax (Code, Tax1, Tax2, Tax3, IsTax3IncTax1) VALUES " +
+                                $"('{pos_Tax.Code}', {pos_Tax.Tax1},{pos_Tax.Tax2},{pos_Tax.Tax3}, {bIsTax3IncTax} );";
                 var count = connection.Execute(query);
                 return count;
             }

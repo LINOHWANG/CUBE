@@ -43,6 +43,7 @@
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Delete = new SDCafeCommon.Utilities.CustomButton();
+            this.chkTax3IncTax1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label10
@@ -220,11 +221,23 @@
             this.bt_Delete.Text = "Delete";
             this.bt_Delete.Click += new System.EventHandler(this.bt_Delete_Click);
             // 
+            // chkTax3IncTax1
+            // 
+            this.chkTax3IncTax1.AutoSize = true;
+            this.chkTax3IncTax1.Font = new System.Drawing.Font("Arial", 14.25F);
+            this.chkTax3IncTax1.Location = new System.Drawing.Point(191, 171);
+            this.chkTax3IncTax1.Name = "chkTax3IncTax1";
+            this.chkTax3IncTax1.Size = new System.Drawing.Size(197, 26);
+            this.chkTax3IncTax1.TabIndex = 51;
+            this.chkTax3IncTax1.Text = "Tax3 Include Tax1 ?";
+            this.chkTax3IncTax1.UseVisualStyleBackColor = true;
+            // 
             // frmTax
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 411);
+            this.Controls.Add(this.chkTax3IncTax1);
             this.Controls.Add(this.bt_Delete);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -264,5 +277,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private SDCafeCommon.Utilities.CustomButton bt_Delete;
+        private System.Windows.Forms.CheckBox chkTax3IncTax1;
     }
 }

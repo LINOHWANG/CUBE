@@ -93,6 +93,7 @@ namespace SDCafeSales.Views
         private float TaxRate1 = 0;
         private float TaxRate2 = 0;
         private float TaxRate3 = 0;
+        private bool m_bIsTax3IncTax1 = false;
         private int iPpleCount = 0;
 
         private string strHostName = "";
@@ -665,6 +666,7 @@ namespace SDCafeSales.Views
                     TaxRate1 = taxs[0].Tax1;
                     TaxRate2 = taxs[0].Tax2;
                     TaxRate3 = taxs[0].Tax3;
+                    m_bIsTax3IncTax1 = taxs[0].IsTax3IncTax1;
                     return true;
                 }
                 else
@@ -681,6 +683,7 @@ namespace SDCafeSales.Views
                     TaxRate1 = taxs[0].Tax1;
                     TaxRate2 = taxs[0].Tax2;
                     TaxRate3 = taxs[0].Tax3;
+                    m_bIsTax3IncTax1 = taxs[0].IsTax3IncTax1;
                     return true;
                 }
                 else
@@ -1388,6 +1391,7 @@ namespace SDCafeSales.Views
             int iSeq = 0;
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+            float fTax1, fTax2, fTax3 = 0;
 
             util.Logger(" Add_RFIDTag_Into_Order : strUid = " + strUid + " InvNo = " + iNewInvNo.ToString());
 
@@ -1464,6 +1468,14 @@ namespace SDCafeSales.Views
                         ////////////////////////////////////////////////
                         ///
                         orders.Clear();
+                        // Tax Calculation
+                        fTax1 = prods[0].IsTax1 ? TaxRate1 * prods[0].OutUnitPrice : 0;
+                        fTax2 = prods[0].IsTax2 ? TaxRate2 * prods[0].OutUnitPrice : 0;
+                        if (m_bIsTax3IncTax1)
+                            fTax3 = prods[0].IsTax3 ? TaxRate3 * (prods[0].OutUnitPrice + fTax1) : 0;
+                        else
+                            fTax3 = prods[0].IsTax3 ? TaxRate3 * prods[0].OutUnitPrice : 0;
+
                         orders.Add(new POS_OrdersModel()
                         {
                             TranType = "20",
@@ -1481,9 +1493,9 @@ namespace SDCafeSales.Views
                             Tax1Rate = TaxRate1,
                             Tax2Rate = TaxRate2,
                             Tax3Rate = TaxRate3,
-                            Tax1 = prods[0].IsTax1 ? TaxRate1 * prods[0].OutUnitPrice : 0,
-                            Tax2 = prods[0].IsTax2 ? TaxRate2 * prods[0].OutUnitPrice : 0,
-                            Tax3 = prods[0].IsTax3 ? TaxRate3 * prods[0].OutUnitPrice : 0,
+                            Tax1 = fTax1,
+                            Tax2 = fTax2,
+                            Tax3 = fTax3,
                             Deposit = prods[0].Deposit,
                             RecyclingFee = prods[0].RecyclingFee,
                             ChillCharge = prods[0].ChillCharge,
@@ -1543,9 +1555,18 @@ namespace SDCafeSales.Views
                             {
                                 // Get Parent Order Id
                                 int iParentId = iNewOrderId; // dbPOS.Get_Latest_OrderId_by_InvoiceNo_ProductId(orders[0].InvoiceNo, orders[0].ProductId);
-                                ////////////////////////////////////////////////
-                                // Add the Discount order item into Orders table
-                                ////////////////////////////////////////////////
+                                                             ////////////////////////////////////////////////
+                                                             // Add the Discount order item into Orders table
+                                                             ////////////////////////////////////////////////
+                                ///
+                                // Tax Calculation
+                                fTax1 = prods[0].IsTax1 ? -(TaxRate1 * (prods[0].OutUnitPrice * (rfids[0].DiscountRate / 100))) : 0;
+                                fTax2 = prods[0].IsTax2 ? -(TaxRate2 * (prods[0].OutUnitPrice * (rfids[0].DiscountRate / 100))) : 0;
+                                if (m_bIsTax3IncTax1)
+                                    fTax3 = prods[0].IsTax3 ? -(TaxRate3 * ((prods[0].OutUnitPrice + fTax1) * (rfids[0].DiscountRate / 100))) : 0;
+                                else
+                                    fTax3 = prods[0].IsTax3 ? -(TaxRate3 * (prods[0].OutUnitPrice * (rfids[0].DiscountRate / 100))) : 0;
+
                                 orders.Add(new POS_OrdersModel()
                                 {
                                     TranType = "20",
@@ -1563,9 +1584,9 @@ namespace SDCafeSales.Views
                                     Tax1Rate = TaxRate1,
                                     Tax2Rate = TaxRate2,
                                     Tax3Rate = TaxRate3,
-                                    Tax1 = prods[0].IsTax1 ? -(TaxRate1 * (prods[0].OutUnitPrice * (rfids[0].DiscountRate / 100))) : 0,
-                                    Tax2 = prods[0].IsTax2 ? -(TaxRate2 * (prods[0].OutUnitPrice * (rfids[0].DiscountRate / 100))) : 0, 
-                                    Tax3 = prods[0].IsTax3 ? -(TaxRate3 * (prods[0].OutUnitPrice * (rfids[0].DiscountRate / 100))) : 0,
+                                    Tax1 = fTax1,
+                                    Tax2 = fTax2, 
+                                    Tax3 = fTax3,
                                     Deposit = 0,
                                     RecyclingFee = 0,
                                     ChillCharge = 0,
@@ -2594,6 +2615,7 @@ namespace SDCafeSales.Views
             int iSeq = 0;
             bool bQTYPromotionProduct = false;
             int iOrderQty = 1;
+            float fTax1, fTax2, fTax3 = 0;
 
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
@@ -2704,6 +2726,8 @@ namespace SDCafeSales.Views
                     ////////////////////////////////////////////////
                     // Add the ordered item into Orders table
                     ////////////////////////////////////////////////
+                    ///
+
                     orders.Add(new POS_OrdersModel()
                     {
                         TranType = "20",
@@ -6518,7 +6542,10 @@ namespace SDCafeSales.Views
                         }
                         if (bManualTax3)
                         {
-                            orders[0].Tax3 = (float)(dblNewAmount * orders[0].Tax3Rate);
+                            if (m_bIsTax3IncTax1)
+                                orders[0].Tax3 = (float)((dblNewAmount + orders[0].Tax1) * orders[0].Tax3Rate);
+                            else
+                                orders[0].Tax3 = (float)(dblNewAmount * orders[0].Tax3Rate);
                         }
                         else
                         {
@@ -6577,6 +6604,7 @@ namespace SDCafeSales.Views
             bool bManualTax3 = false;
             int iSeq = 0;
             int iOrderQty = 1;
+            float fTax1, fTax2, fTax3 = 0;
 
             if ((txtQTY.Text != "") && (txtQTY.Text != "0"))
             {
@@ -6664,6 +6692,14 @@ namespace SDCafeSales.Views
                 ////////////////////////////////////////////////
 
                 orders.Clear();
+
+                // Tax Calculation
+                fTax1 = bManualTax1 ? TaxRate1 * (float)(dblManualPrice * iOrderQty) : 0;
+                fTax2 = bManualTax2 ? TaxRate2 * (float)(dblManualPrice * iOrderQty) : 0;
+                if (m_bIsTax3IncTax1)
+                    fTax3 = bManualTax3 ? TaxRate3 * (float)((dblManualPrice + fTax1) * iOrderQty) : 0;
+                else
+                    fTax3 = bManualTax3 ? TaxRate3 * (float)(dblManualPrice * iOrderQty) : 0;
                 orders.Add(new POS_OrdersModel()
                 {
                     TranType = "20",
@@ -6681,9 +6717,9 @@ namespace SDCafeSales.Views
                     Tax1Rate = TaxRate1,
                     Tax2Rate = TaxRate2,
                     Tax3Rate = TaxRate3,
-                    Tax1 = bManualTax1 ? TaxRate1 * (float)(dblManualPrice * iOrderQty) : 0,
-                    Tax2 = bManualTax2 ? TaxRate2 * (float)(dblManualPrice * iOrderQty) : 0,
-                    Tax3 = bManualTax3 ? TaxRate3 * (float)(dblManualPrice * iOrderQty) : 0,
+                    Tax1 = fTax1,
+                    Tax2 = fTax2,
+                    Tax3 = fTax3,
                     Deposit = 0,
                     RecyclingFee = 0,
                     ChillCharge = 0,
@@ -6833,9 +6869,12 @@ namespace SDCafeSales.Views
                 {
                     util.Logger("Cash/Manual Payment completed !" + FrmCashPay.strPaymentType);
                     // if rounding is not zero, add to Orders table 
-                    if (FrmCashPay.m_fCashRounding != 0)
+                    if (FrmCashPay.strPaymentType == "CASH")
                     {
-                        Process_Rounding_Tran(iNewInvNo,FrmCashPay.m_fCashRounding);
+                        if (FrmCashPay.m_fCashRounding != 0)
+                        {
+                            Process_Rounding_Tran(iNewInvNo, FrmCashPay.m_fCashRounding);
+                        }
                     }
                     // Move Orders to OrderComplete
                     Process_Order_Complete(iNewInvNo);
@@ -7009,6 +7048,7 @@ namespace SDCafeSales.Views
         private void bt_Plus_Click(object sender, EventArgs e)
         {
             bool bQTYPromotionProduct = false;
+            float fTax1, fTax2, fTax3 = 0;
 
             DataAccessPOS dbPOS = new DataAccessPOS();
             if (dgv_Orders.Rows.Count > 0)
@@ -7050,9 +7090,18 @@ namespace SDCafeSales.Views
                             row.Cells[4].Value = iAmount.ToString("0.00");
                             // update orders table
                             orders[0].Amount = orders[0].OutUnitPrice * orders[0].Quantity;
-                            if (orders[0].IsTax1) orders[0].Tax1 = orders[0].Amount * orders[0].Tax1Rate;
-                            if (orders[0].IsTax2) orders[0].Tax2 = orders[0].Amount * orders[0].Tax2Rate;
-                            if (orders[0].IsTax3) orders[0].Tax3 = orders[0].Amount * orders[0].Tax3Rate;
+
+                            // Tax Calculation
+                            fTax1 = orders[0].IsTax1 ? TaxRate1 * orders[0].Amount : 0;
+                            fTax2 = orders[0].IsTax2 ? TaxRate2 * orders[0].Amount : 0;
+                            if (m_bIsTax3IncTax1)
+                                fTax3 = orders[0].IsTax3 ? TaxRate3 * (orders[0].Amount + fTax1) : 0;
+                            else
+                                fTax3 = orders[0].IsTax3 ? TaxRate3 * orders[0].Amount : 0;
+
+                            if (orders[0].IsTax1) orders[0].Tax1 = fTax1;
+                            if (orders[0].IsTax2) orders[0].Tax2 = fTax2;// orders[0].Amount * orders[0].Tax2Rate;
+                            if (orders[0].IsTax3) orders[0].Tax3 = fTax3;// orders[0].Amount * orders[0].Tax3Rate;
                             orders[0].LastModDate = DateTime.Now.ToString("yyyy-MM-dd"); //DateTime.Now.ToShortDateString();
                             orders[0].LastModTime = DateTime.Now.ToString("HH:mm:ss"); //DateTime.Now.ToShortTimeString();
                             dbPOS.Update_Orders_Amount_Qty(orders[0]);
@@ -7080,6 +7129,7 @@ namespace SDCafeSales.Views
         private void bt_Minus_Click(object sender, EventArgs e)
         {
             bool bQTYPromotionProduct = false;
+            float fTax1, fTax2, fTax3 = 0;
 
             DataAccessPOS dbPOS = new DataAccessPOS();
 
@@ -7125,9 +7175,17 @@ namespace SDCafeSales.Views
                             row.Cells[4].Value = iAmount.ToString("0.00");
                             // update orders table
                             orders[0].Amount = orders[0].OutUnitPrice * orders[0].Quantity;
-                            if (orders[0].IsTax1) orders[0].Tax1 = orders[0].Amount * orders[0].Tax1Rate;
-                            if (orders[0].IsTax2) orders[0].Tax2 = orders[0].Amount * orders[0].Tax2Rate;
-                            if (orders[0].IsTax3) orders[0].Tax3 = orders[0].Amount * orders[0].Tax3Rate;
+
+                            // Tax Calculation
+                            fTax1 = orders[0].IsTax1 ? TaxRate1 * orders[0].Amount : 0;
+                            fTax2 = orders[0].IsTax2 ? TaxRate2 * orders[0].Amount : 0;
+                            if (m_bIsTax3IncTax1)
+                                fTax3 = orders[0].IsTax3 ? TaxRate3 * (orders[0].Amount + fTax1) : 0;
+                            else
+                                fTax3 = orders[0].IsTax3 ? TaxRate3 * orders[0].Amount : 0;
+                            if (orders[0].IsTax1) orders[0].Tax1 = fTax1; // orders[0].Amount * orders[0].Tax1Rate;
+                            if (orders[0].IsTax2) orders[0].Tax2 = fTax2; //orders[0].Amount * orders[0].Tax2Rate;
+                            if (orders[0].IsTax3) orders[0].Tax3 = fTax3; //orders[0].Amount * orders[0].Tax3Rate;
                             orders[0].LastModDate = DateTime.Now.ToString("yyyy-MM-dd"); //DateTime.Now.ToShortDateString();
                             orders[0].LastModTime = DateTime.Now.ToString("HH:mm:ss"); //DateTime.Now.ToShortTimeString();
                             dbPOS.Update_Orders_Amount_Qty(orders[0]);
@@ -7159,6 +7217,7 @@ namespace SDCafeSales.Views
 
         private void bt_SetReturn_Click(object sender, EventArgs e)
         {
+            float fTax1, fTax2, fTax3 = 0;
             DataAccessPOS dbPOS = new DataAccessPOS();
             if (dgv_Orders.Rows.Count > 0)
             {
@@ -7185,9 +7244,17 @@ namespace SDCafeSales.Views
                             row.Cells[4].Value = iAmount.ToString("0.00");
                             // update orders table
                             orders[0].Amount = orders[0].OutUnitPrice * orders[0].Quantity;
-                            if (orders[0].IsTax1) orders[0].Tax1 = orders[0].Amount * orders[0].Tax1Rate;
-                            if (orders[0].IsTax2) orders[0].Tax2 = orders[0].Amount * orders[0].Tax2Rate;
-                            if (orders[0].IsTax3) orders[0].Tax3 = orders[0].Amount * orders[0].Tax3Rate;
+
+                            // Tax Calculation
+                            fTax1 = orders[0].IsTax1 ? TaxRate1 * orders[0].Amount : 0;
+                            fTax2 = orders[0].IsTax2 ? TaxRate2 * orders[0].Amount : 0;
+                            if (m_bIsTax3IncTax1)
+                                fTax3 = orders[0].IsTax3 ? TaxRate3 * (orders[0].Amount + fTax1) : 0;
+                            else
+                                fTax3 = orders[0].IsTax3 ? TaxRate3 * orders[0].Amount : 0;
+                            if (orders[0].IsTax1) orders[0].Tax1 = fTax1; // orders[0].Amount * orders[0].Tax1Rate;
+                            if (orders[0].IsTax2) orders[0].Tax2 = fTax2; //orders[0].Amount * orders[0].Tax2Rate;
+                            if (orders[0].IsTax3) orders[0].Tax3 = fTax3; //orders[0].Amount * orders[0].Tax3Rate;
                             orders[0].LastModDate = DateTime.Now.ToString("yyyy-MM-dd"); //DateTime.Now.ToShortDateString();
                             orders[0].LastModTime = DateTime.Now.ToString("HH:mm:ss"); //DateTime.Now.ToShortTimeString();
                             if (orders[0].Quantity < 0) 
