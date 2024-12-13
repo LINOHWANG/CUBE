@@ -39,12 +39,14 @@ namespace SDCafeCommon.Model
         public float ChillCharge { get; set; }
         public string MemoText { get; set; }
         public string BarCode { get; set; }
-
+        public string TaxCode { get; set; }
         public bool IsManualItem { get; set; }
         public bool IsMainSalesButton { get; set; }
         public bool IsSalesButton { get; set; }
 
         public string ForeColor { get; set; }
         public string BackColor { get; set; }
+
+        public int CategoryId { get; set; }
     }
 }

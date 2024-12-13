@@ -69,11 +69,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(513, 460);
+            this.ControlBox = false;
             this.Controls.Add(this.txt_InvoiceNo);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pnlNums);
             this.Name = "frmRecallOrder";
-            this.Text = "frmRecallOrder";
+            this.Text = "Recall Saved Order";
             this.Load += new System.EventHandler(this.frmRecallOrder_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

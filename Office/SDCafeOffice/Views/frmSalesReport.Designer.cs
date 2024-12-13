@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSalesReport));
             this.dgvData = new System.Windows.Forms.DataGridView();
             this.label1 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -261,8 +262,9 @@
             this.Controls.Add(this.dttm_TranEnd);
             this.Controls.Add(this.dttm_TranStart);
             this.Controls.Add(this.dgvData);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmSalesReport";
-            this.Text = "frmSalesReport";
+            this.Text = "Sales Report";
             this.Load += new System.EventHandler(this.frmSalesReport_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDataTender)).EndInit();

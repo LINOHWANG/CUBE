@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSalesCustomer));
             this.dgv_Orders = new System.Windows.Forms.DataGridView();
             this.txtMessages = new System.Windows.Forms.TextBox();
             this.pb_Instruction = new System.Windows.Forms.PictureBox();
@@ -364,6 +365,7 @@
             this.Controls.Add(this.txtMessages);
             this.Controls.Add(this.dgv_Orders);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "frmSalesCustomer";
             this.Text = "frmSalesCustomer";

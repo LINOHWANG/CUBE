@@ -69,6 +69,7 @@ namespace SDCafeOffice.Views
                 txt_Tax2.Text = taxes[0].Tax2.ToString();
                 txt_Tax3.Text = taxes[0].Tax3.ToString();
                 chkTax3IncTax1.Checked = taxes[0].IsTax3IncTax1;
+                chkTax3IncTax1.Text = lalTax1.Text + " include " + lalTax1.Text + "?";
             }
         }
 

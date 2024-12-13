@@ -52,8 +52,8 @@
             this.bt_No.Location = new System.Drawing.Point(254, 148);
             this.bt_No.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_No.Name = "bt_No";
-            this.bt_No.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight)
-            | SDCafeCommon.Utilities.Corners.BottomLeft)
+            this.bt_No.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
             this.bt_No.Size = new System.Drawing.Size(146, 56);
             this.bt_No.TabIndex = 63;
@@ -69,8 +69,8 @@
             this.bt_Yes.Location = new System.Drawing.Point(84, 148);
             this.bt_Yes.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Yes.Name = "bt_Yes";
-            this.bt_Yes.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight)
-            | SDCafeCommon.Utilities.Corners.BottomLeft)
+            this.bt_Yes.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
             this.bt_Yes.Size = new System.Drawing.Size(146, 56);
             this.bt_Yes.TabIndex = 62;
@@ -92,7 +92,7 @@
             this.MinimizeBox = false;
             this.Name = "frmYesNo";
             this.ShowIcon = false;
-            this.Text = "frmYesNo";
+            this.Text = "Confirmation";
             this.TopMost = true;
             this.ResumeLayout(false);
             this.PerformLayout();

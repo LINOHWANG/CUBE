@@ -10,6 +10,7 @@ using SDCafeCommon.Model;
 using SDCafeCommon.DataAccess;
 using System.Data;
 using System.Windows.Forms;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace SDCafeCommon.DataAccess
 {
@@ -200,13 +201,25 @@ namespace SDCafeCommon.DataAccess
                 return "";
             }
         }
-
+        public string Get_CategoryName_By_Id(int p_catId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_CategoryModel>($"SELECT * FROM Category WHERE id= {p_catId} ").ToList();
+                if (output.Count > 0)
+                {
+                    return output[0].CategoryName;
+                }
+                return "";
+            }
+        }
         public int Update_ProductType(POS_ProductTypeModel pOS_ProductTypeModel)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                string query = "UPDATE ProductType SET TypeName = @TypeName, IsLiquor=@IsLiquor, IsRestaurant=@IsRestaurant, " +
-                                "IsBatchDonation=@IsBatchDonation, IsBatchDiscount=@IsBatchDiscount " +
+                string query = "UPDATE ProductType SET TypeName = @TypeName, IsLiquor=@IsLiquor, SortOrder=@SortOrder , IsRestaurant=@IsRestaurant, " +
+                                "IsBatchDonation=@IsBatchDonation, IsBatchDiscount=@IsBatchDiscount, " +
+                                "ForeColor=@ForeColor, BackColor=@BackColor " +
                                 "WHERE Id=@Id";
                 var count = connection.Execute(query, pOS_ProductTypeModel);
                 return count;
@@ -282,8 +295,8 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                string query = "INSERT INTO ProductType (TypeName, IsLiquor, IsRestaurant, IsBatchDonation, IsBatchDiscount) " +
-                                    "VALUES (@TypeName, @IsLiquor, @IsRestaurant, @IsBatchDonation, @IsBatchDiscount)";
+                string query = "INSERT INTO ProductType (TypeName, IsLiquor, SortOrder, IsRestaurant, IsBatchDonation, IsBatchDiscount, ForeColor, BackColor) " +
+                                    "VALUES (@TypeName, @IsLiquor, @SortOrder, @IsRestaurant, @IsBatchDonation, @IsBatchDiscount, @ForeColor, @BackColor)";
                 var count = connection.Execute(query, pOS_ProductTypeModel);
                 return count;
             }
@@ -409,7 +422,7 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                var output = connection.Query<POS_ProductTypeModel>($"select * from ProductType").ToList();
+                var output = connection.Query<POS_ProductTypeModel>($"select * from ProductType order by SortOrder, TypeName").ToList();
                 return output;
             }
         }
@@ -596,13 +609,15 @@ namespace SDCafeCommon.DataAccess
                             "InUnitPrice, OutUnitPrice, IsTax1, IsTax2, IsTax3, IsTaxInverseCalculation, " +
                             "PromoStartDate, PromoEndDate, PromoDay1, PromoDay2, PromoDay3, " +
                             "IsPrinter1, IsPrinter2, IsPrinter3, IsPrinter4, IsPrinter5, " +
-                            "PromoPrice1, PromoPrice2, PromoPrice3, IsSoldOut, Deposit, RecyclingFee, ChillCharge, MemoText, BarCode, IsManualItem, Balance," +
-                            "IsMainSalesButton, IsSalesButton, ForeColor, BackColor ) " +
+                            "PromoPrice1, PromoPrice2, PromoPrice3, IsSoldOut, Deposit, RecyclingFee, ChillCharge, MemoText, BarCode, TaxCode, " +
+                            "IsManualItem, Balance," +
+                            "IsMainSalesButton, IsSalesButton, ForeColor, BackColor, CategoryId ) " +
                             "VALUES(@ProductName,@SecondName,@ProductTypeId,CAST(@OutUnitPrice as decimal(10,2)),CAST(@OutUnitPrice as decimal(10,2)),@IsTax1,@IsTax2,@IsTax3,@IsTaxInverseCalculation, " +
                             "@PromoStartDate,@PromoEndDate,@PromoDay1,@PromoDay2,@PromoDay3,@IsPrinter1,@IsPrinter2,@IsPrinter3,@IsPrinter4,@IsPrinter5,"+
                             "CAST(@PromoPrice1 as decimal(10,2)),CAST(@PromoPrice2 as decimal(10,2)),CAST(@PromoPrice3 as decimal(10,2)),@IsSoldOut," +
-                            "CAST(@Deposit as decimal(10,2)),CAST(@RecyclingFee as decimal(10,2)),CAST(@ChillCharge as decimal(10,2)), @MemoText, @BarCode, @IsManualItem, @Balance, @IsMainSalesButton, " +
-                            "@IsSalesButton, @ForeColor, @BackColor ); " +
+                            "CAST(@Deposit as decimal(10,2)),CAST(@RecyclingFee as decimal(10,2)),CAST(@ChillCharge as decimal(10,2)), @MemoText, @BarCode, @TaxCode, " +
+                            "@IsManualItem, @Balance, @IsMainSalesButton, " +
+                            "@IsSalesButton, @ForeColor, @BackColor, @CategoryId ); " +
                             "SELECT CAST(SCOPE_IDENTITY() as int)";
                 //var count = connection.Execute(query, pos_ProductModel);
                 var id = connection.QuerySingle<int>(query, pos_ProductModel);
@@ -629,8 +644,8 @@ namespace SDCafeCommon.DataAccess
                                 "IsPrinter1=@IsPrinter1, IsPrinter2=@IsPrinter2, IsPrinter3=@IsPrinter3, IsPrinter4=@IsPrinter4, IsPrinter5=@IsPrinter5, " +
                                 "PromoPrice1=CAST(@PromoPrice1 as decimal(10,2)), PromoPrice2=CAST(@PromoPrice2 as decimal(10,2)), PromoPrice3=CAST(@PromoPrice3 as decimal(10,2)), IsSoldOut=@IsSoldOut, " +
                                 "Deposit=CAST(@Deposit as decimal(10,2)), RecyclingFee=CAST(@RecyclingFee as decimal(10,2)),ChillCharge=CAST(@ChillCharge as decimal(10,2)), MemoText=@MemoText, " +
-                                "BarCode=@BarCode, IsManualItem=@IsManualItem, Balance=@Balance, " +
-                                "IsMainSalesButton = @IsMainSalesButton, IsSalesButton=@IsSalesButton, ForeColor = @ForeColor, BackColor = @BackColor  " +
+                                "BarCode=@BarCode, TaxCode=@TaxCode, IsManualItem=@IsManualItem, Balance=@Balance, " +
+                                "IsMainSalesButton = @IsMainSalesButton, IsSalesButton=@IsSalesButton, ForeColor = @ForeColor, BackColor = @BackColor, CategoryId=@CategoryId  " +
                                 "WHERE Id = @Id";
                 var count = connection.Execute(query, pos_ProductModel);
                 return count;
@@ -1101,6 +1116,14 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
+        public List<POS_ProductModel> Get_All_Products_By_Category(int iSelectedCatID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_ProductModel>($"select * from Product WHERE CategoryId = {iSelectedCatID} Order by IsManualItem Desc, ProductName").ToList();
+                return output;
+            }
+        }
         public List<POS_ProductModel> Get_All_Products_By_ProdType_Sortby_Price(int iSelectedProdTypeID, int iTop)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -1540,6 +1563,65 @@ namespace SDCafeCommon.DataAccess
                     return true;
                 else
                     return false;
+            }
+        }
+
+        public List<POS_CategoryModel> Get_Category_By_ID(int p_Id)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_CategoryModel>($"select * from Category where id = {p_Id}").ToList();
+                return output;
+            }
+        }
+
+        public int Update_Category(POS_CategoryModel pOS_CategoryModel)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "UPDATE Category SET CategoryName = @CategoryName, IsSeparateReport=@IsSeparateReport, IsDCException=@IsDCException " +
+                                "WHERE Id=@Id";
+                var count = connection.Execute(query, pOS_CategoryModel);
+                return count;
+            }
+        }
+
+        public int Insert_Category(POS_CategoryModel pOS_CategoryModel)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "INSERT INTO Category (CategoryName, IsSeparateReport, IsDCException) " +
+                                    "VALUES (@CategoryName, @IsSeparateReport, @IsDCException)";
+                var count = connection.Execute(query, pOS_CategoryModel);
+                return count;
+            }
+        }
+
+        public int Delete_Category_By_Id(int iSelectedId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "DELETE from Category WHERE id=" + iSelectedId;
+                var count = connection.Execute(query);
+                return count;
+            }
+        }
+
+        public List<POS_CategoryModel> Get_All_Categories()
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_CategoryModel>($"select * from Category").ToList();
+                return output;
+            }
+        }
+
+        public List<POS_CategoryModel> Get_Category_By_Name(string p_strName)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_CategoryModel>($"select * from Category where CategoryName = '{p_strName}'").ToList();
+                return output;
             }
         }
     }

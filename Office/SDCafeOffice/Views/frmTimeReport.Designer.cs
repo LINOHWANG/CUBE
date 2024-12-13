@@ -29,6 +29,7 @@ namespace SDCafeOffice.Views
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTimeReport));
             this.dttm_TranEndTime = new System.Windows.Forms.DateTimePicker();
             this.dttm_TranStartTime = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
@@ -40,15 +41,15 @@ namespace SDCafeOffice.Views
             this.chkbox_All = new System.Windows.Forms.CheckBox();
             this.cb_UserName = new System.Windows.Forms.ComboBox();
             this.chkbox_Unresolved = new System.Windows.Forms.CheckBox();
+            this.txtMessage = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.bt_PrintAll = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_Delete = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Update = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Excel = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Query = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Print = new SDCafeCommon.Utilities.CustomButton();
-            this.txtMessage = new System.Windows.Forms.TextBox();
-            this.bt_Delete = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_PrintAll = new SDCafeCommon.Utilities.CustomButton();
-            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -174,6 +175,59 @@ namespace SDCafeOffice.Views
             this.chkbox_Unresolved.UseVisualStyleBackColor = true;
             this.chkbox_Unresolved.CheckedChanged += new System.EventHandler(this.chkbox_Unresolved_CheckedChanged);
             // 
+            // txtMessage
+            // 
+            this.txtMessage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtMessage.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMessage.ForeColor = System.Drawing.SystemColors.Info;
+            this.txtMessage.Location = new System.Drawing.Point(9, 698);
+            this.txtMessage.Name = "txtMessage";
+            this.txtMessage.Size = new System.Drawing.Size(990, 32);
+            this.txtMessage.TabIndex = 63;
+            this.txtMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Arial Narrow", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label3.Location = new System.Drawing.Point(544, 131);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(337, 20);
+            this.label3.TabIndex = 66;
+            this.label3.Text = "Double Click Clock-In/Out Dates Columns to Update !";
+            // 
+            // bt_PrintAll
+            // 
+            this.bt_PrintAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.bt_PrintAll.CornerRadius = 30;
+            this.bt_PrintAll.Enabled = false;
+            this.bt_PrintAll.Font = new System.Drawing.Font("Arial Narrow", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_PrintAll.Location = new System.Drawing.Point(703, 62);
+            this.bt_PrintAll.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_PrintAll.Name = "bt_PrintAll";
+            this.bt_PrintAll.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_PrintAll.Size = new System.Drawing.Size(142, 47);
+            this.bt_PrintAll.TabIndex = 65;
+            this.bt_PrintAll.Text = "Print All";
+            this.bt_PrintAll.Click += new System.EventHandler(this.bt_PrintAll_Click);
+            // 
+            // bt_Delete
+            // 
+            this.bt_Delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.bt_Delete.CornerRadius = 30;
+            this.bt_Delete.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
+            this.bt_Delete.Location = new System.Drawing.Point(548, 62);
+            this.bt_Delete.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_Delete.Name = "bt_Delete";
+            this.bt_Delete.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Delete.Size = new System.Drawing.Size(142, 47);
+            this.bt_Delete.TabIndex = 64;
+            this.bt_Delete.Text = "Delete";
+            this.bt_Delete.Click += new System.EventHandler(this.bt_Delete_Click);
+            // 
             // bt_Update
             // 
             this.bt_Update.CornerRadius = 30;
@@ -247,59 +301,6 @@ namespace SDCafeOffice.Views
             this.bt_Print.Text = "Print Selected";
             this.bt_Print.Click += new System.EventHandler(this.bt_Print_Click);
             // 
-            // txtMessage
-            // 
-            this.txtMessage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.txtMessage.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMessage.ForeColor = System.Drawing.SystemColors.Info;
-            this.txtMessage.Location = new System.Drawing.Point(9, 698);
-            this.txtMessage.Name = "txtMessage";
-            this.txtMessage.Size = new System.Drawing.Size(990, 32);
-            this.txtMessage.TabIndex = 63;
-            this.txtMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // bt_Delete
-            // 
-            this.bt_Delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.bt_Delete.CornerRadius = 30;
-            this.bt_Delete.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Delete.Location = new System.Drawing.Point(548, 62);
-            this.bt_Delete.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_Delete.Name = "bt_Delete";
-            this.bt_Delete.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Delete.Size = new System.Drawing.Size(142, 47);
-            this.bt_Delete.TabIndex = 64;
-            this.bt_Delete.Text = "Delete";
-            this.bt_Delete.Click += new System.EventHandler(this.bt_Delete_Click);
-            // 
-            // bt_PrintAll
-            // 
-            this.bt_PrintAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.bt_PrintAll.CornerRadius = 30;
-            this.bt_PrintAll.Enabled = false;
-            this.bt_PrintAll.Font = new System.Drawing.Font("Arial Narrow", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_PrintAll.Location = new System.Drawing.Point(703, 62);
-            this.bt_PrintAll.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_PrintAll.Name = "bt_PrintAll";
-            this.bt_PrintAll.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_PrintAll.Size = new System.Drawing.Size(142, 47);
-            this.bt_PrintAll.TabIndex = 65;
-            this.bt_PrintAll.Text = "Print All";
-            this.bt_PrintAll.Click += new System.EventHandler(this.bt_PrintAll_Click);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Arial Narrow", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.label3.Location = new System.Drawing.Point(544, 131);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(337, 20);
-            this.label3.TabIndex = 66;
-            this.label3.Text = "Double Click Clock-In/Out Dates Columns to Update !";
-            // 
             // frmTimeReport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -325,6 +326,7 @@ namespace SDCafeOffice.Views
             this.Controls.Add(this.label5);
             this.Controls.Add(this.dttm_TranEnd);
             this.Controls.Add(this.dttm_TranStart);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmTimeReport";
             this.Text = "Time Report";
             this.Load += new System.EventHandler(this.frmTimeReport_Load);

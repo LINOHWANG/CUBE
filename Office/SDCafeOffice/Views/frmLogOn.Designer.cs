@@ -61,6 +61,7 @@ namespace SDCafeOffice
             this.txtPassCode.Size = new System.Drawing.Size(373, 70);
             this.txtPassCode.TabIndex = 2;
             this.txtPassCode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtPassCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPassCode_KeyDown);
             // 
             // txtMessage
             // 
@@ -118,8 +119,6 @@ namespace SDCafeOffice
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
-
 
         }
 

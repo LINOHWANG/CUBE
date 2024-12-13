@@ -1409,7 +1409,7 @@ namespace SDCafeKitchen.Views
             {
                 strSelProdId = iSelected_ProdId.ToString();
             }
-            FrmProd = new frmProduct(strSelProdId);
+            FrmProd = new frmProduct(strSelProdId, null);
             FrmProd.ShowDialog(); // Show();
             bt_Refresh.PerformClick();
         }

@@ -33,6 +33,7 @@ namespace SDCafeOffice
         List<POS_TaxModel> taxs = new List<POS_TaxModel>();
         List<POS_StationModel> stations = new List<POS_StationModel>();
         List<POS_PromotionModel> promos = new List<POS_PromotionModel>();
+        List<POS_CategoryModel> categories = new List<POS_CategoryModel>();
 
         Utility util = new Utility();
         private bool isProduct = false;
@@ -43,6 +44,7 @@ namespace SDCafeOffice
         private bool isTax = false;
         private bool isStation = false;
         private bool isPromotion = false;
+        private bool isCategory = false;
 
         public frmProduct FrmProd;
         public frmProdType FrmProdType;
@@ -51,6 +53,7 @@ namespace SDCafeOffice
         public frmStations FrmStations;
         public frmPromotion FrmPromotion;
         public frmTax FrmTax;
+        public frmCategory FrmCategory;
 
         public frmSalesReport FrmSalesReport;
         private int iDataGridHeight;
@@ -70,6 +73,7 @@ namespace SDCafeOffice
 
         private bool _stopLoop;
         private bool bProdExist;
+        private string strSelCategoryId;
 
         //private bool isSystem = false;
         public frmMain()
@@ -84,7 +88,7 @@ namespace SDCafeOffice
             //pnl_User.Hide();
             //pnl_Product.Hide();
             iDataGridHeight = dgvData.Height;
-            iDataGridTop = bt_ProdType.Top; // dgvData.Top;
+            iDataGridTop = cb_PType.Top; // dgvData.Top;
 
             chk_IsMainSales.Checked = false;
             chk_IsSales.Checked = true;
@@ -223,7 +227,7 @@ namespace SDCafeOffice
             this.dgvData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvData.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            this.dgvData.ColumnCount = 15;
+            this.dgvData.ColumnCount = 16;
             this.dgvData.Columns[0].Name = "Id";
             this.dgvData.Columns[0].Width = 50;
             this.dgvData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -236,40 +240,44 @@ namespace SDCafeOffice
             this.dgvData.Columns[3].Name = "Type";
             this.dgvData.Columns[3].Width = 80;
             this.dgvData.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            this.dgvData.Columns[4].Name = "UnitPrice";
+            this.dgvData.Columns[4].Name = "Category";
             this.dgvData.Columns[4].Width = 80;
-            this.dgvData.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            this.dgvData.Columns[5].Name = dbPOS.Get_SysConfig_By_Name("Tax1")[0].ConfigValue;
-            this.dgvData.Columns[5].Width = 50;
-            this.dgvData.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[6].Name = dbPOS.Get_SysConfig_By_Name("Tax2")[0].ConfigValue; // "Tax2";
+            this.dgvData.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+            this.dgvData.Columns[5].Name = "UnitPrice";
+            this.dgvData.Columns[5].Width = 80;
+            this.dgvData.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.dgvData.Columns[6].Name = dbPOS.Get_SysConfig_By_Name("Tax1")[0].ConfigValue;
             this.dgvData.Columns[6].Width = 50;
             this.dgvData.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[7].Name = dbPOS.Get_SysConfig_By_Name("Tax3")[0].ConfigValue; // "Tax3";
+            this.dgvData.Columns[7].Name = dbPOS.Get_SysConfig_By_Name("Tax2")[0].ConfigValue; // "Tax2";
             this.dgvData.Columns[7].Width = 50;
             this.dgvData.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[8].Name = "InPrice";
-            this.dgvData.Columns[8].Width = 80;
+            this.dgvData.Columns[8].Name = dbPOS.Get_SysConfig_By_Name("Tax3")[0].ConfigValue; // "Tax3";
+            this.dgvData.Columns[8].Width = 50;
             this.dgvData.Columns[8].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[9].Name = "QTY";
+            this.dgvData.Columns[9].Name = "InPrice";
             this.dgvData.Columns[9].Width = 80;
             this.dgvData.Columns[9].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[10].Name = "BarCode";
-            this.dgvData.Columns[10].Width = 100;
+            this.dgvData.Columns[10].Name = "QTY";
+            this.dgvData.Columns[10].Width = 80;
             this.dgvData.Columns[10].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
-            this.dgvData.Columns[11].Name = "Promo Start";
+            this.dgvData.Columns[11].Name = "BarCode";
             this.dgvData.Columns[11].Width = 100;
             this.dgvData.Columns[11].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[12].Name = "Promo End";
+
+            this.dgvData.Columns[12].Name = "Promo Start";
             this.dgvData.Columns[12].Width = 100;
             this.dgvData.Columns[12].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[13].Name = "Promo QTY";
-            this.dgvData.Columns[13].Width = 80;
+            this.dgvData.Columns[13].Name = "Promo End";
+            this.dgvData.Columns[13].Width = 100;
             this.dgvData.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[14].Name = "Promo Unit Price";
+            this.dgvData.Columns[14].Name = "Promo QTY";
             this.dgvData.Columns[14].Width = 80;
             this.dgvData.Columns[14].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.Columns[15].Name = "Promo Unit Price";
+            this.dgvData.Columns[15].Width = 80;
+            this.dgvData.Columns[15].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             this.dgvData.DefaultCellStyle.Font = new Font("Arial", 12F, GraphicsUnit.Pixel);
 
@@ -333,10 +341,23 @@ namespace SDCafeOffice
             isTax = false;
             isStation = false;
             isPromotion = false;
+            isCategory = false;
 
             dgvData_Prod_Initialize();
             if (prods.Count > 0)
             {
+                // in case of only one product, show the product form
+                if (prods.Count == 1)
+                {
+                    FrmProd = new frmProduct(prods[0].Id.ToString(), this);
+                    FrmProd.m_strStation = strStation;
+                    FrmProd.m_strUserPass = strUserPass;
+                    FrmProd.ShowDialog();
+                    bt_Product.PerformClick();
+                    text_BarCode.Text = "";
+                    text_BarCode.Focus();
+                    return;
+                }
                 Cursor.Current = Cursors.WaitCursor;
                 //show progressbar
                 progBarExport.Visible = true;
@@ -357,6 +378,7 @@ namespace SDCafeOffice
                                                          prod.ProductName,
                                                          prod.SecondName,
                                                          dbPOS.Get_ProductTypeName_By_Id(prod.ProductTypeId),
+                                                         dbPOS.Get_CategoryName_By_Id(prod.CategoryId),
                                                          prod.OutUnitPrice.ToString(),
                                                          prod.IsTax1.ToString(),
                                                          prod.IsTax2.ToString(),
@@ -371,27 +393,27 @@ namespace SDCafeOffice
                     });
                     if (prod.IsTax1) 
                     { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[5].Style.BackColor = Color.LightGreen; 
-                    }
-                    else 
-                    { 
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[5].Style.BackColor = Color.LightSalmon; 
-                    };
-                    if (prod.IsTax2) 
-                    { 
                         this.dgvData.Rows[dgvData.RowCount - 2].Cells[6].Style.BackColor = Color.LightGreen; 
                     }
                     else 
                     { 
                         this.dgvData.Rows[dgvData.RowCount - 2].Cells[6].Style.BackColor = Color.LightSalmon; 
                     };
-                    if (prod.IsTax3) 
+                    if (prod.IsTax2) 
                     { 
                         this.dgvData.Rows[dgvData.RowCount - 2].Cells[7].Style.BackColor = Color.LightGreen; 
                     }
                     else 
                     { 
                         this.dgvData.Rows[dgvData.RowCount - 2].Cells[7].Style.BackColor = Color.LightSalmon; 
+                    };
+                    if (prod.IsTax3) 
+                    { 
+                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[8].Style.BackColor = Color.LightGreen; 
+                    }
+                    else 
+                    { 
+                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[8].Style.BackColor = Color.LightSalmon; 
                     };
                     // Check Promotion and Change Color if Promotion is meet
                     if (IsProductPromotion(prod))
@@ -407,6 +429,7 @@ namespace SDCafeOffice
                 }
                 progBarExport.Visible = false;
                 Cursor.Current = Cursors.Default;
+                text_BarCode.Focus();
             }
         }
 
@@ -487,6 +510,7 @@ namespace SDCafeOffice
             isTax = false;
             isStation = false;
             isPromotion = false;
+            isCategory = false;
 
             dgvData_LoginUser_Initialize();
             if (loginUsers.Count > 0)
@@ -516,6 +540,7 @@ namespace SDCafeOffice
         private void bt_ProdType_Click(object sender, EventArgs e)
         {
             bt_ProductExport.Enabled = false;
+            //bt_ProductImport.Enabled = false;
 
             bt_Product.BackColor = Color.LightGreen;
             bt_LoginUser.BackColor = Color.Khaki;
@@ -534,26 +559,25 @@ namespace SDCafeOffice
             isTax = false;
             isStation = false;
             isPromotion = false;
+            isCategory = false;
 
             dgvData_ProdType_Initialize();
             if (ptypes.Count > 0)
             {
                 foreach (var ptype in ptypes)
                 {
+
                     this.dgvData.Rows.Add(new String[] { ptype.Id.ToString(),
                                                          ptype.TypeName,
-                                                         ptype.IsLiquor.ToString(),
-                                                         ptype.IsBatchDonation.ToString(),
-                                                         ptype.IsBatchDiscount.ToString()
+                                                         ptype.SortOrder.ToString(),
+                                                         ptype.ForeColor,
+                                                         ptype.BackColor
                     });
-                    if (ptype.IsBatchDonation)
-                    {
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[3].Style.BackColor = Color.Green;
-                    }
-                    if (ptype.IsBatchDiscount)
-                    {
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[4].Style.BackColor = Color.Green;
-                    }
+                    if ((ptype.ForeColor != "") && (ptype.ForeColor != null))
+                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[3].Style.BackColor = Color.FromArgb(int.Parse(ptype.ForeColor));
+                    if ((ptype.BackColor != "") && (ptype.BackColor != null))
+                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[4].Style.BackColor = Color.FromArgb(int.Parse(ptype.BackColor));
+
                     this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
 
                 }
@@ -578,13 +602,13 @@ namespace SDCafeOffice
             this.dgvData.Columns[1].Name = "Type Name";
             this.dgvData.Columns[1].Width = 200;
             this.dgvData.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[2].Name = "Is Liquor";
+            this.dgvData.Columns[2].Name = "Sort Order";
             this.dgvData.Columns[2].Width = 150;
             this.dgvData.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[3].Name = "Is Donation";
+            this.dgvData.Columns[3].Name = "ForeColor";
             this.dgvData.Columns[3].Width = 150;
             this.dgvData.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[4].Name = "Is Discount";
+            this.dgvData.Columns[4].Name = "BackColor";
             this.dgvData.Columns[4].Width = 150;
             this.dgvData.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
@@ -618,8 +642,9 @@ namespace SDCafeOffice
             isPType = false;
             isRFIDTag = false;
             isSysConfig = true;
-            isStation = true;
+            isStation = false;
             isPromotion = false;
+            isCategory = false;
 
             dgvData_SysConfig_Initialize();
             if (sysconfs.Count > 0)
@@ -696,6 +721,7 @@ namespace SDCafeOffice
             isTax = false;
             isStation = false;
             isPromotion = false;
+            isCategory = false;
 
             dgvData_RFIDTags_Initialize();
             if (rfids.Count > 0)
@@ -845,6 +871,7 @@ namespace SDCafeOffice
             isTax = true;
             isStation = false;
             isPromotion = false;
+            isCategory = false;
 
             dgvData_Tax_Initialize();
             if (taxs.Count > 0)
@@ -873,7 +900,7 @@ namespace SDCafeOffice
             this.dgvData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvData.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            this.dgvData.ColumnCount = 4;
+            this.dgvData.ColumnCount = 5;
             this.dgvData.Columns[0].Name = "Code";
             this.dgvData.Columns[0].Width = 150;
             this.dgvData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -886,6 +913,10 @@ namespace SDCafeOffice
             this.dgvData.Columns[3].Name = strTax3Name;// "Tax3";
             this.dgvData.Columns[3].Width = 100;
             this.dgvData.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.Columns[4].Name = strTax3Name + " include " + strTax1Name;// "Tax3";
+            this.dgvData.Columns[4].Width = 100;
+            this.dgvData.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
             this.dgvData.DefaultCellStyle.Font = new Font("Arial", 16F, GraphicsUnit.Pixel);
             this.dgvData.EnableHeadersVisualStyles = false;
             this.dgvData.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 18F, GraphicsUnit.Pixel);
@@ -955,7 +986,7 @@ namespace SDCafeOffice
                     {
                         strSelProdId = row.Cells[0].Value.ToString();
                     }
-                    FrmProd = new frmProduct(strSelProdId);
+                    FrmProd = new frmProduct(strSelProdId, this);
                     FrmProd.m_strStation = strStation;
                     FrmProd.m_strUserPass =  strUserPass;
                     FrmProd.ShowDialog();
@@ -1046,6 +1077,20 @@ namespace SDCafeOffice
                     FrmTax = new frmTax(this, strSelTaxCode, strTax1Name, strTax2Name, strTax3Name);
                     FrmTax.ShowDialog();
                     bt_Tax.PerformClick();
+                }
+                if (isCategory)
+                {
+                    if (row.Cells[0].Value == null)
+                    {
+                        strSelCategoryId = String.Empty;
+                    }
+                    else
+                    {
+                        strSelCategoryId = row.Cells[0].Value.ToString(); //dgvData.Rows[dgvData.SelectedRows[0].Index].Cells[0].Value.ToString();
+                    }
+                    FrmCategory = new frmCategory(strSelCategoryId, this);
+                    FrmCategory.ShowDialog();
+                    bt_Category.PerformClick();
                 }
             }
         }
@@ -1729,6 +1774,90 @@ namespace SDCafeOffice
                             "Total imported " + (iInsertCount + iUpdateCount).ToString() + System.Environment.NewLine +
                             "Barcode Duplicate : " + iBarcodeDupCount.ToString());
 
+        }
+
+        private void bt_Category_Click(object sender, EventArgs e)
+        {
+            bt_ProductExport.Enabled = false;
+            //bt_ProductImport.Enabled = false;
+
+            bt_Product.BackColor = Color.LightGreen;
+            bt_LoginUser.BackColor = Color.Khaki;
+            bt_Category.BackColor = Color.Yellow;
+            bt_RFIDTags.BackColor = Color.LightGreen;
+            bt_Tax.BackColor = Color.DarkOrange;
+            bt_SysConfig.BackColor = Color.Orchid;
+
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            categories = dbPOS.Get_All_Categories();
+            isProduct = false;
+            isLoginUser = false;
+            isPType = false;
+            isRFIDTag = false;
+            isSysConfig = false;
+            isTax = false;
+            isStation = false;
+            isPromotion = false;
+            isCategory = true;
+
+            dgvData_Category_Initialize();
+            if (categories.Count > 0)
+            {
+                foreach (var category in categories)
+                {
+                    this.dgvData.Rows.Add(new String[] { category.Id.ToString(),
+                                                         category.CategoryName,
+                                                         category.IsSeparateReport.ToString(),
+                                                         category.IsDCException.ToString()
+                    });
+                    if (category.IsSeparateReport)
+                    {
+                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[2].Style.BackColor = Color.Green;
+                    }
+                    if (category.IsDCException)
+                    {
+                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[3].Style.BackColor = Color.Green;
+                    }
+                    this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
+
+                }
+            }
+        }
+        private void dgvData_Category_Initialize()
+        {
+            dgvData_Adjustment();
+
+            this.dgvData.AutoSize = false;
+            dgvData.Rows.Clear();
+            //this.dataGridActivity.AutoGenerateColumns = false;
+            //this.dataGridActivity.RowHeadersVisible = false;
+            //this.dataGridActivity.MultiSelect = false;
+            this.dgvData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            this.dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            this.dgvData.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            this.dgvData.ColumnCount = 4;
+            this.dgvData.Columns[0].Name = "Id";
+            //this.dgvData.Columns[0].Width = 190;
+            this.dgvData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.Columns[1].Name = "Category Name";
+            this.dgvData.Columns[1].Width = 200;
+            this.dgvData.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.Columns[2].Name = "Is Separate Report";
+            this.dgvData.Columns[2].Width = 150;
+            this.dgvData.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.Columns[3].Name = "Is DC Exception";
+            this.dgvData.Columns[3].Width = 150;
+
+            this.dgvData.DefaultCellStyle.Font = new Font("Arial", 16F, GraphicsUnit.Pixel);
+            this.dgvData.EnableHeadersVisualStyles = false;
+            this.dgvData.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 18F, GraphicsUnit.Pixel);
+            this.dgvData.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.ColumnHeadersDefaultCellStyle.BackColor = Color.LightBlue;
+            // fix the row height
+            dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            dgvData.AllowUserToResizeRows = false;
+            dgvData.RowTemplate.Resizable = DataGridViewTriState.True;
+            dgvData.RowTemplate.MinimumHeight = 40;
         }
     }
 }

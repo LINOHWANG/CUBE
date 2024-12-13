@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSalesMain));
             this.dgv_Orders = new System.Windows.Forms.DataGridView();
             this.pnlMenu = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
@@ -331,7 +332,7 @@
             this.txtQTY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.txtQTY.Location = new System.Drawing.Point(154, 442);
             this.txtQTY.Name = "txtQTY";
-            this.txtQTY.Size = new System.Drawing.Size(136, 38);
+            this.txtQTY.Size = new System.Drawing.Size(124, 38);
             this.txtQTY.TabIndex = 26;
             this.txtQTY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtQTY.Click += new System.EventHandler(this.txtQTY_Click);
@@ -814,14 +815,14 @@
             this.bt_SetQTY.CornerRadius = 20;
             this.bt_SetQTY.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_SetQTY.ForeColor = System.Drawing.Color.Black;
-            this.bt_SetQTY.Location = new System.Drawing.Point(296, 440);
+            this.bt_SetQTY.Location = new System.Drawing.Point(284, 440);
             this.bt_SetQTY.Name = "bt_SetQTY";
             this.bt_SetQTY.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_SetQTY.Size = new System.Drawing.Size(95, 42);
+            this.bt_SetQTY.Size = new System.Drawing.Size(107, 42);
             this.bt_SetQTY.TabIndex = 27;
-            this.bt_SetQTY.Text = "Set QTY";
+            this.bt_SetQTY.Text = "Set Multi";
             this.bt_SetQTY.Click += new System.EventHandler(this.bt_SetQTY_Click);
             // 
             // bt_SetItemDiscount
@@ -1114,6 +1115,7 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.bt_ShowSideBar);
             this.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.Name = "frmSalesMain";
             this.Text = "Sales Main";

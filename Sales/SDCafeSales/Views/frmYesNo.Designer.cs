@@ -92,7 +92,7 @@
             this.MinimizeBox = false;
             this.Name = "frmYesNo";
             this.ShowIcon = false;
-            this.Text = "frmYesNo";
+            this.Text = "Confirmation";
             this.TopMost = true;
             this.ResumeLayout(false);
             this.PerformLayout();

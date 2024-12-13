@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSalesHistory));
             this.dgvData = new System.Windows.Forms.DataGridView();
             this.dttm_TranStart = new System.Windows.Forms.DateTimePicker();
             this.dttm_TranEnd = new System.Windows.Forms.DateTimePicker();
@@ -558,6 +559,7 @@
             this.Controls.Add(this.dttm_TranStart);
             this.Controls.Add(this.dgvData);
             this.Controls.Add(this.dgvItems);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmSalesHistory";
             this.Text = "Sales History / Reprint / Void / Refund";
             this.Load += new System.EventHandler(this.frmSalesHistory_Load);

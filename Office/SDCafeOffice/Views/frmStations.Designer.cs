@@ -28,10 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.label10 = new System.Windows.Forms.Label();
             this.txt_HostName = new System.Windows.Forms.TextBox();
-            this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
             this.label1 = new System.Windows.Forms.Label();
             this.txt_Station = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -53,23 +51,10 @@
             this.label6 = new System.Windows.Forms.Label();
             this.txt_Client_Id = new System.Windows.Forms.TextBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
             this.gb_Paymentree.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // bt_Exit
-            // 
-            this.bt_Exit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.bt_Exit.CornerRadius = 30;
-            this.bt_Exit.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Exit.ForeColor = System.Drawing.Color.White;
-            this.bt_Exit.Location = new System.Drawing.Point(637, 12);
-            this.bt_Exit.Name = "bt_Exit";
-            this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Exit.Size = new System.Drawing.Size(142, 47);
-            this.bt_Exit.TabIndex = 38;
-            this.bt_Exit.Text = "Exit";
-            this.bt_Exit.Click += new System.EventHandler(this.bt_Exit_Click);
             // 
             // label10
             // 
@@ -91,20 +76,6 @@
             this.txt_HostName.Size = new System.Drawing.Size(249, 29);
             this.txt_HostName.TabIndex = 36;
             this.txt_HostName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // bt_Save
-            // 
-            this.bt_Save.CornerRadius = 30;
-            this.bt_Save.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Save.Location = new System.Drawing.Point(637, 67);
-            this.bt_Save.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_Save.Name = "bt_Save";
-            this.bt_Save.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Save.Size = new System.Drawing.Size(142, 47);
-            this.bt_Save.TabIndex = 35;
-            this.bt_Save.Text = "Save";
-            this.bt_Save.Click += new System.EventHandler(this.bt_Save_Click);
             // 
             // label1
             // 
@@ -327,11 +298,41 @@
             this.txt_Client_Id.TabIndex = 43;
             this.txt_Client_Id.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // bt_Exit
+            // 
+            this.bt_Exit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.bt_Exit.CornerRadius = 30;
+            this.bt_Exit.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
+            this.bt_Exit.ForeColor = System.Drawing.Color.White;
+            this.bt_Exit.Location = new System.Drawing.Point(637, 12);
+            this.bt_Exit.Name = "bt_Exit";
+            this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Exit.Size = new System.Drawing.Size(142, 47);
+            this.bt_Exit.TabIndex = 38;
+            this.bt_Exit.Text = "Exit";
+            this.bt_Exit.Click += new System.EventHandler(this.bt_Exit_Click);
+            // 
+            // bt_Save
+            // 
+            this.bt_Save.CornerRadius = 30;
+            this.bt_Save.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
+            this.bt_Save.Location = new System.Drawing.Point(637, 67);
+            this.bt_Save.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_Save.Name = "bt_Save";
+            this.bt_Save.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Save.Size = new System.Drawing.Size(142, 47);
+            this.bt_Save.TabIndex = 35;
+            this.bt_Save.Text = "Save";
+            this.bt_Save.Click += new System.EventHandler(this.bt_Save_Click);
+            // 
             // frmStations
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(815, 538);
+            this.ControlBox = false;
             this.Controls.Add(this.gb_Paymentree);
             this.Controls.Add(this.check_IsPaymentree);
             this.Controls.Add(this.label5);

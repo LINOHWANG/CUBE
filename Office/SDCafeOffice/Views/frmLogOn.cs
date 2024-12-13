@@ -211,6 +211,7 @@ namespace SDCafeOffice
 
         private bool UserLoginWithPassCode(string strPassCode)
         {
+            strPassCode = strPassCode.Trim();
             DataAccessPOS dbPOS = new DataAccessPOS();
             try
             {
@@ -245,6 +246,37 @@ namespace SDCafeOffice
         private void frmLogOn_Shown(object sender, EventArgs e)
         {
             txtPassCode.Focus();
+        }
+
+        private void txtPassCode_KeyDown(object sender, KeyEventArgs e)
+        {
+
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (UserLoginWithPassCode(txtPassCode.Text))
+                {
+                    this.Hide();
+                    FrmMain = new frmMain();
+                    FrmMain.Set_PassCode(txtPassCode.Text);
+                    FrmMain.ShowDialog();
+                    strPassCode = string.Empty;
+                    txtPassCode.Text = strPassCode;
+
+                    this.Close();
+
+                }
+                else
+                {
+                    txtMessage.Text = "Login Failed ! Please check your passcode or grade !";
+                    strPassCode = string.Empty;
+                    txtPassCode.Text = strPassCode;
+                    Console.Beep(3000, 1000);
+
+                }
+
+                //this.Show();
+                return;
+            }
         }
     }
 }

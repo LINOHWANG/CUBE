@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.dgvData = new System.Windows.Forms.DataGridView();
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.cb_PType = new System.Windows.Forms.ComboBox();
@@ -40,6 +41,7 @@
             this.chk_IsMainSales = new System.Windows.Forms.CheckBox();
             this.chk_IsSales = new System.Windows.Forms.CheckBox();
             this.chk_IsAll = new System.Windows.Forms.CheckBox();
+            this.bt_Category = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Stop = new SDCafeCommon.Utilities.CustomButton();
             this.bt_ProductImport = new SDCafeCommon.Utilities.CustomButton();
             this.bt_ProductExport = new SDCafeCommon.Utilities.CustomButton();
@@ -192,6 +194,20 @@
             this.chk_IsAll.UseVisualStyleBackColor = true;
             this.chk_IsAll.CheckedChanged += new System.EventHandler(this.chk_IsAll_CheckedChanged);
             // 
+            // bt_Category
+            // 
+            this.bt_Category.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
+            this.bt_Category.CornerRadius = 30;
+            this.bt_Category.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_Category.Location = new System.Drawing.Point(12, 277);
+            this.bt_Category.Name = "bt_Category";
+            this.bt_Category.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Category.Size = new System.Drawing.Size(142, 47);
+            this.bt_Category.TabIndex = 52;
+            this.bt_Category.Text = "Category";
+            this.bt_Category.Click += new System.EventHandler(this.bt_Category_Click);
+            // 
             // bt_Stop
             // 
             this.bt_Stop.BackColor = System.Drawing.Color.DarkRed;
@@ -213,7 +229,7 @@
             this.bt_ProductImport.BackColor = System.Drawing.Color.Tomato;
             this.bt_ProductImport.CornerRadius = 30;
             this.bt_ProductImport.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_ProductImport.Location = new System.Drawing.Point(12, 224);
+            this.bt_ProductImport.Location = new System.Drawing.Point(12, 118);
             this.bt_ProductImport.Name = "bt_ProductImport";
             this.bt_ProductImport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -227,7 +243,7 @@
             this.bt_ProductExport.BackColor = System.Drawing.Color.ForestGreen;
             this.bt_ProductExport.CornerRadius = 30;
             this.bt_ProductExport.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_ProductExport.Location = new System.Drawing.Point(12, 171);
+            this.bt_ProductExport.Location = new System.Drawing.Point(12, 65);
             this.bt_ProductExport.Name = "bt_ProductExport";
             this.bt_ProductExport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -255,7 +271,7 @@
             this.bt_Promotion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.bt_Promotion.CornerRadius = 30;
             this.bt_Promotion.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_Promotion.Location = new System.Drawing.Point(12, 277);
+            this.bt_Promotion.Location = new System.Drawing.Point(12, 171);
             this.bt_Promotion.Name = "bt_Promotion";
             this.bt_Promotion.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -283,7 +299,7 @@
             this.bt_Station.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.bt_Station.CornerRadius = 30;
             this.bt_Station.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_Station.Location = new System.Drawing.Point(456, 12);
+            this.bt_Station.Location = new System.Drawing.Point(511, 12);
             this.bt_Station.Name = "bt_Station";
             this.bt_Station.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -297,7 +313,7 @@
             this.bt_Tax.BackColor = System.Drawing.Color.DarkOrange;
             this.bt_Tax.CornerRadius = 30;
             this.bt_Tax.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_Tax.Location = new System.Drawing.Point(308, 12);
+            this.bt_Tax.Location = new System.Drawing.Point(363, 12);
             this.bt_Tax.Name = "bt_Tax";
             this.bt_Tax.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -311,7 +327,7 @@
             this.bt_SysConfig.BackColor = System.Drawing.Color.Orchid;
             this.bt_SysConfig.CornerRadius = 30;
             this.bt_SysConfig.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_SysConfig.Location = new System.Drawing.Point(604, 12);
+            this.bt_SysConfig.Location = new System.Drawing.Point(659, 12);
             this.bt_SysConfig.Name = "bt_SysConfig";
             this.bt_SysConfig.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -337,10 +353,10 @@
             // 
             // bt_ProdType
             // 
-            this.bt_ProdType.BackColor = System.Drawing.Color.GreenYellow;
+            this.bt_ProdType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.bt_ProdType.CornerRadius = 30;
             this.bt_ProdType.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_ProdType.Location = new System.Drawing.Point(12, 65);
+            this.bt_ProdType.Location = new System.Drawing.Point(12, 224);
             this.bt_ProdType.Name = "bt_ProdType";
             this.bt_ProdType.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -369,7 +385,7 @@
             this.bt_LoginUser.BackColor = System.Drawing.Color.Khaki;
             this.bt_LoginUser.CornerRadius = 30;
             this.bt_LoginUser.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_LoginUser.Location = new System.Drawing.Point(160, 12);
+            this.bt_LoginUser.Location = new System.Drawing.Point(215, 12);
             this.bt_LoginUser.Name = "bt_LoginUser";
             this.bt_LoginUser.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -383,7 +399,7 @@
             this.bt_Product.BackColor = System.Drawing.Color.LightGreen;
             this.bt_Product.CornerRadius = 30;
             this.bt_Product.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_Product.Location = new System.Drawing.Point(12, 118);
+            this.bt_Product.Location = new System.Drawing.Point(12, 12);
             this.bt_Product.Name = "bt_Product";
             this.bt_Product.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -397,6 +413,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.bt_Category);
             this.Controls.Add(this.bt_Stop);
             this.Controls.Add(this.bt_ProductImport);
             this.Controls.Add(this.progBarExport);
@@ -424,6 +441,7 @@
             this.Controls.Add(this.chk_IsManual);
             this.Controls.Add(this.chk_IsAll);
             this.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.Name = "frmMain";
             this.Text = "Office Main";
@@ -462,5 +480,6 @@
         private System.Windows.Forms.CheckBox chk_IsSales;
         private SDCafeCommon.Utilities.CustomButton bt_Stop;
         private System.Windows.Forms.CheckBox chk_IsAll;
+        private SDCafeCommon.Utilities.CustomButton bt_Category;
     }
 }

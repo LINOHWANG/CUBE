@@ -11,10 +11,13 @@ namespace SDCafeCommon.Model
         public int Id { get; set; }
         public string TypeName { get; set; }
         public bool IsLiquor { get; set; }
-        public bool SortOrder { get; set; }
+        public int SortOrder { get; set; }
         public bool IsRestaurant { get; set; }
         public bool IsBatchDonation { get; set; }
         public bool IsBatchDiscount { get; set; }
+
+        public string ForeColor { get; set; }
+        public string BackColor { get; set; }
 
     }
 }
