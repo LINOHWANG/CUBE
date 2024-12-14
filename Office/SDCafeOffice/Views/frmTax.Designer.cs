@@ -193,7 +193,7 @@
             this.bt_Delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.bt_Delete.CornerRadius = 30;
             this.bt_Delete.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Delete.Location = new System.Drawing.Point(627, 71);
+            this.bt_Delete.Location = new System.Drawing.Point(627, 124);
             this.bt_Delete.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Delete.Name = "bt_Delete";
             this.bt_Delete.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -209,7 +209,7 @@
             this.bt_Exit.CornerRadius = 30;
             this.bt_Exit.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
             this.bt_Exit.ForeColor = System.Drawing.Color.White;
-            this.bt_Exit.Location = new System.Drawing.Point(627, 126);
+            this.bt_Exit.Location = new System.Drawing.Point(627, 12);
             this.bt_Exit.Name = "bt_Exit";
             this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -222,7 +222,7 @@
             // 
             this.bt_Save.CornerRadius = 30;
             this.bt_Save.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Save.Location = new System.Drawing.Point(627, 14);
+            this.bt_Save.Location = new System.Drawing.Point(627, 67);
             this.bt_Save.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Save.Name = "bt_Save";
             this.bt_Save.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 

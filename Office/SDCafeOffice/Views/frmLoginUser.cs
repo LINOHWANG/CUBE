@@ -18,14 +18,15 @@ namespace SDCafeOffice.Views
         private string strSelLoginId;
         List<POS_LoginUserModel> loginUsers = new List<POS_LoginUserModel>();
         Utility util = new Utility();
-
+        frmMain frmMain;
         public frmLoginUser()
         {
             InitializeComponent();
         }
 
-        public frmLoginUser(string strSelLoginId)
+        public frmLoginUser(string strSelLoginId, frmMain _FrmMain)
         {
+            frmMain = _FrmMain;
             InitializeComponent();
             txt_LoginID.Text = strSelLoginId;
             txt_LoginID.Enabled = false;
@@ -165,6 +166,31 @@ namespace SDCafeOffice.Views
         {
             this.Close();
             return;
+        }
+
+        private void bt_Delete_Click(object sender, EventArgs e)
+        {
+            int iSelectedId = Convert.ToInt32(txt_LoginID.Text);
+            if (iSelectedId > 0)
+            {
+                using (var FrmYesNo = new frmYesNo(frmMain))
+                {
+                    FrmYesNo.Set_Title("User");
+                    FrmYesNo.Set_Message("Do you want to delete this user ?");
+                    FrmYesNo.StartPosition = FormStartPosition.Manual; // FormStartPosition.CenterScreen; //
+                    FrmYesNo.Location = new System.Drawing.Point((Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2,
+                              (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2); //Screen.PrimaryScreen.Bounds.Location;
+                    FrmYesNo.ShowDialog();
+
+                    if (FrmYesNo.bYesNo)
+                    {
+                        DataAccessPOS dbPOS = new DataAccessPOS();
+                        dbPOS.Delete_LoginUser(iSelectedId);
+                        bt_Exit.PerformClick();
+                    }
+                }
+
+            }
         }
     }
 }

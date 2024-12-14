@@ -33,7 +33,9 @@ namespace SDCafeOffice
             this.txtPassCode = new System.Windows.Forms.TextBox();
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBoxLogo = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
             this.SuspendLayout();
             // 
@@ -46,7 +48,7 @@ namespace SDCafeOffice
             this.pnlNums.BackColor = System.Drawing.SystemColors.Desktop;
             this.pnlNums.Location = new System.Drawing.Point(128, 143);
             this.pnlNums.Name = "pnlNums";
-            this.pnlNums.Size = new System.Drawing.Size(374, 309);
+            this.pnlNums.Size = new System.Drawing.Size(374, 314);
             this.pnlNums.TabIndex = 1;
             // 
             // txtPassCode
@@ -68,7 +70,7 @@ namespace SDCafeOffice
             this.txtMessage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.txtMessage.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMessage.ForeColor = System.Drawing.SystemColors.Info;
-            this.txtMessage.Location = new System.Drawing.Point(2, 549);
+            this.txtMessage.Location = new System.Drawing.Point(2, 599);
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.Size = new System.Drawing.Size(629, 32);
             this.txtMessage.TabIndex = 3;
@@ -83,6 +85,16 @@ namespace SDCafeOffice
             this.groupBox1.Size = new System.Drawing.Size(410, 421);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::SDCafeOffice.Properties.Resources.TSE_CI_2024;
+            this.pictureBox1.Location = new System.Drawing.Point(167, 546);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(288, 50);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 6;
+            this.pictureBox1.TabStop = false;
             // 
             // pictureBoxLogo
             // 
@@ -101,8 +113,9 @@ namespace SDCafeOffice
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.ClientSize = new System.Drawing.Size(632, 584);
+            this.ClientSize = new System.Drawing.Size(632, 632);
             this.ControlBox = false;
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.pictureBoxLogo);
             this.Controls.Add(this.txtMessage);
             this.Controls.Add(this.txtPassCode);
@@ -116,6 +129,7 @@ namespace SDCafeOffice
             this.Text = "Welcome to Office Module";
             this.Load += new System.EventHandler(this.frmLogOn_Load);
             this.Shown += new System.EventHandler(this.frmLogOn_Shown);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -129,6 +143,7 @@ namespace SDCafeOffice
         private System.Windows.Forms.TextBox txtMessage;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.PictureBox pictureBoxLogo;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 

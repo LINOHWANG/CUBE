@@ -40,6 +40,8 @@ namespace SDCafeOffice.Views
             if (String.IsNullOrEmpty(txt_PromoID.Text))
             {
                 txtMessage.Text = "No Promotion was selected. Insert(Save) mode is on!";
+                bt_Delete.Enabled = false;
+                bt_AddOne.Enabled = false;
             }
             else
             {
@@ -60,20 +62,24 @@ namespace SDCafeOffice.Views
             {
                 foreach (var prod in prods)
                 {
-                    this.dgvDataFrom.Rows.Add(new String[] { prod.Id.ToString(),
+                    if (!prod.IsManualItem)
+                    {
+                        this.dgvDataFrom.Rows.Add(new String[] { prod.Id.ToString(),
                                                          dbPOS.Get_ProductTypeName_By_Id(prod.ProductTypeId),
                                                          prod.ProductName,
                                                          prod.OutUnitPrice.ToString()
-                    });
-                   /* if (ptype.IsBatchDonation)
-                    {
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[3].Style.BackColor = Color.Green;
+                        });
+
+                        /* if (ptype.IsBatchDonation)
+                         {
+                             this.dgvData.Rows[dgvData.RowCount - 2].Cells[3].Style.BackColor = Color.Green;
+                         }
+                         if (ptype.IsBatchDiscount)
+                         {
+                             this.dgvData.Rows[dgvData.RowCount - 2].Cells[4].Style.BackColor = Color.Green;
+                         }*/
+                        this.dgvDataFrom.FirstDisplayedScrollingRowIndex = dgvDataFrom.RowCount - 1;
                     }
-                    if (ptype.IsBatchDiscount)
-                    {
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[4].Style.BackColor = Color.Green;
-                    }*/
-                    this.dgvDataFrom.FirstDisplayedScrollingRowIndex = dgvDataFrom.RowCount - 1;
 
                 }
             }
@@ -148,7 +154,13 @@ namespace SDCafeOffice.Views
                 txt_PromoQTY.Text = ppromos[0].PromoQTY.ToString();
                 dttm_PromoStart.Text = ppromos[0].PromoStartDttm.ToString();
                 dttm_PromoEnd.Text = ppromos[0].PromoEndDttm.ToString();
-
+                bt_AddOne.Enabled = true;
+                bt_Delete.Enabled = true;
+            }
+            else
+            {
+                bt_AddOne.Enabled = false;
+                bt_Delete.Enabled = false;
             }
         }
         private void bt_Save_Click(object sender, EventArgs e)
@@ -198,6 +210,9 @@ namespace SDCafeOffice.Views
                 PromoEndDttm = dttm_PromoEnd.Value
             });
             int iCnt = dbPOS.Update_Promotion(ppromos[0]);
+            // Need to rebuild PromoProducts table for the promotion
+            // Remove existing promoproducts and add again from dgvPromoTo
+            xxx
             txtMessage.Text = "Promotion successfully Updated : " + txt_PromoName.Text;
             txtMessage.ForeColor = Color.White;
         }
@@ -240,10 +255,12 @@ namespace SDCafeOffice.Views
             if (iPromoId > 0)
             {
                 txt_PromoID.Text = iPromoId.ToString();
+                bt_AddOne.Enabled = true;
                 AddPromotionProducts(iPromoId);
             }
             txtMessage.Text = "Promotion successfully Added : " + txt_PromoName.Text;
             txtMessage.ForeColor = Color.White;
+
         }
 
         private void AddPromotionProducts(int p_iPromoId)
@@ -411,45 +428,23 @@ namespace SDCafeOffice.Views
                     {
                         strSelProdId = dgvDataFrom.Rows[dgvDataFrom.SelectedRows[i].Index].Cells[0].Value.ToString();
                         strSelProdPrice = dgvDataFrom.Rows[dgvDataFrom.SelectedRows[i].Index].Cells[3].Value.ToString();
-                        Move_dgvDataFrom_dgvDataTo(strSelProdId, Convert.ToDouble(strSelProdPrice));
+                        Move_dgvDataFrom_dgvDataTo(dgvDataFrom.SelectedRows[i].Index, strSelProdId, Convert.ToDouble(strSelProdPrice));
                     }
                 }
 
-                Load_PromoProducts_DataGrid();
+                //Load_PromoProducts_DataGrid();
             }
         }
 
-        private void Move_dgvDataFrom_dgvDataTo(string strSelProdId, double dblProdPrice)
+        private void Move_dgvDataFrom_dgvDataTo(int iFromRowIndex, string strSelProdId, double dblProdPrice)
         {
-            DataAccessPOS dbPOS = new DataAccessPOS();
+            // copy the selected row to the other datagridview
+            dgvDataTo.Rows.Add(new String[] { dgvDataFrom.Rows[iFromRowIndex].Cells[0].Value.ToString(),
+                                                         dgvDataFrom.Rows[iFromRowIndex].Cells[1].Value.ToString(),
+                                                         dgvDataFrom.Rows[iFromRowIndex].Cells[2].Value.ToString(),
+                                                         dgvDataFrom.Rows[iFromRowIndex].Cells[3].Value.ToString()
+            });
 
-            if (txt_PromoID.Text != "")
-            {
-                int iSelectedPromoId = Convert.ToInt32(txt_PromoID.Text);
-                int iSelectedProdId = Convert.ToInt32(strSelProdId);
-
-                double dblFirstProdPrice = dbPOS.Get_The_First_Product_Price_From_PromoProduct(iSelectedPromoId);
-                if (dblFirstProdPrice > 0)
-                {
-                    dblFirstProdPrice = Math.Round(dblFirstProdPrice, 2);
-                    if (dblFirstProdPrice != dblProdPrice)
-                    {
-                        MessageBox.Show("Unit Price Should be the same! " + dblProdPrice.ToString() + " is Not Equal to " + dblFirstProdPrice.ToString());
-                        return;
-                    }
-                }
-                pprods.Clear();
-                pprods.Add(new POS_PromoProductsModel()
-                {
-                    PromoId = iSelectedPromoId,
-                    ProdId = Convert.ToInt32(strSelProdId)
-                });
-                if (!dbPOS.Check_PromoProducts(pprods[0]))
-                {
-                    dbPOS.Insert_PromoProduct(pprods[0]);
-                }
-            }
-            //dgvDataFrom.Rows.RemoveAt(dgvDataFrom.SelectedRows[i].Index);
         }
 
         private void bt_DelOne_Click(object sender, EventArgs e)
@@ -474,9 +469,22 @@ namespace SDCafeOffice.Views
 
                 sb.Append("Total: " + selectedRowCount.ToString());
                 txtMessage.Text = "Selected Rows = " + selectedRowCount.ToString();
+                for (int i = 0; i < selectedRowCount; i++)
+                {
+                    if (dgvDataTo.Rows[dgvDataTo.SelectedRows[i].Index].Cells[0].Value == null)
+                    {
+                        strSelProdId = String.Empty;
+                    }
+                    else
+                    {
+                        //strSelProdId = dgvDataTo.Rows[dgvDataFrom.SelectedRows[i].Index].Cells[0].Value.ToString();
+                        dgvDataTo.Rows.RemoveAt(dgvDataTo.SelectedRows[i].Index);
 
+
+                    }
+                }
             }
-            Load_PromoProducts_DataGrid();
+            //Load_PromoProducts_DataGrid();
         }
         private void Move_dgvDataTod_gvDataFrom(string strSelProdId, int i)
         {

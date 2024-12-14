@@ -881,7 +881,8 @@ namespace SDCafeOffice
                     this.dgvData.Rows.Add(new String[] { tax.Code,
                                                          tax.Tax1.ToString(),
                                                          tax.Tax2.ToString(),
-                                                         tax.Tax3.ToString()
+                                                         tax.Tax3.ToString(),
+                                                         tax.IsTax3IncTax1.ToString()
                     });
                     this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
 
@@ -1016,7 +1017,7 @@ namespace SDCafeOffice
                     {
                         strSelLoginId = row.Cells[0].Value.ToString();
                     }
-                    FrmLoginUser = new frmLoginUser(strSelLoginId);
+                    FrmLoginUser = new frmLoginUser(strSelLoginId, this);
                     FrmLoginUser.ShowDialog();
                     bt_LoginUser.PerformClick();
                 }

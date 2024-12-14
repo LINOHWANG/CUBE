@@ -79,5 +79,15 @@ namespace SDCafeOffice.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TSE_CI_2024 {
+            get {
+                object obj = ResourceManager.GetObject("TSE_CI_2024", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

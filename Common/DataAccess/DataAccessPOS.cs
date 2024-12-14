@@ -1624,5 +1624,15 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
+
+        public int Delete_LoginUser(int iSelectedId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "DELETE from LoginUser WHERE id=" + iSelectedId;
+                var count = connection.Execute(query);
+                return count;
+            }
+        }
     }
 }

@@ -58,6 +58,7 @@
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_Delete = new SDCafeCommon.Utilities.CustomButton();
             this.SuspendLayout();
             // 
             // label10
@@ -203,7 +204,7 @@
             this.txt_Addr.Location = new System.Drawing.Point(169, 285);
             this.txt_Addr.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Addr.Name = "txt_Addr";
-            this.txt_Addr.Size = new System.Drawing.Size(603, 29);
+            this.txt_Addr.Size = new System.Drawing.Size(536, 29);
             this.txt_Addr.TabIndex = 57;
             this.txt_Addr.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -232,7 +233,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(433, 173);
+            this.label8.Location = new System.Drawing.Point(366, 173);
             this.label8.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(336, 22);
@@ -243,7 +244,7 @@
             // 
             this.txt_Grade.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txt_Grade.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Grade.Location = new System.Drawing.Point(587, 208);
+            this.txt_Grade.Location = new System.Drawing.Point(520, 208);
             this.txt_Grade.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Grade.Name = "txt_Grade";
             this.txt_Grade.Size = new System.Drawing.Size(185, 29);
@@ -254,7 +255,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(433, 250);
+            this.label9.Location = new System.Drawing.Point(366, 250);
             this.label9.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(60, 22);
@@ -264,7 +265,7 @@
             // txt_Wage
             // 
             this.txt_Wage.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Wage.Location = new System.Drawing.Point(587, 247);
+            this.txt_Wage.Location = new System.Drawing.Point(520, 247);
             this.txt_Wage.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Wage.Name = "txt_Wage";
             this.txt_Wage.Size = new System.Drawing.Size(185, 29);
@@ -275,7 +276,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(433, 133);
+            this.label11.Location = new System.Drawing.Point(366, 133);
             this.label11.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(103, 22);
@@ -286,7 +287,7 @@
             // 
             this.txt_PassWord.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txt_PassWord.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_PassWord.Location = new System.Drawing.Point(587, 130);
+            this.txt_PassWord.Location = new System.Drawing.Point(520, 130);
             this.txt_PassWord.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_PassWord.Name = "txt_PassWord";
             this.txt_PassWord.Size = new System.Drawing.Size(185, 29);
@@ -297,7 +298,7 @@
             // 
             this.check_Active.AutoSize = true;
             this.check_Active.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_Active.Location = new System.Drawing.Point(437, 93);
+            this.check_Active.Location = new System.Drawing.Point(372, 93);
             this.check_Active.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.check_Active.Name = "check_Active";
             this.check_Active.Size = new System.Drawing.Size(81, 26);
@@ -356,7 +357,7 @@
             this.txtMessage.ForeColor = System.Drawing.SystemColors.Info;
             this.txtMessage.Location = new System.Drawing.Point(-1, 400);
             this.txtMessage.Name = "txtMessage";
-            this.txtMessage.Size = new System.Drawing.Size(790, 32);
+            this.txtMessage.Size = new System.Drawing.Size(869, 32);
             this.txtMessage.TabIndex = 72;
             this.txtMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -366,7 +367,7 @@
             this.bt_Exit.CornerRadius = 30;
             this.bt_Exit.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
             this.bt_Exit.ForeColor = System.Drawing.Color.White;
-            this.bt_Exit.Location = new System.Drawing.Point(630, 12);
+            this.bt_Exit.Location = new System.Drawing.Point(726, 12);
             this.bt_Exit.Name = "bt_Exit";
             this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -379,7 +380,7 @@
             // 
             this.bt_Save.CornerRadius = 30;
             this.bt_Save.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Save.Location = new System.Drawing.Point(630, 67);
+            this.bt_Save.Location = new System.Drawing.Point(726, 67);
             this.bt_Save.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Save.Name = "bt_Save";
             this.bt_Save.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -389,12 +390,28 @@
             this.bt_Save.Text = "Save";
             this.bt_Save.Click += new System.EventHandler(this.bt_Save_Click);
             // 
+            // bt_Delete
+            // 
+            this.bt_Delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.bt_Delete.CornerRadius = 30;
+            this.bt_Delete.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
+            this.bt_Delete.Location = new System.Drawing.Point(726, 124);
+            this.bt_Delete.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_Delete.Name = "bt_Delete";
+            this.bt_Delete.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Delete.Size = new System.Drawing.Size(142, 47);
+            this.bt_Delete.TabIndex = 73;
+            this.bt_Delete.Text = "Delete";
+            this.bt_Delete.Click += new System.EventHandler(this.bt_Delete_Click);
+            // 
             // frmLoginUser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 439);
+            this.ClientSize = new System.Drawing.Size(880, 439);
             this.ControlBox = false;
+            this.Controls.Add(this.bt_Delete);
             this.Controls.Add(this.txtMessage);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.txt_UpdatedDTTM);
@@ -464,5 +481,6 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox txt_UpdatedDTTM;
         private System.Windows.Forms.TextBox txtMessage;
+        private SDCafeCommon.Utilities.CustomButton bt_Delete;
     }
 }

@@ -240,6 +240,7 @@
             this.txt_PromoID.Location = new System.Drawing.Point(194, 8);
             this.txt_PromoID.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_PromoID.Name = "txt_PromoID";
+            this.txt_PromoID.ReadOnly = true;
             this.txt_PromoID.Size = new System.Drawing.Size(198, 29);
             this.txt_PromoID.TabIndex = 82;
             this.txt_PromoID.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
