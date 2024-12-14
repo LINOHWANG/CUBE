@@ -143,6 +143,26 @@ namespace SDCafeSales.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap clock_In {
+            get {
+                object obj = ResourceManager.GetObject("clock_In", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap clock_Out {
+            get {
+                object obj = ResourceManager.GetObject("clock_Out", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap credit_cards_all {
             get {
                 object obj = ResourceManager.GetObject("credit_cards_all", resourceCulture);
@@ -306,6 +326,16 @@ namespace SDCafeSales.Properties {
         public static System.Drawing.Bitmap shutterstock_Receipt_Vector_238191226__Converted__eps {
             get {
                 object obj = ResourceManager.GetObject("shutterstock_Receipt+Vector_238191226 [Converted].eps", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap TSE_CI_2024 {
+            get {
+                object obj = ResourceManager.GetObject("TSE_CI_2024", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

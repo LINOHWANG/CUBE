@@ -30,6 +30,7 @@ namespace SDCafeSales.Views
         List<POS_RFIDTagsModel> rfids = new List<POS_RFIDTagsModel>();
         List<POS_SysConfigModel> sysconfs = new List<POS_SysConfigModel>();
         List<POS_TaxModel> taxs = new List<POS_TaxModel>();
+        private string m_strDefaultTaxCode;
         List<POS_TaxModel> allTaxs = new List<POS_TaxModel>();
         List<POS_StationModel> stations = new List<POS_StationModel>();
         List<POS_OrdersModel> orders = new List<POS_OrdersModel>();
@@ -657,13 +658,13 @@ namespace SDCafeSales.Views
         private bool Get_Tax_Rates()
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
-            string strDefaultTaxCode = dbPOS.Get_SysConfig_By_Name("DEFAULT_TAXCODE")[0].ConfigValue;
+            m_strDefaultTaxCode = dbPOS.Get_SysConfig_By_Name("DEFAULT_TAXCODE")[0].ConfigValue;
             
             allTaxs = dbPOS.Get_All_Tax();
 
-            if (strDefaultTaxCode != "")
+            if (m_strDefaultTaxCode != "")
             {
-                taxs = dbPOS.Get_Tax_By_Code(strDefaultTaxCode);
+                taxs = dbPOS.Get_Tax_By_Code(m_strDefaultTaxCode);
                 if (taxs.Count > 0)
                 {
                     m_TaxRate1 = taxs[0].Tax1;
@@ -2701,6 +2702,7 @@ namespace SDCafeSales.Views
                     }
                     txtQTY.Text = "";
                 }
+
                 // Payout
                 if (prods[0].CategoryId == 2)
                     prods[0].OutUnitPrice = prods[0].OutUnitPrice * -1;
@@ -2776,7 +2778,21 @@ namespace SDCafeSales.Views
                     // Add the ordered item into Orders table
                     ////////////////////////////////////////////////
                     ///
-
+                    if (prods[0].TaxCode != null)
+                    {
+                        if (prods[0].TaxCode != "")
+                        {
+                            SetTaxRates(prods[0].TaxCode);
+                        }
+                        else
+                        {
+                            SetTaxRates(m_strDefaultTaxCode);
+                        }
+                    }
+                    else
+                    {
+                        SetTaxRates(m_strDefaultTaxCode);
+                    }
                     orders.Add(new POS_OrdersModel()
                     {
                         TranType = "20",
@@ -2850,9 +2866,10 @@ namespace SDCafeSales.Views
                         {
                             // Get Parent Order Id
                             int iParentId = iNewOrderId; // dbPOS.Get_Latest_OrderId_by_InvoiceNo_ProductId(orders[0].InvoiceNo, orders[0].ProductId);
-                                                         ////////////////////////////////////////////////
-                                                         // Add the Discount order item into Orders table
-                                                         ////////////////////////////////////////////////
+                            ////////////////////////////////////////////////
+                            // Add the Discount order item into Orders table
+                            ////////////////////////////////////////////////
+                            SetTaxRates(m_strDefaultTaxCode);
                             orders.Add(new POS_OrdersModel()
                             {
                                 TranType = "20",
@@ -2907,7 +2924,7 @@ namespace SDCafeSales.Views
                                 iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
                                 this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
-                                                                               "1",
+                                                                               orders[orders.Count-1].Quantity.ToString(),
                                                                                orders[orders.Count-1].Amount.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
                                                                                "",
@@ -2925,9 +2942,10 @@ namespace SDCafeSales.Views
                         {
                             // Get Parent Order Id
                             int iParentId = iNewOrderId; // dbPOS.Get_Latest_OrderId_by_InvoiceNo_ProductId(orders[0].InvoiceNo, orders[0].ProductId);
-                                                         ////////////////////////////////////////////////
-                                                         // Add the Discount order item into Orders table
-                                                         ////////////////////////////////////////////////
+                            ////////////////////////////////////////////////
+                            // Add the Discount order item into Orders table
+                            ////////////////////////////////////////////////
+                            SetTaxRates(m_strDefaultTaxCode);
                             orders.Add(new POS_OrdersModel()
                             {
                                 TranType = "20",
@@ -2982,7 +3000,7 @@ namespace SDCafeSales.Views
                                 iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
                                 this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
-                                                                               "1",
+                                                                               orders[orders.Count-1].Quantity.ToString(),
                                                                                orders[orders.Count-1].Amount.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
                                                                                "",
@@ -3069,6 +3087,7 @@ namespace SDCafeSales.Views
                 orders = dbPOS.Get_NonRFID_Order_By_BarCode(iNewInvNo, strBarCode);
                 if (orders.Count == 1)
                 {
+                    // Multi
                     if ((txtQTY.Text != "") && (txtQTY.Text != "0"))
                     {
                         try
@@ -3143,6 +3162,7 @@ namespace SDCafeSales.Views
                 }
                 else //  (orders.Count == 0)
                 {
+                    // Multi
                     if ((txtQTY.Text != "") && (txtQTY.Text != "0"))
                     {
                         try
@@ -3154,6 +3174,21 @@ namespace SDCafeSales.Views
                             iOrderQty = 1;
                         }
                         txtQTY.Text = "";
+                    }
+                    if (prods[0].TaxCode != null)
+                    {
+                        if (prods[0].TaxCode != "")
+                        {
+                            SetTaxRates(prods[0].TaxCode);
+                        }
+                        else
+                        {
+                            SetTaxRates(m_strDefaultTaxCode);
+                        }
+                    }
+                    else
+                    {
+                        SetTaxRates(m_strDefaultTaxCode);
                     }
                     ////////////////////////////////////////////////
                     // Add the ordered item into Orders table
@@ -3245,8 +3280,8 @@ namespace SDCafeSales.Views
                                 IsTax1 = prods[0].IsTax1,
                                 IsTax2 = prods[0].IsTax2,
                                 IsTax3 = prods[0].IsTax3,
-                                Quantity = 1,
-                                Amount = prods[0].Deposit,
+                                Quantity = iOrderQty,
+                                Amount = prods[0].Deposit * iOrderQty,
                                 Tax1Rate = m_TaxRate1,
                                 Tax2Rate = m_TaxRate2,
                                 Tax3Rate = m_TaxRate3,
@@ -3288,7 +3323,7 @@ namespace SDCafeSales.Views
                                 iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
                                 this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
-                                                                               "1",
+                                                                               orders[orders.Count-1].Quantity.ToString(),
                                                                                orders[orders.Count-1].Amount.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
                                                                                "",
@@ -3321,8 +3356,8 @@ namespace SDCafeSales.Views
                                 IsTax1 = prods[0].IsTax1,
                                 IsTax2 = prods[0].IsTax2,
                                 IsTax3 = prods[0].IsTax3,
-                                Quantity = 1,
-                                Amount = prods[0].RecyclingFee,
+                                Quantity = iOrderQty,
+                                Amount = prods[0].RecyclingFee * iOrderQty,
                                 Tax1Rate = m_TaxRate1,
                                 Tax2Rate = m_TaxRate2,
                                 Tax3Rate = m_TaxRate3,
@@ -3364,7 +3399,7 @@ namespace SDCafeSales.Views
                                 iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
                                 this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
-                                                                               "1",
+                                                                               orders[orders.Count-1].Quantity.ToString(),
                                                                                orders[orders.Count-1].Amount.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
                                                                                "",
@@ -3435,6 +3470,20 @@ namespace SDCafeSales.Views
             Calculate_Total_Due();
             //
             return true;
+        }
+
+        private void SetTaxRates(string taxCode)
+        {
+            foreach(var tax in allTaxs)
+            {
+                if (tax.Code == taxCode)
+                {
+                    m_TaxRate1 = tax.Tax1;
+                    m_TaxRate2 = tax.Tax2;
+                    m_TaxRate3 = tax.Tax3;
+                    return;
+                }
+            }
         }
 
         private void bt_Start_Click(object sender, EventArgs e)
@@ -6773,6 +6822,21 @@ namespace SDCafeSales.Views
                 if (prods[0].CategoryId == 2)
                     dblManualPrice = dblManualPrice * -1;
 
+                if (prods[0].TaxCode != null)
+                {
+                    if (prods[0].TaxCode != "")
+                    {
+                        SetTaxRates(prods[0].TaxCode);
+                    }
+                    else
+                    {
+                        SetTaxRates(m_strDefaultTaxCode);
+                    }
+                }
+                else
+                {
+                    SetTaxRates(m_strDefaultTaxCode);
+                }
                 // Tax Calculation
                 fTax1 = bManualTax1 ? m_TaxRate1 * (float)(dblManualPrice * iOrderQty) : 0;
                 fTax2 = bManualTax2 ? m_TaxRate2 * (float)(dblManualPrice * iOrderQty) : 0;
