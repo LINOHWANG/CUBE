@@ -66,6 +66,10 @@ namespace SDCafeCommon.Model
         public float Online2Cash { get; set; }
         public int CardTranId { get; set; }
 
+        public float Cheque { get; set; }
+        public float Charge { get; set; }
+        public int MemberId { get; set; }
+
     }
 
 }

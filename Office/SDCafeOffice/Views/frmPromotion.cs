@@ -212,7 +212,7 @@ namespace SDCafeOffice.Views
             int iCnt = dbPOS.Update_Promotion(ppromos[0]);
             // Need to rebuild PromoProducts table for the promotion
             // Remove existing promoproducts and add again from dgvPromoTo
-            xxx
+            //xxx
             txtMessage.Text = "Promotion successfully Updated : " + txt_PromoName.Text;
             txtMessage.ForeColor = Color.White;
         }

@@ -43,7 +43,7 @@ namespace SDCafeCommon.DataAccess
                                 "TotalDue,CollectionType,IsOnline,Cash,Debit,Visa,Master,Amex,GiftCard,Others,CashTip," +
                                 "DebitTip,VisaTip,MasterTip,AmexTip,DebitFee,VisaFee,MasterFee,AmexFee,DebitTipFee,VisaTipFee," +
                                 "MasterTipFee,AmexTipFee,TotalPaid,TotalTip,Change,CreateDate,CreateTime,CreatePasswordCode,CreatePasswordName," +
-                                "CreateStation,LastModDate,LastModTime,LastModPasswordCode,LastModPasswordName,LastModStation, OthersTip, Rounding) " +
+                                "CreateStation,LastModDate,LastModTime,LastModPasswordCode,LastModPasswordName,LastModStation, OthersTip, Rounding, Cheque, Charge) " +
                                 "VALUES (" +
                                 "@ReceiptNo,@InvoiceNo,@SplitId,@TableId,@TableName,@NumOfPeople,CAST(@Amount as decimal(10,2)),CAST(@Tax1 as decimal(10,2)),CAST(@Tax2 as decimal(10,2)),CAST(@Tax3 as decimal(10,2))," +
                                 "CAST(@TotalDue as decimal(10,2)),@CollectionType,@IsOnline,CAST(@Cash as decimal(10,2)),CAST(@Debit as decimal(10,2)),"+
@@ -54,7 +54,7 @@ namespace SDCafeCommon.DataAccess
                                 "CAST(@MasterTipFee as decimal(10,2)),CAST(@AmexTipFee as decimal(10,2)),CAST(@TotalPaid as decimal(10,2)),CAST(@TotalTip as decimal(10,2)),"+
                                 "CAST(@Change as decimal(10,2)),@CreateDate,@CreateTime,@CreatePasswordCode,@CreatePasswordName," +
                                 "@CreateStation,@LastModDate,@LastModTime,@LastModPasswordCode,@LastModPasswordName,@LastModStation, CAST(@OthersTip as decimal(10,2)),"+
-                                "CAST(@OthersTip as decimal(10, 2)) " +
+                                "CAST(@Rounding as decimal(10, 2)), CAST(@Cheque as decimal(10,2)), CAST(@Charge as decimal(10,2)) " +
                                 ")";
                 var count = connection.Execute(query, pos1_TranCollectionModel);
                 return count;

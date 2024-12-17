@@ -256,7 +256,8 @@ namespace SDCafeSales.Views
             }
             else
             {
-                MessageBox.Show("No External Display is Available");
+                //MessageBox.Show("No External Display is Available");
+                util.Logger("No External Display is Available");
             }
 
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -3632,6 +3633,8 @@ namespace SDCafeSales.Views
             float fMaster = 0;
             float fAmex = 0;
             float fOthers = 0;
+            float fCheque = 0;
+            float fCharge = 0;
 
             util.Logger("bt_Payment_Click : InvoiceNo = " + iNewInvNo.ToString());
             if ((String.IsNullOrEmpty(txt_TotalDue.Text)) | (txt_TotalDue.Text.Contains("$0.00")) & (txtCount.Text.Contains("0")))
@@ -3695,7 +3698,7 @@ namespace SDCafeSales.Views
                                 break;
                         }
                         //Process_Tran_Collection(iNewInvNo, FrmCardPay.p_TenderAmt, 
-                        Process_Tran_Collection(iNewInvNo, fCash,fDebit,fVisa,fMaster,fAmex,fOthers,
+                        Process_Tran_Collection(iNewInvNo, fCash,fDebit,fVisa,fMaster,fAmex,fOthers,0,0,
                                                             0, FrmCardPay.p_TipAmt, 0 /* Rounding */, FrmCardPay.strPaymentType, true);
                         Process_Receipt(false, true);
                         util.Logger("--------------- Card Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString());
@@ -3739,6 +3742,12 @@ namespace SDCafeSales.Views
                                 case "CASH":
                                     fCash = FrmCashPay.p_CashAmt;
                                     break;
+                                case "CHEQUE":
+                                    fCheque = FrmCashPay.p_ChequeAmt;
+                                    break;
+                                case "CHARGE":
+                                    fCharge = FrmCashPay.p_ChargeAmt;
+                                    break;
                                 case "DEBIT":
                                     fDebit = FrmCashPay.p_DebitAmt;
                                     break;
@@ -3767,7 +3776,7 @@ namespace SDCafeSales.Views
                                 }
                             }
 
-                            Process_Tran_Collection(iNewInvNo, fCash, fDebit, fVisa, fMaster, fAmex,fOthers,
+                            Process_Tran_Collection(iNewInvNo, fCash, fDebit, fVisa, fMaster, fAmex,fOthers, fCheque, fCharge,
                                                             0, FrmCashPay.p_TipAmt, 0 /*Rounding*/,FrmCashPay.strPaymentType, true);
                             //Process_Tran_Collection(iNewInvNo, FrmCashPay.p_CashAmt, FrmCashPay.p_ChangeAmt, FrmCashPay.p_TipAmt, FrmCashPay.strPaymentType,false);
                             Process_Receipt(false, true);
@@ -3949,6 +3958,8 @@ namespace SDCafeSales.Views
                                                          float fMasterAmt,
                                                          float fAmexAmt,
                                                          float fOthersAmt,
+                                                         float fChequeAmt,
+                                                         float fChargeAmt,
                                                          float fChangeAmt, 
                                                          float fTips,
                                                          float fRounding,
@@ -3966,6 +3977,8 @@ namespace SDCafeSales.Views
             util.Logger("Process_Tran_Collection fMasterAmt : " + fMasterAmt);
             util.Logger("Process_Tran_Collection fAmexAmt : " + fAmexAmt);
             util.Logger("Process_Tran_Collection fOthersAmt : " + fOthersAmt);
+            util.Logger("Process_Tran_Collection fChequeAmt : " + fChequeAmt);
+            util.Logger("Process_Tran_Collection fChargeAmt : " + fChargeAmt);
             util.Logger("Process_Tran_Collection fChangeAmt : " + fChangeAmt);
             util.Logger("Process_Tran_Collection fTips : " + fTips);
             util.Logger("Process_Tran_Collection fRounding : " + fRounding);
@@ -4018,6 +4031,14 @@ namespace SDCafeSales.Views
                     col.Cash = fCashAmt + fChangeAmt - fTips;
                     col.CashTip = fTips;
                 }
+                else if (strPaymentType.Contains("CHEQUE"))
+                {
+                    col.Cheque = fChequeAmt;
+                }
+                else if (strPaymentType.Contains("CHARGE"))
+                {
+                    col.Charge = fChargeAmt;
+                }
                 else if (strPaymentType.Contains("DEBIT"))
                 {
                     col.Debit = fDebitAmt;
@@ -4043,6 +4064,14 @@ namespace SDCafeSales.Views
                     col.GiftCard = fCashAmt;
                     col.GiftCardTip = fTips;
                 }
+                else if (strPaymentType.Contains("CHEQUE"))
+                {
+                    col.Cheque = fChequeAmt;
+                }
+                else if (strPaymentType.Contains("CHARGE"))
+                {
+                    col.Charge = fChargeAmt;
+                }
                 else
                 {
                     col.Others = fOthersAmt;
@@ -4050,7 +4079,7 @@ namespace SDCafeSales.Views
                 }
                 col.CollectionType = strPaymentType;
 
-                col.TotalPaid = col.Cash + col.Visa + col.Debit + col.Master + col.Amex + col.GiftCard + col.Others;
+                col.TotalPaid = col.Cash + col.Visa + col.Debit + col.Master + col.Amex + col.GiftCard + col.Cheque + col.Charge + +col.Others;
                 col.TotalDue = fTotalDueAmt;
                 col.Change = fChangeAmt;
                 col.TotalTip = col.CashTip + col.VisaTip + col.DebitTip + col.MasterTip + col.AmexTip + col.GiftCardTip + col.OthersTip;
@@ -4979,6 +5008,27 @@ namespace SDCafeSales.Views
                                             txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
+
+                                    }
+                                    else if (col.CollectionType.Contains("CHEQUE"))
+                                    {
+                                        //////////////////////////////////////////////////////////////////////////
+                                        // Print a Line ------------------------------------------------------
+                                        strContent = String.Format("{0,25}", "Cheque Paid :") + String.Format("{0,15}", (col.Cheque - col.Change).ToString("0.00"));
+                                        iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                        txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                        e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+
+
+                                    }
+                                    else if (col.CollectionType.Contains("CHARGE"))
+                                    {
+                                        //////////////////////////////////////////////////////////////////////////
+                                        // Print a Line ------------------------------------------------------
+                                        strContent = String.Format("{0,25}", "Charge Paid :") + String.Format("{0,15}", (col.Charge - col.Change).ToString("0.00"));
+                                        iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                        txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                        e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
 
                                     }
                                     else if (col.CollectionType.Contains("DEBIT"))
@@ -7029,6 +7079,8 @@ namespace SDCafeSales.Views
                                                         FrmCashPay.p_MasterAmt,
                                                         FrmCashPay.p_AmexAmt,
                                                         FrmCashPay.p_OthersAmt,
+                                                        FrmCashPay.p_ChequeAmt,
+                                                        FrmCashPay.p_ChargeAmt,
                                                         FrmCashPay.p_ChangeAmt, 
                                                         FrmCashPay.p_TipAmt,
                                                         FrmCashPay.m_fCashRounding,

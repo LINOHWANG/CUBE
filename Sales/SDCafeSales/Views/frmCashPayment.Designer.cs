@@ -79,6 +79,8 @@
             this.bt_ChangesToTip = new SDCafeCommon.Utilities.CustomButton();
             this.label3 = new System.Windows.Forms.Label();
             this.txt_CashDue = new System.Windows.Forms.TextBox();
+            this.bt_PayCheque = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_PayCharge = new SDCafeCommon.Utilities.CustomButton();
             this.pnlNumPad.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -147,7 +149,7 @@
             this.pnlNumPad.Location = new System.Drawing.Point(12, 46);
             this.pnlNumPad.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.pnlNumPad.Name = "pnlNumPad";
-            this.pnlNumPad.Size = new System.Drawing.Size(673, 209);
+            this.pnlNumPad.Size = new System.Drawing.Size(673, 173);
             this.pnlNumPad.TabIndex = 26;
             // 
             // bt_50
@@ -161,7 +163,7 @@
             this.bt_50.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_50.Size = new System.Drawing.Size(104, 63);
+            this.bt_50.Size = new System.Drawing.Size(104, 51);
             this.bt_50.TabIndex = 41;
             this.bt_50.Text = "$50";
             this.bt_50.Click += new System.EventHandler(this.bt_50_Click);
@@ -172,12 +174,12 @@
             this.bt_100.CornerRadius = 30;
             this.bt_100.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_100.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.bt_100.Location = new System.Drawing.Point(559, 72);
+            this.bt_100.Location = new System.Drawing.Point(559, 60);
             this.bt_100.Name = "bt_100";
             this.bt_100.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_100.Size = new System.Drawing.Size(104, 63);
+            this.bt_100.Size = new System.Drawing.Size(104, 51);
             this.bt_100.TabIndex = 39;
             this.bt_100.Text = "$100";
             this.bt_100.Click += new System.EventHandler(this.bt_100_Click);
@@ -193,7 +195,7 @@
             this.bt_5.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_5.Size = new System.Drawing.Size(104, 63);
+            this.bt_5.Size = new System.Drawing.Size(104, 51);
             this.bt_5.TabIndex = 38;
             this.bt_5.Text = "$5";
             this.bt_5.Click += new System.EventHandler(this.bt_5_Click);
@@ -204,12 +206,12 @@
             this.bt_20.CornerRadius = 30;
             this.bt_20.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.bt_20.Location = new System.Drawing.Point(449, 141);
+            this.bt_20.Location = new System.Drawing.Point(449, 117);
             this.bt_20.Name = "bt_20";
             this.bt_20.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_20.Size = new System.Drawing.Size(104, 63);
+            this.bt_20.Size = new System.Drawing.Size(104, 51);
             this.bt_20.TabIndex = 37;
             this.bt_20.Text = "$20";
             this.bt_20.Click += new System.EventHandler(this.bt_20_Click);
@@ -220,12 +222,12 @@
             this.bt_10.CornerRadius = 30;
             this.bt_10.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.bt_10.Location = new System.Drawing.Point(449, 72);
+            this.bt_10.Location = new System.Drawing.Point(449, 60);
             this.bt_10.Name = "bt_10";
             this.bt_10.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_10.Size = new System.Drawing.Size(104, 63);
+            this.bt_10.Size = new System.Drawing.Size(104, 51);
             this.bt_10.TabIndex = 36;
             this.bt_10.Text = "$10";
             this.bt_10.Click += new System.EventHandler(this.bt_10_Click);
@@ -236,12 +238,12 @@
             this.btNumSame.CornerRadius = 30;
             this.btNumSame.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btNumSame.ForeColor = System.Drawing.Color.Black;
-            this.btNumSame.Location = new System.Drawing.Point(559, 141);
+            this.btNumSame.Location = new System.Drawing.Point(559, 117);
             this.btNumSame.Name = "btNumSame";
             this.btNumSame.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.btNumSame.Size = new System.Drawing.Size(104, 63);
+            this.btNumSame.Size = new System.Drawing.Size(104, 51);
             this.btNumSame.TabIndex = 35;
             this.btNumSame.Text = "Same";
             this.btNumSame.Click += new System.EventHandler(this.btNumSame_Click);
@@ -252,12 +254,12 @@
             this.btNum0.CornerRadius = 30;
             this.btNum0.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btNum0.ForeColor = System.Drawing.Color.Blue;
-            this.btNum0.Location = new System.Drawing.Point(338, 72);
+            this.btNum0.Location = new System.Drawing.Point(338, 60);
             this.btNum0.Name = "btNum0";
             this.btNum0.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.btNum0.Size = new System.Drawing.Size(104, 63);
+            this.btNum0.Size = new System.Drawing.Size(104, 51);
             this.btNum0.TabIndex = 33;
             this.btNum0.Text = "0";
             this.btNum0.Click += new System.EventHandler(this.btNum0_Click);
@@ -268,12 +270,12 @@
             this.btNum9.CornerRadius = 30;
             this.btNum9.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btNum9.ForeColor = System.Drawing.Color.Blue;
-            this.btNum9.Location = new System.Drawing.Point(227, 141);
+            this.btNum9.Location = new System.Drawing.Point(227, 117);
             this.btNum9.Name = "btNum9";
             this.btNum9.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.btNum9.Size = new System.Drawing.Size(104, 63);
+            this.btNum9.Size = new System.Drawing.Size(104, 51);
             this.btNum9.TabIndex = 31;
             this.btNum9.Text = "9";
             this.btNum9.Click += new System.EventHandler(this.btNum9_Click);
@@ -284,12 +286,12 @@
             this.btNum8.CornerRadius = 30;
             this.btNum8.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btNum8.ForeColor = System.Drawing.Color.Blue;
-            this.btNum8.Location = new System.Drawing.Point(116, 141);
+            this.btNum8.Location = new System.Drawing.Point(116, 117);
             this.btNum8.Name = "btNum8";
             this.btNum8.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.btNum8.Size = new System.Drawing.Size(104, 63);
+            this.btNum8.Size = new System.Drawing.Size(104, 51);
             this.btNum8.TabIndex = 30;
             this.btNum8.Text = "8";
             this.btNum8.Click += new System.EventHandler(this.btNum8_Click);
@@ -300,12 +302,12 @@
             this.btNum7.CornerRadius = 30;
             this.btNum7.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btNum7.ForeColor = System.Drawing.Color.Blue;
-            this.btNum7.Location = new System.Drawing.Point(5, 141);
+            this.btNum7.Location = new System.Drawing.Point(5, 117);
             this.btNum7.Name = "btNum7";
             this.btNum7.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.btNum7.Size = new System.Drawing.Size(104, 63);
+            this.btNum7.Size = new System.Drawing.Size(104, 51);
             this.btNum7.TabIndex = 29;
             this.btNum7.Text = "7";
             this.btNum7.Click += new System.EventHandler(this.btNum7_Click);
@@ -316,12 +318,12 @@
             this.btNum6.CornerRadius = 30;
             this.btNum6.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btNum6.ForeColor = System.Drawing.Color.Blue;
-            this.btNum6.Location = new System.Drawing.Point(227, 72);
+            this.btNum6.Location = new System.Drawing.Point(227, 60);
             this.btNum6.Name = "btNum6";
             this.btNum6.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.btNum6.Size = new System.Drawing.Size(104, 63);
+            this.btNum6.Size = new System.Drawing.Size(104, 51);
             this.btNum6.TabIndex = 28;
             this.btNum6.Text = "6";
             this.btNum6.Click += new System.EventHandler(this.btNum6_Click);
@@ -337,7 +339,7 @@
             this.btNum3.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.btNum3.Size = new System.Drawing.Size(104, 63);
+            this.btNum3.Size = new System.Drawing.Size(104, 51);
             this.btNum3.TabIndex = 19;
             this.btNum3.Text = "3";
             this.btNum3.Click += new System.EventHandler(this.btNum3_Click);
@@ -348,12 +350,12 @@
             this.btNum5.CornerRadius = 30;
             this.btNum5.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btNum5.ForeColor = System.Drawing.Color.Blue;
-            this.btNum5.Location = new System.Drawing.Point(116, 72);
+            this.btNum5.Location = new System.Drawing.Point(116, 60);
             this.btNum5.Name = "btNum5";
             this.btNum5.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.btNum5.Size = new System.Drawing.Size(104, 63);
+            this.btNum5.Size = new System.Drawing.Size(104, 51);
             this.btNum5.TabIndex = 27;
             this.btNum5.Text = "5";
             this.btNum5.Click += new System.EventHandler(this.btNum5_Click);
@@ -369,7 +371,7 @@
             this.btNum2.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.btNum2.Size = new System.Drawing.Size(104, 63);
+            this.btNum2.Size = new System.Drawing.Size(104, 51);
             this.btNum2.TabIndex = 18;
             this.btNum2.Text = "2";
             this.btNum2.Click += new System.EventHandler(this.btNum2_Click);
@@ -380,12 +382,12 @@
             this.btNum4.CornerRadius = 30;
             this.btNum4.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btNum4.ForeColor = System.Drawing.Color.Blue;
-            this.btNum4.Location = new System.Drawing.Point(5, 72);
+            this.btNum4.Location = new System.Drawing.Point(5, 60);
             this.btNum4.Name = "btNum4";
             this.btNum4.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.btNum4.Size = new System.Drawing.Size(104, 63);
+            this.btNum4.Size = new System.Drawing.Size(104, 51);
             this.btNum4.TabIndex = 26;
             this.btNum4.Text = "4";
             this.btNum4.Click += new System.EventHandler(this.btNum4_Click);
@@ -401,7 +403,7 @@
             this.btNum1.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.btNum1.Size = new System.Drawing.Size(104, 63);
+            this.btNum1.Size = new System.Drawing.Size(104, 51);
             this.btNum1.TabIndex = 17;
             this.btNum1.Text = "1";
             this.btNum1.Click += new System.EventHandler(this.btNum1_Click);
@@ -409,9 +411,9 @@
             // label1
             // 
             this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.label1.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.label1.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.DarkBlue;
-            this.label1.Location = new System.Drawing.Point(-40, 312);
+            this.label1.Location = new System.Drawing.Point(-40, 274);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(293, 42);
             this.label1.TabIndex = 27;
@@ -421,12 +423,12 @@
             // txt_TotalDue
             // 
             this.txt_TotalDue.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txt_TotalDue.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.txt_TotalDue.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_TotalDue.ForeColor = System.Drawing.Color.DarkBlue;
-            this.txt_TotalDue.Location = new System.Drawing.Point(250, 313);
+            this.txt_TotalDue.Location = new System.Drawing.Point(250, 275);
             this.txt_TotalDue.Name = "txt_TotalDue";
             this.txt_TotalDue.ReadOnly = true;
-            this.txt_TotalDue.Size = new System.Drawing.Size(197, 41);
+            this.txt_TotalDue.Size = new System.Drawing.Size(197, 39);
             this.txt_TotalDue.TabIndex = 93;
             this.txt_TotalDue.Text = "0.00";
             this.txt_TotalDue.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -435,12 +437,12 @@
             // 
             this.txt_CashAmount.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txt_CashAmount.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txt_CashAmount.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.txt_CashAmount.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_CashAmount.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txt_CashAmount.Location = new System.Drawing.Point(250, 407);
+            this.txt_CashAmount.Location = new System.Drawing.Point(250, 369);
             this.txt_CashAmount.Name = "txt_CashAmount";
             this.txt_CashAmount.ReadOnly = true;
-            this.txt_CashAmount.Size = new System.Drawing.Size(197, 41);
+            this.txt_CashAmount.Size = new System.Drawing.Size(197, 39);
             this.txt_CashAmount.TabIndex = 95;
             this.txt_CashAmount.Text = "0.00";
             this.txt_CashAmount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -448,9 +450,9 @@
             // label2
             // 
             this.label2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.label2.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.label2.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.DarkGreen;
-            this.label2.Location = new System.Drawing.Point(-40, 407);
+            this.label2.Location = new System.Drawing.Point(-40, 369);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(293, 36);
             this.label2.TabIndex = 94;
@@ -461,12 +463,12 @@
             // 
             this.txt_Changes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.txt_Changes.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txt_Changes.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.txt_Changes.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_Changes.ForeColor = System.Drawing.Color.DarkRed;
-            this.txt_Changes.Location = new System.Drawing.Point(250, 454);
+            this.txt_Changes.Location = new System.Drawing.Point(250, 416);
             this.txt_Changes.Name = "txt_Changes";
             this.txt_Changes.ReadOnly = true;
-            this.txt_Changes.Size = new System.Drawing.Size(197, 41);
+            this.txt_Changes.Size = new System.Drawing.Size(197, 39);
             this.txt_Changes.TabIndex = 97;
             this.txt_Changes.Text = "0.00";
             this.txt_Changes.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -474,9 +476,9 @@
             // lbl_Changes
             // 
             this.lbl_Changes.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.lbl_Changes.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.lbl_Changes.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_Changes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.lbl_Changes.Location = new System.Drawing.Point(-40, 454);
+            this.lbl_Changes.Location = new System.Drawing.Point(-40, 416);
             this.lbl_Changes.Name = "lbl_Changes";
             this.lbl_Changes.Size = new System.Drawing.Size(293, 36);
             this.lbl_Changes.TabIndex = 96;
@@ -488,7 +490,7 @@
             this.lblPartialPay.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.lblPartialPay.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPartialPay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.lblPartialPay.Location = new System.Drawing.Point(8, 318);
+            this.lblPartialPay.Location = new System.Drawing.Point(8, 280);
             this.lblPartialPay.Name = "lblPartialPay";
             this.lblPartialPay.Size = new System.Drawing.Size(124, 41);
             this.lblPartialPay.TabIndex = 98;
@@ -503,9 +505,9 @@
             this.groupBox1.Controls.Add(this.bt_PayVisa);
             this.groupBox1.Controls.Add(this.bt_PayDebit);
             this.groupBox1.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(18, 613);
+            this.groupBox1.Location = new System.Drawing.Point(18, 626);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(658, 76);
+            this.groupBox1.Size = new System.Drawing.Size(658, 114);
             this.groupBox1.TabIndex = 103;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Card Manual Payment";
@@ -580,7 +582,7 @@
             this.txt_TipAmount.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txt_TipAmount.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
             this.txt_TipAmount.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txt_TipAmount.Location = new System.Drawing.Point(250, 501);
+            this.txt_TipAmount.Location = new System.Drawing.Point(250, 463);
             this.txt_TipAmount.Name = "txt_TipAmount";
             this.txt_TipAmount.ReadOnly = true;
             this.txt_TipAmount.Size = new System.Drawing.Size(197, 41);
@@ -593,9 +595,9 @@
             // labelTipOrCard
             // 
             this.labelTipOrCard.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.labelTipOrCard.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.labelTipOrCard.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelTipOrCard.ForeColor = System.Drawing.Color.Black;
-            this.labelTipOrCard.Location = new System.Drawing.Point(-40, 503);
+            this.labelTipOrCard.Location = new System.Drawing.Point(-40, 465);
             this.labelTipOrCard.Name = "labelTipOrCard";
             this.labelTipOrCard.Size = new System.Drawing.Size(293, 36);
             this.labelTipOrCard.TabIndex = 105;
@@ -606,12 +608,12 @@
             // 
             this.txt_CardAmount.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.txt_CardAmount.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txt_CardAmount.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.txt_CardAmount.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_CardAmount.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txt_CardAmount.Location = new System.Drawing.Point(250, 501);
+            this.txt_CardAmount.Location = new System.Drawing.Point(250, 463);
             this.txt_CardAmount.Name = "txt_CardAmount";
             this.txt_CardAmount.ReadOnly = true;
-            this.txt_CardAmount.Size = new System.Drawing.Size(197, 41);
+            this.txt_CardAmount.Size = new System.Drawing.Size(197, 39);
             this.txt_CardAmount.TabIndex = 107;
             this.txt_CardAmount.Text = "0.00";
             this.txt_CardAmount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -619,12 +621,12 @@
             // txt_TotalDueUSD
             // 
             this.txt_TotalDueUSD.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txt_TotalDueUSD.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.txt_TotalDueUSD.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_TotalDueUSD.ForeColor = System.Drawing.Color.DarkBlue;
-            this.txt_TotalDueUSD.Location = new System.Drawing.Point(471, 313);
+            this.txt_TotalDueUSD.Location = new System.Drawing.Point(471, 275);
             this.txt_TotalDueUSD.Name = "txt_TotalDueUSD";
             this.txt_TotalDueUSD.ReadOnly = true;
-            this.txt_TotalDueUSD.Size = new System.Drawing.Size(197, 41);
+            this.txt_TotalDueUSD.Size = new System.Drawing.Size(197, 39);
             this.txt_TotalDueUSD.TabIndex = 110;
             this.txt_TotalDueUSD.Text = "0.00";
             this.txt_TotalDueUSD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -634,7 +636,7 @@
             this.lbl_ConvRate.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.lbl_ConvRate.Font = new System.Drawing.Font("Arial Black", 14F, System.Drawing.FontStyle.Bold);
             this.lbl_ConvRate.ForeColor = System.Drawing.Color.DarkGreen;
-            this.lbl_ConvRate.Location = new System.Drawing.Point(250, 254);
+            this.lbl_ConvRate.Location = new System.Drawing.Point(250, 216);
             this.lbl_ConvRate.Name = "lbl_ConvRate";
             this.lbl_ConvRate.Size = new System.Drawing.Size(197, 53);
             this.lbl_ConvRate.TabIndex = 111;
@@ -645,12 +647,12 @@
             // 
             this.txt_CashAmountUSD.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txt_CashAmountUSD.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txt_CashAmountUSD.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.txt_CashAmountUSD.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_CashAmountUSD.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txt_CashAmountUSD.Location = new System.Drawing.Point(471, 407);
+            this.txt_CashAmountUSD.Location = new System.Drawing.Point(471, 369);
             this.txt_CashAmountUSD.Name = "txt_CashAmountUSD";
             this.txt_CashAmountUSD.ReadOnly = true;
-            this.txt_CashAmountUSD.Size = new System.Drawing.Size(197, 41);
+            this.txt_CashAmountUSD.Size = new System.Drawing.Size(197, 39);
             this.txt_CashAmountUSD.TabIndex = 112;
             this.txt_CashAmountUSD.Text = "0.00";
             this.txt_CashAmountUSD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -658,9 +660,9 @@
             // lbl_Short
             // 
             this.lbl_Short.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.lbl_Short.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.lbl_Short.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_Short.ForeColor = System.Drawing.Color.Yellow;
-            this.lbl_Short.Location = new System.Drawing.Point(453, 448);
+            this.lbl_Short.Location = new System.Drawing.Point(453, 410);
             this.lbl_Short.Name = "lbl_Short";
             this.lbl_Short.Size = new System.Drawing.Size(180, 53);
             this.lbl_Short.TabIndex = 114;
@@ -673,7 +675,7 @@
             this.bt_OpenCD.CornerRadius = 30;
             this.bt_OpenCD.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_OpenCD.ForeColor = System.Drawing.Color.Black;
-            this.bt_OpenCD.Location = new System.Drawing.Point(370, 555);
+            this.bt_OpenCD.Location = new System.Drawing.Point(18, 221);
             this.bt_OpenCD.Name = "bt_OpenCD";
             this.bt_OpenCD.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -691,11 +693,11 @@
             this.bt_IPSPayment.CornerRadius = 5;
             this.bt_IPSPayment.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_IPSPayment.ForeColor = System.Drawing.Color.White;
-            this.bt_IPSPayment.Location = new System.Drawing.Point(39, 695);
+            this.bt_IPSPayment.Location = new System.Drawing.Point(39, 699);
             this.bt_IPSPayment.Name = "bt_IPSPayment";
             this.bt_IPSPayment.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_IPSPayment.Size = new System.Drawing.Size(618, 39);
+            this.bt_IPSPayment.Size = new System.Drawing.Size(618, 35);
             this.bt_IPSPayment.TabIndex = 108;
             this.bt_IPSPayment.Text = "Card Terminal Pay ( Changes Amount to Card Terminal )";
             this.bt_IPSPayment.Visible = false;
@@ -707,7 +709,7 @@
             this.btNumReset.CornerRadius = 30;
             this.btNumReset.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btNumReset.ForeColor = System.Drawing.Color.Black;
-            this.btNumReset.Location = new System.Drawing.Point(214, 555);
+            this.btNumReset.Location = new System.Drawing.Point(526, 568);
             this.btNumReset.Name = "btNumReset";
             this.btNumReset.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -719,16 +721,16 @@
             // 
             // bt_PayCash
             // 
-            this.bt_PayCash.BackColor = System.Drawing.Color.Yellow;
+            this.bt_PayCash.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
             this.bt_PayCash.CornerRadius = 30;
             this.bt_PayCash.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold);
             this.bt_PayCash.ForeColor = System.Drawing.Color.Black;
-            this.bt_PayCash.Location = new System.Drawing.Point(18, 555);
+            this.bt_PayCash.Location = new System.Drawing.Point(18, 510);
             this.bt_PayCash.Name = "bt_PayCash";
             this.bt_PayCash.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_PayCash.Size = new System.Drawing.Size(190, 52);
+            this.bt_PayCash.Size = new System.Drawing.Size(190, 110);
             this.bt_PayCash.TabIndex = 22;
             this.bt_PayCash.Text = "Cash";
             this.bt_PayCash.Click += new System.EventHandler(this.bt_PayCash_Click);
@@ -739,7 +741,7 @@
             this.bt_Exit.CornerRadius = 30;
             this.bt_Exit.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold);
             this.bt_Exit.ForeColor = System.Drawing.Color.Red;
-            this.bt_Exit.Location = new System.Drawing.Point(526, 555);
+            this.bt_Exit.Location = new System.Drawing.Point(526, 510);
             this.bt_Exit.Name = "bt_Exit";
             this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -755,7 +757,7 @@
             this.bt_ShowUSD.CornerRadius = 10;
             this.bt_ShowUSD.Font = new System.Drawing.Font("Arial Black", 14F, System.Drawing.FontStyle.Bold);
             this.bt_ShowUSD.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.bt_ShowUSD.Location = new System.Drawing.Point(471, 262);
+            this.bt_ShowUSD.Location = new System.Drawing.Point(471, 224);
             this.bt_ShowUSD.Name = "bt_ShowUSD";
             this.bt_ShowUSD.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -771,7 +773,7 @@
             this.bt_ChangesToTip.CornerRadius = 30;
             this.bt_ChangesToTip.Font = new System.Drawing.Font("Arial Narrow", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_ChangesToTip.ForeColor = System.Drawing.Color.DarkRed;
-            this.bt_ChangesToTip.Location = new System.Drawing.Point(471, 545);
+            this.bt_ChangesToTip.Location = new System.Drawing.Point(471, 470);
             this.bt_ChangesToTip.Name = "bt_ChangesToTip";
             this.bt_ChangesToTip.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -785,9 +787,9 @@
             // label3
             // 
             this.label3.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.label3.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.label3.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.DarkBlue;
-            this.label3.Location = new System.Drawing.Point(-40, 357);
+            this.label3.Location = new System.Drawing.Point(-40, 319);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(293, 39);
             this.label3.TabIndex = 115;
@@ -797,15 +799,47 @@
             // txt_CashDue
             // 
             this.txt_CashDue.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txt_CashDue.Font = new System.Drawing.Font("Arial Black", 21.75F, System.Drawing.FontStyle.Bold);
+            this.txt_CashDue.Font = new System.Drawing.Font("Arial Black", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_CashDue.ForeColor = System.Drawing.Color.DarkBlue;
-            this.txt_CashDue.Location = new System.Drawing.Point(250, 360);
+            this.txt_CashDue.Location = new System.Drawing.Point(250, 322);
             this.txt_CashDue.Name = "txt_CashDue";
             this.txt_CashDue.ReadOnly = true;
-            this.txt_CashDue.Size = new System.Drawing.Size(197, 41);
+            this.txt_CashDue.Size = new System.Drawing.Size(197, 39);
             this.txt_CashDue.TabIndex = 116;
             this.txt_CashDue.Text = "0.00";
             this.txt_CashDue.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // bt_PayCheque
+            // 
+            this.bt_PayCheque.BackColor = System.Drawing.Color.Goldenrod;
+            this.bt_PayCheque.CornerRadius = 30;
+            this.bt_PayCheque.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold);
+            this.bt_PayCheque.ForeColor = System.Drawing.Color.Black;
+            this.bt_PayCheque.Location = new System.Drawing.Point(214, 510);
+            this.bt_PayCheque.Name = "bt_PayCheque";
+            this.bt_PayCheque.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_PayCheque.Size = new System.Drawing.Size(190, 52);
+            this.bt_PayCheque.TabIndex = 117;
+            this.bt_PayCheque.Text = "Cheque";
+            this.bt_PayCheque.Click += new System.EventHandler(this.bt_PayCheque_Click);
+            // 
+            // bt_PayCharge
+            // 
+            this.bt_PayCharge.BackColor = System.Drawing.Color.NavajoWhite;
+            this.bt_PayCharge.CornerRadius = 30;
+            this.bt_PayCharge.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold);
+            this.bt_PayCharge.ForeColor = System.Drawing.Color.Black;
+            this.bt_PayCharge.Location = new System.Drawing.Point(214, 568);
+            this.bt_PayCharge.Name = "bt_PayCharge";
+            this.bt_PayCharge.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_PayCharge.Size = new System.Drawing.Size(190, 52);
+            this.bt_PayCharge.TabIndex = 118;
+            this.bt_PayCharge.Text = "Charge";
+            this.bt_PayCharge.Click += new System.EventHandler(this.bt_PayCharge_Click);
             // 
             // frmCashPayment
             // 
@@ -814,12 +848,13 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.ClientSize = new System.Drawing.Size(698, 744);
             this.ControlBox = false;
+            this.Controls.Add(this.bt_PayCharge);
+            this.Controls.Add(this.bt_PayCheque);
             this.Controls.Add(this.txt_CashDue);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lbl_Short);
             this.Controls.Add(this.bt_OpenCD);
             this.Controls.Add(this.txt_CashAmountUSD);
-            this.Controls.Add(this.lbl_ConvRate);
             this.Controls.Add(this.txt_TotalDueUSD);
             this.Controls.Add(this.bt_IPSPayment);
             this.Controls.Add(this.groupBox1);
@@ -842,6 +877,7 @@
             this.Controls.Add(this.lblInvoiceNo);
             this.Controls.Add(this.bt_ChangesToTip);
             this.Controls.Add(this.txt_TipAmount);
+            this.Controls.Add(this.lbl_ConvRate);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -911,5 +947,7 @@
         private System.Windows.Forms.Label lbl_Short;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txt_CashDue;
+        private SDCafeCommon.Utilities.CustomButton bt_PayCheque;
+        private SDCafeCommon.Utilities.CustomButton bt_PayCharge;
     }
 }

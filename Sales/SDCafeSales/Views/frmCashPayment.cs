@@ -54,6 +54,9 @@ namespace SDCafeSales.Views
 
         public float p_CashAmt { get; set; }
 
+        public float p_ChequeAmt { get; set; }
+        public float p_ChargeAmt { get; set; }
+
         public float p_ChangeAmt { get; set; }
 
         public float p_TotalAmount { get; set; }
@@ -116,6 +119,8 @@ namespace SDCafeSales.Views
             p_MasterAmt = 0;
             p_AmexAmt = 0;
             p_OthersAmt = 0;
+            p_ChequeAmt = 0;
+            p_ChargeAmt = 0;
 
             strPaymentType = "";
             strCashAmount = "";
@@ -176,7 +181,7 @@ namespace SDCafeSales.Views
                     bt_Exit.PerformClick();
                     return;
                 }
-                p_TotalAmount = p_CashAmt + p_DebitAmt + p_VisaAmt + p_MasterAmt + p_AmexAmt;
+                p_TotalAmount = p_CashAmt + p_ChequeAmt + p_ChargeAmt + p_DebitAmt + p_VisaAmt + p_MasterAmt + p_AmexAmt;
 
                 if (p_TotalAmount >= p_TenderAmt)
                 {
@@ -189,6 +194,109 @@ namespace SDCafeSales.Views
                     bPaymentComplete = false;
                     //MessageBox.Show("Please check Cash Amount ! ");
                     bt_PayCash.Text = "DONE";
+                    strPaymentType = "Multi";
+                    lblPartialPay.Text = "Multi Tendering";
+                    lblPartialPay.Visible = true;
+                    labelTipOrCard.Text = "Card :";
+                    txt_CardAmount.Visible = true;
+                    txt_TipAmount.Visible = false;
+                    txt_CardAmount.Top = txt_TipAmount.Top;
+                    txt_CardAmount.Left = txt_TipAmount.Left;
+                }
+            }
+        }
+        private void bt_PayCheque_Click(object sender, EventArgs e)
+        {
+            util.Logger("Cheque Payment Cheque Amount : " + p_ChequeAmt);
+            util.Logger("Cheque Payment Change Amount : " + p_ChangeAmt);
+            //util.Logger("Cheque Payment Rounding Amount : " + m_fChequeRounding);
+
+
+            // Set amount info to frmMain
+            if (p_ChequeAmt >= p_TenderAmt)
+            {
+                // Exact Cheque Amount Payment
+                strPaymentType = "CHEQUE";
+                bPaymentComplete = true;
+                bt_Exit.PerformClick();
+            }
+            else
+            {
+                // Exact Cheque Amount Payment
+                if (p_ChequeAmt == 0)
+                {
+                    strPaymentType = "CHEQUE";
+                    //p_ChequeAmt = p_TenderAmt;
+                    p_ChequeAmt = p_TenderAmt;
+                    bPaymentComplete = true;
+                    bt_Exit.PerformClick();
+                    return;
+                }
+                p_TotalAmount = p_CashAmt + p_ChequeAmt + p_ChargeAmt + p_DebitAmt + p_VisaAmt + p_MasterAmt + p_AmexAmt;
+
+                if (p_TotalAmount >= p_TenderAmt)
+                {
+                    //strPaymentType = "Cheque/Debit";
+                    bPaymentComplete = true;
+                    bt_Exit.PerformClick();
+                }
+                else
+                {
+                    bPaymentComplete = false;
+                    //MessageBox.Show("Please check Cheque Amount ! ");
+                    bt_PayCheque.Text = "DONE";
+                    strPaymentType = "Multi";
+                    lblPartialPay.Text = "Multi Tendering";
+                    lblPartialPay.Visible = true;
+                    labelTipOrCard.Text = "Card :";
+                    txt_CardAmount.Visible = true;
+                    txt_TipAmount.Visible = false;
+                    txt_CardAmount.Top = txt_TipAmount.Top;
+                    txt_CardAmount.Left = txt_TipAmount.Left;
+                }
+            }
+        }
+
+        private void bt_PayCharge_Click(object sender, EventArgs e)
+        {
+            util.Logger("Charge Payment Charge Amount : " + p_ChargeAmt);
+            util.Logger("Charge Payment Change Amount : " + p_ChangeAmt);
+            //util.Logger("Charge Payment Rounding Amount : " + m_fChargeRounding);
+
+
+            // Set amount info to frmMain
+            if (p_ChargeAmt >= p_TenderAmt)
+            {
+                // Exact Charge Amount Payment
+                strPaymentType = "CHARGE";
+                bPaymentComplete = true;
+                bt_Exit.PerformClick();
+            }
+            else
+            {
+                // Exact Charge Amount Payment
+                if (p_ChargeAmt == 0)
+                {
+                    strPaymentType = "CHARGE";
+                    //p_ChargeAmt = p_TenderAmt;
+                    p_ChargeAmt = p_TenderAmt;
+                    bPaymentComplete = true;
+                    bt_Exit.PerformClick();
+                    return;
+                }
+                p_TotalAmount = p_CashAmt + p_ChequeAmt + p_ChargeAmt + p_DebitAmt + p_VisaAmt + p_MasterAmt + p_AmexAmt;
+
+                if (p_TotalAmount >= p_TenderAmt)
+                {
+                    //strPaymentType = "Charge/Debit";
+                    bPaymentComplete = true;
+                    bt_Exit.PerformClick();
+                }
+                else
+                {
+                    bPaymentComplete = false;
+                    //MessageBox.Show("Please check Charge Amount ! ");
+                    bt_PayCharge.Text = "DONE";
                     strPaymentType = "Multi";
                     lblPartialPay.Text = "Multi Tendering";
                     lblPartialPay.Visible = true;
@@ -911,6 +1019,8 @@ namespace SDCafeSales.Views
         {
             RawPrinterHelper.SendStringToPrinter("EPSON-1", openTillCommand);
         }
+
+
     }
     /// <summary>
     /// Server receive state

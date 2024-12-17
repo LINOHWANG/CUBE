@@ -278,6 +278,7 @@
             this.bt_Promotion.Size = new System.Drawing.Size(142, 47);
             this.bt_Promotion.TabIndex = 37;
             this.bt_Promotion.Text = "Promotions";
+            this.bt_Promotion.Visible = false;
             this.bt_Promotion.Click += new System.EventHandler(this.bt_Promotion_Click);
             // 
             // bt_SalesReport
