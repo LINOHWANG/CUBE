@@ -435,7 +435,7 @@ namespace SDCafeOffice.Views
             {
                 string strHTMLTendor = "";
 
-                for (int j= 0; j<5; j++)
+                for (int j= 0; j<8; j++)
                 {
                     strHTMLTendor =  strHTMLTendor + " <br />   " + (j+1).ToString("0") + ". "+ strColTypeName[j] + " : " + iNetAmount[j].ToString("C") + System.Environment.NewLine;
                 }
