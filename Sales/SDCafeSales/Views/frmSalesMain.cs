@@ -17,6 +17,7 @@ using System.Drawing.Printing;
 using System.Reflection;
 using System.Runtime.Remoting.Proxies;
 using System.Net.Sockets;
+using System.Linq;
 
 namespace SDCafeSales.Views
 {
@@ -1402,6 +1403,7 @@ namespace SDCafeSales.Views
 
             if (!isNewInvoice)   // Set when start button is pressed
             {
+                pnlReceipt.Visible = false;
                 iNewInvNo = dbPOS1.Get_New_InvoiceNo();
                 int iSavedOrderInvNo = dbPOS.Get_SavedOrders_NextInvoiceNo();
 
@@ -2670,6 +2672,7 @@ namespace SDCafeSales.Views
             util.Logger("Add_Order_Manually ProdId = "+ pProdID + ", InvoiceNo" + iNewInvNo.ToString());
             if (!isNewInvoice)   // Set when start button is pressed
             {
+                pnlReceipt.Visible = false;
                 iNewInvNo = dbPOS1.Get_New_InvoiceNo();
                 int iSavedOrderInvNo = dbPOS.Get_SavedOrders_NextInvoiceNo();
 
@@ -3068,6 +3071,8 @@ namespace SDCafeSales.Views
             util.Logger("Add_Order_BarCode strBarCode = " + strBarCode + ", InvoiceNo" + iNewInvNo.ToString());
             if (!isNewInvoice)   // Set when start button is pressed
             {
+                pnlReceipt.Visible = false;
+
                 iNewInvNo = dbPOS1.Get_New_InvoiceNo();
                 int iSavedOrderInvNo = dbPOS.Get_SavedOrders_NextInvoiceNo();
 
@@ -4031,51 +4036,32 @@ namespace SDCafeSales.Views
                     col.Cash = fCashAmt + fChangeAmt - fTips;
                     col.CashTip = fTips;
                 }
-                else if (strPaymentType.Contains("CHEQUE"))
-                {
-                    col.Cheque = fChequeAmt;
-                }
-                else if (strPaymentType.Contains("CHARGE"))
-                {
-                    col.Charge = fChargeAmt;
-                }
-                else if (strPaymentType.Contains("DEBIT"))
-                {
-                    col.Debit = fDebitAmt;
-                    col.DebitTip = fTips;
-                }
-                else if (strPaymentType.Contains("VISA"))
-                {
-                    col.Visa = fVisaAmt;
-                    col.VisaTip = fTips;
-                }
-                else if (strPaymentType.Contains("MASTER"))
-                {
-                    col.Master = fMasterAmt;
-                    col.MasterTip = fTips;
-                }
-                else if (strPaymentType.Contains("AMEX"))
-                {
-                    col.Amex = fAmexAmt;
-                    col.AmexTip = fTips;
-                }
-                else if (strPaymentType.Contains("GIFTCARD"))
-                {
-                    col.GiftCard = fCashAmt;
-                    col.GiftCardTip = fTips;
-                }
-                else if (strPaymentType.Contains("CHEQUE"))
-                {
-                    col.Cheque = fChequeAmt;
-                }
-                else if (strPaymentType.Contains("CHARGE"))
-                {
-                    col.Charge = fChargeAmt;
-                }
                 else
-                {
+                { 
+                    // MULTI or CARDS
+                    col.Cash = fCashAmt;
+                    if (strPaymentType.Contains("CASH"))
+                        col.CashTip = fTips;
+                    col.Cheque = fChequeAmt + fChangeAmt;
+                    col.Charge = fChargeAmt;
+                    col.Debit = fDebitAmt;
+                    if (strPaymentType.Contains("DEBIT"))
+                        col.DebitTip = fTips;
+                    col.Visa = fVisaAmt;
+                    if (strPaymentType.Contains("VISA"))
+                        col.VisaTip = fTips;
+                    col.Master = fMasterAmt;
+                    if (strPaymentType.Contains("MASTER"))
+                        col.MasterTip = fTips;
+                    col.Amex = fAmexAmt;
+                    if (strPaymentType.Contains("AMEX"))
+                        col.AmexTip = fTips;
+                    col.GiftCard = 0;
+                    if (strPaymentType.Contains("GIFTCARD"))
+                        col.GiftCardTip = 0;
                     col.Others = fOthersAmt;
-                    col.OthersTip = fTips;
+                    col.Change = fChangeAmt;
+                    col.Rounding = 0;
                 }
                 col.CollectionType = strPaymentType;
 
@@ -4596,6 +4582,7 @@ namespace SDCafeSales.Views
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
             DataAccessCard dbCard = new DataAccessCard();
+            List<POS1_TranCollectionModel> cols = new List<POS1_TranCollectionModel>();
 
             string strHeader = "header";
             string strFooter = "footer";
@@ -4981,7 +4968,6 @@ namespace SDCafeSales.Views
                                     e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                 }
                             }
-                            List<POS1_TranCollectionModel> cols = new List<POS1_TranCollectionModel>();
                             cols = dbPOS1.Get_TranCollection_by_InvoiceNo(iNewInvNo);
 
                             float fTenderAmt = 0, fTotalTips = 0, fTotalPaid = 0, fTotalChange = 0;
@@ -4991,11 +4977,15 @@ namespace SDCafeSales.Views
                                 foreach (var col in cols)
                                 {
                                     col.CollectionType = col.CollectionType.ToUpper();
-                                    if (col.CollectionType.Contains("CASH"))
+                                    //if (col.CollectionType.Contains("CASH"))
+                                    if (col.Cash > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
-                                        strContent = String.Format("{0,25}", "Cash Paid :") + String.Format("{0,15}", (col.Cash - col.Change).ToString("0.00"));
+                                        if (col.CollectionType == "CASH")
+                                            strContent = String.Format("{0,25}", "Cash Paid :") + String.Format("{0,15}", (col.Cash - col.Change).ToString("0.00"));
+                                        else
+                                            strContent = String.Format("{0,25}", "Cash Paid :") + String.Format("{0,15}", (col.Cash).ToString("0.00"));
                                         iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                                         txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                                         e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
@@ -5010,7 +5000,8 @@ namespace SDCafeSales.Views
                                         }
 
                                     }
-                                    else if (col.CollectionType.Contains("CHEQUE"))
+                                    //else if (col.CollectionType.Contains("CHEQUE"))
+                                    if (col.Cheque > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -5021,17 +5012,19 @@ namespace SDCafeSales.Views
 
 
                                     }
-                                    else if (col.CollectionType.Contains("CHARGE"))
+                                    //else if (col.CollectionType.Contains("CHARGE"))
+                                    if (col.Charge > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
-                                        strContent = String.Format("{0,25}", "Charge Paid :") + String.Format("{0,15}", (col.Charge - col.Change).ToString("0.00"));
+                                        strContent = String.Format("{0,25}", "Charge Paid :") + String.Format("{0,15}", col.Charge.ToString("0.00"));
                                         iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                                         txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                                         e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
 
                                     }
-                                    else if (col.CollectionType.Contains("DEBIT"))
+                                    //else if (col.CollectionType.Contains("DEBIT"))
+                                    if (col.Debit > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -5049,7 +5042,8 @@ namespace SDCafeSales.Views
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
                                     }
-                                    else if (col.CollectionType.Contains("VISA"))
+                                    //else if (col.CollectionType.Contains("VISA"))
+                                    if (col.Visa > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -5068,7 +5062,8 @@ namespace SDCafeSales.Views
                                         }
 
                                     }
-                                    else if (col.CollectionType.Contains("MASTER"))
+                                    //else if (col.CollectionType.Contains("MASTER"))
+                                    if (col.Master > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -5086,7 +5081,8 @@ namespace SDCafeSales.Views
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
                                     }
-                                    else if (col.CollectionType.Contains("AMEX"))
+                                    //else if (col.CollectionType.Contains("AMEX"))
+                                    if (col.Amex > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -5104,19 +5100,21 @@ namespace SDCafeSales.Views
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
                                     }
-                                    else
+                                    if (col.GiftCard > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
-                                        strContent = String.Format("{0,25}", col.CollectionType + " Paid :") + String.Format("{0,15}", col.Amex.ToString("0.00"));
+                                        // MULTI ?
+                                        //strContent = String.Format("{0,25}", col.CollectionType + " Paid :") + String.Format("{0,15}", col.Amex.ToString("0.00"));
+                                        strContent = String.Format("{0,25}", "Gift Card Paid :") + String.Format("{0,15}", col.GiftCard.ToString("0.00"));
                                         iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                                         txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                                         e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
-                                        if (col.AmexTip > 0)
+                                        if (col.GiftCardTip > 0)
                                         {
                                             //////////////////////////////////////////////////////////////////////////
                                             // Print a Line ------------------------------------------------------
-                                            strContent = String.Format("{0,25}", "Tip :") + String.Format("{0,15}", col.AmexTip.ToString("0.00"));
+                                            strContent = String.Format("{0,25}", "Tip(G/C) :") + String.Format("{0,15}", col.GiftCardTip.ToString("0.00"));
                                             iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                                             txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
@@ -5124,7 +5122,7 @@ namespace SDCafeSales.Views
                                     }
 
 
-                                    fTenderAmt = fTenderAmt + col.Cash + col.Debit + col.Visa + col.Master + col.Amex + col.GiftCard;
+                                    fTenderAmt = fTenderAmt + col.Cash + col.Debit + col.Visa + col.Master + col.Amex + col.GiftCard + col.Cheque + col.Charge;
                                     fTotalPaid = fTotalPaid + col.TotalPaid;
                                     fTotalChange = fTotalChange + col.Change;
                                     fTotalTips = fTotalTips + col.TotalTip;
@@ -5323,6 +5321,277 @@ namespace SDCafeSales.Views
             catch (Exception ex)
             {
                 throw new Exception("Exception Occured While Printing", ex);
+            }
+            ShowReceiptInfoOnScreen(cols);
+        }
+
+        private void ShowReceiptInfoOnScreen(List<POS1_TranCollectionModel> cols)
+        {
+            int iLastBottom = 0;
+            if (cols.Count > 0)
+            {
+                pnlReceipt.Visible = true;
+                pnlReceipt.Top = dgv_Orders.Top;
+                pnlReceipt.Left = dgv_Orders.Left;
+                pnlReceipt.Width = dgv_Orders.Width;
+                pnlReceipt.Height = dgv_Orders.Height;
+
+                // delete all label controls on the pnlReceipt
+                pnlReceipt.Controls.Clear();
+                // Add a label to pnlReceipt panel
+                Label lbl = new Label();
+                lbl.Name = "lblReceipt";
+                lbl.Text = "Last Receipt (Invoice # : " + cols.First().InvoiceNo.ToString() + ")";
+                lbl.Font = new Font("Arial", 12, FontStyle.Bold);
+                lbl.ForeColor = Color.Black;
+                lbl.TextAlign = ContentAlignment.MiddleCenter;
+                lbl.Width = pnlReceipt.Width;
+                lbl.Height = 30;
+                lbl.Top = 0;
+                lbl.Left = 0;
+                pnlReceipt.Controls.Add(lbl);
+                iLastBottom = lbl.Bottom;
+
+                // Add a label to pnlReceipt panel
+                Label lblSubTotal = new Label();
+                lblSubTotal.Name = "SubTotal";
+                lblSubTotal.Text = "Sub Total : " + cols.Sum(col => col.Amount).ToString("C2");
+                lblSubTotal.Font = new Font("Arial", 16, FontStyle.Bold);
+                lblSubTotal.ForeColor = Color.White;
+                lblSubTotal.TextAlign = ContentAlignment.MiddleCenter;
+                lblSubTotal.Width = pnlReceipt.Width;
+                lblSubTotal.Height = 30;
+                lblSubTotal.Top = iLastBottom;
+                lblSubTotal.Left = 0;
+                pnlReceipt.Controls.Add(lblSubTotal);
+                iLastBottom = lblSubTotal.Bottom;
+
+                // Add a label to pnlReceipt panel
+                if (cols.Sum(col => col.Tax1) != 0)
+                {
+                    Label lblTax1 = new Label();
+                    lblTax1.Name = "strTax1Name";
+                    lblTax1.Text = strTax1Name + " : " + cols.Sum(col => col.Tax1).ToString("C2");
+                    lblTax1.Font = new Font("Arial", 12, FontStyle.Bold);
+                    lblTax1.ForeColor = Color.WhiteSmoke;
+                    lblTax1.TextAlign = ContentAlignment.MiddleCenter;
+                    lblTax1.Width = pnlReceipt.Width;
+                    lblTax1.Height = 30;
+                    lblTax1.Top = iLastBottom;
+                    lblTax1.Left = 0;
+                    pnlReceipt.Controls.Add(lblTax1);
+                    iLastBottom = lblTax1.Bottom;
+                }
+                if (cols.Sum(col => col.Tax2) != 0)
+                {
+                    Label lblTax2 = new Label();
+                    lblTax2.Name = "strTax2Name";
+                    lblTax2.Text = strTax2Name + " : " + cols.Sum(col => col.Tax2).ToString("C2");
+                    lblTax2.Font = new Font("Arial", 12, FontStyle.Bold);
+                    lblTax2.ForeColor = Color.WhiteSmoke;
+                    lblTax2.TextAlign = ContentAlignment.MiddleCenter;
+                    lblTax2.Width = pnlReceipt.Width;
+                    lblTax2.Height = 30;
+                    lblTax2.Top = iLastBottom;
+                    lblTax2.Left = 0;
+                    pnlReceipt.Controls.Add(lblTax2);
+                    iLastBottom = lblTax2.Bottom;
+                }
+                if (cols.Sum(col => col.Tax3) != 0)
+                {
+                    Label lblTax3 = new Label();
+                    lblTax3.Name = "strTax3Name";
+                    lblTax3.Text = strTax3Name + " : " + cols.Sum(col => col.Tax3).ToString("C2");
+                    lblTax3.Font = new Font("Arial", 12, FontStyle.Bold);
+                    lblTax3.ForeColor = Color.WhiteSmoke;
+                    lblTax3.TextAlign = ContentAlignment.MiddleCenter;
+                    lblTax3.Width = pnlReceipt.Width;
+                    lblTax3.Height = 30;
+                    lblTax3.Top = iLastBottom;
+                    lblTax3.Left = 0;
+                    pnlReceipt.Controls.Add(lblTax3);
+                    iLastBottom = lblTax3.Bottom;
+                }
+                if (cols.Sum(col => (col.Tax1 + col.Tax2 + col.Tax3)) != 0)
+                {
+                    Label lblTaxSum = new Label();
+                    lblTaxSum.Name = "TaxTot";
+                    lblTaxSum.Text = "Tax Total : " + cols.Sum(col => col.Tax1 + col.Tax2 + col.Tax3).ToString("C2");
+                    lblTaxSum.Font = new Font("Arial", 16, FontStyle.Bold);
+                    lblTaxSum.ForeColor = Color.White;
+                    lblTaxSum.TextAlign = ContentAlignment.MiddleCenter;
+                    lblTaxSum.Width = pnlReceipt.Width;
+                    lblTaxSum.Height = 30;
+                    lblTaxSum.Top = iLastBottom;
+                    lblTaxSum.Left = 0;
+                    pnlReceipt.Controls.Add(lblTaxSum);
+                    iLastBottom = lblTaxSum.Bottom;
+                }
+                if (cols.Sum(col => (col.Amount + col.Tax1 + col.Tax2 + col.Tax3)) != 0)
+                {
+                    Label lblTotAmt = new Label();
+                    lblTotAmt.Name = "TotAmt";
+                    lblTotAmt.Text = "Total Amount : " + cols.Sum(col => col.Amount + col.Tax1 + col.Tax2 + col.Tax3).ToString("C2");
+                    lblTotAmt.Font = new Font("Arial", 16, FontStyle.Bold);
+                    lblTotAmt.ForeColor = Color.White;
+                    lblTotAmt.TextAlign = ContentAlignment.MiddleCenter;
+                    lblTotAmt.Width = pnlReceipt.Width;
+                    lblTotAmt.Height = 30;
+                    lblTotAmt.Top = iLastBottom;
+                    lblTotAmt.Left = 0;
+                    pnlReceipt.Controls.Add(lblTotAmt);
+                    iLastBottom = lblTotAmt.Bottom;
+                }
+                if (cols.Sum(col => (col.Cash)) != 0)
+                {
+                    Label lblCash = new Label();
+                    lblCash.Name = "Cash";
+                    lblCash.Text = "Cash Paid : " + cols.Sum(col => col.Cash).ToString("C2");
+                    lblCash.Font = new Font("Arial", 12, FontStyle.Bold);
+                    lblCash.ForeColor = Color.WhiteSmoke;
+                    lblCash.TextAlign = ContentAlignment.MiddleCenter;
+                    lblCash.Width = pnlReceipt.Width;
+                    lblCash.Height = 30;
+                    lblCash.Top = iLastBottom;
+                    lblCash.Left = 0;
+                    pnlReceipt.Controls.Add(lblCash);
+                    iLastBottom = lblCash.Bottom;
+                }
+                if (cols.Sum(col => (col.Debit)) != 0)
+                {
+                    Label lblDebit = new Label();
+                    lblDebit.Name = "Debit";
+                    lblDebit.Text = "Debit Paid : " + cols.Sum(col => col.Debit).ToString("C2");
+                    lblDebit.Font = new Font("Arial", 12, FontStyle.Bold);
+                    lblDebit.ForeColor = Color.WhiteSmoke;
+                    lblDebit.TextAlign = ContentAlignment.MiddleCenter;
+                    lblDebit.Width = pnlReceipt.Width;
+                    lblDebit.Height = 30;
+                    lblDebit.Top = iLastBottom;
+                    lblDebit.Left = 0;
+                    pnlReceipt.Controls.Add(lblDebit);
+                    iLastBottom = lblDebit.Bottom;
+                }
+                if (cols.Sum(col => (col.Visa)) != 0)
+                {
+                    Label lblVisa = new Label();
+                    lblVisa.Name = "Visa";
+                    lblVisa.Text = "Visa Paid : " + cols.Sum(col => col.Visa).ToString("C2");
+                    lblVisa.Font = new Font("Arial", 12, FontStyle.Bold);
+                    lblVisa.ForeColor = Color.WhiteSmoke;
+                    lblVisa.TextAlign = ContentAlignment.MiddleCenter;
+                    lblVisa.Width = pnlReceipt.Width;
+                    lblVisa.Height = 30;
+                    lblVisa.Top = iLastBottom;
+                    lblVisa.Left = 0;
+                    pnlReceipt.Controls.Add(lblVisa);
+                    iLastBottom = lblVisa.Bottom;
+                }
+                if (cols.Sum(col => (col.Master)) != 0)
+                {
+                    Label lblMaster = new Label();
+                    lblMaster.Name = "Master";
+                    lblMaster.Text = "Master Paid : " + cols.Sum(col => col.Master).ToString("C2");
+                    lblMaster.Font = new Font("Arial", 12, FontStyle.Bold);
+                    lblMaster.ForeColor = Color.WhiteSmoke;
+                    lblMaster.TextAlign = ContentAlignment.MiddleCenter;
+                    lblMaster.Width = pnlReceipt.Width;
+                    lblMaster.Height = 30;
+                    lblMaster.Top = iLastBottom;
+                    lblMaster.Left = 0;
+                    pnlReceipt.Controls.Add(lblMaster);
+                    iLastBottom = lblMaster.Bottom;
+                }
+                if (cols.Sum(col => (col.Amex)) != 0)
+                {
+                    Label lblAmex = new Label();
+                    lblAmex.Name = "Amex";
+                    lblAmex.Text = "Amex Paid : " + cols.Sum(col => col.Amex).ToString("C2");
+                    lblAmex.Font = new Font("Arial", 12, FontStyle.Bold);
+                    lblAmex.ForeColor = Color.WhiteSmoke;
+                    lblAmex.TextAlign = ContentAlignment.MiddleCenter;
+                    lblAmex.Width = pnlReceipt.Width;
+                    lblAmex.Height = 30;
+                    lblAmex.Top = iLastBottom;
+                    lblAmex.Left = 0;
+                    pnlReceipt.Controls.Add(lblAmex);
+                    iLastBottom = lblAmex.Bottom;
+                }
+                if (cols.Sum(col => (col.GiftCard)) != 0)
+                {
+                    Label lblGiftCard = new Label();
+                    lblGiftCard.Name = "GiftCard";
+                    lblGiftCard.Text = "GiftCard Paid : " + cols.Sum(col => col.GiftCard).ToString("C2");
+                    lblGiftCard.Font = new Font("Arial", 12, FontStyle.Bold);
+                    lblGiftCard.ForeColor = Color.WhiteSmoke;
+                    lblGiftCard.TextAlign = ContentAlignment.MiddleCenter;
+                    lblGiftCard.Width = pnlReceipt.Width;
+                    lblGiftCard.Height = 30;
+                    lblGiftCard.Top = iLastBottom;
+                    lblGiftCard.Left = 0;
+                    pnlReceipt.Controls.Add(lblGiftCard);
+                    iLastBottom = lblGiftCard.Bottom;
+                }
+                if (cols.Sum(col => (col.Cheque)) != 0)
+                {
+                    Label lblCheque = new Label();
+                    lblCheque.Name = "Cheque";
+                    lblCheque.Text = "Cheque Paid : " + cols.Sum(col => col.Cheque).ToString("C2");
+                    lblCheque.Font = new Font("Arial", 12, FontStyle.Bold);
+                    lblCheque.ForeColor = Color.WhiteSmoke;
+                    lblCheque.TextAlign = ContentAlignment.MiddleCenter;
+                    lblCheque.Width = pnlReceipt.Width;
+                    lblCheque.Height = 30;
+                    lblCheque.Top = iLastBottom;
+                    lblCheque.Left = 0;
+                    pnlReceipt.Controls.Add(lblCheque);
+                    iLastBottom = lblCheque.Bottom;
+                }
+                if (cols.Sum(col => (col.Charge)) != 0)
+                {
+                    Label lblCharge = new Label();
+                    lblCharge.Name = "Charge";
+                    lblCharge.Text = "Charge Paid : " + cols.Sum(col => col.Charge).ToString("C2");
+                    lblCharge.Font = new Font("Arial", 12, FontStyle.Bold);
+                    lblCharge.ForeColor = Color.WhiteSmoke;
+                    lblCharge.TextAlign = ContentAlignment.MiddleCenter;
+                    lblCharge.Width = pnlReceipt.Width;
+                    lblCharge.Height = 30;
+                    lblCharge.Top = iLastBottom;
+                    lblCharge.Left = 0;
+                    pnlReceipt.Controls.Add(lblCharge);
+                    iLastBottom = lblCharge.Bottom;
+                }
+                if (cols.Sum(col => (col.Change)) != 0)
+                {
+                    Label lblChange = new Label();
+                    lblChange.Name = "Change";
+                    lblChange.Text = "Change : " + cols.Sum(col => col.Change).ToString("C2");
+                    lblChange.Font = new Font("Arial", 12, FontStyle.Bold);
+                    lblChange.ForeColor = Color.WhiteSmoke;
+                    lblChange.TextAlign = ContentAlignment.MiddleCenter;
+                    lblChange.Width = pnlReceipt.Width;
+                    lblChange.Height = 30;
+                    lblChange.Top = iLastBottom;
+                    lblChange.Left = 0;
+                    pnlReceipt.Controls.Add(lblChange);
+                    iLastBottom = lblChange.Bottom;
+                }
+                if (cols.Sum(col => (col.TotalPaid)) != 0)
+                {
+                    Label lblTotalPaid = new Label();
+                    lblTotalPaid.Name = "Total";
+                    lblTotalPaid.Text = "Total Paid : " + cols.Sum(col => col.TotalPaid).ToString("C2");
+                    lblTotalPaid.Font = new Font("Arial", 16, FontStyle.Bold);
+                    lblTotalPaid.ForeColor = Color.Gold;
+                    lblTotalPaid.TextAlign = ContentAlignment.MiddleCenter;
+                    lblTotalPaid.Width = pnlReceipt.Width;
+                    lblTotalPaid.Height = 30;
+                    lblTotalPaid.Top = iLastBottom;
+                    lblTotalPaid.Left = 0;
+                    pnlReceipt.Controls.Add(lblTotalPaid);
+                    iLastBottom = lblTotalPaid.Bottom;
+                }
             }
         }
 
@@ -6801,6 +7070,8 @@ namespace SDCafeSales.Views
 
             if (!isNewInvoice)   // Set when start button is pressed
             {
+                pnlReceipt.Visible = false;
+
                 iNewInvNo = dbPOS1.Get_New_InvoiceNo();
                 int iSavedOrderInvNo = dbPOS.Get_SavedOrders_NextInvoiceNo();
 

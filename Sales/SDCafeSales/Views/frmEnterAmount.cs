@@ -16,7 +16,7 @@ namespace SDCafeSales.Views
         frmSalesMain FrmSalesMain;
         private string m_strAmount;
         public float p_TenderAmt { get; set; }
-        public float p_RefundAmt { get; set; }
+        public float p_NewAmt { get; set; }
 
         public bool p_IsRefund { get; set; }
         public string p_Title { get; set; }
@@ -42,14 +42,14 @@ namespace SDCafeSales.Views
         private void bt_Process_Click(object sender, EventArgs e)
         {
             p_IsRefund = true;
-            p_RefundAmt = float.Parse(txt_Amount.Text);
+            p_NewAmt = float.Parse(txt_Amount.Text);
             this.Close();
         }
 
         private void bt_Exit_Click(object sender, EventArgs e)
         {
             p_IsRefund = false;
-            p_RefundAmt = 0;
+            p_NewAmt = 0;
             this.Close();
         }
         private void AmountTextUpdate()

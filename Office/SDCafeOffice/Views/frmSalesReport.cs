@@ -15,6 +15,7 @@ using System.IO;
 using Microsoft.Office.Interop.Excel;
 using Font = Microsoft.Office.Interop.Excel.Font;
 using SDCafeCommon.Utilities;
+using System.Drawing.Printing;
 
 namespace SDCafeOffice.Views
 {
@@ -28,7 +29,10 @@ namespace SDCafeOffice.Views
         private string m_strTax1Name;
         private string m_strTax2Name;
         private string m_strTax3Name;
-
+        private dynamic oldPrinterName;
+        private int retryLimit;
+        private bool docPrinterChanged;
+        private bool appPrinterChanged;
 
         public frmSalesReport()
         {
@@ -168,12 +172,12 @@ namespace SDCafeOffice.Views
                                                             dttm_TranEnd.Value.ToString("yyyy-MM-dd"), dttm_TranEndTime.Value.ToString("HH:mm:ss"));
             voidcols = dbPOS1.Get_VoidTranCollection_by_DateTimeRange(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranStartTime.Value.ToString("HH:mm:ss"),
                                                             dttm_TranEnd.Value.ToString("yyyy-MM-dd"), dttm_TranEndTime.Value.ToString("HH:mm:ss"));
-            string[] strColTypeName = new string[] { "CASH", "DEBIT", "VISA", "MASTER", "AMEX", "GIFTCARD", "OTHERS" };
+            string[] strColTypeName = new string[] { "CASH", "DEBIT", "VISA", "MASTER", "AMEX", "GIFTCARD", "CHEQUE", "CHARGE" };
 
-            float[] iQTY        = new float[] { 0, 0, 0, 0, 0, 0, 0 };
-            float[] iNetAmount  = new float[] { 0, 0, 0, 0, 0, 0, 0 };
-            float[] iTip        = new float[] { 0, 0, 0, 0, 0, 0, 0 };
-            float[] iTotal      = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+            float[] iQTY        = new float[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            float[] iNetAmount  = new float[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            float[] iTip        = new float[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            float[] iTotal      = new float[] { 0, 0, 0, 0, 0, 0, 0, 0 };
 
             float iCardTotalQTY = 0;
             float iCardTotalNetAmount = 0;
@@ -204,19 +208,20 @@ namespace SDCafeOffice.Views
                     //for (int i = 0; i < strColTypeName.Length; i++)
                     int i = 0;
                     trancol.CollectionType = trancol.CollectionType.ToUpper();
-                    if (trancol.CollectionType.Contains(strColTypeName[0])) // Cash
+                    iTotalQTY++;
+                    //if (trancol.CollectionType.Contains(strColTypeName[0])) // Cash
+                    if (trancol.Cash != 0) // Cash
                     {
                         iQTY[i]++;
                         iNetAmount[i] = iNetAmount[i] + trancol.Cash;
                         iTip[i] = iTip[i] + trancol.CashTip;
                         iTotal[i] = iTotal[i] + (trancol.Cash + trancol.CashTip);
-
-                        iTotalQTY++;
+                        iTotalTip = iTotalTip + trancol.CashTip;
                         iTotalNetAmount = iTotalNetAmount + trancol.Cash;
-                        iTotalTip = iTotalTip + trancol.TotalTip;
                         iTotalTotal = iTotalTotal + (trancol.Cash + trancol.CashTip); ;
                     }
-                    else if (trancol.CollectionType.Contains(strColTypeName[1])) // Debit
+                    //else if (trancol.CollectionType.Contains(strColTypeName[1])) // Debit
+                    if (trancol.Debit != 0) // Cash
                     {
                         i = 1;
                         iQTY[i]++;
@@ -224,7 +229,6 @@ namespace SDCafeOffice.Views
                         iTip[i] = iTip[i] + trancol.DebitTip;
                         iTotal[i] = iTotal[i] + (trancol.Debit + trancol.DebitTip);
 
-                        iTotalQTY++;
                         iTotalNetAmount = iTotalNetAmount + trancol.Debit;
                         iTotalTip = iTotalTip + trancol.DebitTip;
                         iTotalTotal = iTotalTotal + (trancol.Debit + trancol.DebitTip); ;
@@ -234,7 +238,8 @@ namespace SDCafeOffice.Views
                         iCardTotalTip = iCardTotalTip + trancol.DebitTip;
                         iCardTotalTotal = iCardTotalTotal + (trancol.Debit + trancol.DebitTip);
                     }
-                    else if (trancol.CollectionType.Contains(strColTypeName[2])) // Visa
+                    //else if (trancol.CollectionType.Contains(strColTypeName[2])) // Visa
+                    if (trancol.Visa != 0) // Visa
                     {
                         i = 2;
                         iQTY[i]++;
@@ -242,7 +247,6 @@ namespace SDCafeOffice.Views
                         iTip[i] = iTip[i] + trancol.VisaTip;
                         iTotal[i] = iTotal[i] + (trancol.Visa + trancol.VisaTip);
 
-                        iTotalQTY++;
                         iTotalNetAmount = iTotalNetAmount + trancol.Visa;
                         iTotalTip = iTotalTip + trancol.VisaTip;
                         iTotalTotal = iTotalTotal + (trancol.Visa + trancol.VisaTip);
@@ -252,7 +256,8 @@ namespace SDCafeOffice.Views
                         iCardTotalTip = iCardTotalTip + trancol.VisaTip;
                         iCardTotalTotal = iCardTotalTotal + (trancol.Visa + trancol.VisaTip);
                     }
-                    else if (trancol.CollectionType.Contains(strColTypeName[3])) // Master
+                    //else if (trancol.CollectionType.Contains(strColTypeName[3])) // Master
+                    if (trancol.Master != 0) // Visa
                     {
                         i = 3;
                         iQTY[i]++;
@@ -270,7 +275,8 @@ namespace SDCafeOffice.Views
                         iCardTotalTip = iCardTotalTip + trancol.MasterTip;
                         iCardTotalTotal = iCardTotalTotal + (trancol.Master + trancol.MasterTip);
                     }
-                    else if (trancol.CollectionType.Contains(strColTypeName[4])) // Amex
+                    //else if (trancol.CollectionType.Contains(strColTypeName[4])) // Amex
+                    if (trancol.Amex != 0) // Visa
                     {
                         i = 4;
                         iQTY[i]++;
@@ -278,7 +284,6 @@ namespace SDCafeOffice.Views
                         iTip[i] = iTip[i] + trancol.AmexTip;
                         iTotal[i] = iTotal[i] + (trancol.Amex + trancol.AmexTip);
 
-                        iTotalQTY++;
                         iTotalNetAmount = iTotalNetAmount + trancol.Amex;
                         iTotalTip = iTotalTip + trancol.AmexTip;
                         iTotalTotal = iTotalTotal + (trancol.Amex + trancol.AmexTip);
@@ -288,7 +293,8 @@ namespace SDCafeOffice.Views
                         iCardTotalTip = iCardTotalTip + trancol.AmexTip;
                         iCardTotalTotal = iCardTotalTotal + (trancol.Amex + trancol.AmexTip);
                     }
-                    else if (trancol.CollectionType.Contains(strColTypeName[5])) // GiftCard
+                    //else if (trancol.CollectionType.Contains(strColTypeName[5])) // GiftCard
+                    if (trancol.GiftCard != 0) // Visa
                     {
                         i = 5;
                         iQTY[i]++;
@@ -296,7 +302,6 @@ namespace SDCafeOffice.Views
                         iTip[i] = iTip[i] + trancol.GiftCardTip;
                         iTotal[i] = iTotal[i] + (trancol.GiftCard + trancol.GiftCardTip);
 
-                        iTotalQTY++;
                         iTotalNetAmount = iTotalNetAmount + trancol.GiftCard;
                         iTotalTip = iTotalTip + trancol.GiftCardTip;
                         iTotalTotal = iTotalTotal + (trancol.GiftCard + trancol.GiftCardTip);
@@ -306,23 +311,28 @@ namespace SDCafeOffice.Views
                         iCardTotalTip = iCardTotalTip + trancol.GiftCardTip;
                         iCardTotalTotal = iCardTotalTotal + (trancol.GiftCard + trancol.GiftCardTip);
                     }
-                    else
-                    { // Others
+                    if (trancol.Cheque != 0) // Visa
+                    { // Cheque
                         i = 6;
                         iQTY[i]++;
-                        iNetAmount[i] = iNetAmount[i] + trancol.Others;
-                        iTip[i] = iTip[i] + trancol.OthersTip;
-                        iTotal[i] = iTotal[i] + (trancol.Others + trancol.OthersTip);
+                        iNetAmount[i] = iNetAmount[i] + trancol.Cheque;
+                        iTotal[i] = iTotal[i] + (trancol.Cheque);
 
-                        iTotalQTY++;
-                        iTotalNetAmount = iTotalNetAmount + trancol.Others;
-                        iTotalTip = iTotalTip + trancol.OthersTip;
-                        iTotalTotal = iTotalTotal + (trancol.Others + trancol.OthersTip);
+                        iTotalNetAmount = iTotalNetAmount + trancol.Cheque;
+                        iTotalTotal = iTotalTotal + (trancol.Cheque);
 
-                        iCardTotalQTY++;
-                        iCardTotalNetAmount = iCardTotalNetAmount + trancol.Others;
-                        iCardTotalTip = iCardTotalTip + trancol.OthersTip;
-                        iCardTotalTotal = iCardTotalTotal + (trancol.Others + trancol.OthersTip);
+
+                    }
+                    if (trancol.Charge != 0) // Visa
+                    { // Charge
+                        i = 7;
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.Charge;
+                        iTotal[i] = iTotal[i] + (trancol.Charge);
+
+                        iTotalNetAmount = iTotalNetAmount + trancol.Charge;
+                        iTotalTotal = iTotalTotal + (trancol.Charge);
+
                     }
                     if (trancol.TotalPaid < 0)
                     {
@@ -351,7 +361,7 @@ namespace SDCafeOffice.Views
             {
                 if (iQTY[i] > 0)
                 {
-                    this.dgvDataTender.Rows.Add(new String[] { (i.Equals(0) ? strColTypeName[i] : "Card"),
+                    this.dgvDataTender.Rows.Add(new String[] { (i.Equals(0) ? strColTypeName[i] : (i < 5 ? "CARD" : strColTypeName[i])),
                                                          strColTypeName[i],
                                                          iQTY[i].ToString("0"),
                                                          iNetAmount[i].ToString("#,##0.00"),
@@ -361,15 +371,18 @@ namespace SDCafeOffice.Views
                             });
                     this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
                 }
-            }
-            this.dgvDataTender.Rows.Add(new String[] { "CARD",
+                if (i == 4)
+                {
+                    this.dgvDataTender.Rows.Add(new String[] { "CARD",
                                                          "SUB TOTAL",
                                                          iCardTotalQTY.ToString("0"),
                                                          iCardTotalNetAmount.ToString("#,##0.00"),
                                                          iCardTotalTip.ToString("#,##0.00"),
                                                          iCardTotalTotal.ToString("#,##0.00")
+                            });
+                }
+            }
 
-                 });
             for (int j = 0; j < dgvDataTender.Columns.Count; j++)
             {
                 this.dgvDataTender.Rows[dgvDataTender.RowCount - 2].Cells[j].Style.BackColor = Color.LightGreen;
@@ -817,11 +830,23 @@ namespace SDCafeOffice.Views
 
             if (strDestination != "FILE")
             {
+                xlWorkBook.SaveAs(strExcelFullFileName, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
                 //xlWorkSheet.PrintOutEx(1, xlWorkBook.Worksheets.Count, 1, false,"EPSON-1", false, Type.Missing, false);
-                xlWorkSheet.PrintOutEx(1, 1, 1, false);
+                //foreach (var item in PrinterSettings.InstalledPrinters)
+                //{
+                //    //util.Logger(item.ToString());
+                //    if (item.ToString() == "EPSON-1")
+                //    {
+                //        xlApp.ActivePrinter = item.ToString();
+                //        break;
+                //    }
+                //}
+                //xlWorkBook.PrintPreview();
+                xlWorkSheet.PrintOutEx(1, xlWorkBook.Worksheets.Count, 1, false);
+                //PrintToPrinter(xlApp, xlWorkSheet, "EPSON-1", 1);
+                //xlWorkSheet.PrintOutEx(1, xlWorkBook.Worksheets.Count, 1, true, "EPSON-1", false, true, false);
                 // --------------------------------------- Save Excel File -------------------------------------
                 // Save and Close 
-                xlWorkBook.SaveAs(strExcelFullFileName, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
                 xlWorkBook.Close(true, misValue, misValue);
                 xlApp.Quit();
                 Marshal.ReleaseComObject(xlWorkSheet);
@@ -836,7 +861,84 @@ namespace SDCafeOffice.Views
 
         }
 
+        private void PrintToPrinter(dynamic app, dynamic document, string printer, int numberOfCopies)
+        {
+            bool PrintToFile = false;
 
+            // Trying to print document without activation throws print exception
+            document.Activate();
+
+            // The only way to change printer is to set the default printer of document or of application
+            // Remember the active printer name to reset after printing document with intended printer
+            oldPrinterName = document.Application.ActivePrinter;
+
+            for (int retry = 0; retry < retryLimit; retry++)
+            {
+                try
+                {
+                    if (!GetActivePrinter(document).Contains(printer))
+                    {
+                        try
+                        {
+                            document.Application.ActivePrinter = printer;
+                            docPrinterChanged = true;
+                        }
+                        catch (Exception)
+                        {
+                            try
+                            {
+                                app.ActivePrinter = printer;
+                                appPrinterChanged = true;
+                            }
+                            catch (Exception)
+                            {
+                                continue;
+                            }
+                        }
+                    }
+                    object oMissing = System.Reflection.Missing.Value;
+                    document.PrintOut(
+                       true,            // Background
+                       false,           // Append overwrite
+                       oMissing,        // Page Range
+                       oMissing,        // Print To File - OutputFileName
+                       oMissing,        // From page
+                       oMissing,        // To page
+                       oMissing,        // Item
+                       numberOfCopies,  // Number of copies to be printed
+                       oMissing,        //
+                       oMissing,        //
+                       PrintToFile,     // Print To file
+                       true             // Collate
+                       );
+                    break;
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+            try
+            {
+                if (docPrinterChanged)
+                    document.Application.ActivePrinter = oldPrinterName;
+                else if (appPrinterChanged)
+                    app.ActivePrinter = oldPrinterName;
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private static string GetActivePrinter(dynamic document)
+        {
+
+            string activePrinter = document.Application.ActivePrinter;
+
+            if (activePrinter.Length >= 0)
+                return activePrinter;
+            return null;
+        }
 
         private int Generate_Summary_Data(Worksheet xlWorkSheet, int iStartRow)
         {
@@ -1243,12 +1345,12 @@ namespace SDCafeOffice.Views
             voidcols = dbPOS1.Get_VoidTranCollection_by_DateTimeRange(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranStartTime.Value.ToString("HH:mm:ss"),
                                                             dttm_TranEnd.Value.ToString("yyyy-MM-dd"), dttm_TranEndTime.Value.ToString("HH:mm:ss"));
 
-            string[] strColTypeName = new string[] { "CASH", "DEBIT", "VISA", "MASTER", "AMEX", "GIFTCARD", "OTHERS" };
+            string[] strColTypeName = new string[] { "CASH", "DEBIT", "VISA", "MASTER", "AMEX", "GIFTCARD", "CHEQUE", "CHARGE" };
 
-            float[] iQTY = new float[] { 0, 0, 0, 0, 0, 0, 0 };
-            float[] iNetAmount = new float[] { 0, 0, 0, 0, 0, 0, 0 };
-            float[] iTip = new float[] { 0, 0, 0, 0, 0, 0, 0 };
-            float[] iTotal = new float[] { 0, 0, 0, 0, 0, 0 , 0 };
+            float[] iQTY = new float[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            float[] iNetAmount = new float[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            float[] iTip = new float[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            float[] iTotal = new float[] { 0, 0, 0, 0, 0, 0 , 0, 0 };
 
             float iCardTotalQTY = 0;
             float iCardTotalNetAmount = 0;
@@ -1280,27 +1382,29 @@ namespace SDCafeOffice.Views
                     //for (int i = 0; i < strColTypeName.Length; i++)
                     int i = 0;
                     trancol.CollectionType = trancol.CollectionType.ToUpper();
-                    if (trancol.CollectionType.Contains(strColTypeName[i])) // Cash
+                    iTotalQTY++;
+
+                    //if (trancol.CollectionType.Contains(strColTypeName[i])) // Cash
+                    if (trancol.Cash != 0)
                     {
                         iQTY[i]++;
                         iNetAmount[i] = iNetAmount[i] + trancol.Cash;
                         iTip[i] = iTip[i] + trancol.CashTip;
                         iTotal[i] = iTotal[i] + (trancol.Cash + trancol.CashTip);
 
-                        iTotalQTY++;
                         iTotalNetAmount = iTotalNetAmount + trancol.Cash;
                         iTotalTip = iTotalTip + trancol.CashTip;
                         iTotalTotal = iTotalTotal + (trancol.Cash + trancol.CashTip);
                     }
                     i = 1;
-                    if (trancol.CollectionType.Contains(strColTypeName[1])) // Debit
+                    //if (trancol.CollectionType.Contains(strColTypeName[1])) // Debit
+                    if (trancol.Debit != 0)
                     {
                         iQTY[i]++;
                         iNetAmount[i] = iNetAmount[i] + trancol.Debit;
                         iTip[i] = iTip[i] + trancol.DebitTip;
                         iTotal[i] = iTotal[i] + (trancol.Debit + trancol.DebitTip);
 
-                        iTotalQTY++;
                         iTotalNetAmount = iTotalNetAmount + trancol.Debit;
                         iTotalTip = iTotalTip + trancol.DebitTip;
                         iTotalTotal = iTotalTotal + (trancol.Debit + trancol.DebitTip);
@@ -1311,7 +1415,8 @@ namespace SDCafeOffice.Views
                         iCardTotalTotal = iCardTotalTotal + (trancol.Debit + trancol.DebitTip);
                     }
                     i = 2;
-                    if (trancol.CollectionType.Contains(strColTypeName[2])) // Visa
+                    //if (trancol.CollectionType.Contains(strColTypeName[2])) // Visa
+                    if (trancol.Visa != 0)
                     {
                         iQTY[i]++;
                         iNetAmount[i] = iNetAmount[i] + trancol.Visa;
@@ -1329,14 +1434,13 @@ namespace SDCafeOffice.Views
                         iCardTotalTotal = iCardTotalTotal + (trancol.Visa + trancol.VisaTip);
                     }
                     i = 3;
-                    if (trancol.CollectionType.Contains(strColTypeName[i])) // Master
+                    if (trancol.Master != 0) // Master
                     {
                         iQTY[i]++;
                         iNetAmount[i] = iNetAmount[i] + trancol.Master;
                         iTip[i] = iTip[i] + trancol.MasterTip;
                         iTotal[i] = iTotal[i] + (trancol.Master + trancol.MasterTip);
 
-                        iTotalQTY++;
                         iTotalNetAmount = iTotalNetAmount + trancol.Master;
                         iTotalTip = iTotalTip + trancol.MasterTip;
                         iTotalTotal = iTotalTotal + (trancol.Master + trancol.MasterTip);
@@ -1347,7 +1451,8 @@ namespace SDCafeOffice.Views
                         iCardTotalTotal = iCardTotalTotal + (trancol.Master + trancol.MasterTip);
                     }
                     i = 4;
-                    if (trancol.CollectionType.Contains(strColTypeName[i])) // Amex
+                    //if (trancol.CollectionType.Contains(strColTypeName[i])) // Amex
+                    if (trancol.Master != 0)
                     {
 
                         iQTY[i]++;
@@ -1355,7 +1460,6 @@ namespace SDCafeOffice.Views
                         iTip[i] = iTip[i] + trancol.AmexTip;
                         iTotal[i] = iTotal[i] + (trancol.Amex + trancol.AmexTip);
 
-                        iTotalQTY++;
                         iTotalNetAmount = iTotalNetAmount + trancol.Amex;
                         iTotalTip = iTotalTip + trancol.AmexTip;
                         iTotalTotal = iTotalTotal + (trancol.Amex + trancol.AmexTip);
@@ -1366,7 +1470,8 @@ namespace SDCafeOffice.Views
                         iCardTotalTotal = iCardTotalTotal + (trancol.Amex + trancol.AmexTip);
                     }
                     i = 5;
-                    if (trancol.CollectionType.Contains(strColTypeName[i])) // GiftCard
+                    //if (trancol.CollectionType.Contains(strColTypeName[i])) // GiftCard
+                    if (trancol.GiftCard != 0)
                     {
 
                         iQTY[i]++;
@@ -1374,25 +1479,30 @@ namespace SDCafeOffice.Views
                         iTip[i] = iTip[i] + trancol.GiftCardTip;
                         iTotal[i] = iTotal[i] + (trancol.GiftCard + trancol.GiftCardTip);
 
-                        iTotalQTY++;
                         iTotalNetAmount = iTotalNetAmount + trancol.GiftCard;
                         iTotalTip = iTotalTip + trancol.GiftCardTip;
                         iTotalTotal = iTotalTotal + (trancol.GiftCard + trancol.GiftCardTip);
                     }
                     i = 6;
-                    if (trancol.CollectionType.Contains(strColTypeName[i])) // Others
+                    if (trancol.Cheque != 0) // Others
                     {
                         iQTY[i]++;
-                        iNetAmount[i] = iNetAmount[i] + trancol.Others;
-                        iTip[i] = iTip[i] + trancol.OthersTip;
-                        iTotal[i] = iTotal[i] + (trancol.Others + trancol.OthersTip);
+                        iNetAmount[i] = iNetAmount[i] + trancol.Cheque;
+                        iTotal[i] = iTotal[i] + (trancol.Cheque);
 
-                        iTotalQTY++;
-                        iTotalNetAmount = iTotalNetAmount + trancol.Others;
-                        iTotalTip = iTotalTip + trancol.OthersTip;
-                        iTotalTotal = iTotalTotal + (trancol.Others + trancol.OthersTip);
+                        iTotalNetAmount = iTotalNetAmount + trancol.Cheque;
+                        iTotalTotal = iTotalTotal + (trancol.Cheque);
                     }
+                    i = 7;
+                    if (trancol.Charge != 0) // Others
+                    {
+                        iQTY[i]++;
+                        iNetAmount[i] = iNetAmount[i] + trancol.Charge;
+                        iTotal[i] = iTotal[i] + (trancol.Charge);
 
+                        iTotalNetAmount = iTotalNetAmount + trancol.Charge;
+                        iTotalTotal = iTotalTotal + (trancol.Charge);
+                    }
                     if (trancol.TotalPaid < 0)
                     {
                         iRefundQTY++;
@@ -1428,13 +1538,17 @@ namespace SDCafeOffice.Views
                     //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
                     iStartRow++;
                 }
+                if (i==4)
+                {
+                    // --------------------------------------- Tender ---------------------------------
+                    xlWorkSheet.Cells[iStartRow, 1] = "CARD TOTAL" + " (" + iCardTotalQTY.ToString() + " )";
+                    xlWorkSheet.Cells[iStartRow, 2] = iCardTotalNetAmount.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 3] = iCardTotalTip.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = iCardTotalTotal.ToString("0.00");
+                    iStartRow++;
+                }
             }
-            // --------------------------------------- Tender ---------------------------------
-            xlWorkSheet.Cells[iStartRow, 1] = "CARD TOTAL" + " (" + iCardTotalQTY.ToString() + " )";
-            xlWorkSheet.Cells[iStartRow, 2] = iCardTotalNetAmount.ToString("0.00");
-            xlWorkSheet.Cells[iStartRow, 3] = iCardTotalTip.ToString("0.00");
-            xlWorkSheet.Cells[iStartRow, 4] = iCardTotalTotal.ToString("0.00");
-            iStartRow++;
+
             // --------------------------------------- Tender ---------------------------------
             xlWorkSheet.Cells[iStartRow, 1] = "GRAND TOTAL" + " (" + iTotalQTY.ToString() + " )";
             xlWorkSheet.Cells[iStartRow, 2] = iTotalNetAmount.ToString("0.00");

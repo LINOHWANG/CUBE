@@ -105,6 +105,7 @@
             this.lblBarCode = new System.Windows.Forms.Label();
             this.bt_NumTypeToggle = new SDCafeCommon.Utilities.CustomButton();
             this.bt_LastReprint = new SDCafeCommon.Utilities.CustomButton();
+            this.pnlReceipt = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_Orders)).BeginInit();
             this.pnlPType.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -1064,11 +1065,23 @@
             this.bt_LastReprint.Text = "Reprint Last Tran";
             this.bt_LastReprint.Click += new System.EventHandler(this.bt_LastReprint_Click);
             // 
+            // pnlReceipt
+            // 
+            this.pnlReceipt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.pnlReceipt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlReceipt.Location = new System.Drawing.Point(216, 4);
+            this.pnlReceipt.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.pnlReceipt.Name = "pnlReceipt";
+            this.pnlReceipt.Size = new System.Drawing.Size(387, 432);
+            this.pnlReceipt.TabIndex = 79;
+            this.pnlReceipt.Visible = false;
+            // 
             // frmSalesMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.pnlReceipt);
             this.Controls.Add(this.pnlSideBar);
             this.Controls.Add(this.bt_LastReprint);
             this.Controls.Add(this.bt_NumTypeToggle);
@@ -1208,6 +1221,7 @@
         private SDCafeCommon.Utilities.CustomButton bt_NumTypeToggle;
         private SDCafeCommon.Utilities.CustomButton bt_LastReprint;
         private SDCafeCommon.Utilities.CustomButton bt_Office;
+        private System.Windows.Forms.Panel pnlReceipt;
     }
 }
 

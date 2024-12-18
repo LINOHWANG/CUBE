@@ -771,11 +771,15 @@ namespace SDCafeSales.Views
                                 foreach (var col in cols)
                                 {
                                     col.CollectionType = col.CollectionType.ToUpper();
-                                    if (col.CollectionType.Contains("CASH"))
+                                    //if (col.CollectionType.Contains("CASH"))
+                                    if (col.Cash > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
-                                        strContent = String.Format("{0,25}", "Cash Paid :") + String.Format("{0,15}", (col.Cash - col.Change).ToString("0.00"));
+                                        if (col.CollectionType == "CASH")
+                                            strContent = String.Format("{0,25}", "Cash Paid :") + String.Format("{0,15}", (col.Cash - col.Change).ToString("0.00"));
+                                        else
+                                            strContent = String.Format("{0,25}", "Cash Paid :") + String.Format("{0,15}", (col.Cash).ToString("0.00"));
                                         iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                                         txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                                         e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
@@ -790,7 +794,31 @@ namespace SDCafeSales.Views
                                         }
 
                                     }
-                                    else if (col.CollectionType.Contains("DEBIT"))
+                                    //else if (col.CollectionType.Contains("CHEQUE"))
+                                    if (col.Cheque > 0)
+                                    {
+                                        //////////////////////////////////////////////////////////////////////////
+                                        // Print a Line ------------------------------------------------------
+                                        strContent = String.Format("{0,25}", "Cheque Paid :") + String.Format("{0,15}", (col.Cheque - col.Change).ToString("0.00"));
+                                        iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                        txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                        e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+
+
+                                    }
+                                    //else if (col.CollectionType.Contains("CHARGE"))
+                                    if (col.Charge > 0)
+                                    {
+                                        //////////////////////////////////////////////////////////////////////////
+                                        // Print a Line ------------------------------------------------------
+                                        strContent = String.Format("{0,25}", "Charge Paid :") + String.Format("{0,15}", col.Charge.ToString("0.00"));
+                                        iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                        txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                        e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+
+                                    }
+                                    //else if (col.CollectionType.Contains("DEBIT"))
+                                    if (col.Debit > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -808,7 +836,8 @@ namespace SDCafeSales.Views
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
                                     }
-                                    else if (col.CollectionType.Contains("VISA"))
+                                    //else if (col.CollectionType.Contains("VISA"))
+                                    if (col.Visa > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -827,7 +856,8 @@ namespace SDCafeSales.Views
                                         }
 
                                     }
-                                    else if (col.CollectionType.Contains("MASTER"))
+                                    //else if (col.CollectionType.Contains("MASTER"))
+                                    if (col.Master > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -845,7 +875,8 @@ namespace SDCafeSales.Views
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
                                     }
-                                    else if (col.CollectionType.Contains("AMEX"))
+                                    //else if (col.CollectionType.Contains("AMEX"))
+                                    if (col.Amex > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -863,26 +894,28 @@ namespace SDCafeSales.Views
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
                                     }
-                                    else
+                                    if (col.GiftCard > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
-                                        strContent = String.Format("{0,25}", col.CollectionType + " Paid :") + String.Format("{0,15}", col.Amex.ToString("0.00"));
+                                        // MULTI ?
+                                        //strContent = String.Format("{0,25}", col.CollectionType + " Paid :") + String.Format("{0,15}", col.Amex.ToString("0.00"));
+                                        strContent = String.Format("{0,25}", "Gift Card Paid :") + String.Format("{0,15}", col.GiftCard.ToString("0.00"));
                                         iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                                         txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                                         e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
-                                        if (col.AmexTip > 0)
+                                        if (col.GiftCardTip > 0)
                                         {
                                             //////////////////////////////////////////////////////////////////////////
                                             // Print a Line ------------------------------------------------------
-                                            strContent = String.Format("{0,25}", "Tip :") + String.Format("{0,15}", col.AmexTip.ToString("0.00"));
+                                            strContent = String.Format("{0,25}", "Tip(G/C) :") + String.Format("{0,15}", col.GiftCardTip.ToString("0.00"));
                                             iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                                             txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
                                     }
 
-                                    fTenderAmt = fTenderAmt + col.Cash + col.Debit + col.Visa + col.Master + col.Amex + col.GiftCard;
+                                    fTenderAmt = fTenderAmt + col.Cash + col.Debit + col.Visa + col.Master + col.Amex + col.GiftCard + col.Cheque + col.Charge; ;
                                     fTotalPaid = fTotalPaid + col.TotalPaid;
                                     fTotalChange = fTotalChange + col.Change;
                                     fTotalTips = fTotalTips + col.TotalTip;
@@ -2230,7 +2263,7 @@ namespace SDCafeSales.Views
 
                 this.TopMost = true;
                 bCardRefund = FrmEnterAmount.p_IsRefund;
-                m_fRefundAmt = FrmEnterAmount.p_RefundAmt;
+                m_fRefundAmt = FrmEnterAmount.p_NewAmt;
             }
             if (bCardRefund && m_fRefundAmt > 0)
             {
@@ -2299,7 +2332,7 @@ namespace SDCafeSales.Views
                                 FrmCardPay.p_TipAmt = fTip; // trancolSelected.TotalTip;
                             }
                         }
-                        Process_RefundTran_Collection(trancolSelected.InvoiceNo, fCash, fDebit, fVisa, fMaster, fAmex, fOthers,
+                        Process_RefundTran_Collection(trancolSelected.InvoiceNo, fCash, fDebit, fVisa, fMaster, fAmex, fOthers,0,0,
                                                             0, FrmCardPay.p_TipAmt, FrmCardPay.strPaymentType, true, bFullRefund);
                         Print_Receipt(false, true, trancolSelected.InvoiceNo);
                         util.Logger("--------------- Card Refund & Printing Receipt is Done : Invoice# " + trancolSelected.InvoiceNo.ToString());
@@ -2507,6 +2540,8 @@ namespace SDCafeSales.Views
                                                          float fMasterAmt,
                                                          float fAmexAmt,
                                                          float fOthersAmt,
+                                                         float fChequeAmt,
+                                                         float fChargeAmt,
                                                          float fChangeAmt, float fTips, string strPaymentType, bool bIsIPSPayment, bool bIsFullRefund)
         {
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
@@ -2522,6 +2557,8 @@ namespace SDCafeSales.Views
             util.Logger("Process_RefundTran_Collection fMasterAmt : " + fMasterAmt);
             util.Logger("Process_RefundTran_Collection fAmexAmt : " + fAmexAmt);
             util.Logger("Process_RefundTran_Collection fOthersAmt : " + fOthersAmt);
+            util.Logger("Process_RefundTran_Collection fChequeAmt : " + fChequeAmt);
+            util.Logger("Process_RefundTran_Collection fChargeAmt : " + fChargeAmt);
             util.Logger("Process_RefundTran_Collection fChangeAmt : " + fChangeAmt);
             util.Logger("Process_RefundTran_Collection fTips : " + fTips);
             util.Logger("Process_RefundTran_Collection strPaymentType : " + strPaymentType);
@@ -2618,35 +2655,32 @@ namespace SDCafeSales.Views
                     col.Cash = fCashAmt + fChangeAmt - fTips;
                     col.CashTip = fTips;
                 }
-                else if (strPaymentType.Contains("DEBIT"))
-                {
-                    col.Debit = fDebitAmt;
-                    col.DebitTip = fTips;
-                }
-                else if (strPaymentType.Contains("VISA"))
-                {
-                    col.Visa = fVisaAmt;
-                    col.VisaTip = fTips;
-                }
-                else if (strPaymentType.Contains("MASTER"))
-                {
-                    col.Master = fMasterAmt;
-                    col.MasterTip = fTips;
-                }
-                else if (strPaymentType.Contains("AMEX"))
-                {
-                    col.Amex = fAmexAmt;
-                    col.AmexTip = fTips;
-                }
-                else if (strPaymentType.Contains("GIFTCARD"))
-                {
-                    col.GiftCard = fCashAmt;
-                    col.GiftCardTip = fTips;
-                }
                 else
                 {
+                    // MULTI or CARDS
+                    col.Cash = fCashAmt;
+                    if (strPaymentType.Contains("CASH"))
+                        col.CashTip = fTips;
+                    col.Cheque = fChequeAmt;
+                    col.Charge = fChargeAmt;
+                    col.Debit = fDebitAmt;
+                    if (strPaymentType.Contains("DEBIT"))
+                        col.DebitTip = fTips;
+                    col.Visa = fVisaAmt;
+                    if (strPaymentType.Contains("VISA"))
+                        col.VisaTip = fTips;
+                    col.Master = fMasterAmt;
+                    if (strPaymentType.Contains("MASTER"))
+                        col.MasterTip = fTips;
+                    col.Amex = fAmexAmt;
+                    if (strPaymentType.Contains("AMEX"))
+                        col.AmexTip = fTips;
+                    col.GiftCard = 0;
+                    if (strPaymentType.Contains("GIFTCARD"))
+                        col.GiftCardTip = 0;
                     col.Others = fOthersAmt;
-                    col.OthersTip = fTips;
+                    col.Change = fChangeAmt;
+                    col.Rounding = 0;
                 }
                 col.CollectionType = strPaymentType;
 
@@ -3059,11 +3093,15 @@ namespace SDCafeSales.Views
                                 foreach (var col in cols)
                                 {
                                     col.CollectionType = col.CollectionType.ToUpper();
-                                    if (col.CollectionType.Contains("CASH"))
+                                    //if (col.CollectionType.Contains("CASH"))
+                                    if (col.Cash > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
-                                        strContent = String.Format("{0,25}", "Cash Paid :") + String.Format("{0,15}", (col.Cash - col.Change).ToString("0.00"));
+                                        if (col.CollectionType == "CASH")
+                                            strContent = String.Format("{0,25}", "Cash Paid :") + String.Format("{0,15}", (col.Cash - col.Change).ToString("0.00"));
+                                        else
+                                            strContent = String.Format("{0,25}", "Cash Paid :") + String.Format("{0,15}", (col.Cash).ToString("0.00"));
                                         iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                                         txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                                         e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
@@ -3078,7 +3116,31 @@ namespace SDCafeSales.Views
                                         }
 
                                     }
-                                    else if (col.CollectionType.Contains("DEBIT"))
+                                    //else if (col.CollectionType.Contains("CHEQUE"))
+                                    if (col.Cheque > 0)
+                                    {
+                                        //////////////////////////////////////////////////////////////////////////
+                                        // Print a Line ------------------------------------------------------
+                                        strContent = String.Format("{0,25}", "Cheque Paid :") + String.Format("{0,15}", (col.Cheque - col.Change).ToString("0.00"));
+                                        iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                        txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                        e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+
+
+                                    }
+                                    //else if (col.CollectionType.Contains("CHARGE"))
+                                    if (col.Charge > 0)
+                                    {
+                                        //////////////////////////////////////////////////////////////////////////
+                                        // Print a Line ------------------------------------------------------
+                                        strContent = String.Format("{0,25}", "Charge Paid :") + String.Format("{0,15}", (col.Charge - col.Change).ToString("0.00"));
+                                        iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                        txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                        e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+
+                                    }
+                                    //else if (col.CollectionType.Contains("DEBIT"))
+                                    if (col.Debit > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -3096,7 +3158,8 @@ namespace SDCafeSales.Views
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
                                     }
-                                    else if (col.CollectionType.Contains("VISA"))
+                                    //else if (col.CollectionType.Contains("VISA"))
+                                    if (col.Visa > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -3115,7 +3178,8 @@ namespace SDCafeSales.Views
                                         }
 
                                     }
-                                    else if (col.CollectionType.Contains("MASTER"))
+                                    //else if (col.CollectionType.Contains("MASTER"))
+                                    if (col.Master > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -3133,7 +3197,8 @@ namespace SDCafeSales.Views
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
                                     }
-                                    else if (col.CollectionType.Contains("AMEX"))
+                                    //else if (col.CollectionType.Contains("AMEX"))
+                                    if (col.Amex > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
@@ -3151,27 +3216,28 @@ namespace SDCafeSales.Views
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
                                     }
-                                    else
+                                    if (col.GiftCard > 0)
                                     {
                                         //////////////////////////////////////////////////////////////////////////
                                         // Print a Line ------------------------------------------------------
-                                        strContent = String.Format("{0,25}", col.CollectionType + " Paid :") + String.Format("{0,15}", col.Amex.ToString("0.00"));
+                                        // MULTI ?
+                                        //strContent = String.Format("{0,25}", col.CollectionType + " Paid :") + String.Format("{0,15}", col.Amex.ToString("0.00"));
+                                        strContent = String.Format("{0,25}", "Gift Card Paid :") + String.Format("{0,15}", col.GiftCard.ToString("0.00"));
                                         iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                                         txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                                         e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
-                                        if (col.AmexTip > 0)
+                                        if (col.GiftCardTip > 0)
                                         {
                                             //////////////////////////////////////////////////////////////////////////
                                             // Print a Line ------------------------------------------------------
-                                            strContent = String.Format("{0,25}", "Tip :") + String.Format("{0,15}", col.AmexTip.ToString("0.00"));
+                                            strContent = String.Format("{0,25}", "Tip(G/C) :") + String.Format("{0,15}", col.GiftCardTip.ToString("0.00"));
                                             iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                                             txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                         }
                                     }
 
-
-                                    fTenderAmt = fTenderAmt + col.Cash + col.Debit + col.Visa + col.Master + col.Amex + col.GiftCard;
+                                    fTenderAmt = fTenderAmt + col.Cash + col.Debit + col.Visa + col.Master + col.Amex + col.GiftCard + col.Cheque + col.Charge;
                                     fTotalPaid = fTotalPaid + col.TotalPaid;
                                     fTotalChange = fTotalChange + col.Change;
                                     fTotalTips = fTotalTips + col.TotalTip;
@@ -3505,14 +3571,14 @@ namespace SDCafeSales.Views
 
                 this.TopMost = true;
                 bCardRefund = FrmEnterAmount.p_IsRefund;
-                m_fRefundAmt = FrmEnterAmount.p_RefundAmt;
+                m_fRefundAmt = FrmEnterAmount.p_NewAmt;
             }
             if (m_fRefundAmt > 0)
             {
 
                 Process_OrderRefund_Complete(trancolSelected.InvoiceNo, bFullRefund);
                 fCash = m_fRefundAmt * -1;
-                Process_RefundTran_Collection(trancolSelected.InvoiceNo, fCash, fDebit, fVisa, fMaster, fAmex, fOthers,
+                Process_RefundTran_Collection(trancolSelected.InvoiceNo, fCash, fDebit, fVisa, fMaster, fAmex, fOthers, 0, 0,
                                                     0, 0, "CASH", false, bFullRefund);
                 Print_Receipt(false, true, trancolSelected.InvoiceNo);
                 util.Logger("--------------- Cash Refund & Printing Receipt is Done : Invoice# " + trancolSelected.InvoiceNo.ToString());

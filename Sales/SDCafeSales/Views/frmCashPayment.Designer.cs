@@ -675,12 +675,12 @@
             this.bt_OpenCD.CornerRadius = 30;
             this.bt_OpenCD.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_OpenCD.ForeColor = System.Drawing.Color.Black;
-            this.bt_OpenCD.Location = new System.Drawing.Point(18, 221);
+            this.bt_OpenCD.Location = new System.Drawing.Point(410, 510);
             this.bt_OpenCD.Name = "bt_OpenCD";
             this.bt_OpenCD.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_OpenCD.Size = new System.Drawing.Size(150, 52);
+            this.bt_OpenCD.Size = new System.Drawing.Size(110, 110);
             this.bt_OpenCD.TabIndex = 113;
             this.bt_OpenCD.Text = "Open C/D";
             this.bt_OpenCD.Click += new System.EventHandler(this.bt_OpenCD_Click);
@@ -773,7 +773,7 @@
             this.bt_ChangesToTip.CornerRadius = 30;
             this.bt_ChangesToTip.Font = new System.Drawing.Font("Arial Narrow", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_ChangesToTip.ForeColor = System.Drawing.Color.DarkRed;
-            this.bt_ChangesToTip.Location = new System.Drawing.Point(471, 470);
+            this.bt_ChangesToTip.Location = new System.Drawing.Point(468, 463);
             this.bt_ChangesToTip.Name = "bt_ChangesToTip";
             this.bt_ChangesToTip.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
