@@ -401,7 +401,7 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS1")))
             {
-                var output = connection.Query<POS1_TranCollectionModel>($"SELECT TOP (1) * from TranCollection WHERE TotalPaid > 0 And ISNULL(IsVoid,0) = 0 order by CreateDate desc, createtime desc").ToList();
+                var output = connection.Query<POS1_TranCollectionModel>($"SELECT TOP (1) * from TranCollection WHERE TotalPaid > 0 And ISNULL(IsVoid,0) = 0 order by InvoiceNo Desc").ToList();
                 return output[0];
             }
         }

@@ -3865,6 +3865,9 @@ namespace SDCafeSales.Views
             //// Set the flag for the new customer
             isNewInvoice = false;
             iNewInvNo = 0;
+            iReprintInvNo = 0;
+            m_fCashRounding = 0;
+
             txt_SubTotal.Text = String.Empty;
             txt_TaxTotal.Text = String.Empty;
             txt_TotalDue.Text = String.Empty;
@@ -4626,6 +4629,8 @@ namespace SDCafeSales.Views
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
             DataAccessCard dbCard = new DataAccessCard();
             List<POS1_TranCollectionModel> cols = new List<POS1_TranCollectionModel>();
+            List<POS1_OrderCompleteModel> orderComItems = new List<POS1_OrderCompleteModel>();
+            List<CCardReceipt> cardReceipts = new List<CCardReceipt>();
 
             string strHeader = "header";
             string strFooter = "footer";
@@ -4891,15 +4896,14 @@ namespace SDCafeSales.Views
                     }
                     else
                     {
-                        List<POS1_OrderCompleteModel> orderitems = new List<POS1_OrderCompleteModel>();
-                        orderitems = dbPOS1.Get_OrderComplete_by_InvoiceNo(p_iInvoiceNo);
-                        if (orderitems.Count > 0)
+                        orderComItems = dbPOS1.Get_OrderComplete_by_InvoiceNo(p_iInvoiceNo);
+                        if (orderComItems.Count > 0)
                         {
                             ////////////////////////////////////////////////
                             // Add the ordered item into datagrid view
                             ////////////////////////////////////////////////
                             //iNewInvNo = orders[0].InvoiceNo;
-                            foreach (var order in orderitems)
+                            foreach (var order in orderComItems)
                             {
                                 float iAmount = 0;
                                 string strProd = "";
@@ -5204,7 +5208,6 @@ namespace SDCafeSales.Views
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                 e1.Graphics.DrawString(strLine, fntContents, brsBlack, (RectangleF)txtRect, format2);
 
-                List<CCardReceipt> cardReceipts = new List<CCardReceipt>();
                 cardReceipts = dbCard.Get_Approved_CardReceipt_By_InvoiceNo(p_iInvoiceNo);
                 string strTemp1;
                 string strTemp2;
@@ -5365,12 +5368,33 @@ namespace SDCafeSales.Views
             {
                 throw new Exception("Exception Occured While Printing", ex);
             }
-            ShowReceiptInfoOnScreen(cols);
+            ShowReceiptInfoOnScreen(cols, orderComItems, cardReceipts);
         }
 
-        private void ShowReceiptInfoOnScreen(List<POS1_TranCollectionModel> cols)
+        private void ShowReceiptInfoOnScreen(List<POS1_TranCollectionModel> cols, List<POS1_OrderCompleteModel> orderComItems, List<CCardReceipt> cardReceipts)
         {
             int iLastBottom = 0;
+            int iItemCount = (int)orderComItems.FindAll(item => item.ProductId > 0).Sum(item => item.Quantity);
+
+            // Add a line
+            Label lblLine1 = new Label();
+            Label lblLine2 = new Label();
+            lblLine1.Name = "Line1";
+            lblLine1.Text = "--------------------------------------------------";
+            lblLine1.Font = new Font("Arial", 12, FontStyle.Bold);
+            lblLine1.ForeColor = Color.WhiteSmoke;
+            lblLine1.TextAlign = ContentAlignment.MiddleCenter;
+            lblLine1.Width = pnlReceipt.Width;
+            lblLine1.Height = 20;
+
+            lblLine2.Name = "Line2";
+            lblLine2.Text = "--------------------------------------------------";
+            lblLine2.Font = new Font("Arial", 12, FontStyle.Bold);
+            lblLine2.ForeColor = Color.WhiteSmoke;
+            lblLine2.TextAlign = ContentAlignment.MiddleCenter;
+            lblLine2.Width = pnlReceipt.Width;
+            lblLine2.Height = 20;
+
             if (cols.Count > 0)
             {
                 pnlReceipt.Visible = true;
@@ -5396,6 +5420,25 @@ namespace SDCafeSales.Views
                 iLastBottom = lbl.Bottom;
 
                 // Add a label to pnlReceipt panel
+                Label lblItems = new Label();
+                lblItems.Name = "Items";
+                lblItems.Text = "Number of Items : " + iItemCount.ToString();
+                lblItems.Font = new Font("Arial", 16, FontStyle.Bold);
+                lblItems.ForeColor = Color.White;
+                lblItems.TextAlign = ContentAlignment.MiddleCenter;
+                lblItems.Width = pnlReceipt.Width;
+                lblItems.Height = 30;
+                lblItems.Top = iLastBottom;
+                lblItems.Left = 0;
+                pnlReceipt.Controls.Add(lblItems);
+                iLastBottom = lblItems.Bottom;
+
+                lblLine1.Top = iLastBottom;
+                lblLine1.Left = 0;
+                pnlReceipt.Controls.Add(lblLine1);
+                iLastBottom = lblLine1.Bottom;
+
+                // Add a label to pnlReceipt panel
                 Label lblSubTotal = new Label();
                 lblSubTotal.Name = "SubTotal";
                 lblSubTotal.Text = "Sub Total : " + cols.Sum(col => col.Amount).ToString("C2");
@@ -5416,7 +5459,7 @@ namespace SDCafeSales.Views
                     lblTax1.Name = "strTax1Name";
                     lblTax1.Text = strTax1Name + " : " + cols.Sum(col => col.Tax1).ToString("C2");
                     lblTax1.Font = new Font("Arial", 12, FontStyle.Bold);
-                    lblTax1.ForeColor = Color.WhiteSmoke;
+                    lblTax1.ForeColor = Color.LightGray;
                     lblTax1.TextAlign = ContentAlignment.MiddleCenter;
                     lblTax1.Width = pnlReceipt.Width;
                     lblTax1.Height = 30;
@@ -5431,7 +5474,7 @@ namespace SDCafeSales.Views
                     lblTax2.Name = "strTax2Name";
                     lblTax2.Text = strTax2Name + " : " + cols.Sum(col => col.Tax2).ToString("C2");
                     lblTax2.Font = new Font("Arial", 12, FontStyle.Bold);
-                    lblTax2.ForeColor = Color.WhiteSmoke;
+                    lblTax2.ForeColor = Color.LightGray;
                     lblTax2.TextAlign = ContentAlignment.MiddleCenter;
                     lblTax2.Width = pnlReceipt.Width;
                     lblTax2.Height = 30;
@@ -5446,7 +5489,7 @@ namespace SDCafeSales.Views
                     lblTax3.Name = "strTax3Name";
                     lblTax3.Text = strTax3Name + " : " + cols.Sum(col => col.Tax3).ToString("C2");
                     lblTax3.Font = new Font("Arial", 12, FontStyle.Bold);
-                    lblTax3.ForeColor = Color.WhiteSmoke;
+                    lblTax3.ForeColor = Color.LightGray;
                     lblTax3.TextAlign = ContentAlignment.MiddleCenter;
                     lblTax3.Width = pnlReceipt.Width;
                     lblTax3.Height = 30;
@@ -5485,11 +5528,17 @@ namespace SDCafeSales.Views
                     pnlReceipt.Controls.Add(lblTotAmt);
                     iLastBottom = lblTotAmt.Bottom;
                 }
+
+                lblLine2.Top = iLastBottom;
+                lblLine2.Left = 0;
+                pnlReceipt.Controls.Add(lblLine2);
+                iLastBottom = lblLine2.Bottom;
+
                 if (cols.Sum(col => (col.Cash)) != 0)
                 {
                     Label lblCash = new Label();
                     lblCash.Name = "Cash";
-                    lblCash.Text = "Cash Paid : " + cols.Sum(col => col.Cash).ToString("C2");
+                    lblCash.Text = "Cash Paid : " + cols.Sum(col => (col.Cash - col.Change)).ToString("C2");
                     lblCash.Font = new Font("Arial", 12, FontStyle.Bold);
                     lblCash.ForeColor = Color.WhiteSmoke;
                     lblCash.TextAlign = ContentAlignment.MiddleCenter;
@@ -5560,6 +5609,21 @@ namespace SDCafeSales.Views
                     pnlReceipt.Controls.Add(lblAmex);
                     iLastBottom = lblAmex.Bottom;
                 }
+                if (cardReceipts.Count > 0)
+                {
+                    Label lblAmex = new Label();
+                    lblAmex.Name = "CardReceipt";
+                    lblAmex.Text = "Card Tran Status : " + cardReceipts[0].HostResponseText;
+                    lblAmex.Font = new Font("Arial", 12, FontStyle.Bold);
+                    lblAmex.ForeColor = Color.Gray;
+                    lblAmex.TextAlign = ContentAlignment.MiddleCenter;
+                    lblAmex.Width = pnlReceipt.Width;
+                    lblAmex.Height = 30;
+                    lblAmex.Top = iLastBottom;
+                    lblAmex.Left = 0;
+                    pnlReceipt.Controls.Add(lblAmex);
+                    iLastBottom = lblAmex.Bottom;
+                }
                 if (cols.Sum(col => (col.GiftCard)) != 0)
                 {
                     Label lblGiftCard = new Label();
@@ -5611,7 +5675,7 @@ namespace SDCafeSales.Views
                     lblChange.Name = "Change";
                     lblChange.Text = "Change : " + cols.Sum(col => col.Change).ToString("C2");
                     lblChange.Font = new Font("Arial", 12, FontStyle.Bold);
-                    lblChange.ForeColor = Color.WhiteSmoke;
+                    lblChange.ForeColor = Color.OrangeRed;
                     lblChange.TextAlign = ContentAlignment.MiddleCenter;
                     lblChange.Width = pnlReceipt.Width;
                     lblChange.Height = 30;
@@ -6361,6 +6425,7 @@ namespace SDCafeSales.Views
             float iSubTot = 0;
             float iTaxTot = 0;
             float iTotDue = 0;
+            float fTax1Tot = 0, fTax2Tot = 0, fTax3Tot = 0;
 
             PrintDocument p = new PrintDocument();
 
@@ -6480,6 +6545,11 @@ namespace SDCafeSales.Views
                             iAmount = order.Quantity * order.OutUnitPrice;
                             iSubTot = iSubTot + iAmount;
                             iTaxTot = iTaxTot + order.Tax1 + order.Tax2 + order.Tax3;
+                            
+                            fTax1Tot = fTax1Tot + order.Tax1;
+                            fTax2Tot = fTax2Tot + order.Tax2;
+                            fTax3Tot = fTax3Tot + order.Tax3;
+
                             strProd = order.ProductName;
 
                             if (order.ProductName.Length > 20)
@@ -6495,6 +6565,11 @@ namespace SDCafeSales.Views
                             iAmount = order.Amount;
                             iSubTot = iSubTot + iAmount;
                             iTaxTot = iTaxTot + order.Tax1 + order.Tax2 + order.Tax3;
+
+                            fTax1Tot = fTax1Tot + order.Tax1;
+                            fTax2Tot = fTax2Tot + order.Tax2;
+                            fTax3Tot = fTax3Tot + order.Tax3;
+
                             strProd = order.ProductName;
 
                             if (order.ProductName.Length > 20)
@@ -6532,6 +6607,30 @@ namespace SDCafeSales.Views
                     iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                     txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                     e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                    if (m_blnPrintTaxDetails)
+                    {
+                        if (fTax1Tot > 0)
+                        {
+                            strContent = String.Format("{0,25}", strTax1Name + " :") + String.Format("{0,15}", fTax1Tot.ToString("0.00"));
+                            iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                            txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                            e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                        }
+                        if (fTax2Tot > 0)
+                        {
+                            strContent = String.Format("{0,25}", strTax2Name + " :") + String.Format("{0,15}", fTax2Tot.ToString("0.00"));
+                            iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                            txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                            e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                        }
+                        if (fTax3Tot > 0)
+                        {
+                            strContent = String.Format("{0,25}", strTax3Name + " :") + String.Format("{0,15}", fTax3Tot.ToString("0.00"));
+                            iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                            txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                            e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                        }
+                    }
                     //////////////////////////////////////////////////////////////////////////
                     // Print a Line ------------------------------------------------------
                     strContent = String.Format("{0,25}", "Total Due :") + String.Format("{0,15}", iTotDue.ToString("0.00"));
@@ -6621,6 +6720,8 @@ namespace SDCafeSales.Views
                             dgv_Orders_Initialize();
                             Load_Existing_Orders();
                             bt_Stop.PerformClick();
+                            pnlReceipt.Visible = false;
+                            iNewInvNo = iRecallInvoiceNo;
                             txtSelectedMenu.Text = "Recall order successed ! " + iRecallInvoiceNo.ToString();
                             util.Logger("Recall order successed ! iRecallInvoiceNo = " + iRecallInvoiceNo.ToString());
                         }
@@ -7327,6 +7428,8 @@ namespace SDCafeSales.Views
                             dgv_Orders_Initialize();
                             Load_Existing_Orders();
                             bt_Stop.PerformClick();
+                            pnlReceipt.Visible = false;
+                            iNewInvNo = iRecallInvoiceNo;
                             txtSelectedMenu.Text = "Recall order successed ! " + iRecallInvoiceNo.ToString();
                             util.Logger("Recall order successed ! iRecallInvoiceNo = " + iRecallInvoiceNo.ToString());
                         }
@@ -7836,6 +7939,7 @@ namespace SDCafeSales.Views
             POS1_TranCollectionModel col = dbPOS1.Get_Last_TranCollection();
             iReprintInvNo = col.InvoiceNo;
             Print_Receipt(false, true, iReprintInvNo);
+            BarCode_Get_Focus();
 
         }
 
@@ -7864,6 +7968,7 @@ namespace SDCafeSales.Views
             this.Show();
             //this.TopMost = true;
             this.BringToFront();
+            BarCode_Get_Focus();
 
         }
     }
