@@ -10,7 +10,7 @@ namespace SDCafeCommon.Utilities
 {
     public class AesEncryption
     {
-        public string EncryptString(string key, string plainText)
+        public string EncryptString(string plainText, string key)
         {
             byte[] iv = new byte[16];
             byte[] array;
@@ -39,7 +39,7 @@ namespace SDCafeCommon.Utilities
             return Convert.ToBase64String(array);
         }
 
-        public string DecryptString(string key, string cipherText)
+        public string DecryptString(string cipherText , string key)
         {
             byte[] iv = new byte[16];
             byte[] buffer = Convert.FromBase64String(cipherText);

@@ -92,6 +92,7 @@ namespace SDCafeSales.Views
         private bool isNewInvoice = false;
         private bool isRFIDConnected = false;
         private int iNewInvNo = 0;
+        private int iReprintInvNo = 0;
         private float fTotDue = 0;
         private float m_TaxRate1 = 0;
         private float m_TaxRate2 = 0;
@@ -4594,7 +4595,7 @@ namespace SDCafeSales.Views
             if (!IsInvoice)
             {
                 //Print_Receipt(IsInvoice, false);
-                Print_Receipt(IsInvoice, IsCustomerCopy);
+                Print_Receipt(IsInvoice, IsCustomerCopy, iNewInvNo);
             }
             //DialogResult dialogResult = MessageBox.Show("Print Customer Copy ?", "Receipt Print", MessageBoxButtons.YesNo);
             if (bAutoReceipt)
@@ -4612,14 +4613,14 @@ namespace SDCafeSales.Views
                     {
                         if (IsCustomerCopy)
                         {*/
-                Print_Receipt(IsInvoice, bAutoReceipt);//IsCustomerCopy);
+                Print_Receipt(IsInvoice, bAutoReceipt, iNewInvNo);//IsCustomerCopy);
                         /*}
                     }
                 }*/
             }
 
         }
-        private void Print_Receipt(bool IsInvoice, bool IsCustomerCopy)
+        private void Print_Receipt(bool IsInvoice, bool IsCustomerCopy, int p_iInvoiceNo)
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
@@ -4707,7 +4708,7 @@ namespace SDCafeSales.Views
                 e1.Graphics.DrawString(dbPOS.Get_SysConfig_By_Name("BIZ_REG_NO")[0].ConfigValue, fntHeader, brsBlack, (RectangleF)txtRect, format1);
                 //////////////////////////////////////////////////////////////////////////
                 // Print order header ------------------------------------------------------
-                strContent = String.Format("{0,-17}", "Inv#: " + String.Format("{0}", System.Convert.ToInt32(iNewInvNo))) +
+                strContent = String.Format("{0,-17}", "Inv#: " + String.Format("{0}", System.Convert.ToInt32(p_iInvoiceNo))) +
                              String.Format("{0,20}", "Served by: " + strUserName);
                 iNextLineYPoint = iNextLineYPoint + iheaderHeight + 5;
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
@@ -4746,7 +4747,7 @@ namespace SDCafeSales.Views
                     if (IsInvoice)
                     {
                         List<POS_OrdersModel> orderitems = new List<POS_OrdersModel>();
-                        orderitems = dbPOS.Get_Orders_by_InvoiceNo(iNewInvNo);
+                        orderitems = dbPOS.Get_Orders_by_InvoiceNo(p_iInvoiceNo);
                         if (orderitems.Count > 0)
                         {
                             ////////////////////////////////////////////////
@@ -4891,7 +4892,7 @@ namespace SDCafeSales.Views
                     else
                     {
                         List<POS1_OrderCompleteModel> orderitems = new List<POS1_OrderCompleteModel>();
-                        orderitems = dbPOS1.Get_OrderComplete_by_InvoiceNo(iNewInvNo);
+                        orderitems = dbPOS1.Get_OrderComplete_by_InvoiceNo(p_iInvoiceNo);
                         if (orderitems.Count > 0)
                         {
                             ////////////////////////////////////////////////
@@ -5010,7 +5011,7 @@ namespace SDCafeSales.Views
                                     e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                 }
                             }
-                            cols = dbPOS1.Get_TranCollection_by_InvoiceNo(iNewInvNo);
+                            cols = dbPOS1.Get_TranCollection_by_InvoiceNo(p_iInvoiceNo);
 
                             float fTenderAmt = 0, fTotalTips = 0, fTotalPaid = 0, fTotalChange = 0;
 
@@ -5204,7 +5205,7 @@ namespace SDCafeSales.Views
                 e1.Graphics.DrawString(strLine, fntContents, brsBlack, (RectangleF)txtRect, format2);
 
                 List<CCardReceipt> cardReceipts = new List<CCardReceipt>();
-                cardReceipts = dbCard.Get_Approved_CardReceipt_By_InvoiceNo(iNewInvNo);
+                cardReceipts = dbCard.Get_Approved_CardReceipt_By_InvoiceNo(p_iInvoiceNo);
                 string strTemp1;
                 string strTemp2;
                 float fCurrency;
@@ -7833,8 +7834,8 @@ namespace SDCafeSales.Views
             // Get the last invoice no from POS1 database
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
             POS1_TranCollectionModel col = dbPOS1.Get_Last_TranCollection();
-            iNewInvNo = col.InvoiceNo;
-            Print_Receipt(false, true);
+            iReprintInvNo = col.InvoiceNo;
+            Print_Receipt(false, true, iReprintInvNo);
 
         }
 

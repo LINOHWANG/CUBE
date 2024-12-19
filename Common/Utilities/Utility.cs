@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using SDCafeCommon.Model;
 using System.Xml;
+using System.Net.NetworkInformation;
+using System.Security.Cryptography;
 
 namespace SDCafeCommon.Utilities
 {
@@ -105,11 +107,11 @@ namespace SDCafeCommon.Utilities
             AesEncryption aes = new AesEncryption();
             // Encrypt Feature #3593
             //var key = "1234567890123456"; // 16 bytes (128bits)
-            var key =   "tsent2011tsent20";
-            var encryptedString = aes.EncryptString(key, strpassword);
+            var strSeckey =   "tsent2011tsent20";
+            var encryptedString = aes.EncryptString(strpassword, strSeckey);
             util.Logger("Encrypted String: " + encryptedString);
             // Decrypt
-            var decryptedString = aes.DecryptString(key, strpassword);
+            var decryptedString = aes.DecryptString(strpassword, strSeckey);
             //util.Logger("Decrypted String: " + decryptedString);
             strpassword = decryptedString;
 
@@ -201,6 +203,79 @@ namespace SDCafeCommon.Utilities
                 var serializer = new XmlSerializer(typeof(POS_PmTreeRespModel),xRoot);
                 return serializer.Deserialize(stringReader) as POS_PmTreeRespModel;
             }
+        }
+
+        public bool IsLicensed(string p_StationName)
+        {
+            if ((p_StationName == "TEST") || (p_StationName == "DEMO"))
+            {
+                return true;
+            }
+            // Get Mac Address
+            string macAddress = "";
+            macAddress = GetMacAddress();
+            Logger("Mac Address: " + macAddress);
+            // Check if the license file exists
+            //string licenseFile = Directory.GetCurrentDirectory() + "\\License\\License.dat";
+            var workingDirectory = Environment.CurrentDirectory;
+            string licenseFile = $"{workingDirectory}\\License\\license.dat";
+            Logger("License File: " + licenseFile);
+            var strSecKey = "tsent2011tsent20";
+            // AES Decrypt the sting lines
+            AesEncryption aes = new AesEncryption();
+            if (System.IO.File.Exists(licenseFile))
+            {
+                // Read the license file
+                string[] lines = File.ReadAllLines(licenseFile);
+                if (lines.Length == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    // Encrypt Feature #3593
+                    //var key = "1234567890123456"; // 16 bytes (128bits)
+                    try
+                    {
+                        var decryptedString = aes.DecryptString(lines[0], strSecKey);
+                        Logger("Decrypted String: " + decryptedString);
+                        if (decryptedString == macAddress) 
+                            return true;
+                        else 
+                            return false;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger(ex.ToString());
+                        return false;
+                    }
+                }
+                return false;
+            }
+            else
+            {
+                var encryptedString = aes.EncryptString(macAddress, strSecKey);
+                Logger("Encrypted String : " + encryptedString);
+            }
+            return false;
+        }
+
+        private string GetMacAddress()
+        {
+            string addr = "";
+            foreach (NetworkInterface n in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (n.OperationalStatus == OperationalStatus.Up)
+                {
+                    Logger("Network Interface : " + n.Name + " -> " + n.Description);
+                    addr += n.GetPhysicalAddress().ToString();
+                    break;
+                }
+            }
+            // add '-' between each 2 bytes
+            addr = addr.Substring(0, 2) + "-" + addr.Substring(2, 2) + "-" + addr.Substring(4, 2) + "-" + addr.Substring(6, 2) + "-" + addr.Substring(8, 2) + "-" + addr.Substring(10, 2);
+            //Logger("MAC Addr : " + addr);
+            return addr;
         }
 
         public Dictionary<string, string> dicTranStates = new Dictionary<string, string>()

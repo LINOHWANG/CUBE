@@ -52,6 +52,8 @@ namespace SDCafeSales
         //System.Windows.Forms.Button[] btnArray = new System.Windows.Forms.Button[30];
         private CustomButton[] btnNums = new CustomButton[13];
         private ImageList m_ImageList;
+        private string m_strStationName;
+        private bool m_bIsLicensed;
 
         public frmLogOn()
         {
@@ -66,7 +68,6 @@ namespace SDCafeSales
             Load_ImageList();
             Initialize_Buttons();
             Initialize_ClockInOut_List();
-
             txtPassCode.Focus();
 
         }
@@ -188,6 +189,19 @@ namespace SDCafeSales
             this.BringToFront();
             this.TopMost = true;
             this.TopMost = false;
+
+            List<POS_StationModel> stations = dbPOS.Get_Station_By_HostName(Environment.MachineName);
+
+            if (stations.Count > 0)
+            {
+                m_strStationName = stations[0].StationName;
+            }
+            else
+            {
+                m_strStationName = "Unknown";
+            }
+            lblStationName.Text = m_strStationName;
+            m_bIsLicensed = util.IsLicensed(m_strStationName);
         }
 
         public void ClickNumberButton(Object sender, System.EventArgs e)
@@ -205,7 +219,7 @@ namespace SDCafeSales
             selectedBTN = (CustomButton)sender;
             if (btn.Text == "OK")  // OK
             {
-                if (UserLoginWithPassCode(txtPassCode.Text))
+                if ((UserLoginWithPassCode(txtPassCode.Text)) && m_bIsLicensed)
                 {
                     this.Hide();
                     FrmSalesMain = new frmSalesMain();
@@ -221,7 +235,7 @@ namespace SDCafeSales
                 }
                 else
                 {
-                    txtMessage.Text = "Login Failed ! Please check your passcode !";
+                    txtMessage.Text = "Login Failed ! Please check your passcode or License !";
                     strPassCode = string.Empty;
                     txtPassCode.Text = strPassCode;
                     Console.Beep(3000, 1000);
