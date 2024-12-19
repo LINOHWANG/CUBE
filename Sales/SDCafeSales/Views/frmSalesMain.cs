@@ -305,7 +305,10 @@ namespace SDCafeSales.Views
             m_ImageList.Images.Add(Properties.Resources.payments_40dp);             //8
             m_ImageList.Images.Add(Properties.Resources.Cash_Refund);             //9
             m_ImageList.Images.Add(Properties.Resources.settings_42x42_Black);             //10
-
+            m_ImageList.Images.Add(Properties.Resources.multiple_content_copy_40dp);             //11
+            m_ImageList.Images.Add(Properties.Resources.bookmark_40dp);             //12
+            m_ImageList.Images.Add(Properties.Resources.bookmark_recall_40dp);             //13
+            m_ImageList.Images.Add(Properties.Resources.history_40dp);             //14
             bt_Exit.ImageList = m_ImageList;
             bt_Exit.ImageIndex = 1;
 
@@ -322,6 +325,15 @@ namespace SDCafeSales.Views
             {
                 bt_Payment.Enabled = false;
             }
+
+            //bt_SalesHistory
+            bt_SalesHistory.ImageList = m_ImageList;
+            bt_SalesHistory.ImageIndex = 14;
+            bt_SalesHistory.ImageAlign = ContentAlignment.MiddleLeft;
+            //bt_cashPayment.Text = "Cash /" + System.Environment.NewLine + "Manual" + System.Environment.NewLine + "Pay";
+            bt_SalesHistory.Text = "Sales" + System.Environment.NewLine + "History";
+            bt_SalesHistory.TextAlign = ContentAlignment.MiddleRight;
+
 
             bt_cashPayment.ImageList = m_ImageList;
             bt_cashPayment.ImageIndex = 8;
@@ -345,6 +357,13 @@ namespace SDCafeSales.Views
             bt_PrintInvoice.Text = "Invoice";
             bt_PrintInvoice.TextAlign = ContentAlignment.MiddleRight;
 
+            //bt_OpenCashDrawer on Side bar
+            bt_OpenCashDrawer.ImageList = m_ImageList;
+            bt_OpenCashDrawer.ImageIndex = 6;
+            bt_OpenCashDrawer.ImageAlign = ContentAlignment.MiddleLeft;
+            bt_OpenCashDrawer.Text = "Open" + System.Environment.NewLine + "C/D";
+            bt_OpenCashDrawer.TextAlign = ContentAlignment.MiddleRight;
+
             bt_OpenCashDrawer1.ImageList = m_ImageList;
             bt_OpenCashDrawer1.ImageIndex = 6;
             bt_OpenCashDrawer1.ImageAlign = ContentAlignment.MiddleLeft;
@@ -362,6 +381,25 @@ namespace SDCafeSales.Views
             bt_Office.ImageAlign = ContentAlignment.MiddleLeft;
             bt_Office.Text = "Office";
             bt_Office.TextAlign = ContentAlignment.MiddleRight;
+
+            bt_SetQTY.ImageList = m_ImageList;
+            bt_SetQTY.ImageIndex = 11;
+            bt_SetQTY.ImageAlign = ContentAlignment.MiddleLeft;
+            bt_SetQTY.Text = "Multiple";
+            bt_SetQTY.TextAlign = ContentAlignment.MiddleRight;
+
+            bt_SaveOrder.ImageList = m_ImageList;
+            bt_SaveOrder.ImageIndex = 12;
+            bt_SaveOrder.ImageAlign = ContentAlignment.MiddleLeft;
+            bt_SaveOrder.Text = "Save" + System.Environment.NewLine + "Order";
+            bt_SaveOrder.TextAlign = ContentAlignment.MiddleRight;
+
+
+            bt_RecallOrder.ImageList = m_ImageList;
+            bt_RecallOrder.ImageIndex = 13;
+            bt_RecallOrder.ImageAlign = ContentAlignment.MiddleLeft;
+            bt_RecallOrder.Text = "Recall" + System.Environment.NewLine + "Order";
+            bt_RecallOrder.TextAlign = ContentAlignment.MiddleRight;
 
             Check_AutoReceipt(false);
             Show_AutoReceipt_Button();
@@ -726,6 +764,7 @@ namespace SDCafeSales.Views
             String tagtype;
             String strUid;
             strUid = BitConverter.ToString(uid, 0, 8).Replace("-", string.Empty);
+            pnlReceipt.Visible = false;
             switch (tag_id)
             {
                 case 1:
@@ -1401,9 +1440,10 @@ namespace SDCafeSales.Views
 
             util.Logger(" Add_RFIDTag_Into_Order : strUid = " + strUid + " InvNo = " + iNewInvNo.ToString());
 
+            pnlReceipt.Visible = false;
             if (!isNewInvoice)   // Set when start button is pressed
             {
-                pnlReceipt.Visible = false;
+                
                 iNewInvNo = dbPOS1.Get_New_InvoiceNo();
                 int iSavedOrderInvNo = dbPOS.Get_SavedOrders_NextInvoiceNo();
 
@@ -1909,8 +1949,9 @@ namespace SDCafeSales.Views
             //iTotalTax1 = dbPOS.Get_Orders_Tax1_MultipleProdId(strSQLWhere);
             //iTotalTax2 = dbPOS.Get_Orders_Tax2_MultipleProdId(strSQLWhere);
             //iTotalTax3 = dbPOS.Get_Orders_Tax3_MultipleProdId(strSQLWhere);
+            pnlReceipt.Visible = false;
 
-			if (iPromoType == 1)
+            if (iPromoType == 1)
 			{
 				double iDiscountRate = fPromoValue;
 			
@@ -2670,9 +2711,11 @@ namespace SDCafeSales.Views
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
             util.Logger("Add_Order_Manually ProdId = "+ pProdID + ", InvoiceNo" + iNewInvNo.ToString());
+
+            pnlReceipt.Visible = false;
             if (!isNewInvoice)   // Set when start button is pressed
             {
-                pnlReceipt.Visible = false;
+                
                 iNewInvNo = dbPOS1.Get_New_InvoiceNo();
                 int iSavedOrderInvNo = dbPOS.Get_SavedOrders_NextInvoiceNo();
 
@@ -3069,10 +3112,9 @@ namespace SDCafeSales.Views
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
             util.Logger("Add_Order_BarCode strBarCode = " + strBarCode + ", InvoiceNo" + iNewInvNo.ToString());
+            pnlReceipt.Visible = false;
             if (!isNewInvoice)   // Set when start button is pressed
             {
-                pnlReceipt.Visible = false;
-
                 iNewInvNo = dbPOS1.Get_New_InvoiceNo();
                 int iSavedOrderInvNo = dbPOS.Get_SavedOrders_NextInvoiceNo();
 
@@ -6541,7 +6583,7 @@ namespace SDCafeSales.Views
                 e1.Graphics.DrawString("Please recall this order with Invoice No! #( " + iInvoiceNo.ToString() + " )", fntFooter, brsBlack, (RectangleF)txtRect, format1);
 
                 // Print Barcode ------------------------------------------------------
-                iNextLineYPoint = iNextLineYPoint + (iheaderHeight * 3);
+                iNextLineYPoint = iNextLineYPoint + (iheaderHeight * 4);
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight * 2));
                 e1.Graphics.DrawString("*99999" + iInvoiceNo.ToString("0000000")+ "*", fntInvNoBarCode, brsBlack, (RectangleF)txtRect, format1);
 
@@ -6657,6 +6699,8 @@ namespace SDCafeSales.Views
             double iTotalTax3 = 0;
 
             util.Logger("Add_Discount_Orders_Item ! InvNo  :" + iNewInvNo.ToString());
+
+            pnlReceipt.Visible = false;
 
             if (bIsTotalDiscount)
             {
@@ -6820,6 +6864,8 @@ namespace SDCafeSales.Views
             double iTotalTax3 = 0;
 
             orders.Clear();
+
+            pnlReceipt.Visible = false;
 
             if (iNewInvNo == 0)
             {
@@ -7050,6 +7096,8 @@ namespace SDCafeSales.Views
             int iOrderQty = 1;
             float fTax1, fTax2, fTax3 = 0;
 
+            pnlReceipt.Visible = false;
+
             if ((txtQTY.Text != "") && (txtQTY.Text != "0"))
             {
                 try
@@ -7070,8 +7118,6 @@ namespace SDCafeSales.Views
 
             if (!isNewInvoice)   // Set when start button is pressed
             {
-                pnlReceipt.Visible = false;
-
                 iNewInvNo = dbPOS1.Get_New_InvoiceNo();
                 int iSavedOrderInvNo = dbPOS.Get_SavedOrders_NextInvoiceNo();
 
@@ -7815,7 +7861,7 @@ namespace SDCafeSales.Views
             }
 
             this.Show();
-            this.TopMost = true;
+            //this.TopMost = true;
             this.BringToFront();
 
         }

@@ -426,5 +426,20 @@ namespace SDCafeCommon.DataAccess
                 var count2 = connection.Execute(query, invLog);
             }
         }
+
+        public List<POS1_DailySalesModel> Get_DailySales(string v1, string v2)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS1")))
+            {
+                string query = "SELECT Distinct CreateDate As TranDate, " +
+                                "Sum(Amount) As Amount, Sum(Tax1) As Tax1, Sum(Tax2) As Tax2, Sum(Tax3) As Tax3, Sum(TotalDue) As TotalSales, " + 
+                                "Sum(Cash) As Cash, Sum(Debit) As Debit, Sum(Visa) As Visa, Sum(Master) As Master, Sum(Amex) As Amex, Sum(GiftCard) As GiftCard, Sum(Cheque) As Cheque, Sum(Charge) As Charge, " + 
+                                "Count(*)  As Trans " +
+                               "from TranCollection where CreateDate >= '" + v1 + "' and CreateDate <= '" + v2 + "' " +
+                               "group by CreateDate order by CreateDate";
+                var output = connection.Query<POS1_DailySalesModel>(query).ToList();
+                return output;
+            }
+        }
     }
 }

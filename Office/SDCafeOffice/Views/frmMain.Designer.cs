@@ -152,12 +152,13 @@
             // 
             this.chk_IsManual.AutoSize = true;
             this.chk_IsManual.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chk_IsManual.Location = new System.Drawing.Point(367, 118);
+            this.chk_IsManual.Location = new System.Drawing.Point(279, 118);
             this.chk_IsManual.Name = "chk_IsManual";
             this.chk_IsManual.Size = new System.Drawing.Size(126, 23);
             this.chk_IsManual.TabIndex = 47;
             this.chk_IsManual.Text = "Manual Price";
             this.chk_IsManual.UseVisualStyleBackColor = true;
+            this.chk_IsManual.CheckedChanged += new System.EventHandler(this.chk_IsManual_CheckedChanged);
             // 
             // chk_IsMainSales
             // 
@@ -169,6 +170,7 @@
             this.chk_IsMainSales.TabIndex = 48;
             this.chk_IsMainSales.Text = "Show on Main Sales Buttons";
             this.chk_IsMainSales.UseVisualStyleBackColor = true;
+            this.chk_IsMainSales.Visible = false;
             // 
             // chk_IsSales
             // 
@@ -180,13 +182,14 @@
             this.chk_IsSales.TabIndex = 49;
             this.chk_IsSales.Text = "Show Sales Buttons";
             this.chk_IsSales.UseVisualStyleBackColor = true;
+            this.chk_IsSales.Visible = false;
             // 
             // chk_IsAll
             // 
             this.chk_IsAll.AutoSize = true;
             this.chk_IsAll.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chk_IsAll.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.chk_IsAll.Location = new System.Drawing.Point(243, 118);
+            this.chk_IsAll.Location = new System.Drawing.Point(184, 118);
             this.chk_IsAll.Name = "chk_IsAll";
             this.chk_IsAll.Size = new System.Drawing.Size(47, 23);
             this.chk_IsAll.TabIndex = 51;

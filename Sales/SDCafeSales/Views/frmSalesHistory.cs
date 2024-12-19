@@ -184,7 +184,10 @@ namespace SDCafeSales.Views
                 strConfig = dbPOS.Get_SysConfig_By_Name("CON_SEND_EMAIL_REPORT")[0].ConfigValue.Trim();
                 if (strConfig.Contains("TRUE"))
                 {
-                    strHTMLBody = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>" + System.Environment.NewLine +
+                    strConfig = dbPOS.Get_SysConfig_By_Name("CON_SEND_SALES_HISTORY")[0].ConfigValue.Trim();
+                    if (strConfig.Contains("TRUE"))
+                    {
+                        strHTMLBody = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>" + System.Environment.NewLine +
                          "<html>" + System.Environment.NewLine +
                          "<head>" + System.Environment.NewLine +
                          " <style>#grad1 {" + System.Environment.NewLine +
@@ -209,7 +212,8 @@ namespace SDCafeSales.Views
                          " <h3 ><strong><span style='color: #0000ff;'>TechServe POS</span></strong><span style='color: #566573;'> &copy; 2023 <a href='https://techservepos.com'>techservepos.com</a></span></h3>" + System.Environment.NewLine +
                          "</body>" + System.Environment.NewLine +
                          "</html>" + System.Environment.NewLine;
-                    util.SendEmail("Sales History Query", strHTMLBody, "");
+                        util.SendEmail("Sales History Query", strHTMLBody, "");
+                    }
                 }
                 // click the first row
                 ShowOrderItems(iSelInvNo);
@@ -1895,11 +1899,26 @@ namespace SDCafeSales.Views
                 {
                     dttm_TranStart.Enabled = true;
                     dttm_TranEnd.Enabled = true;
+
+                    // disable all date bt_Datexxx buttons
+                    bt_DateYesterday.Enabled = true;
+                    bt_DateThisWeek.Enabled = true;
+                    bt_DateThisMonth.Enabled = true;
+                    bt_DateLastMonth.Enabled = true;
+                    bt_DateLast3M.Enabled = true;
+                    bt_DateThisYear.Enabled = true;
                 }
                 else
                 {
                     dttm_TranStart.Enabled = false;
                     dttm_TranEnd.Enabled = false;
+                    // disable all date bt_Datexxx buttons
+                    bt_DateYesterday.Enabled = false;
+                    bt_DateThisWeek.Enabled = false;
+                    bt_DateThisMonth.Enabled = false;
+                    bt_DateLastMonth.Enabled = false;
+                    bt_DateLast3M.Enabled = false;
+                    bt_DateThisYear.Enabled = false;
                 }
             }
 
@@ -2025,7 +2044,10 @@ namespace SDCafeSales.Views
                     string strConfig = dbPOS.Get_SysConfig_By_Name("CON_SEND_EMAIL_REPORT")[0].ConfigValue.Trim();
                     if (strConfig.Contains("TRUE"))
                     {
-                        string strHTMLBody = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>" + System.Environment.NewLine +
+                        strConfig = dbPOS.Get_SysConfig_By_Name("CON_SEND_SALES_HISTORY_EXPORT")[0].ConfigValue.Trim();
+                        if (strConfig.Contains("TRUE"))
+                        {
+                            string strHTMLBody = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>" + System.Environment.NewLine +
                              "<html>" + System.Environment.NewLine +
                              "<head>" + System.Environment.NewLine +
                              " <style>#grad1 {" + System.Environment.NewLine +
@@ -2045,7 +2067,8 @@ namespace SDCafeSales.Views
                              " <h3 ><strong><span style='color: #0000ff;'>TechServe POS</span></strong><span style='color: #566573;'> &copy; 2023 <a href='https://techservepos.com'>techservepos.com</a></span></h3>" + System.Environment.NewLine +
                              "</body>" + System.Environment.NewLine +
                              "</html>" + System.Environment.NewLine;
-                        util.SendEmail("Sales History Excel Export", strHTMLBody, strTempFile);
+                            util.SendEmail("Sales History Excel Export", strHTMLBody, strTempFile);
+                        }
                     }
 
                     System.Diagnostics.Process.Start(sfd.FileName);
@@ -3585,6 +3608,65 @@ namespace SDCafeSales.Views
 
                 bt_Query.PerformClick();
             }
+        }
+
+        private void bt_DateToday_Click(object sender, EventArgs e)
+        {
+            // Set dttm_TranStart and dttm_TranEnd to today
+            dttm_TranStart.Value = DateTime.Today;
+            dttm_TranEnd.Value = DateTime.Today;
+            bt_Query.PerformClick();
+        }
+
+        private void bt_DateYesterday_Click(object sender, EventArgs e)
+        {
+            // Set dttm_TranStart and dttm_TranEnd to Yesterday
+            dttm_TranStart.Value = DateTime.Today.AddDays(-1);
+            dttm_TranEnd.Value = DateTime.Today.AddDays(-1);
+
+            bt_Query.PerformClick();
+        }
+
+        private void bt_DateThisWeek_Click(object sender, EventArgs e)
+        {
+            // Set dttm_TranStart and dttm_TranEnd to This week
+            dttm_TranStart.Value = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+            dttm_TranEnd.Value = DateTime.Today.AddDays(6 - (int)DateTime.Today.DayOfWeek);
+
+
+            bt_Query.PerformClick();
+        }
+
+        private void bt_DateThisMonth_Click(object sender, EventArgs e)
+        {
+            // Set dttm_TranStart and dttm_TranEnd to This month
+            dttm_TranStart.Value = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            dttm_TranEnd.Value = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
+            bt_Query.PerformClick();
+        }
+
+        private void bt_DateLastMonth_Click(object sender, EventArgs e)
+        {
+            // Set dttm_TranStart and dttm_TranEnd to last month
+            dttm_TranStart.Value = new DateTime(DateTime.Today.AddMonths(-1).Year, DateTime.Today.AddMonths(-1).Month, 1);
+            dttm_TranEnd.Value = new DateTime(DateTime.Today.AddMonths(-1).Year, DateTime.Today.AddMonths(-1).Month, DateTime.DaysInMonth(DateTime.Today.AddMonths(-1).Year, DateTime.Today.AddMonths(-1).Month));
+            bt_Query.PerformClick();
+        }
+
+        private void bt_DateLast3M_Click(object sender, EventArgs e)
+        {
+            // Set dttm_TranStart and dttm_TranEnd to last 3 months
+            dttm_TranStart.Value = DateTime.Today.AddMonths(-3);
+            dttm_TranEnd.Value = DateTime.Today;
+            bt_Query.PerformClick();
+        }
+
+        private void bt_DateThisYear_Click(object sender, EventArgs e)
+        {
+            // Set dttm_TranStart and dttm_TranEnd to this year
+            dttm_TranStart.Value = new DateTime(DateTime.Today.Year, 1, 1);
+            dttm_TranEnd.Value = new DateTime(DateTime.Today.Year, 12, 31);
+            bt_Query.PerformClick();
         }
     }
 }

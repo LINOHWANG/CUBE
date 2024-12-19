@@ -248,6 +248,10 @@
     <None Include="Resources\clock_Out.png" />
     <None Include="Resources\TSE_CI_2024.jpg" />
     <None Include="Resources\clock_In.png" />
+    <None Include="Resources\multiple_content_copy_40dp_White.png" />
+    <None Include="Resources\bookmark_recall_40dp.png" />
+    <None Include="Resources\bookmark_40dp.png" />
+    <None Include="Resources\history_40dp.png" />
     <Content Include="tse_sales_20241209.ico" />
     <None Include="Resources\CUBE_LOGO2.png" />
     <None Include="Resources\shutterstock_Receipt+Vector_238191226 [Converted].eps.jpg" />

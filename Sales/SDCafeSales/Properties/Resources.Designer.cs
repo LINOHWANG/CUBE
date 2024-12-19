@@ -93,6 +93,26 @@ namespace SDCafeSales.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap bookmark_40dp {
+            get {
+                object obj = ResourceManager.GetObject("bookmark_40dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap bookmark_recall_40dp {
+            get {
+                object obj = ResourceManager.GetObject("bookmark_recall_40dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap Card_Refund {
             get {
                 object obj = ResourceManager.GetObject("Card_Refund", resourceCulture);
@@ -203,6 +223,16 @@ namespace SDCafeSales.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap history_40dp {
+            get {
+                object obj = ResourceManager.GetObject("history_40dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap Invoice_40dp {
             get {
                 object obj = ResourceManager.GetObject("Invoice_40dp", resourceCulture);
@@ -226,6 +256,16 @@ namespace SDCafeSales.Properties {
         public static System.Drawing.Bitmap minus_circle_40dp {
             get {
                 object obj = ResourceManager.GetObject("minus_circle_40dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap multiple_content_copy_40dp {
+            get {
+                object obj = ResourceManager.GetObject("multiple_content_copy_40dp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

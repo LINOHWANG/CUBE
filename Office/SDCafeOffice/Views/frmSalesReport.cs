@@ -16,6 +16,7 @@ using Microsoft.Office.Interop.Excel;
 using Font = Microsoft.Office.Interop.Excel.Font;
 using SDCafeCommon.Utilities;
 using System.Drawing.Printing;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace SDCafeOffice.Views
 {
@@ -62,6 +63,7 @@ namespace SDCafeOffice.Views
         }
         private void dgvData_Initialize()
         {
+            chart_DailyTrend.Visible = false;
             this.dgvData.AutoSize = false;
             dgvData.Rows.Clear();
             //this.dataGridActivity.AutoGenerateColumns = false;
@@ -433,35 +435,39 @@ namespace SDCafeOffice.Views
             string strConfig = dbPOS.Get_SysConfig_By_Name("CON_SEND_EMAIL_REPORT")[0].ConfigValue.Trim();
             if (strConfig.Contains("TRUE"))
             {
-                string strHTMLTendor = "";
-
-                for (int j= 0; j<8; j++)
+                strConfig = dbPOS.Get_SysConfig_By_Name("CON_SEND_SALES_HISTORY")[0].ConfigValue.Trim();
+                if (strConfig.Contains("TRUE"))
                 {
-                    strHTMLTendor =  strHTMLTendor + " <br />   " + (j+1).ToString("0") + ". "+ strColTypeName[j] + " : " + iNetAmount[j].ToString("C") + System.Environment.NewLine;
+                    string strHTMLTendor = "";
+
+                    for (int j = 0; j < 8; j++)
+                    {
+                        strHTMLTendor = strHTMLTendor + " <br />   " + (j + 1).ToString("0") + ". " + strColTypeName[j] + " : " + iNetAmount[j].ToString("C") + System.Environment.NewLine;
+                    }
+                    string strHTMLBody = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>" + System.Environment.NewLine +
+                         "<html>" + System.Environment.NewLine +
+                         "<head>" + System.Environment.NewLine +
+                         " <style>#grad1 {" + System.Environment.NewLine +
+                         " background-image: linear-gradient(to right, white , gray);" + System.Environment.NewLine +
+                         " font-family: verdana;" + System.Environment.NewLine +
+                         " }</style>" + System.Environment.NewLine +
+                         "</head>" + System.Environment.NewLine +
+                         "<body>" + System.Environment.NewLine +
+                         " <h3 style='color: #000000;'> Dear Business Owner,</h3>" + System.Environment.NewLine +
+                         " <h4 style='color: #000000;'> Sales Report Query action has been taken at YOUR POS today..<br /> " + System.Environment.NewLine +
+                         /*" <span style='color: #FF0000;'> <strong>Please find attached excel file for your reference.</strong> </span>" + System.Environment.NewLine +*/
+                         " <br /> Date : " + dttm_TranStart.Value.ToString("yyyy-MM-dd") + " to " + dttm_TranEnd.Value.ToString("yyyy-MM-dd") + System.Environment.NewLine +
+                         strHTMLTendor +
+                         " <br /> Total Net Sales : " + iTotalNetAmount.ToString("C") + System.Environment.NewLine +
+                         " <br /> " + System.Environment.NewLine +
+                         " <br /><i> This email was automatically generated and sent from YOUR POS.. </i>" + System.Environment.NewLine +
+                         " <br />Best Regards," + System.Environment.NewLine +
+                         " </h4>" + System.Environment.NewLine +
+                         " <h3 ><strong><span style='color: #0000ff;'>TechServe POS</span></strong><span style='color: #566573;'> &copy; 2023 <a href='https://techservepos.com'>techservepos.com</a></span></h3>" + System.Environment.NewLine +
+                         "</body>" + System.Environment.NewLine +
+                         "</html>" + System.Environment.NewLine;
+                    util.SendEmail("Sales History Query", strHTMLBody, "");
                 }
-                string strHTMLBody = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>" + System.Environment.NewLine +
-                     "<html>" + System.Environment.NewLine +
-                     "<head>" + System.Environment.NewLine +
-                     " <style>#grad1 {" + System.Environment.NewLine +
-                     " background-image: linear-gradient(to right, white , gray);" + System.Environment.NewLine +
-                     " font-family: verdana;" + System.Environment.NewLine +
-                     " }</style>" + System.Environment.NewLine +
-                     "</head>" + System.Environment.NewLine +
-                     "<body>" + System.Environment.NewLine +
-                     " <h3 style='color: #000000;'> Dear Business Owner,</h3>" + System.Environment.NewLine +
-                     " <h4 style='color: #000000;'> Sales Report Query action has been taken at YOUR POS today..<br /> " + System.Environment.NewLine +
-                     /*" <span style='color: #FF0000;'> <strong>Please find attached excel file for your reference.</strong> </span>" + System.Environment.NewLine +*/
-                     " <br /> Date : " + dttm_TranStart.Value.ToString("yyyy-MM-dd") + " to " + dttm_TranEnd.Value.ToString("yyyy-MM-dd") + System.Environment.NewLine +
-                     strHTMLTendor +
-                     " <br /> Total Net Sales : " + iTotalNetAmount.ToString("C") + System.Environment.NewLine +
-                     " <br /> " + System.Environment.NewLine +
-                     " <br /><i> This email was automatically generated and sent from YOUR POS.. </i>" + System.Environment.NewLine +
-                     " <br />Best Regards," + System.Environment.NewLine +
-                     " </h4>" + System.Environment.NewLine +
-                     " <h3 ><strong><span style='color: #0000ff;'>TechServe POS</span></strong><span style='color: #566573;'> &copy; 2023 <a href='https://techservepos.com'>techservepos.com</a></span></h3>" + System.Environment.NewLine +
-                     "</body>" + System.Environment.NewLine +
-                     "</html>" + System.Environment.NewLine;
-                util.SendEmail("Sales History Query", strHTMLBody, "");
             }
         }
     
@@ -1650,6 +1656,135 @@ namespace SDCafeOffice.Views
                 e.SortResult = float.Parse(e.CellValue1.ToString()).CompareTo(float.Parse(e.CellValue2.ToString()));
                 e.Handled = true;//pass by the default sorting
             }
+        }
+
+        private void bt_DateToday_Click(object sender, EventArgs e)
+        {
+            // Set dttm_TranStart and dttm_TranEnd to today
+            dttm_TranStart.Value = DateTime.Today;
+            dttm_TranEnd.Value = DateTime.Today;
+            bt_Query.PerformClick();
+        }
+
+        private void bt_DateYesterday_Click(object sender, EventArgs e)
+        {
+            // Set dttm_TranStart and dttm_TranEnd to Yesterday
+            dttm_TranStart.Value = DateTime.Today.AddDays(-1);
+            dttm_TranEnd.Value = DateTime.Today.AddDays(-1);
+
+            bt_Query.PerformClick();
+        }
+
+        private void bt_DateThisWeek_Click(object sender, EventArgs e)
+        {
+            // Set dttm_TranStart and dttm_TranEnd to This week
+            dttm_TranStart.Value = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+            dttm_TranEnd.Value = DateTime.Today.AddDays(6 - (int)DateTime.Today.DayOfWeek);
+
+
+            bt_Query.PerformClick();
+        }
+
+        private void bt_DateThisMonth_Click(object sender, EventArgs e)
+        {
+            // Set dttm_TranStart and dttm_TranEnd to This month
+            dttm_TranStart.Value = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            dttm_TranEnd.Value = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
+            bt_Query.PerformClick();
+        }
+
+        private void bt_DateLastMonth_Click(object sender, EventArgs e)
+        {
+            // Set dttm_TranStart and dttm_TranEnd to last month
+            dttm_TranStart.Value = new DateTime(DateTime.Today.AddMonths(-1).Year, DateTime.Today.AddMonths(-1).Month, 1);
+            dttm_TranEnd.Value = new DateTime(DateTime.Today.AddMonths(-1).Year, DateTime.Today.AddMonths(-1).Month, DateTime.DaysInMonth(DateTime.Today.AddMonths(-1).Year, DateTime.Today.AddMonths(-1).Month));
+            bt_Query.PerformClick();
+        }
+
+        private void bt_DateLast3M_Click(object sender, EventArgs e)
+        {
+            // Set dttm_TranStart and dttm_TranEnd to last 3 months
+            dttm_TranStart.Value = DateTime.Today.AddMonths(-3);
+            dttm_TranEnd.Value = DateTime.Today;
+            bt_Query.PerformClick();
+        }
+
+        private void bt_DateThisYear_Click(object sender, EventArgs e)
+        {
+            // Set dttm_TranStart and dttm_TranEnd to this year
+            dttm_TranStart.Value = new DateTime(DateTime.Today.Year, 1, 1);
+            dttm_TranEnd.Value = new DateTime(DateTime.Today.Year, 12, 31);
+            bt_Query.PerformClick();
+        }
+
+        private void bt_DailyTrend_Click(object sender, EventArgs e)
+        {
+            if (chart_DailyTrend.Visible)
+            {
+                chart_DailyTrend.Visible = false;
+                return;
+            }
+            else
+            {
+                chart_DailyTrend.Location = new System.Drawing.Point(12, 132);
+                chart_DailyTrend.Size = new System.Drawing.Size(990, 585);
+                chart_DailyTrend.Visible = true;
+            }
+            chart_DailyTrend.Titles.Clear();
+            chart_DailyTrend.Titles.Add("Daily Sales Trend");
+            chart_DailyTrend.Series.Clear();
+            chart_DailyTrend.Series.Add("Sales");
+
+            chart_DailyTrend.Series["Sales"].ChartType = SeriesChartType.Bar;
+            chart_DailyTrend.Series["Sales"].BorderWidth = 3;
+            chart_DailyTrend.Series["Sales"].Color = Color.LightBlue;
+            chart_DailyTrend.Series["Sales"].XValueType = ChartValueType.Date;
+            chart_DailyTrend.Series["Sales"].YValueType = ChartValueType.Double;
+
+            chart_DailyTrend.ChartAreas[0].AxisX.LabelStyle.Format = "MM/dd";
+            chart_DailyTrend.ChartAreas[0].AxisX.Interval = 1;
+            chart_DailyTrend.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Days;
+            chart_DailyTrend.ChartAreas[0].AxisX.IntervalOffset = 1;
+            chart_DailyTrend.ChartAreas[0].AxisX.IntervalOffsetType = DateTimeIntervalType.Days;
+            chart_DailyTrend.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
+            chart_DailyTrend.ChartAreas[0].AxisX.MajorTickMark.Enabled = false;
+            chart_DailyTrend.ChartAreas[0].AxisX.MinorGrid.Enabled = false;
+            chart_DailyTrend.ChartAreas[0].AxisX.MinorTickMark.Enabled = false;
+            chart_DailyTrend.ChartAreas[0].AxisX.Title = "Date";
+            //chart_DailyTrend.ChartAreas[0].AxisX.TitleFont = new Font("Arial", 10, FontStyle.Bold);
+            chart_DailyTrend.ChartAreas[0].AxisX.TitleForeColor = Color.LightBlue;
+            chart_DailyTrend.ChartAreas[0].AxisX.TitleAlignment = StringAlignment.Center;
+
+            chart_DailyTrend.ChartAreas[0].AxisY.LabelStyle.Format = "C2";
+            //chart_DailyTrend.ChartAreas[0].AxisY.Interval = 1000;
+            chart_DailyTrend.ChartAreas[0].AxisY.IntervalType = DateTimeIntervalType.Number;
+            //chart_DailyTrend.ChartAreas[0].AxisY.IntervalOffset = 1000;
+            chart_DailyTrend.ChartAreas[0].AxisY.IntervalOffsetType = DateTimeIntervalType.Number;
+            chart_DailyTrend.ChartAreas[0].AxisY.MajorGrid.Enabled = true;
+            chart_DailyTrend.ChartAreas[0].AxisY.MajorTickMark.Enabled = false;
+            chart_DailyTrend.ChartAreas[0].AxisY.MinorGrid.Enabled = false;
+            chart_DailyTrend.ChartAreas[0].AxisY.MinorTickMark.Enabled = false;
+            chart_DailyTrend.ChartAreas[0].AxisY.Title = "Sales($)";
+            //chart_DailyTrend.ChartAreas[0].AxisY.TitleFont = new Font("Arial", 10, FontStyle.Bold);
+            chart_DailyTrend.ChartAreas[0].AxisY.TitleForeColor = Color.LightBlue;
+            chart_DailyTrend.ChartAreas[0].AxisY.TitleAlignment = StringAlignment.Center;
+            // Show AxisY value on chart
+            chart_DailyTrend.Series["Sales"].IsValueShownAsLabel = true;
+
+
+            DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+            List<POS1_DailySalesModel> dailySales = new List<POS1_DailySalesModel>();
+
+            dailySales = dbPOS1.Get_DailySales(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranEnd.Value.ToString("yyyy-MM-dd"));
+
+            if (dailySales.Count > 0)
+            {
+                foreach (var dailySale in dailySales)
+                {
+                    chart_DailyTrend.Series["Sales"].Points.AddXY(dailySale.TranDate, dailySale.TotalSales.ToString("C2"));
+                }
+            }
+
         }
     }
 }

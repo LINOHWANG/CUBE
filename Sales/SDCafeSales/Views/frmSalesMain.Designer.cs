@@ -515,6 +515,7 @@
             this.pnlSideBar.Controls.Add(this.bt_ShowAllMenuItem);
             this.pnlSideBar.Controls.Add(this.bt_SalesCustomer);
             this.pnlSideBar.Controls.Add(this.bt_Stop);
+            this.pnlSideBar.ForeColor = System.Drawing.Color.Black;
             this.pnlSideBar.Location = new System.Drawing.Point(863, 4);
             this.pnlSideBar.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.pnlSideBar.Name = "pnlSideBar";
@@ -540,10 +541,10 @@
             // 
             // bt_RecallOrder
             // 
-            this.bt_RecallOrder.BackColor = System.Drawing.Color.White;
+            this.bt_RecallOrder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.bt_RecallOrder.CornerRadius = 5;
             this.bt_RecallOrder.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
-            this.bt_RecallOrder.ForeColor = System.Drawing.Color.Black;
+            this.bt_RecallOrder.ForeColor = System.Drawing.Color.White;
             this.bt_RecallOrder.Location = new System.Drawing.Point(13, 176);
             this.bt_RecallOrder.Name = "bt_RecallOrder";
             this.bt_RecallOrder.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -556,10 +557,10 @@
             // 
             // bt_SaveOrder
             // 
-            this.bt_SaveOrder.BackColor = System.Drawing.Color.White;
+            this.bt_SaveOrder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
             this.bt_SaveOrder.CornerRadius = 5;
             this.bt_SaveOrder.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
-            this.bt_SaveOrder.ForeColor = System.Drawing.Color.Black;
+            this.bt_SaveOrder.ForeColor = System.Drawing.Color.White;
             this.bt_SaveOrder.Location = new System.Drawing.Point(13, 123);
             this.bt_SaveOrder.Name = "bt_SaveOrder";
             this.bt_SaveOrder.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -572,7 +573,7 @@
             // 
             // bt_OpenCashDrawer
             // 
-            this.bt_OpenCashDrawer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.bt_OpenCashDrawer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.bt_OpenCashDrawer.CornerRadius = 5;
             this.bt_OpenCashDrawer.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_OpenCashDrawer.ForeColor = System.Drawing.Color.Black;
@@ -588,7 +589,7 @@
             // 
             // bt_SalesHistory
             // 
-            this.bt_SalesHistory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.bt_SalesHistory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             this.bt_SalesHistory.CornerRadius = 5;
             this.bt_SalesHistory.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_SalesHistory.ForeColor = System.Drawing.Color.Black;
@@ -814,7 +815,7 @@
             // 
             this.bt_SetQTY.BackColor = System.Drawing.Color.Silver;
             this.bt_SetQTY.CornerRadius = 20;
-            this.bt_SetQTY.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_SetQTY.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
             this.bt_SetQTY.ForeColor = System.Drawing.Color.Black;
             this.bt_SetQTY.Location = new System.Drawing.Point(284, 440);
             this.bt_SetQTY.Name = "bt_SetQTY";
@@ -823,7 +824,7 @@
             | SDCafeCommon.Utilities.Corners.BottomRight)));
             this.bt_SetQTY.Size = new System.Drawing.Size(107, 42);
             this.bt_SetQTY.TabIndex = 27;
-            this.bt_SetQTY.Text = "Set Multi";
+            this.bt_SetQTY.Text = "Multiple";
             this.bt_SetQTY.Click += new System.EventHandler(this.bt_SetQTY_Click);
             // 
             // bt_SetItemDiscount

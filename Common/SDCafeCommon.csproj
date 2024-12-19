@@ -57,6 +57,7 @@
     <Compile Include="Model\CCardTran.cs" />
     <Compile Include="Model\POS1_CardReceiptCompleteModel.cs" />
     <Compile Include="Model\POS1_CardTranCompleteModel.cs" />
+    <Compile Include="Model\POS1_DailySalesModel.cs" />
     <Compile Include="Model\POS1_InventoryLogModel.cs" />
     <Compile Include="Model\POS1_OrderCompleteModel.cs" />
     <Compile Include="Model\POS1_ProductPopModel.cs" />

@@ -258,14 +258,17 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
-        public List<POS_ProductModel> Get_All_Products_Sortby_Name(bool p_bIsManual, bool p_bIsMainSales, bool p_bIsSales)
+        //public List<POS_ProductModel> Get_All_Products_Sortby_Name(bool p_bIsManual, bool p_bIsMainSales, bool p_bIsSales)
+        public List<POS_ProductModel> Get_All_Products_Sortby_Name(bool p_bIsManual)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 string query = $"select * from Product ";
-                string strWhere = " Where ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0") + 
-                                    " OR ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
-                                    " OR ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
+                string strWhere = "";
+                if (p_bIsManual)
+                    strWhere += " Where ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0");
+                                    //" OR ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
+                                    //" OR ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
                 string strOrderby = " Order By IsManualItem Desc, ProductName";
                 query += strWhere + strOrderby;
                 var output = connection.Query<POS_ProductModel>(query).ToList();
@@ -1141,15 +1144,16 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
-        public List<POS_ProductModel> Get_All_Products_By_BarCode(string p_strBarCode, bool p_bIsManual, bool p_bIsMainSales, bool p_bIsSales)
+        //        public List<POS_ProductModel> Get_All_Products_By_BarCode(string p_strBarCode, bool p_bIsManual, bool p_bIsMainSales, bool p_bIsSales)
+        public List<POS_ProductModel> Get_All_Products_By_BarCode(string p_strBarCode, bool p_bIsManual)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 //$"select * from Product WHERE BarCode = '{p_strBarCode.Trim()}'"
                 string query = $"select * from Product ";
                 string strWhere = $" Where BarCode = '{p_strBarCode.Trim()}'";
-                //+
-                //                    " And ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0") +
+                if (p_bIsManual)
+                    strWhere += " And ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0");
                 //                    " And ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
                 //                    " And ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
                 string strOrderby = " Order By ProductName";
@@ -1160,18 +1164,19 @@ namespace SDCafeCommon.DataAccess
 
         }
 
-        public List<POS_ProductModel> Get_All_Products_By_ProdName(string p_strProdName, bool p_bIsManual, bool p_bIsMainSales, bool p_bIsSales)
+        //public List<POS_ProductModel> Get_All_Products_By_ProdName(string p_strProdName, bool p_bIsManual, bool p_bIsMainSales, bool p_bIsSales)
+        public List<POS_ProductModel> Get_All_Products_By_ProdName(string p_strProdName, bool p_bIsManual)
         {
             p_strProdName = '%' + p_strProdName.Trim() + '%';
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 string query = $"select * from Product ";
-                string strWhere = $" Where ProductName like '{p_strProdName}' ";
-                //+
-                                    //" And ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0") +
-                                    //" And ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
-                                    //" And ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
-                string strOrderby = " Order By ProductName";
+                string strWhere = $" Where ProductName like '%{p_strProdName}%' Or SecondName like '%{p_strProdName}%'";
+                if (p_bIsManual)
+                    strWhere += " And ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0");
+                    //" And ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
+                    //" And ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
+                    string strOrderby = " Order By ProductName";
                 query += strWhere + strOrderby;
                 var output = connection.Query<POS_ProductModel>(query).ToList();
                 return output;

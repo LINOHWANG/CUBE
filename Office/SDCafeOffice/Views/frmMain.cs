@@ -140,7 +140,12 @@ namespace SDCafeOffice
             strTax2Name = dbPOS.Get_Tax_Name(2);
             strTax3Name = dbPOS.Get_Tax_Name(3);
 
-            if (strGrade == "2")
+            if (strGrade == "1")
+            {
+                bt_Station.Enabled = false;
+                bt_SysConfig.Enabled = false;
+            }
+            else if (strGrade == "2")
             {
                 bt_LoginUser.Enabled = false;
                 bt_Tax.Enabled = false;
@@ -178,8 +183,14 @@ namespace SDCafeOffice
         }
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            FrmLogOn = new frmLogOn();
-            FrmLogOn.Show();
+            //
+            //FrmLogOn = new frmLogOn();
+            //FrmLogOn.Show();
+
+            this.Hide();
+            // close this program
+            //Application.Exit();
+
 
         }
         private void Load_PType_Combo_Contents()
@@ -205,7 +216,7 @@ namespace SDCafeOffice
             if (isProduct)
             {
                 dgvData.Height = iDataGridHeight - cb_PType.Height - 20 - chk_IsManual.Height - 20;
-                dgvData.Top = iDataGridTop + cb_PType.Height + chk_IsManual.Height + 20 + 20;
+                dgvData.Top = iDataGridTop + cb_PType.Height + chk_IsManual.Height + 20;
             }
             else
             {
@@ -217,8 +228,12 @@ namespace SDCafeOffice
         {
             dgvData_Adjustment();
 
-            DataAccessPOS dbPOS = new DataAccessPOS();
+            //Default checkbox
+            chk_IsAll.Checked = true;
+            chk_IsManual.Checked = false;
 
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            
             this.dgvData.AutoSize = false;
             dgvData.Rows.Clear();
             //this.dataGridActivity.AutoGenerateColumns = false;
@@ -297,8 +312,8 @@ namespace SDCafeOffice
         {
             int iPCount = 0;
             bool bIsManual = chk_IsManual.Checked;
-            bool bIsMainSales = chk_IsMainSales.Checked;
-            bool bIsSales = chk_IsSales.Checked;
+            //bool bIsMainSales = chk_IsMainSales.Checked;
+            //bool bIsSales = chk_IsSales.Checked;
             //pnl_Product.Show();
             //pnl_User.Hide();
             bt_Product.BackColor = Color.Yellow;
@@ -316,16 +331,19 @@ namespace SDCafeOffice
                     if (String.IsNullOrEmpty(text_BarCode.Text))
                     {
                         //prods = dbPOS.Get_All_Products();
-                        prods = dbPOS.Get_All_Products_Sortby_Name(bIsManual, bIsMainSales, bIsSales);
+                        //prods = dbPOS.Get_All_Products_Sortby_Name(bIsManual, bIsMainSales, bIsSales);
+                        prods = dbPOS.Get_All_Products_Sortby_Name(bIsManual);
                     }
                     else
                     {
-                        prods = dbPOS.Get_All_Products_By_BarCode(text_BarCode.Text, bIsManual, bIsMainSales, bIsSales);
+                        //prods = dbPOS.Get_All_Products_By_BarCode(text_BarCode.Text, bIsManual, bIsMainSales, bIsSales);
+                        prods = dbPOS.Get_All_Products_By_BarCode(text_BarCode.Text, bIsManual);
                     }
                 }
                 else
                 {
-                    prods = dbPOS.Get_All_Products_By_ProdName(text_PName.Text, bIsManual, bIsMainSales, bIsSales);
+                    //prods = dbPOS.Get_All_Products_By_ProdName(text_PName.Text, bIsManual, bIsMainSales, bIsSales);
+                    prods = dbPOS.Get_All_Products_By_ProdName(text_PName.Text, bIsManual);
                 }
 
             }
@@ -353,10 +371,10 @@ namespace SDCafeOffice
                     FrmProd.m_strStation = strStation;
                     FrmProd.m_strUserPass = strUserPass;
                     FrmProd.ShowDialog();
-                    bt_Product.PerformClick();
+                    text_PName.Text = "";
                     text_BarCode.Text = "";
                     text_BarCode.Focus();
-                    return;
+                    //return;
                 }
                 Cursor.Current = Cursors.WaitCursor;
                 //show progressbar
@@ -517,17 +535,21 @@ namespace SDCafeOffice
             {
                 foreach (var loginUser in loginUsers)
                 {
-                    this.dgvData.Rows.Add(new String[] { loginUser.Id.ToString(),
-                                                         loginUser.FirstName,
-                                                         loginUser.LastName,
-                                                         loginUser.PassWord,
-                                                         loginUser.Grade
-                    });
-                    if (Convert.ToInt32(loginUser.Grade) < 2)
-                    {
-                        this.dgvData.Rows[dgvData.RowCount - 2].Cells[4].Style.BackColor = Color.Green;
+                    // Exclude Super Users
+                    if (loginUser.Grade != "0")
+                    { 
+                        this.dgvData.Rows.Add(new String[] { loginUser.Id.ToString(),
+                                                             loginUser.FirstName,
+                                                             loginUser.LastName,
+                                                             loginUser.PassWord,
+                                                             loginUser.Grade
+                        });
+                        if (Convert.ToInt32(loginUser.Grade) < 2)
+                        {
+                            this.dgvData.Rows[dgvData.RowCount - 2].Cells[4].Style.BackColor = Color.Green;
+                        }
+                        this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
                     }
-                    this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
 
                 }
             }
@@ -1316,7 +1338,10 @@ namespace SDCafeOffice
                     string strConfig = dbPOS.Get_SysConfig_By_Name("CON_SEND_EMAIL_REPORT")[0].ConfigValue.Trim();
                     if (strConfig.Contains("TRUE"))
                     {
-                        string strHTMLBody = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>" + System.Environment.NewLine +
+                        strConfig = dbPOS.Get_SysConfig_By_Name("CON_SEND_PROD_INVENTORY_EXPORT")[0].ConfigValue.Trim();
+                        if (strConfig.Contains("TRUE"))
+                        {
+                            string strHTMLBody = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>" + System.Environment.NewLine +
                              "<html>" + System.Environment.NewLine +
                              "<head>" + System.Environment.NewLine +
                              " <style>#grad1 {" + System.Environment.NewLine +
@@ -1335,10 +1360,11 @@ namespace SDCafeOffice
                              " <h3 ><strong><span style='color: #0000ff;'>TechServe POS</span></strong><span style='color: #566573;'> &copy; 2023 <a href='https://techservepos.com'>techservepos.com</a></span></h3>" + System.Environment.NewLine +
                              "</body>" + System.Environment.NewLine +
                              "</html>" + System.Environment.NewLine;
-                        util.SendEmail("Product Inventory Excel Export", strHTMLBody, strTempFile);
+                            util.SendEmail("Product Inventory Excel Export", strHTMLBody, strTempFile);
+                        }
                     }
 
-                    System.Diagnostics.Process.Start(sfd.FileName);
+                    //System.Diagnostics.Process.Start(sfd.FileName);
                 }
 
             }
@@ -1429,6 +1455,7 @@ namespace SDCafeOffice
             releaseObject(app);
 
             Cursor.Current = Cursors.Default;
+
         }
 
 
@@ -1464,15 +1491,15 @@ namespace SDCafeOffice
         {
             if (chk_IsAll.Checked)
             {
-                chk_IsMainSales.Checked = true;
-                chk_IsSales.Checked = true;
-                chk_IsManual.Checked = true;
+                //chk_IsMainSales.Checked = true;
+                //chk_IsSales.Checked = true;
+                chk_IsManual.Checked = false;
             }
             else
             {
-                chk_IsMainSales.Checked = false;
-                chk_IsSales.Checked = false;
-                chk_IsManual.Checked = false;
+                //chk_IsMainSales.Checked = false;
+                //chk_IsSales.Checked = false;
+                chk_IsManual.Checked = true;
             }
         }
 
@@ -1499,7 +1526,7 @@ namespace SDCafeOffice
                 {
 
                     await Task.Run(() => ImportProduct(ofd, ofd.FileName));
-                    System.Diagnostics.Process.Start(ofd.FileName);
+                    //System.Diagnostics.Process.Start(ofd.FileName);
                 }
 
                 progBarExport.Visible = false;
@@ -1524,6 +1551,7 @@ namespace SDCafeOffice
             int iUpdateCount = 0;
             int iInsertCount = 0;
             int iBarcodeDupCount = 0;
+            int iManualItemCount = 0;
             //Create COM Objects. Create a COM object for everything that is referenced
             Excel.Application xlApp = new Excel.Application();
             Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(p_strFileName,null,true); // Readonly =  true
@@ -1681,34 +1709,34 @@ namespace SDCafeOffice
                         }
                     }
                 }
-                strTemp = xlRange.Cells[i, 5].Value2.ToString();
+                strTemp = xlRange.Cells[i, 6].Value2.ToString();
                 if (strTemp != "")
                     prod.OutUnitPrice = float.Parse(strTemp.Replace("$",""));
 
-                prod.IsTax1 = bool.Parse(xlRange.Cells[i, 6].Value2.ToString());
-                prod.IsTax2 = bool.Parse(xlRange.Cells[i, 7].Value2.ToString());
-                prod.IsTax3 = bool.Parse(xlRange.Cells[i, 8].Value2.ToString());
-                strTemp = xlRange.Cells[i, 9].Value2.ToString();
-                if (strTemp != "")
-                    prod.InUnitPrice = float.Parse(strTemp.Replace("$", ""));
+                prod.IsTax1 = bool.Parse(xlRange.Cells[i, 7].Value2.ToString());
+                prod.IsTax2 = bool.Parse(xlRange.Cells[i, 8].Value2.ToString());
+                prod.IsTax3 = bool.Parse(xlRange.Cells[i, 9].Value2.ToString());
                 strTemp = xlRange.Cells[i, 10].Value2.ToString();
                 if (strTemp != "")
-                    prod.Balance = int.Parse(xlRange.Cells[i, 10].Value2.ToString());
-
+                    prod.InUnitPrice = float.Parse(strTemp.Replace("$", ""));
                 strTemp = xlRange.Cells[i, 11].Value2.ToString();
                 if (strTemp != "")
-                    prod.BarCode = xlRange.Cells[i, 11].Value2.ToString();
+                    prod.Balance = int.Parse(xlRange.Cells[i, 11].Value2.ToString());
 
                 strTemp = xlRange.Cells[i, 12].Value2.ToString();
                 if (strTemp != "")
-                    prod.PromoStartDate = strTemp;
+                    prod.BarCode = xlRange.Cells[i, 12].Value2.ToString();
+
                 strTemp = xlRange.Cells[i, 13].Value2.ToString();
                 if (strTemp != "")
-                    prod.PromoEndDate = strTemp; // DateTime.Parse(xlRange.Cells[i, 13].Value2.ToString());
+                    prod.PromoStartDate = strTemp;
                 strTemp = xlRange.Cells[i, 14].Value2.ToString();
                 if (strTemp != "")
-                    prod.PromoDay1 = int.Parse(xlRange.Cells[i, 14].Value2.ToString());
+                    prod.PromoEndDate = strTemp; // DateTime.Parse(xlRange.Cells[i, 13].Value2.ToString());
                 strTemp = xlRange.Cells[i, 15].Value2.ToString();
+                if (strTemp != "")
+                    prod.PromoDay1 = int.Parse(xlRange.Cells[i, 15].Value2.ToString());
+                strTemp = xlRange.Cells[i, 16].Value2.ToString();
                 if (strTemp != "")
                     prod.PromoPrice1 = float.Parse(strTemp.Replace("$", ""));
 
@@ -1726,9 +1754,17 @@ namespace SDCafeOffice
                 }
                 if (bProdExist)
                 {
-                    dbPOS.Update_Product(prod);
-                    util.Logger(prod.Id.ToString() + " Updated..");
-                    iUpdateCount++;
+                    if (!prod.IsManualItem)
+                    {
+                        dbPOS.Update_Product(prod);
+                        util.Logger(prod.Id.ToString() + " Updated..");
+                        iUpdateCount++;
+                    }
+                    else
+                    {
+                        util.Logger(prod.Id.ToString() + " Skip Manual Items.." + prod.ProductName);
+                        iManualItemCount++;
+                    }
                 }
                 else
                 {
@@ -1742,6 +1778,7 @@ namespace SDCafeOffice
             util.Logger(" Total Inserted : " + iInsertCount.ToString());
             util.Logger(" Total Updated : " + iUpdateCount.ToString());
             util.Logger(" Total Barcode Duplicate : " + iBarcodeDupCount.ToString());
+            util.Logger(" Total Manual Items : " + iManualItemCount.ToString());
 
             //cleanup
             GC.Collect();
@@ -1773,7 +1810,9 @@ namespace SDCafeOffice
             MessageBox.Show("Inserted : " + iInsertCount.ToString() + System.Environment.NewLine +
                             "Updated : " + iUpdateCount.ToString() + System.Environment.NewLine +
                             "Total imported " + (iInsertCount + iUpdateCount).ToString() + System.Environment.NewLine +
-                            "Barcode Duplicate : " + iBarcodeDupCount.ToString());
+                            "Barcode Duplicate (Skipped) : " + iBarcodeDupCount.ToString() + System.Environment.NewLine +
+                            "Manual Items (Skipped) : " + iManualItemCount.ToString()
+                            );
 
         }
 
@@ -1859,6 +1898,14 @@ namespace SDCafeOffice
             dgvData.AllowUserToResizeRows = false;
             dgvData.RowTemplate.Resizable = DataGridViewTriState.True;
             dgvData.RowTemplate.MinimumHeight = 40;
+        }
+
+        private void chk_IsManual_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chk_IsManual.Checked)
+                chk_IsAll.Checked = false;
+            else
+                chk_IsAll.Checked = true;
         }
     }
 }

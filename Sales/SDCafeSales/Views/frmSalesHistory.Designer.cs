@@ -68,6 +68,13 @@
             this.bt_Query = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_ReprintReceipt = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_DateToday = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_DateYesterday = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_DateThisWeek = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_DateThisMonth = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_DateLastMonth = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_DateLast3M = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_DateThisYear = new SDCafeCommon.Utilities.CustomButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).BeginInit();
             this.SuspendLayout();
@@ -75,10 +82,10 @@
             // dgvData
             // 
             this.dgvData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvData.Location = new System.Drawing.Point(12, 126);
+            this.dgvData.Location = new System.Drawing.Point(12, 162);
             this.dgvData.Name = "dgvData";
             this.dgvData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvData.Size = new System.Drawing.Size(983, 236);
+            this.dgvData.Size = new System.Drawing.Size(983, 200);
             this.dgvData.TabIndex = 0;
             this.dgvData.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.dgvData_RowPrePaint);
             this.dgvData.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvData_MouseClick);
@@ -310,7 +317,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progBarExport.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.progBarExport.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.progBarExport.Location = new System.Drawing.Point(12, 113);
+            this.progBarExport.Location = new System.Drawing.Point(12, 153);
             this.progBarExport.Name = "progBarExport";
             this.progBarExport.Size = new System.Drawing.Size(983, 7);
             this.progBarExport.Step = 1;
@@ -515,11 +522,109 @@
             this.bt_ReprintReceipt.Text = "Re-Print";
             this.bt_ReprintReceipt.Click += new System.EventHandler(this.bt_ReprintReceipt_Click);
             // 
+            // bt_DateToday
+            // 
+            this.bt_DateToday.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.bt_DateToday.CornerRadius = 30;
+            this.bt_DateToday.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_DateToday.Location = new System.Drawing.Point(12, 118);
+            this.bt_DateToday.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_DateToday.Name = "bt_DateToday";
+            this.bt_DateToday.Size = new System.Drawing.Size(107, 30);
+            this.bt_DateToday.TabIndex = 70;
+            this.bt_DateToday.Text = "Today";
+            this.bt_DateToday.Click += new System.EventHandler(this.bt_DateToday_Click);
+            // 
+            // bt_DateYesterday
+            // 
+            this.bt_DateYesterday.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.bt_DateYesterday.CornerRadius = 30;
+            this.bt_DateYesterday.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_DateYesterday.Location = new System.Drawing.Point(131, 118);
+            this.bt_DateYesterday.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_DateYesterday.Name = "bt_DateYesterday";
+            this.bt_DateYesterday.Size = new System.Drawing.Size(107, 30);
+            this.bt_DateYesterday.TabIndex = 71;
+            this.bt_DateYesterday.Text = "Yesterday";
+            this.bt_DateYesterday.Click += new System.EventHandler(this.bt_DateYesterday_Click);
+            // 
+            // bt_DateThisWeek
+            // 
+            this.bt_DateThisWeek.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.bt_DateThisWeek.CornerRadius = 30;
+            this.bt_DateThisWeek.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_DateThisWeek.Location = new System.Drawing.Point(250, 118);
+            this.bt_DateThisWeek.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_DateThisWeek.Name = "bt_DateThisWeek";
+            this.bt_DateThisWeek.Size = new System.Drawing.Size(107, 30);
+            this.bt_DateThisWeek.TabIndex = 72;
+            this.bt_DateThisWeek.Text = "This Week";
+            this.bt_DateThisWeek.Click += new System.EventHandler(this.bt_DateThisWeek_Click);
+            // 
+            // bt_DateThisMonth
+            // 
+            this.bt_DateThisMonth.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.bt_DateThisMonth.CornerRadius = 30;
+            this.bt_DateThisMonth.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_DateThisMonth.Location = new System.Drawing.Point(369, 118);
+            this.bt_DateThisMonth.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_DateThisMonth.Name = "bt_DateThisMonth";
+            this.bt_DateThisMonth.Size = new System.Drawing.Size(107, 30);
+            this.bt_DateThisMonth.TabIndex = 73;
+            this.bt_DateThisMonth.Text = "This Month";
+            this.bt_DateThisMonth.Click += new System.EventHandler(this.bt_DateThisMonth_Click);
+            // 
+            // bt_DateLastMonth
+            // 
+            this.bt_DateLastMonth.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.bt_DateLastMonth.CornerRadius = 30;
+            this.bt_DateLastMonth.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_DateLastMonth.Location = new System.Drawing.Point(487, 118);
+            this.bt_DateLastMonth.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_DateLastMonth.Name = "bt_DateLastMonth";
+            this.bt_DateLastMonth.Size = new System.Drawing.Size(107, 30);
+            this.bt_DateLastMonth.TabIndex = 74;
+            this.bt_DateLastMonth.Text = "Last Month";
+            this.bt_DateLastMonth.Click += new System.EventHandler(this.bt_DateLastMonth_Click);
+            // 
+            // bt_DateLast3M
+            // 
+            this.bt_DateLast3M.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.bt_DateLast3M.CornerRadius = 30;
+            this.bt_DateLast3M.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_DateLast3M.Location = new System.Drawing.Point(606, 118);
+            this.bt_DateLast3M.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_DateLast3M.Name = "bt_DateLast3M";
+            this.bt_DateLast3M.Size = new System.Drawing.Size(107, 30);
+            this.bt_DateLast3M.TabIndex = 75;
+            this.bt_DateLast3M.Text = "Last 3 Months";
+            this.bt_DateLast3M.Click += new System.EventHandler(this.bt_DateLast3M_Click);
+            // 
+            // bt_DateThisYear
+            // 
+            this.bt_DateThisYear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
+            this.bt_DateThisYear.CornerRadius = 30;
+            this.bt_DateThisYear.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_DateThisYear.Location = new System.Drawing.Point(725, 118);
+            this.bt_DateThisYear.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_DateThisYear.Name = "bt_DateThisYear";
+            this.bt_DateThisYear.Size = new System.Drawing.Size(107, 30);
+            this.bt_DateThisYear.TabIndex = 76;
+            this.bt_DateThisYear.Text = "This Year";
+            this.bt_DateThisYear.Click += new System.EventHandler(this.bt_DateThisYear_Click);
+            // 
             // frmSalesHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 725);
+            this.Controls.Add(this.bt_DateThisYear);
+            this.Controls.Add(this.bt_DateLast3M);
+            this.Controls.Add(this.bt_DateLastMonth);
+            this.Controls.Add(this.bt_DateThisMonth);
+            this.Controls.Add(this.bt_DateThisWeek);
+            this.Controls.Add(this.bt_DateYesterday);
+            this.Controls.Add(this.bt_DateToday);
             this.Controls.Add(this.bt_CashRefund);
             this.Controls.Add(this.txt_TotalRefundCount);
             this.Controls.Add(this.label14);
@@ -611,5 +716,12 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.TextBox txt_TotalRefundCount;
         private SDCafeCommon.Utilities.CustomButton bt_CashRefund;
+        private SDCafeCommon.Utilities.CustomButton bt_DateToday;
+        private SDCafeCommon.Utilities.CustomButton bt_DateYesterday;
+        private SDCafeCommon.Utilities.CustomButton bt_DateThisWeek;
+        private SDCafeCommon.Utilities.CustomButton bt_DateThisMonth;
+        private SDCafeCommon.Utilities.CustomButton bt_DateLastMonth;
+        private SDCafeCommon.Utilities.CustomButton bt_DateLast3M;
+        private SDCafeCommon.Utilities.CustomButton bt_DateThisYear;
     }
 }
