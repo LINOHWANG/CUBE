@@ -68,10 +68,50 @@ namespace SDCafeSales
             Load_ImageList();
             Initialize_Buttons();
             Initialize_ClockInOut_List();
+            Load_Configuration();
+            Check_License();
             txtPassCode.Focus();
 
         }
 
+        private void Load_Configuration()
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            sysConfigs = dbPOS.Get_SysConfig_By_Name("SCREEN_LOGO_IMAGE");
+            if (sysConfigs.Count > 0)
+            {
+                pictureBoxLogo.Image = Image.FromFile(sysConfigs[0].ConfigValue);
+            }
+            sysConfigs = dbPOS.Get_SysConfig_By_Name("BIZ_TITLE");
+            if (sysConfigs.Count > 0)
+            {
+                textBoxBizTitle.Text = sysConfigs[0].ConfigValue;
+            }
+
+            txtMessage.Text = "Please press Pass Code & OK to login!";
+
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.BringToFront();
+            this.TopMost = true;
+            this.TopMost = false;
+
+            List<POS_StationModel> stations = dbPOS.Get_Station_By_HostName(Environment.MachineName);
+
+            if (stations.Count > 0)
+            {
+                m_strStationName = stations[0].StationName;
+            }
+            else
+            {
+                m_strStationName = "Unknown";
+            }
+            lblStationName.Text = m_strStationName;
+
+        }
+        private void Check_License()
+        {
+            m_bIsLicensed = util.IsLicensed(m_strStationName);
+        }
         private void Load_ImageList()
         {
             m_ImageList = new ImageList();
@@ -171,37 +211,7 @@ namespace SDCafeSales
             }
             pnlNums.Enabled = true; // not need now to this button now 
 
-            DataAccessPOS dbPOS = new DataAccessPOS();
-            sysConfigs = dbPOS.Get_SysConfig_By_Name("SCREEN_LOGO_IMAGE");
-            if (sysConfigs.Count > 0)
-            {
-                pictureBoxLogo.Image = Image.FromFile(sysConfigs[0].ConfigValue);
-            }
-            sysConfigs = dbPOS.Get_SysConfig_By_Name("BIZ_TITLE");
-            if (sysConfigs.Count > 0)
-            {
-                textBoxBizTitle.Text = sysConfigs[0].ConfigValue;
-            }
-
-            txtMessage.Text = "Please press Pass Code & OK to login!";
-
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.BringToFront();
-            this.TopMost = true;
-            this.TopMost = false;
-
-            List<POS_StationModel> stations = dbPOS.Get_Station_By_HostName(Environment.MachineName);
-
-            if (stations.Count > 0)
-            {
-                m_strStationName = stations[0].StationName;
-            }
-            else
-            {
-                m_strStationName = "Unknown";
-            }
-            lblStationName.Text = m_strStationName;
-            m_bIsLicensed = util.IsLicensed(m_strStationName);
+ 
         }
 
         public void ClickNumberButton(Object sender, System.EventArgs e)
