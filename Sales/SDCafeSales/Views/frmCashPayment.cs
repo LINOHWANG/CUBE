@@ -185,7 +185,7 @@ namespace SDCafeSales.Views
                     return;
                 }
                 p_TotalAmount = (float)Math.Round((double)(p_CashAmt + p_ChequeAmt + p_ChargeAmt + p_DebitAmt + p_VisaAmt + p_MasterAmt + p_AmexAmt),2);
-
+                util.Logger("Multi tender : p_TotalAmount = " + p_TotalAmount.ToString() + " vs p_TenderAmt = " + p_TenderAmt.ToString());
                 if (p_TotalAmount >= p_TenderAmt)
                 {
                     //strPaymentType = "Cash/Debit";
@@ -194,7 +194,8 @@ namespace SDCafeSales.Views
                 }
                 else
                 {
-                    bPaymentComplete = false;
+                    // DONE button is pressed as Multi Tendering
+                    bPaymentComplete = true;
                     //MessageBox.Show("Please check Cash Amount ! ");
                     bt_PayCash.Text = "DONE";
                     strPaymentType = "Multi";
@@ -205,6 +206,7 @@ namespace SDCafeSales.Views
                     txt_TipAmount.Visible = false;
                     txt_CardAmount.Top = txt_TipAmount.Top;
                     txt_CardAmount.Left = txt_TipAmount.Left;
+                    bt_Exit.PerformClick();
                 }
             }
         }
@@ -976,6 +978,7 @@ namespace SDCafeSales.Views
             p_MasterAmt = 0;
             p_AmexAmt = 0;
             p_OthersAmt = 0;
+            util.Logger("bt_IPSPayment_Click start !" + p_InvoiceNo.ToString());
 
             using (var FrmCardPay = new frmCardPayment(this.FrmSalesMain))
             {
