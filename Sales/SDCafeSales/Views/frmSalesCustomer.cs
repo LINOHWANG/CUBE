@@ -254,7 +254,7 @@ namespace SDCafeSales.Views
                                 this.dgv_Orders.Rows.Add(new String[] { iIndex.ToString(),
                                                                                    corder.ProductName,
                                                                                    corder.Quantity.ToString(),
-                                                                                   corder.Amount.ToString("0.00"),
+                                                                                   corder.OutUnitPrice.ToString("0.00"),
                                                                                    //iAmount.ToString("0.00"),
                                                                                    corder.Amount.ToString("0.00"),
                                                                                    corder.Id.ToString(),
@@ -285,7 +285,7 @@ namespace SDCafeSales.Views
                         this.dgv_Orders.Rows.Add(new String[] { iIndex.ToString(),
                                                                                    order.ProductName,
                                                                                    order.Quantity.ToString(),
-                                                                                   order.Amount.ToString("0.00"),
+                                                                                   order.OutUnitPrice.ToString("0.00"),
                                                                                    //iAmount.ToString("0.00")
                                                                                    order.Amount.ToString("0.00"),
                                                                                    order.Id.ToString(),

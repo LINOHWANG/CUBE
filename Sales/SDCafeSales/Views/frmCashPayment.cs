@@ -277,7 +277,7 @@ namespace SDCafeSales.Views
                     */
                     strPaymentType = "MULTI";
                     labelTipOrCard.Text = "Cheque :";
-                    p_ChequeAmt = p_ChangeAmt - m_fCashRounding;
+                    p_ChequeAmt = p_ChangeAmt; // - m_fCashRounding;
                     m_fCashRounding = 0;
                     p_ChangeAmt = p_TenderAmt - p_TotalAmount;
                     txt_Changes.Text = p_ChangeAmt.ToString("C2");
@@ -338,7 +338,7 @@ namespace SDCafeSales.Views
                     */
                     strPaymentType = "MULTI";
                     labelTipOrCard.Text = "Charge :";
-                    p_ChargeAmt = p_ChangeAmt - m_fCashRounding;
+                    p_ChargeAmt = p_ChangeAmt; // - m_fCashRounding;
                     m_fCashRounding = 0;
                     p_ChangeAmt = 0;
                     txt_Changes.Text = p_ChangeAmt.ToString("C2");
@@ -413,7 +413,7 @@ namespace SDCafeSales.Views
 
             //p_ChangeAmt = p_TenderAmt - p_CashAmt + p_TipAmt;
             p_ChangeAmt = m_fCashDue - p_CashAmt + p_TipAmt;
-            txt_Changes.Text = p_ChangeAmt.ToString("C2");
+
             //Feature #2904 ---------------------------------------
             if (p_ChangeAmt <= 0)
             {
@@ -442,12 +442,21 @@ namespace SDCafeSales.Views
             //Feature #2904 ---------------------------------------
             if (p_ChangeAmt != 0)
             {
+                if ((p_CashAmt > 0) && (p_CashAmt < p_TenderAmt))
+                {
+                    p_ChangeAmt = p_TenderAmt - p_CashAmt + p_TipAmt;
+                }
+                else
+                {
+                    p_ChangeAmt = m_fCashDue - p_CashAmt + p_TipAmt;
+                }
                 bt_IPSPayment.Visible = true;
             }
             else
             {
                 bt_IPSPayment.Visible = false;
             }
+            txt_Changes.Text = p_ChangeAmt.ToString("C2");
         }
         private void btNum1_Click(object sender, EventArgs e)
         {
@@ -812,7 +821,7 @@ namespace SDCafeSales.Views
                     //MessageBox.Show("Please check Amount ! ");
                     strPaymentType = "MULTI";
                     labelTipOrCard.Text = "Debit :";
-                    p_DebitAmt = p_ChangeAmt - m_fCashRounding;
+                    p_DebitAmt = p_ChangeAmt; // - m_fCashRounding;
                     p_ChangeAmt = 0;
                     txt_Changes.Text = p_ChangeAmt.ToString("C2");
                     txt_CardAmount.Text = p_DebitAmt.ToString("C2");
@@ -850,7 +859,8 @@ namespace SDCafeSales.Views
                     //MessageBox.Show("Please check Amount ! ");
                     strPaymentType = "MULTI";
                     labelTipOrCard.Text = "Visa :";
-                    p_VisaAmt = p_ChangeAmt - m_fCashRounding;
+                    //p_VisaAmt = p_ChangeAmt - m_fCashRounding;
+                    p_VisaAmt = p_ChangeAmt;
                     p_ChangeAmt = 0;
                     txt_Changes.Text = p_ChangeAmt.ToString("C2");
                     txt_CardAmount.Text = p_VisaAmt.ToString("C2");
@@ -888,7 +898,7 @@ namespace SDCafeSales.Views
                     //MessageBox.Show("Please check Amount ! ");
                     strPaymentType = "MULTI";
                     labelTipOrCard.Text = "Master :";
-                    p_MasterAmt = p_ChangeAmt - m_fCashRounding;
+                    p_MasterAmt = p_ChangeAmt;// - m_fCashRounding;
                     p_ChangeAmt = 0;
                     txt_Changes.Text = p_ChangeAmt.ToString("C2");
                     txt_CardAmount.Text = p_MasterAmt.ToString("C2");
@@ -926,7 +936,7 @@ namespace SDCafeSales.Views
                     //MessageBox.Show("Please check Amount ! ");
                     strPaymentType = "MULTI";
                     labelTipOrCard.Text = "Amex :";
-                    p_AmexAmt = p_ChangeAmt - m_fCashRounding;
+                    p_AmexAmt = p_ChangeAmt; // - m_fCashRounding;
                     p_ChangeAmt = 0;
                     txt_Changes.Text = p_ChangeAmt.ToString("C2");
                     txt_CardAmount.Text = p_AmexAmt.ToString("C2");
@@ -989,23 +999,29 @@ namespace SDCafeSales.Views
                     switch (FrmCardPay.strPaymentType)
                     {
                         case "Cash":
+                        case "CASH":
                             //fCash = FrmCardPay.p_TenderAmt;
                             break;
                         case "Debit":
+                        case "DEBIT":
                             p_DebitAmt = FrmCardPay.p_TenderAmt;
-                            strPaymentType = "Debit";
+                            strPaymentType = "DEBIT";
                             break;
                         case "Visa":
+                        case "VISA":
                             p_VisaAmt = FrmCardPay.p_TenderAmt;
-                            strPaymentType = "Visa";
+                            strPaymentType = "VISA";
                             break;
                         case "Master": case "MasterCard": case "M/C":
+                        case "MASTER":
+                        case "MASTERCARD":
                             p_MasterAmt = FrmCardPay.p_TenderAmt;
-                            strPaymentType = "Master";
+                            strPaymentType = "MASTER";
                             break;
                         case "Amex":
+                        case "AMEX":
                             p_AmexAmt = FrmCardPay.p_TenderAmt; 
-                            strPaymentType = "Amex";
+                            strPaymentType = "AMEX";
                             break;
                         default:
                             p_OthersAmt = FrmCardPay.p_TenderAmt;
@@ -1013,6 +1029,8 @@ namespace SDCafeSales.Views
                             util.Logger("Unknown Card Type !" + FrmCardPay.strPaymentType);
                             break;
                     }
+                    if ((p_CashAmt > 0) && FrmCardPay.bPaymentComplete)
+                        strPaymentType = "MULTI";
 
                     bt_Exit.PerformClick();
                 }

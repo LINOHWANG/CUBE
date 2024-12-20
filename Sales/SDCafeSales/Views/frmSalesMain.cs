@@ -630,7 +630,7 @@ namespace SDCafeSales.Views
                                 this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                    corder.ProductName,
                                                                                    corder.Quantity.ToString(),
-                                                                                   corder.Amount.ToString("0.00"),
+                                                                                   corder.OutUnitPrice.ToString("0.00"),
                                                                                    //iAmount.ToString("0.00"),
                                                                                    corder.Amount.ToString("0.00"),
                                                                                    strTaxShort,
@@ -666,7 +666,7 @@ namespace SDCafeSales.Views
                         this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                    order.ProductName,
                                                                                    order.Quantity.ToString(),
-                                                                                   order.Amount.ToString("0.00"),
+                                                                                   order.OutUnitPrice.ToString("0.00"),
                                                                                    //iAmount.ToString("0.00"),
                                                                                    order.Amount.ToString("0.00"),
                                                                                    strTaxShort,
@@ -1673,7 +1673,7 @@ namespace SDCafeSales.Views
                                     this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
                                                                                "1",
-                                                                               orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                               orders[orders.Count-1].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
                                                                                strTaxShort,
                                                                                iNewDiscOrderId.ToString(),
@@ -1757,7 +1757,7 @@ namespace SDCafeSales.Views
                                     this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
                                                                                "1",
-                                                                               orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                               orders[orders.Count-1].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
                                                                                strTaxShort,
                                                                                iNewDepOrderId.ToString(),
@@ -1840,7 +1840,7 @@ namespace SDCafeSales.Views
                                     this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
                                                                                "1",
-                                                                               orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                               orders[orders.Count-1].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
                                                                                strTaxShort,
                                                                                iNewRecyOrderId.ToString(),
@@ -1925,7 +1925,7 @@ namespace SDCafeSales.Views
                                     this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
                                                                                "1",
-                                                                               orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                               orders[orders.Count-1].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
                                                                                strTaxShort,
                                                                                iNewChillOrderId.ToString(),
@@ -2132,6 +2132,8 @@ namespace SDCafeSales.Views
             util.Logger("Calculate_Total_Due # of Orders : " + orders.Count.ToString());
             if (orders.Count > 0)
             {
+                //iTotalItems = iTotalItems + order.Quantity;
+                iTotalItems = orders.FindAll(ord => ord.ProductId > 0).Sum(x => x.Quantity);
                 foreach (var order in orders)
                 {
                     //if (order.OrderCategoryId == 0)
@@ -2139,7 +2141,6 @@ namespace SDCafeSales.Views
                         iSubTotal = iSubTotal + order.Amount;
                         iTaxTotal = iTaxTotal + (order.Tax1 + order.Tax2 + order.Tax3);
                         iTotalDue = iTotalDue + (order.Amount + order.Tax1 + order.Tax2 + order.Tax3);
-                        iTotalItems = iTotalItems + order.Quantity;
                     //}else if (order.OrderCategoryId == 4)   // Discount
                     //{
                     //    iSubTotal = iSubTotal - order.Amount;
@@ -2884,6 +2885,7 @@ namespace SDCafeSales.Views
                                     childOrder.Quantity += iOrderQty;
                                     dgv_Orders.Rows[rowIndex].Cells[2].Value = childOrder.Quantity.ToString();
                                     iAmount = childOrder.Quantity * childOrder.OutUnitPrice;
+                                    dgv_Orders.Rows[rowIndex].Cells[3].Value = childOrder.OutUnitPrice.ToString();
                                     dgv_Orders.Rows[rowIndex].Cells[4].Value = iAmount.ToString("0.00");
                                     // update orders table
                                     childOrder.Amount = childOrder.OutUnitPrice * childOrder.Quantity;
@@ -3058,7 +3060,7 @@ namespace SDCafeSales.Views
                                 this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
                                                                                orders[orders.Count-1].Quantity.ToString(),
-                                                                               orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                               orders[orders.Count-1].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
                                                                                "",
                                                                                iNewDepOrderId.ToString(),
@@ -3134,7 +3136,7 @@ namespace SDCafeSales.Views
                                 this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
                                                                                orders[orders.Count-1].Quantity.ToString(),
-                                                                               orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                               orders[orders.Count-1].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
                                                                                "",
                                                                                iNewRecyOrderId.ToString(),
@@ -3210,7 +3212,7 @@ namespace SDCafeSales.Views
                                 this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                               orders[orders.Count-1].ProductName,
                                                                               orders[orders.Count-1].Quantity.ToString(),
-                                                                              orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                              orders[orders.Count-1].OutUnitPrice.ToString("0.00"),
                                                                               iAmount.ToString("0.00"),
                                                                               "",
                                                                               iNewChillOrderId.ToString(),
@@ -3346,9 +3348,10 @@ namespace SDCafeSales.Views
                                 if (rowIndex > -1) // found the product
                                 {
                                     // update datagrid veiw
-                                    childOrder.Quantity++;
+                                    childOrder.Quantity += iOrderQty;
                                     dgv_Orders.Rows[rowIndex].Cells[2].Value = childOrder.Quantity.ToString();
                                     iAmount = childOrder.Quantity * childOrder.OutUnitPrice;
+                                    dgv_Orders.Rows[rowIndex].Cells[3].Value = childOrder.OutUnitPrice.ToString();
                                     dgv_Orders.Rows[rowIndex].Cells[4].Value = iAmount.ToString("0.00");
                                     // update orders table
                                     childOrder.Amount = childOrder.OutUnitPrice * childOrder.Quantity;
@@ -3534,7 +3537,7 @@ namespace SDCafeSales.Views
                                 this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
                                                                                orders[orders.Count-1].Quantity.ToString(),
-                                                                               orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                               orders[orders.Count-1].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
                                                                                "",
                                                                                iNewDepOrderId.ToString(),
@@ -3610,7 +3613,7 @@ namespace SDCafeSales.Views
                                 this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                orders[orders.Count-1].ProductName,
                                                                                orders[orders.Count-1].Quantity.ToString(),
-                                                                               orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                               orders[orders.Count-1].OutUnitPrice.ToString("0.00"),
                                                                                iAmount.ToString("0.00"),
                                                                                "",
                                                                                iNewRecyOrderId.ToString(),
@@ -3686,7 +3689,7 @@ namespace SDCafeSales.Views
                                 this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                               orders[orders.Count-1].ProductName,
                                                                               orders[orders.Count-1].Quantity.ToString(),
-                                                                              orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                              orders[orders.Count-1].OutUnitPrice.ToString("0.00"),
                                                                               iAmount.ToString("0.00"),
                                                                               "",
                                                                               iNewChillOrderId.ToString(),
@@ -3947,7 +3950,7 @@ namespace SDCafeSales.Views
                     if (FrmCardPay.bPaymentComplete)
                     {
                         FrmCardPay.strPaymentType = FrmCardPay.strPaymentType.ToUpper();
-                        util.Logger("Card Payment completed !" + FrmCardPay.strPaymentType);
+                        util.Logger("Card Payment completed ! " + FrmCardPay.strPaymentType);
                         // Move Orders to OrderComplete
                         Process_Order_Complete(iNewInvNo);
                         // Add collection table
@@ -7886,10 +7889,10 @@ namespace SDCafeSales.Views
             {
                 foreach (DataGridViewRow row in dgv_Orders.Rows)
                 {
-                    if (row.Cells[5].Value != null)
+                    if (row.Cells[6].Value != null)
                     {
                         row.Selected = false;
-                        if (row.Cells[5].Value.ToString() == orderId.ToString() && row.Tag == null)
+                        if (row.Cells[6].Value.ToString() == orderId.ToString() && row.Tag == null)
                         {
                             row.Selected = true;
                             this.dgv_Orders.FirstDisplayedScrollingRowIndex = row.Index;
