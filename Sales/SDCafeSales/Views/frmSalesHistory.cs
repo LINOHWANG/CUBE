@@ -415,6 +415,11 @@ namespace SDCafeSales.Views
             Font fntCard = new Font("Consolas", 8);
             SolidBrush brsBlack = new SolidBrush(Color.Black);
 
+            List<POS1_OrderCompleteModel> orderCompItems = new List<POS1_OrderCompleteModel>();
+            orderCompItems = dbPOS1.Get_OrderComplete_by_InvoiceNo(iSelInvNo);
+
+            int iItemCount = (int)orderCompItems.FindAll(item => item.ProductId > 0).Sum(item => item.Quantity);
+
             p.PrintPage += delegate (object sender1, PrintPageEventArgs e1)
             {
                 int iNextLineYPoint = 0;
@@ -467,7 +472,7 @@ namespace SDCafeSales.Views
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                 e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                 strContent = String.Format("{0,-17}", "Station:" + p_strStation) +
-                                String.Format("{0,20}", "# of Customer:" + iPpleCount.ToString());
+                                String.Format("{0,20}", "# of Items:" + iItemCount.ToString());
                 iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                 e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
@@ -644,15 +649,13 @@ namespace SDCafeSales.Views
                     }
                     else
                     {
-                        List<POS1_OrderCompleteModel> orderitems = new List<POS1_OrderCompleteModel>();
-                        orderitems = dbPOS1.Get_OrderComplete_by_InvoiceNo(iSelInvNo);
-                        if (orderitems.Count > 0)
+                        if (orderCompItems.Count > 0)
                         {
                             ////////////////////////////////////////////////
                             // Add the ordered item into datagrid view
                             ////////////////////////////////////////////////
                             //iNewInvNo = orders[0].InvoiceNo;
-                            foreach (var order in orderitems)
+                            foreach (var order in orderCompItems)
                             {
                                 float iAmount = 0;
                                 string strProd = "";
@@ -2749,6 +2752,10 @@ namespace SDCafeSales.Views
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
             DataAccessCard dbCard = new DataAccessCard();
+            List<POS1_OrderCompleteModel> orderCompItems = new List<POS1_OrderCompleteModel>();
+            orderCompItems = dbPOS1.Get_OrderComplete_by_InvoiceNo(p_intInvoiceNo);
+
+            int iItemCount = (int)orderCompItems.FindAll(item => item.ProductId > 0).Sum(item => item.Quantity);
 
             string strHeader = "header";
             string strFooter = "footer";
@@ -2838,7 +2845,7 @@ namespace SDCafeSales.Views
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                 e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                 strContent = String.Format("{0,-17}", "Station:" + p_strStation) +
-                             String.Format("{0,20}", "# of Customer:" + iPpleCount.ToString());
+                             String.Format("{0,20}", "# of Items:" + iItemCount.ToString());
                 iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                 e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
@@ -3015,15 +3022,13 @@ namespace SDCafeSales.Views
                     }
                     else
                     {
-                        List<POS1_OrderCompleteModel> orderitems = new List<POS1_OrderCompleteModel>();
-                        orderitems = dbPOS1.Get_OrderComplete_by_InvoiceNo(p_intInvoiceNo);
-                        if (orderitems.Count > 0)
+                        if (orderCompItems.Count > 0)
                         {
                             ////////////////////////////////////////////////
                             // Add the ordered item into datagrid view
                             ////////////////////////////////////////////////
                             //iNewInvNo = orders[0].InvoiceNo;
-                            foreach (var order in orderitems)
+                            foreach (var order in orderCompItems)
                             {
                                 float iAmount = 0;
                                 string strProd = "";

@@ -1855,6 +1855,91 @@ namespace SDCafeSales.Views
                                     this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView_By_RFTagID(rfids[0].Id);
                                 }
                             } //if (orders[0].Deposit > 0)
+                            /////////////////////////////////////////////////
+                            // ChillCharge ?
+                            /////////////////////////////////////////////////
+                            if (orders[0].ChillCharge > 0)
+                            {
+                                // Get Parent Order Id
+                                int iParentId = iNewOrderId; // dbPOS.Get_Latest_OrderId_by_InvoiceNo_ProductId(orders[0].InvoiceNo, orders[0].ProductId);
+                                ////////////////////////////////////////////////
+                                // Add the Discount order item into Orders table
+                                ////////////////////////////////////////////////
+                                orders.Add(new POS_OrdersModel()
+                                {
+                                    TranType = "20",
+                                    ProductId = 0,
+                                    ProductName = ">Chill Charge",
+                                    SecondName = ">Chill Charge",
+                                    ProductTypeId = 0,
+                                    InUnitPrice = 0,
+                                    OutUnitPrice = 0,
+                                    IsTax1 = prods[0].IsTax1,
+                                    IsTax2 = prods[0].IsTax2,
+                                    IsTax3 = prods[0].IsTax3,
+                                    Quantity = 1,
+                                    Amount = prods[0].ChillCharge,
+                                    Tax1Rate = m_TaxRate1,
+                                    Tax2Rate = m_TaxRate2,
+                                    Tax3Rate = m_TaxRate3,
+                                    Tax1 = 0,
+                                    Tax2 = 0,
+                                    Tax3 = 0,
+                                    Deposit = 0,
+                                    RecyclingFee = 0,
+                                    ChillCharge = 0,
+                                    InvoiceNo = iNewInvNo,
+                                    IsPaidComplete = false,
+                                    CompleteDate = "",
+                                    CompleteTime = "",
+                                    CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), // DateTime.Now.ToShortDateString(),
+                                    CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
+                                    CreateUserId = System.Convert.ToInt32(strUserID),
+                                    CreateUserName = strUserName,
+                                    CreateStation = strStation,
+                                    LastModDate = "",
+                                    LastModTime = "",
+                                    LastModUserId = System.Convert.ToInt32(strUserID),
+                                    LastModUserName = "",
+                                    LastModStation = "",
+                                    RFTagId = rfids[0].Id,
+                                    ParentId = iParentId,
+                                    OrderCategoryId = 3 // ChillCharge
+                                    ,
+                                    IsDiscounted = false
+                                    ,
+                                    BarCode = ""
+                                });
+                                int iNewChillOrderId = dbPOS.Insert_Order(orders[orders.Count - 1]);
+                                if (iNewChillOrderId > 0) //if (dbPOS.Insert_Order(orders[1]))
+                                {
+                                    ////////////////////////////////////////////////
+                                    // Add the ordered item into datagrid view
+                                    ////////////////////////////////////////////////
+                                    iAmount = orders[orders.Count - 1].Amount; //Quantity * orders[1].OutUnitPrice;
+                                    iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                                    strTaxShort = "";
+                                    strTaxShort += orders[orders.Count - 1].IsTax1 ? strTax1Name.Substring(0, 1) : "";
+                                    strTaxShort += orders[orders.Count - 1].IsTax2 ? strTax2Name.Substring(0, 1) : "";
+                                    strTaxShort += orders[orders.Count - 1].IsTax3 ? strTax3Name.Substring(0, 1) : "";
+                                    this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
+                                                                               orders[orders.Count-1].ProductName,
+                                                                               "1",
+                                                                               orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                               iAmount.ToString("0.00"),
+                                                                               strTaxShort,
+                                                                               iNewChillOrderId.ToString(),
+                                                                               orders[orders.Count-1].Id.ToString(),
+                                                                               orders[orders.Count-1].BarCode
+                                    });
+                                    this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = rfids[0].Id;
+                                    row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
+                                    row.DefaultCellStyle.ForeColor = Color.Blue;
+                                    //this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView(prods[0].Id);
+                                    //this.dgv_Orders.Rows[Get_OrderedItem_Index_of_GridView(prods[0].Id)].Selected = true;
+                                    this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView_By_RFTagID(rfids[0].Id);
+                                }
+                            } //if (orders[0].ChillCharge > 0)
                         }
                         else
                         {
@@ -3059,6 +3144,82 @@ namespace SDCafeSales.Views
 
                             }
                         } //if (orders[0].RecyclingFee > 0)
+                          /////////////////////////////////////////////////
+                          // ChillCharge ?
+                          /////////////////////////////////////////////////
+                        if (orders[0].ChillCharge > 0)
+                        {
+                            // Get Parent Order Id
+                            int iParentId = iNewOrderId; // dbPOS.Get_Latest_OrderId_by_InvoiceNo_ProductId(orders[0].InvoiceNo, orders[0].ProductId);
+                                                         ////////////////////////////////////////////////
+                                                         // Add the Chill Charge Sub order item into Orders table
+                                                         ////////////////////////////////////////////////
+                            orders.Add(new POS_OrdersModel()
+                            {
+                                TranType = "20",
+                                ProductId = 0,
+                                ProductName = "> Chill Charge",
+                                SecondName = "> Chill Charge",
+                                ProductTypeId = 0,
+                                InUnitPrice = 0,
+                                OutUnitPrice = prods[0].ChillCharge,
+                                IsTax1 = prods[0].IsTax1,
+                                IsTax2 = prods[0].IsTax2,
+                                IsTax3 = prods[0].IsTax3,
+                                Quantity = iOrderQty,
+                                Amount = prods[0].ChillCharge * iOrderQty,
+                                Tax1Rate = m_TaxRate1,
+                                Tax2Rate = m_TaxRate2,
+                                Tax3Rate = m_TaxRate3,
+                                Tax1 = 0,
+                                Tax2 = 0,
+                                Tax3 = 0,
+                                Deposit = 0,
+                                RecyclingFee = 0,
+                                ChillCharge = 0,
+                                InvoiceNo = iNewInvNo,
+                                IsPaidComplete = false,
+                                CompleteDate = "",
+                                CompleteTime = "",
+                                CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), // DateTime.Now.ToShortDateString(),
+                                CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
+                                CreateUserId = System.Convert.ToInt32(strUserID),
+                                CreateUserName = strUserName,
+                                CreateStation = strStation,
+                                LastModDate = "",
+                                LastModTime = "",
+                                LastModUserId = System.Convert.ToInt32(strUserID),
+                                LastModUserName = "",
+                                LastModStation = "",
+                                RFTagId = 0,
+                                ParentId = iParentId,
+                                OrderCategoryId = 3 // ChillCharge
+                                ,
+                                IsDiscounted = false
+                                ,
+                                BarCode = ""
+                            });
+                            int iNewChillOrderId = dbPOS.Insert_Order(orders[orders.Count - 1]);
+                            if (iNewChillOrderId > 0) //if (dbPOS.Insert_Order(orders[1]))
+                            {
+                                ////////////////////////////////////////////////
+                                // Add the ordered item into datagrid view
+                                ////////////////////////////////////////////////
+                                iAmount = orders[orders.Count - 1].Amount; //Quantity * orders[1].OutUnitPrice;
+                                iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                                this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
+                                                                              orders[orders.Count-1].ProductName,
+                                                                              orders[orders.Count-1].Quantity.ToString(),
+                                                                              orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                              iAmount.ToString("0.00"),
+                                                                              "",
+                                                                              iNewChillOrderId.ToString(),
+                                                                              orders[orders.Count-1].Id.ToString(),
+                                                                              orders[orders.Count-1].BarCode
+                                   });
+
+                            }
+                        } //if (orders[0].ChillCharge > 0)
                     }
                     else
                     {
@@ -3459,6 +3620,82 @@ namespace SDCafeSales.Views
 
                             }
                         } //if (orders[0].RecyclingFee > 0)
+                          /////////////////////////////////////////////////
+                          // ChillCharge ?
+                          /////////////////////////////////////////////////
+                        if (orders[0].ChillCharge > 0)
+                        {
+                            // Get Parent Order Id
+                            int iParentId = iNewOrderId; // dbPOS.Get_Latest_OrderId_by_InvoiceNo_ProductId(orders[0].InvoiceNo, orders[0].ProductId);
+                                                         ////////////////////////////////////////////////
+                                                         // Add the Chill Charge Sub order item into Orders table
+                                                         ////////////////////////////////////////////////
+                            orders.Add(new POS_OrdersModel()
+                            {
+                                TranType = "20",
+                                ProductId = 0,
+                                ProductName = "> Chill Charge",
+                                SecondName = "> Chill Charge",
+                                ProductTypeId = 0,
+                                InUnitPrice = 0,
+                                OutUnitPrice = prods[0].ChillCharge,
+                                IsTax1 = prods[0].IsTax1,
+                                IsTax2 = prods[0].IsTax2,
+                                IsTax3 = prods[0].IsTax3,
+                                Quantity = iOrderQty,
+                                Amount = prods[0].ChillCharge * iOrderQty,
+                                Tax1Rate = m_TaxRate1,
+                                Tax2Rate = m_TaxRate2,
+                                Tax3Rate = m_TaxRate3,
+                                Tax1 = 0,
+                                Tax2 = 0,
+                                Tax3 = 0,
+                                Deposit = 0,
+                                RecyclingFee = 0,
+                                ChillCharge = 0,
+                                InvoiceNo = iNewInvNo,
+                                IsPaidComplete = false,
+                                CompleteDate = "",
+                                CompleteTime = "",
+                                CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), // DateTime.Now.ToShortDateString(),
+                                CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
+                                CreateUserId = System.Convert.ToInt32(strUserID),
+                                CreateUserName = strUserName,
+                                CreateStation = strStation,
+                                LastModDate = "",
+                                LastModTime = "",
+                                LastModUserId = System.Convert.ToInt32(strUserID),
+                                LastModUserName = "",
+                                LastModStation = "",
+                                RFTagId = 0,
+                                ParentId = iParentId,
+                                OrderCategoryId = 3 // ChillCharge
+                                ,
+                                IsDiscounted = false
+                                ,
+                                BarCode = ""
+                            });
+                            int iNewChillOrderId = dbPOS.Insert_Order(orders[orders.Count - 1]);
+                            if (iNewChillOrderId > 0) //if (dbPOS.Insert_Order(orders[1]))
+                            {
+                                ////////////////////////////////////////////////
+                                // Add the ordered item into datagrid view
+                                ////////////////////////////////////////////////
+                                iAmount = orders[orders.Count - 1].Amount; //Quantity * orders[1].OutUnitPrice;
+                                iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                                this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
+                                                                              orders[orders.Count-1].ProductName,
+                                                                              orders[orders.Count-1].Quantity.ToString(),
+                                                                              orders[orders.Count-1].Amount.ToString("0.00"),
+                                                                              iAmount.ToString("0.00"),
+                                                                              "",
+                                                                              iNewChillOrderId.ToString(),
+                                                                              orders[orders.Count-1].Id.ToString(),
+                                                                              orders[orders.Count-1].BarCode
+                                   });
+
+                            }
+                        } //if (orders[0].ChillCharge > 0)
                     }
                     else
                     {
@@ -4666,6 +4903,10 @@ namespace SDCafeSales.Views
             Font fntCard = new Font("Consolas", 8);
             SolidBrush brsBlack = new SolidBrush(Color.Black);
 
+            orderComItems = dbPOS1.Get_OrderComplete_by_InvoiceNo(p_iInvoiceNo);
+
+            int iItemCount = (int)orderComItems.FindAll(item => item.ProductId > 0).Sum(item => item.Quantity);
+
             p.PrintPage += delegate (object sender1, PrintPageEventArgs e1)
             {
                 int iNextLineYPoint = 0;
@@ -4719,7 +4960,7 @@ namespace SDCafeSales.Views
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                 e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                 strContent = String.Format("{0,-17}", "Station:" + strStation) +
-                             String.Format("{0,20}", "# of Customer:" + iPpleCount.ToString()); 
+                             String.Format("{0,20}", "# of Items:" + iItemCount.ToString()); 
                 iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                 e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
@@ -4896,7 +5137,6 @@ namespace SDCafeSales.Views
                     }
                     else
                     {
-                        orderComItems = dbPOS1.Get_OrderComplete_by_InvoiceNo(p_iInvoiceNo);
                         if (orderComItems.Count > 0)
                         {
                             ////////////////////////////////////////////////
@@ -6498,7 +6738,7 @@ namespace SDCafeSales.Views
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                 e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                 strContent = String.Format("{0,-17}", "Station:" + strStation) +
-                             String.Format("{0,20}", "# of Customer:" + iPpleCount.ToString());
+                             String.Format("{0,20}", "# of Items:" + iPpleCount.ToString());
                 iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                 e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
