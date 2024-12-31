@@ -69,6 +69,7 @@ namespace SDCafeSales.Views
         public frmCardPayment FrmCardPay;
 
         private float fUSDRate;
+        private float fUSDCashMarkupRate;
         private bool bUSDEnable;
         private float p_CashAmtUSD;
         private float m_fEnterChequeAmt;
@@ -1049,18 +1050,36 @@ namespace SDCafeSales.Views
         private void bt_ShowUSD_Click(object sender, EventArgs e)
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
+            List<POS_SysConfigModel> sysConfigsCashMarkup = dbPOS.Get_SysConfig_By_Name("CADUSD_CASH_MARKUP_RATE");
             sysConfigs = dbPOS.Get_SysConfig_By_Name("CADUSD_CONVERSION_RATE");
             util.Logger("CADUSD_CONVERSION_RATE Count = " + sysConfigs.Count.ToString());
             bUSDEnable = false;
             string strUSDRate = "";
+            string strCashMarkupRate = "";
             if (sysConfigs.Count > 0)
             {
                 strUSDRate = sysConfigs[0].ConfigValue.Trim();
                 util.Logger("CADUSD_CONVERSION_RATE = " + strUSDRate);
                 try
                 {
+                    //Feature #3654
+                    fUSDCashMarkupRate = 0;
+                    if (sysConfigsCashMarkup.Count > 0)
+                    {
+                        strCashMarkupRate = sysConfigsCashMarkup[0].ConfigValue.Trim();
+                        util.Logger("CADUSD_CASH_MARKUP_RATE = " + strCashMarkupRate);
+                        fUSDCashMarkupRate = 1 + (float)System.Convert.ToDouble(strCashMarkupRate) / 100;
+                    }
+                    else
+                    {
+                        strCashMarkupRate = "0";
+                        util.Logger("CADUSD_CASH_MARKUP_RATE = Not Set : " + strCashMarkupRate);
+                    }
+
                     fUSDRate = 0;
                     fUSDRate = (float)System.Convert.ToDouble(strUSDRate);
+                    fUSDRate = fUSDRate * fUSDCashMarkupRate;
+                    fUSDRate = (float)Math.Round(fUSDRate, 4);
                     bUSDEnable = true;
                 }
                 catch (Exception ex)
@@ -1073,7 +1092,7 @@ namespace SDCafeSales.Views
             }
 
 
-            lbl_ConvRate.Text = "CAD:USD = 1:" + strUSDRate;
+            lbl_ConvRate.Text = "CAD:USD = 1:" + fUSDRate.ToString();
             lbl_ConvRate.Visible = true;
             float fUSDDueAmount = p_TenderAmt * fUSDRate;
             txt_TotalDueUSD.Text = fUSDDueAmount.ToString("C2");

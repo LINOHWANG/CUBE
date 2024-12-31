@@ -18,6 +18,9 @@ using System.Reflection;
 using System.Runtime.Remoting.Proxies;
 using System.Net.Sockets;
 using System.Linq;
+using System.Net.Http;
+using System.Net;
+using Newtonsoft.Json.Linq;
 
 namespace SDCafeSales.Views
 {
@@ -218,6 +221,8 @@ namespace SDCafeSales.Views
         public string strTax1Name = "Tax1";
         public string strTax2Name = "Tax2";
         public string strTax3Name = "Tax3";
+        private float m_fExchangeRateCADUSD;
+
         public bool m_blnPrintTaxDetails { get; set; }
         public frmSalesMain(Form callingForm) :this()
         {
@@ -270,6 +275,7 @@ namespace SDCafeSales.Views
 
             if (Get_Tax_Rates())
             {
+                Load_Update_Exchage_Rate();
                 Load_System_Info();
                 Load_ImageList();
                 Load_Existing_Orders();
@@ -288,6 +294,42 @@ namespace SDCafeSales.Views
 
             strBarCode = string.Empty;
             BarCode_Get_Focus();
+        }
+
+        private void Load_Update_Exchage_Rate()
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            sysconfs = dbPOS.Get_SysConfig_By_Name("CADUSD_CONVERSION_RATE");
+            if (sysconfs.Count > 0)
+                if (sysconfs[0].ConfigDesc != DateTime.Today.ToString())
+                {
+                    try
+                    {
+                        using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
+                        {
+                            string strURL = "https://v6.exchangerate-api.com/v6/94124759da58f6d5593c6bbf/latest/USD";
+                            client.BaseAddress = new Uri(strURL);
+                            HttpResponseMessage response = client.GetAsync("CAD").Result;
+                            response.EnsureSuccessStatusCode();
+                            string result = response.Content.ReadAsStringAsync().Result;
+                            util.Logger(strURL + " ==> Result: " + result);
+                            dynamic data = JObject.Parse(result);
+                            string strUSDRates = (string)data["conversion_rates"]["USD"];
+                            sysconfs[0].ConfigValue = strUSDRates;
+                            sysconfs[0].ConfigDesc = DateTime.Today.ToString();
+                            dbPOS.Update_SysConfig(sysconfs[0]);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        util.Logger("Error getting exchange rate : " + ex.Message);
+                        MessageBox.Show("Error getting exchange rate. Please call system admin!", "Error");
+                        this.Close();
+                    }
+                    float.TryParse(sysconfs[0].ConfigValue, NumberStyles.Float, CultureInfo.InvariantCulture, out m_fExchangeRateCADUSD);
+                }
+                else
+                    m_fExchangeRateCADUSD = 0;
         }
 
         private void Load_ImageList()

@@ -636,9 +636,9 @@
             this.lbl_ConvRate.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.lbl_ConvRate.Font = new System.Drawing.Font("Arial Black", 14F, System.Drawing.FontStyle.Bold);
             this.lbl_ConvRate.ForeColor = System.Drawing.Color.DarkGreen;
-            this.lbl_ConvRate.Location = new System.Drawing.Point(250, 216);
+            this.lbl_ConvRate.Location = new System.Drawing.Point(129, 216);
             this.lbl_ConvRate.Name = "lbl_ConvRate";
-            this.lbl_ConvRate.Size = new System.Drawing.Size(197, 53);
+            this.lbl_ConvRate.Size = new System.Drawing.Size(344, 53);
             this.lbl_ConvRate.TabIndex = 111;
             this.lbl_ConvRate.Text = "Rate :";
             this.lbl_ConvRate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
