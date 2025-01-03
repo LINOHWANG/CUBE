@@ -73,6 +73,16 @@ namespace SDCafeSales.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap arrow_back_40dp {
+            get {
+                object obj = ResourceManager.GetObject("arrow_back_40dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap barcode_reader {
             get {
                 object obj = ResourceManager.GetObject("barcode_reader", resourceCulture);
@@ -246,6 +256,16 @@ namespace SDCafeSales.Properties {
         public static System.Drawing.Bitmap logout_40dp {
             get {
                 object obj = ResourceManager.GetObject("logout_40dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap menu_40dp {
+            get {
+                object obj = ResourceManager.GetObject("menu_40dp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

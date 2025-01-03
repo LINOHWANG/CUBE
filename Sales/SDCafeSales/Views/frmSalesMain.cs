@@ -54,6 +54,7 @@ namespace SDCafeSales.Views
         private CustomButton[] btnArray = new CustomButton[10000];
         private CustomButton[] btnTypeArray = new CustomButton[1000];
         private CustomButton[] btnNumArray = new CustomButton[12];
+        private CustomButton btnBack = new CustomButton();
 
         Utility util = new Utility();
         RawPrinterHelper rawPrt = new RawPrinterHelper();
@@ -224,6 +225,8 @@ namespace SDCafeSales.Views
         private float m_fExchangeRateCADUSD;
 
         public bool m_blnPrintTaxDetails { get; set; }
+        public string m_strProdBtnSortOrder { get; set; }
+
         public frmSalesMain(Form callingForm) :this()
         {
             FrmLogOn = callingForm;
@@ -280,7 +283,7 @@ namespace SDCafeSales.Views
                 Load_ImageList();
                 Load_Existing_Orders();
                 PopulateMenuTypeButtons();
-                PopulateMenuButtons();
+                PopulateMenuButtons(false, 0);
                 ToggleNumTypeButtons();
                 //Load_RFID_Drivers();
                 //Open_RFID_Connection();
@@ -314,10 +317,13 @@ namespace SDCafeSales.Views
                             string result = response.Content.ReadAsStringAsync().Result;
                             util.Logger(strURL + " ==> Result: " + result);
                             dynamic data = JObject.Parse(result);
-                            string strUSDRates = (string)data["conversion_rates"]["USD"];
-                            sysconfs[0].ConfigValue = strUSDRates;
-                            sysconfs[0].ConfigDesc = DateTime.Today.ToString();
-                            dbPOS.Update_SysConfig(sysconfs[0]);
+                            if (data["result"] == "success")
+                            {
+                                string strUSDRates = (string)data["conversion_rates"]["USD"];
+                                sysconfs[0].ConfigValue = strUSDRates;
+                                sysconfs[0].ConfigDesc = DateTime.Today.ToString();
+                                dbPOS.Update_SysConfig(sysconfs[0]);
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -352,6 +358,8 @@ namespace SDCafeSales.Views
             m_ImageList.Images.Add(Properties.Resources.bookmark_40dp);             //12
             m_ImageList.Images.Add(Properties.Resources.bookmark_recall_40dp);             //13
             m_ImageList.Images.Add(Properties.Resources.history_40dp);             //14
+            m_ImageList.Images.Add(Properties.Resources.arrow_back_40dp);             //15
+            m_ImageList.Images.Add(Properties.Resources.menu_40dp);             //16
             bt_Exit.ImageList = m_ImageList;
             bt_Exit.ImageIndex = 1;
 
@@ -522,6 +530,12 @@ namespace SDCafeSales.Views
                 m_blnPrintTaxDetails = sysconfs[0].ConfigValue == "TRUE" ? true : false;
             else
                 m_blnPrintTaxDetails = false;
+
+            sysconfs = dbPOS.Get_SysConfig_By_Name("PRODUCT_BUTTON_SORT_ORDER");
+            if (sysconfs.Count > 0)
+                m_strProdBtnSortOrder = sysconfs[0].ConfigValue;
+            else
+                m_strProdBtnSortOrder = "";
 
             Show_AutoReceipt_Button();
         }
@@ -2657,12 +2671,12 @@ namespace SDCafeSales.Views
             txtSelectedMenu.Text = "You have now selected menu type [ " + btn.Text + ", " + btn.Tag + " ]";
             iSelectedProdTypeID = int.Parse(string.Format("{0}", btn.Tag));
 
-            PopulateMenuButtons();
+            PopulateMenuButtons(false, 0);
             BarCode_Get_Focus();
 
         }
 
-        private void PopulateMenuButtons()
+        private void PopulateMenuButtons(bool p_isBIB, int p_int_bibProdId)
         {
             int xPos = 0;
             int yPos = 0;
@@ -2691,13 +2705,27 @@ namespace SDCafeSales.Views
             pnlMenu.Controls.Clear();
 
             DataAccessPOS dbPOS = new DataAccessPOS();
-            if (iSelectedProdTypeID > 0)
+            if (p_isBIB)
             {
-                prods = dbPOS.Get_All_Products_By_ProdType_Sortby_Price(iSelectedProdTypeID, m_intQueryTop);
+                prods = dbPOS.Get_All_Products_By_BIBProdId(p_int_bibProdId);
             }
             else
             {
-                prods = dbPOS.Get_All_DefaultSales_Products();
+                if (iSelectedProdTypeID > 0)
+                {
+                    if (m_strProdBtnSortOrder != "" && m_strProdBtnSortOrder != null)
+                    {
+                        prods = dbPOS.Get_All_Products_By_ProdType_SortOrder(iSelectedProdTypeID, m_intQueryTop, m_strProdBtnSortOrder);
+                    }
+                    else
+                    {
+                        prods = dbPOS.Get_All_Products_By_ProdType_Sortby_Price(iSelectedProdTypeID, m_intQueryTop);
+                    }
+                }
+                else
+                {
+                    prods = dbPOS.Get_All_DefaultSales_Products();
+                }
             }
 
             if (prods.Count > 0)
@@ -2773,6 +2801,16 @@ namespace SDCafeSales.Views
                     {
                         btnArray[n].ForeColor = Color.FromArgb(iColor);
                     }
+                    if (prod.IsButtonInButton)
+                    {
+                        // add image on the button
+                        //m_ImageList ?
+                        btnArray[n].ImageList = m_ImageList;
+                        btnArray[n].ImageIndex = 16; //menu
+                        btnArray[n].ImageAlign = ContentAlignment.MiddleLeft;
+                        btnArray[n].TextAlign = ContentAlignment.MiddleRight;
+                        btnArray[n].Text = prod.ProductName;
+                    }
                     //if (prod.ProductName.Length > 10)
                     //{
                     //    int spaceIndex = prod.ProductName.IndexOf(" ", 10);
@@ -2790,10 +2828,43 @@ namespace SDCafeSales.Views
                     n++;
                 }
             }
+
+            if (p_isBIB)
+            {
+                // Add a back button on the pnlMenu right bottom corner
+                xPos = (pnlMenu.Width / 5) * 4;
+                yPos = (pnlMenu.Height / 5) * 4;
+                btnBack = new CustomButton();
+                btnBack.Tag = 0;
+                btnBack.Width = (pnlMenu.Width / 5) - 5; // Width of button
+                btnBack.Height = (pnlMenu.Height / 5) - 5; // Height of button
+                btnBack.Font = new Font("Arial", 9, FontStyle.Bold);
+                btnBack.ForeColor = Color.White;
+                btnBack.CornerRadius = 30;
+                btnBack.RoundCorners = Corners.TopLeft | Corners.TopRight | Corners.BottomLeft;
+                btnBack.BackColor = Color.DarkGray;
+                btnBack.Left = xPos;
+                btnBack.Top = yPos;
+                btnBack.Text = "Back";
+                btnBack.ImageList = m_ImageList;
+                btnBack.ImageIndex = 15;
+                btnBack.ImageAlign = ContentAlignment.MiddleLeft;
+                btnBack.TextAlign = ContentAlignment.MiddleRight;
+                // the event of click Button
+                btnBack.Click += new System.EventHandler(ClickMenuBackButton);
+                pnlMenu.Controls.Add(btnBack);
+
+            }
             lbl_ProdPages.Text = iCurrentProdPage.ToString() + "/" + (iTotalProdPages-1).ToString();
             pnlMenu.Enabled = true; // not need now to this button now 
             //label1.Visible = true;
         }
+
+        private void ClickMenuBackButton(object sender, EventArgs e)
+        {
+            PopulateMenuButtons(false, 0);
+        }
+
         // Result of (Click Button) event, get the text of button 
         public void ClickMenuButton(Object sender, System.EventArgs e)
         {
@@ -2860,6 +2931,13 @@ namespace SDCafeSales.Views
             prods = dbPOS.Get_Product_By_ID(pProdID);
             if (prods.Count > 0)
             {
+                // if the product is buttoninbutton item?
+                if (prods[0].IsButtonInButton)
+                {
+                    // Show button in button items
+                    PopulateMenuButtons(true, prods[0].Id);
+                    return true;
+                }
                 if (prods[0].IsManualItem)
                 { 
                     Add_Order_ManualItem(pProdID);
@@ -6453,7 +6531,7 @@ namespace SDCafeSales.Views
 
             if (iCurrentProdPage <= 1)
             {
-                PopulateMenuButtons();
+                PopulateMenuButtons(false, 0);
                 return;
             }
 

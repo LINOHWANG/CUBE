@@ -251,6 +251,8 @@ namespace SDCafeOffice.Views
                 btButtonColor.ForeColor = m_ButtonForeColor;
                 btButtonColor.Text = prods[0].ProductName;
 
+                checkBIB.Checked = prods[0].IsButtonInButton;
+
             }
 
         }
@@ -412,7 +414,8 @@ namespace SDCafeOffice.Views
                 IsSalesButton = checkSalesButton.Checked,
                 ForeColor = m_ButtonForeColor.ToArgb().ToString(),
                 BackColor = m_ButtonBackColor.ToArgb().ToString(),
-                CategoryId = iCategoryId
+                CategoryId = iCategoryId,
+                IsButtonInButton = checkBIB.Checked
             });
             int iProdCnt = dbPOS.Update_Product(prods[0]);
             if (string.IsNullOrEmpty(txt_BarCode.Text))
@@ -420,6 +423,12 @@ namespace SDCafeOffice.Views
                 Update_Product_BarCode(prods[0].Id, prods[0]);
             }
             Load_Product_Info(prods[0].Id.ToString());
+
+            if (!checkBIB.Checked)
+            {
+                // Remove the BIB products from the ButtonInButton table
+                int iBIBCount = dbPOS.Delete_ButtonInButtons(prods[0].Id);
+            }
             m_blnOnSave = false;
             return true;
         }
@@ -547,7 +556,8 @@ namespace SDCafeOffice.Views
                 IsSalesButton = checkSalesButton.Checked,
                 ForeColor = m_ButtonForeColor.ToArgb().ToString(),
                 BackColor = m_ButtonBackColor.ToArgb().ToString(),
-                CategoryId = iCategoryId
+                CategoryId = iCategoryId,
+                IsButtonInButton = checkBIB.Checked
 
             });
             int iProdId = dbPOS.Insert_Product(prods[0]);
@@ -556,6 +566,13 @@ namespace SDCafeOffice.Views
                 Update_Product_BarCode(iProdId, prods[0]);
             }
             Load_Product_Info(iProdId.ToString());
+
+            if (!checkBIB.Checked)
+            {
+                // Remove the BIB products from the ButtonInButton table
+                int iBIBCount = dbPOS.Delete_ButtonInButtons(iProdId);
+            }
+
             m_blnOnSave = false;
 
             return true;
@@ -797,6 +814,25 @@ namespace SDCafeOffice.Views
         private void cb_TaxCode_TextChanged(object sender, EventArgs e)
         {
             cb_TaxCode.SelectedItem = cb_TaxCode.Text;
+        }
+
+        private void checkBIB_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBIB.Checked)
+            {
+                //checkMainSalesButton.Checked = true;
+                txt_IUnitPrice.Text = "0";
+                txt_OUnitPrice.Text = "0";
+                checkTax1.Checked = false;
+                checkTax2.Checked = false;
+                checkTax3.Checked = false;
+                checkTaxInv.Checked = false;
+                txt_Balance.Text = "0";
+                txt_Deposit.Text = "0";
+                txt_RecyclingFee.Text = "0";
+                txt_ChillCharge.Text = "0";
+                checkSalesButton.Checked = true;
+            }
         }
     }
 }

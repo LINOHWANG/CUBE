@@ -244,7 +244,7 @@
             this.listView1.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listView1.GridLines = true;
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(402, 460);
+            this.listView1.Location = new System.Drawing.Point(402, 501);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(252, 98);
             this.listView1.TabIndex = 21;
@@ -262,7 +262,7 @@
             this.columnHeader10});
             this.listView2.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listView2.HideSelection = false;
-            this.listView2.Location = new System.Drawing.Point(660, 441);
+            this.listView2.Location = new System.Drawing.Point(660, 482);
             this.listView2.Name = "listView2";
             this.listView2.Size = new System.Drawing.Size(221, 117);
             this.listView2.TabIndex = 22;
@@ -288,7 +288,7 @@
             this.pnlPType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.pnlPType.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlPType.Controls.Add(this.bt_SetPPL);
-            this.pnlPType.Location = new System.Drawing.Point(395, 399);
+            this.pnlPType.Location = new System.Drawing.Point(395, 440);
             this.pnlPType.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.pnlPType.Name = "pnlPType";
             this.pnlPType.Size = new System.Drawing.Size(608, 159);
@@ -492,7 +492,7 @@
             // 
             this.lbl_TypePages.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_TypePages.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this.lbl_TypePages.Location = new System.Drawing.Point(677, 570);
+            this.lbl_TypePages.Location = new System.Drawing.Point(677, 611);
             this.lbl_TypePages.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbl_TypePages.Name = "lbl_TypePages";
             this.lbl_TypePages.Size = new System.Drawing.Size(57, 19);
@@ -516,10 +516,10 @@
             this.pnlSideBar.Controls.Add(this.bt_SalesCustomer);
             this.pnlSideBar.Controls.Add(this.bt_Stop);
             this.pnlSideBar.ForeColor = System.Drawing.Color.Black;
-            this.pnlSideBar.Location = new System.Drawing.Point(863, 4);
+            this.pnlSideBar.Location = new System.Drawing.Point(862, 4);
             this.pnlSideBar.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.pnlSideBar.Name = "pnlSideBar";
-            this.pnlSideBar.Size = new System.Drawing.Size(145, 689);
+            this.pnlSideBar.Size = new System.Drawing.Size(148, 689);
             this.pnlSideBar.TabIndex = 58;
             // 
             // bt_Office
@@ -609,7 +609,7 @@
             this.bt_HideSideBar.CornerRadius = 20;
             this.bt_HideSideBar.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_HideSideBar.ForeColor = System.Drawing.Color.Black;
-            this.bt_HideSideBar.Location = new System.Drawing.Point(3, 599);
+            this.bt_HideSideBar.Location = new System.Drawing.Point(3, 398);
             this.bt_HideSideBar.Name = "bt_HideSideBar";
             this.bt_HideSideBar.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -642,7 +642,7 @@
             this.bt_Start.CornerRadius = 5;
             this.bt_Start.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_Start.ForeColor = System.Drawing.Color.White;
-            this.bt_Start.Location = new System.Drawing.Point(13, 486);
+            this.bt_Start.Location = new System.Drawing.Point(12, 527);
             this.bt_Start.Name = "bt_Start";
             this.bt_Start.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -659,7 +659,7 @@
             this.bt_ShowAllMenuItem.CornerRadius = 5;
             this.bt_ShowAllMenuItem.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_ShowAllMenuItem.ForeColor = System.Drawing.Color.Black;
-            this.bt_ShowAllMenuItem.Location = new System.Drawing.Point(13, 537);
+            this.bt_ShowAllMenuItem.Location = new System.Drawing.Point(12, 578);
             this.bt_ShowAllMenuItem.Name = "bt_ShowAllMenuItem";
             this.bt_ShowAllMenuItem.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -708,7 +708,7 @@
             // 
             this.lbl_ProdPages.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_ProdPages.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this.lbl_ProdPages.Location = new System.Drawing.Point(472, 572);
+            this.lbl_ProdPages.Location = new System.Drawing.Point(472, 613);
             this.lbl_ProdPages.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbl_ProdPages.Name = "lbl_ProdPages";
             this.lbl_ProdPages.Size = new System.Drawing.Size(57, 19);
@@ -722,9 +722,9 @@
             this.txtBarCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtBarCode.Font = new System.Drawing.Font("Arial", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtBarCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.txtBarCode.Location = new System.Drawing.Point(578, 604);
+            this.txtBarCode.Location = new System.Drawing.Point(578, 401);
             this.txtBarCode.Name = "txtBarCode";
-            this.txtBarCode.Size = new System.Drawing.Size(278, 35);
+            this.txtBarCode.Size = new System.Drawing.Size(267, 35);
             this.txtBarCode.TabIndex = 68;
             this.txtBarCode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtBarCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBarCode_KeyPress);
@@ -734,7 +734,7 @@
             this.lblBarCode2.AutoSize = true;
             this.lblBarCode2.Font = new System.Drawing.Font("IDAutomationHC39M", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblBarCode2.ForeColor = System.Drawing.Color.LightSteelBlue;
-            this.lblBarCode2.Location = new System.Drawing.Point(497, 611);
+            this.lblBarCode2.Location = new System.Drawing.Point(497, 408);
             this.lblBarCode2.Name = "lblBarCode2";
             this.lblBarCode2.Size = new System.Drawing.Size(75, 25);
             this.lblBarCode2.TabIndex = 73;
@@ -882,7 +882,7 @@
             this.bt_TypePageDown.CornerRadius = 20;
             this.bt_TypePageDown.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_TypePageDown.ForeColor = System.Drawing.Color.Black;
-            this.bt_TypePageDown.Location = new System.Drawing.Point(734, 560);
+            this.bt_TypePageDown.Location = new System.Drawing.Point(734, 601);
             this.bt_TypePageDown.Name = "bt_TypePageDown";
             this.bt_TypePageDown.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -898,7 +898,7 @@
             this.bt_ProdPageUp.CornerRadius = 20;
             this.bt_ProdPageUp.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_ProdPageUp.ForeColor = System.Drawing.Color.Black;
-            this.bt_ProdPageUp.Location = new System.Drawing.Point(399, 560);
+            this.bt_ProdPageUp.Location = new System.Drawing.Point(399, 601);
             this.bt_ProdPageUp.Name = "bt_ProdPageUp";
             this.bt_ProdPageUp.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -914,7 +914,7 @@
             this.bt_ProdPageDown.CornerRadius = 20;
             this.bt_ProdPageDown.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_ProdPageDown.ForeColor = System.Drawing.Color.Black;
-            this.bt_ProdPageDown.Location = new System.Drawing.Point(529, 560);
+            this.bt_ProdPageDown.Location = new System.Drawing.Point(529, 601);
             this.bt_ProdPageDown.Name = "bt_ProdPageDown";
             this.bt_ProdPageDown.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -930,7 +930,7 @@
             this.bt_TypePageUp.CornerRadius = 20;
             this.bt_TypePageUp.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_TypePageUp.ForeColor = System.Drawing.Color.Black;
-            this.bt_TypePageUp.Location = new System.Drawing.Point(607, 560);
+            this.bt_TypePageUp.Location = new System.Drawing.Point(607, 601);
             this.bt_TypePageUp.Name = "bt_TypePageUp";
             this.bt_TypePageUp.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -996,7 +996,7 @@
             this.bt_ShowSideBar.CornerRadius = 20;
             this.bt_ShowSideBar.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_ShowSideBar.ForeColor = System.Drawing.Color.Black;
-            this.bt_ShowSideBar.Location = new System.Drawing.Point(862, 606);
+            this.bt_ShowSideBar.Location = new System.Drawing.Point(862, 403);
             this.bt_ShowSideBar.Name = "bt_ShowSideBar";
             this.bt_ShowSideBar.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -1028,7 +1028,7 @@
             this.lblBarCode.AutoSize = true;
             this.lblBarCode.Font = new System.Drawing.Font("Arial Narrow", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblBarCode.ForeColor = System.Drawing.Color.LightSteelBlue;
-            this.lblBarCode.Location = new System.Drawing.Point(398, 611);
+            this.lblBarCode.Location = new System.Drawing.Point(398, 408);
             this.lblBarCode.Name = "lblBarCode";
             this.lblBarCode.Size = new System.Drawing.Size(102, 23);
             this.lblBarCode.TabIndex = 72;
@@ -1040,7 +1040,7 @@
             this.bt_NumTypeToggle.CornerRadius = 20;
             this.bt_NumTypeToggle.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_NumTypeToggle.ForeColor = System.Drawing.Color.Black;
-            this.bt_NumTypeToggle.Location = new System.Drawing.Point(810, 559);
+            this.bt_NumTypeToggle.Location = new System.Drawing.Point(810, 600);
             this.bt_NumTypeToggle.Name = "bt_NumTypeToggle";
             this.bt_NumTypeToggle.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 

@@ -48,5 +48,6 @@ namespace SDCafeCommon.Model
         public string BackColor { get; set; }
 
         public int CategoryId { get; set; }
+        public bool IsButtonInButton { get; set; }
     }
 }

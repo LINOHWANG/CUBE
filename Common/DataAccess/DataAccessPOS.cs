@@ -165,7 +165,16 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
-
+        public List<POS_SysConfigModel> Get_SysConfig_By_NamePart(string strConfigName)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                // change strConfigName to capital letter
+                strConfigName = strConfigName.ToUpper();
+                var output = connection.Query<POS_SysConfigModel>($"select * from SysConfig where ConfigName like '%{strConfigName}%'").ToList();
+                return output;
+            }
+        }
         public int Insert_Promotion(POS_PromotionModel pOS_PromotionModel)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -614,13 +623,13 @@ namespace SDCafeCommon.DataAccess
                             "IsPrinter1, IsPrinter2, IsPrinter3, IsPrinter4, IsPrinter5, " +
                             "PromoPrice1, PromoPrice2, PromoPrice3, IsSoldOut, Deposit, RecyclingFee, ChillCharge, MemoText, BarCode, TaxCode, " +
                             "IsManualItem, Balance," +
-                            "IsMainSalesButton, IsSalesButton, ForeColor, BackColor, CategoryId ) " +
+                            "IsMainSalesButton, IsSalesButton, ForeColor, BackColor, CategoryId, IsButtonInButton ) " +
                             "VALUES(@ProductName,@SecondName,@ProductTypeId,CAST(@OutUnitPrice as decimal(10,2)),CAST(@OutUnitPrice as decimal(10,2)),@IsTax1,@IsTax2,@IsTax3,@IsTaxInverseCalculation, " +
                             "@PromoStartDate,@PromoEndDate,@PromoDay1,@PromoDay2,@PromoDay3,@IsPrinter1,@IsPrinter2,@IsPrinter3,@IsPrinter4,@IsPrinter5,"+
                             "CAST(@PromoPrice1 as decimal(10,2)),CAST(@PromoPrice2 as decimal(10,2)),CAST(@PromoPrice3 as decimal(10,2)),@IsSoldOut," +
                             "CAST(@Deposit as decimal(10,2)),CAST(@RecyclingFee as decimal(10,2)),CAST(@ChillCharge as decimal(10,2)), @MemoText, @BarCode, @TaxCode, " +
                             "@IsManualItem, @Balance, @IsMainSalesButton, " +
-                            "@IsSalesButton, @ForeColor, @BackColor, @CategoryId ); " +
+                            "@IsSalesButton, @ForeColor, @BackColor, @CategoryId, @IsButtonInButton ); " +
                             "SELECT CAST(SCOPE_IDENTITY() as int)";
                 //var count = connection.Execute(query, pos_ProductModel);
                 var id = connection.QuerySingle<int>(query, pos_ProductModel);
@@ -648,7 +657,7 @@ namespace SDCafeCommon.DataAccess
                                 "PromoPrice1=CAST(@PromoPrice1 as decimal(10,2)), PromoPrice2=CAST(@PromoPrice2 as decimal(10,2)), PromoPrice3=CAST(@PromoPrice3 as decimal(10,2)), IsSoldOut=@IsSoldOut, " +
                                 "Deposit=CAST(@Deposit as decimal(10,2)), RecyclingFee=CAST(@RecyclingFee as decimal(10,2)),ChillCharge=CAST(@ChillCharge as decimal(10,2)), MemoText=@MemoText, " +
                                 "BarCode=@BarCode, TaxCode=@TaxCode, IsManualItem=@IsManualItem, Balance=@Balance, " +
-                                "IsMainSalesButton = @IsMainSalesButton, IsSalesButton=@IsSalesButton, ForeColor = @ForeColor, BackColor = @BackColor, CategoryId=@CategoryId  " +
+                                "IsMainSalesButton = @IsMainSalesButton, IsSalesButton=@IsSalesButton, ForeColor = @ForeColor, BackColor = @BackColor, CategoryId=@CategoryId, IsButtonInButton=@IsButtonInButton  " +
                                 "WHERE Id = @Id";
                 var count = connection.Execute(query, pos_ProductModel);
                 return count;
@@ -1119,6 +1128,31 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
+        public List<POS_ProductModel> Get_All_Products_By_BIBProdId(int p_int_ProdId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_ProductModel>($"select * from Product WHERE id in (Select ProductId FROM ButtonInButtons WHERE ButtonProdId = {p_int_ProdId}) Order by IsManualItem Desc, ProductName").ToList();
+                return output;
+            }
+        }
+        public List<POS_ProductModel> Get_All_Products_NonBIB()
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_ProductModel>($"select * from Product WHERE IsNull(IsButtonInButton,0) = 0 Order by IsManualItem Desc, ProductName").ToList();
+                return output;
+            }
+        }
+
+        public List<POS_ProductModel> Get_All_Products_By_ProdType_NonBIB(int iSelectedProdTypeID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_ProductModel>($"select * from Product WHERE ProductTypeId = {iSelectedProdTypeID} And IsNull(IsButtonInButton,0) = 0  Order by IsManualItem Desc, ProductName").ToList();
+                return output;
+            }
+        }
         public List<POS_ProductModel> Get_All_Products_By_Category(int iSelectedCatID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -1135,7 +1169,14 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
-        
+        public List<POS_ProductModel> Get_All_Products_By_ProdType_SortOrder(int iSelectedProdTypeID, int iTop, string p_strSortOrder)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_ProductModel>($"select Top {iTop} * from Product WHERE ProductTypeId = {iSelectedProdTypeID} Order by IsManualItem Desc, {p_strSortOrder}").ToList();
+                return output;
+            }
+        }
         public List<POS_ProductModel> Get_All_DefaultSales_Products()
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -1636,6 +1677,83 @@ namespace SDCafeCommon.DataAccess
             {
                 string query = "DELETE from LoginUser WHERE id=" + iSelectedId;
                 var count = connection.Execute(query);
+                return count;
+            }
+        }
+
+        public int Delete_ButtonInButtons(int p_iParentProdId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "DELETE from ButtonInButtons WHERE ButtonProdId = " + p_iParentProdId;
+                var count = connection.Execute(query);
+                return count;
+            }
+        }
+
+        public List<POS_BIBListModel> Get_All_ButtonInButtons_List()
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                List<POS_BIBListModel> bibList = new List<POS_BIBListModel>();
+                var bibProds = connection.Query<POS_ProductModel>($"select * from Product WHERE IsButtonInButton = 1").ToList();
+                if (bibProds.Count > 0)
+                {
+                    List<POS_ButtonInButtonsModel> bibs = new List<POS_ButtonInButtonsModel>();
+                    foreach (POS_ProductModel bib in bibProds)
+                    {
+                        var output = connection.Query<POS_ButtonInButtonsModel>($"select * from ButtonInButtons WHERE ButtonProdId = {bib.Id}").ToList();
+                        if (output.Count > 0)
+                        {
+                                    //public string PTypeName { get; set; }
+                                    //public int ButtonProdId { get; set; }
+                                    //public string ButtonName { get; set; }
+                                    //List<POS_ProductModel> ProductList { get; set; }
+                                bibList.Add(
+                                    new POS_BIBListModel
+                                        {
+                                        PTypeName = Get_ProductTypeName_By_Id(bib.ProductTypeId),
+                                        ButtonProdId = bib.Id,
+                                        ButtonName = bib.ProductName,
+                                        ProdCount = output.Count
+                                        }
+                                );
+                        }
+                        else
+                        {
+                            bibList.Add(
+                                new POS_BIBListModel
+                                {
+                                    PTypeName = Get_ProductTypeName_By_Id(bib.ProductTypeId),
+                                    ButtonProdId = bib.Id,
+                                    ButtonName = bib.ProductName,
+                                    ProdCount = 0
+                                }
+                            );
+                        }
+                    }
+                    return bibList;
+                }
+                return null;
+            }
+        }
+
+        public List<POS_ProductModel> Get_All_BIB_Products_By_ButtonProductId(int p_int_ProductId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_ProductModel>($"select * from Product WHERE Id in (Select ProductId From ButtonInButtons WHERE ButtonProdId = {p_int_ProductId})").ToList();
+                return output;
+            }
+        }
+
+        public int Add_ButtonInButton(POS_ButtonInButtonsModel p_bib)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "INSERT INTO ButtonInButtons (ButtonProdId, ButtonName, ProductId, SortOrder) " +
+                                    "VALUES (@ButtonProdId, @ButtonName, @ProductId, @SortOrder)";
+                var count = connection.Execute(query, p_bib);
                 return count;
             }
         }

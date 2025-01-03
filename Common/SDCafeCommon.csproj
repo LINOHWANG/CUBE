@@ -62,6 +62,8 @@
     <Compile Include="Model\POS1_OrderCompleteModel.cs" />
     <Compile Include="Model\POS1_ProductPopModel.cs" />
     <Compile Include="Model\POS1_TranCollectionModel.cs" />
+    <Compile Include="Model\POS_BIBListModel.cs" />
+    <Compile Include="Model\POS_ButtonInButtonsModel.cs" />
     <Compile Include="Model\POS_CategoryModel.cs" />
     <Compile Include="Model\POS_LoginUserModel.cs" />
     <Compile Include="Model\POS_OrdersModel.cs" />
