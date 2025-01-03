@@ -2828,7 +2828,7 @@ namespace SDCafeSales.Views
                     n++;
                 }
             }
-
+            // If the button is ButtonInButton, add a back button on the right bottom corner of the panel
             if (p_isBIB)
             {
                 // Add a back button on the pnlMenu right bottom corner
