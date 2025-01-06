@@ -87,7 +87,22 @@ namespace SDCafeSales.Views
 
         private void bt_AmountDiscSet_Click(object sender, EventArgs e)
         {
-            fAmountDisc = float.Parse(txt_AmountDisc.Text, CultureInfo.InvariantCulture.NumberFormat);
+            float fEnterCDiscAmt = 0;
+            // Enter Amount
+            using (var FrmEnterAmount = new frmEnterAmount(this.FrmSalesMain))
+            {
+                this.TopMost = false;
+                FrmEnterAmount.p_Title = "Please Enter Discount Amount !";
+                FrmEnterAmount.StartPosition = FormStartPosition.CenterScreen;
+
+                FrmEnterAmount.p_TenderAmt = 0;
+                FrmEnterAmount.TopLevel = true;
+                FrmEnterAmount.ShowDialog();
+                this.TopMost = true;
+                fEnterCDiscAmt = FrmEnterAmount.p_NewAmt;
+                txt_AmountDisc.Text = fEnterCDiscAmt.ToString("C2");
+            }
+            fAmountDisc = fEnterCDiscAmt; // float.Parse(txt_AmountDisc.Text, CultureInfo.InvariantCulture.NumberFormat);
             if (fAmountDisc > p_Amount)
             {
                 MessageBox.Show("Discount should not exceed the Amount!");

@@ -2715,7 +2715,17 @@ namespace SDCafeSales.Views
                 {
                     if (m_strProdBtnSortOrder != "" && m_strProdBtnSortOrder != null)
                     {
-                        prods = dbPOS.Get_All_Products_By_ProdType_SortOrder(iSelectedProdTypeID, m_intQueryTop, m_strProdBtnSortOrder);
+                        try
+                        {
+                            prods = dbPOS.Get_All_Products_By_ProdType_SortOrder(iSelectedProdTypeID, m_intQueryTop, m_strProdBtnSortOrder);
+                        }
+                        catch (Exception ex)
+                        {
+                            //Show a MsgBox with ex.Message
+                            MessageBox.Show("PRODUCT_BUTTON_SORT_ORDER " + "configuration Error: " + ex.Message);
+
+                            prods = dbPOS.Get_All_Products_By_ProdType_Sortby_Price(iSelectedProdTypeID, m_intQueryTop);
+                        }
                     }
                     else
                     {
@@ -4187,7 +4197,7 @@ namespace SDCafeSales.Views
                             Process_Tran_Collection(iNewInvNo, fCash, fDebit, fVisa, fMaster, fAmex,fOthers, fCheque, fCharge,
                                                             0, FrmCashPay.p_TipAmt, 0 /*Rounding*/,FrmCashPay.strPaymentType, true);
                             //Process_Tran_Collection(iNewInvNo, FrmCashPay.p_CashAmt, FrmCashPay.p_ChangeAmt, FrmCashPay.p_TipAmt, FrmCashPay.strPaymentType,false);
-                            Process_Receipt(false, true);
+                            Process_Receipt(false, false);
 
                             util.Logger("--------------- Cash Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString());
                             txtSelectedMenu.Text = "Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString();
@@ -4952,13 +4962,14 @@ namespace SDCafeSales.Views
             int firstpad = (s.Length + desiredLength) / 2;
             return s.PadLeft(firstpad).PadRight(desiredLength);
         }
-        private void Process_Receipt(bool IsInvoice, bool IsCustomerCopy)
+        private void Process_Receipt(bool IsInvoice, bool IsMerchantCopy)
         {
             util.Logger("Process_Receipt InvNo  :" + iNewInvNo.ToString());
             if (!IsInvoice)
             {
                 //Print_Receipt(IsInvoice, false);
-                Print_Receipt(IsInvoice, IsCustomerCopy, iNewInvNo);
+                if (IsMerchantCopy)
+                    Print_Receipt(IsInvoice, IsMerchantCopy, iNewInvNo);
             }
             //DialogResult dialogResult = MessageBox.Show("Print Customer Copy ?", "Receipt Print", MessageBoxButtons.YesNo);
             if (bAutoReceipt)
@@ -4976,14 +4987,28 @@ namespace SDCafeSales.Views
                     {
                         if (IsCustomerCopy)
                         {*/
-                Print_Receipt(IsInvoice, bAutoReceipt, iNewInvNo);//IsCustomerCopy);
+                //sCustomerCopy
+                Print_Receipt(IsInvoice, false, iNewInvNo);//IsCustomerCopy);
                         /*}
                     }
                 }*/
             }
 
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+            DataAccessCard dbCard = new DataAccessCard();
+            List<POS1_TranCollectionModel> cols = new List<POS1_TranCollectionModel>();
+            List<POS1_OrderCompleteModel> orderComItems = new List<POS1_OrderCompleteModel>();
+            List<CCardReceipt> cardReceipts = new List<CCardReceipt>();
+
+            cols = dbPOS1.Get_TranCollection_by_InvoiceNo(iNewInvNo);
+            orderComItems = dbPOS1.Get_OrderComplete_by_InvoiceNo(iNewInvNo);
+            cardReceipts = dbCard.Get_Approved_CardReceipt_By_InvoiceNo(iNewInvNo);
+
+            ShowReceiptInfoOnScreen(cols, orderComItems, cardReceipts);
+
         }
-        private void Print_Receipt(bool IsInvoice, bool IsCustomerCopy, int p_iInvoiceNo)
+        private void Print_Receipt(bool IsInvoice, bool IsMerchantCopy, int p_iInvoiceNo)
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
@@ -5092,7 +5117,7 @@ namespace SDCafeSales.Views
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                 e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
 
-                if (IsCustomerCopy || bCashPayment)
+                if (!IsMerchantCopy || bCashPayment)
                 {
                     //////////////////////////////////////////////////////////////////////////
                     // Print a Line ------------------------------------------------------
@@ -5731,7 +5756,6 @@ namespace SDCafeSales.Views
             {
                 throw new Exception("Exception Occured While Printing", ex);
             }
-            ShowReceiptInfoOnScreen(cols, orderComItems, cardReceipts);
         }
 
         private void ShowReceiptInfoOnScreen(List<POS1_TranCollectionModel> cols, List<POS1_OrderCompleteModel> orderComItems, List<CCardReceipt> cardReceipts)
@@ -7112,8 +7136,20 @@ namespace SDCafeSales.Views
         private void bt_SetDiscount_Click(object sender, EventArgs e)
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
-            Double dblDueAmount = dbPOS.Get_Total_Due_Amount(iNewInvNo);
+            List<POS_OrdersModel> orders = new List<POS_OrdersModel>();
+            orders = dbPOS.Get_Orders_by_InvoiceNo(iNewInvNo);
+            if (orders.Count > 0)
+            {
+                if (orders.Find(x => x.IsDiscounted == true) != null)
+                {
+                    // Already discounted order
+                    txtSelectedMenu.Text = "One or more item(s) is(are) already discounted !";
+                    BarCode_Get_Focus();
+                    return;
+                }
+            }
 
+            Double dblDueAmount = dbPOS.Get_Total_Due_Amount(iNewInvNo);
 
             if (Add_Discount_Orders_Item(0, true, "Total D/C(", dblDueAmount,0))
             {
@@ -7138,6 +7174,18 @@ namespace SDCafeSales.Views
                         int iSelectedOrderId = System.Convert.ToInt32(row.Cells[6].Value.ToString());
 
                         DataAccessPOS dbPOS = new DataAccessPOS();
+                        List<POS_OrdersModel> orders = new List<POS_OrdersModel>();
+                        orders = dbPOS.Get_Order_By_OrderId(iSelectedOrderId);
+                        if (orders.Count > 0)
+                        {
+                            if (orders[0].IsDiscounted)
+                            {
+                                // Already discounted order
+                                txtSelectedMenu.Text = "The Selected Item : " + orders[0].ProductName + " is already discounted !";
+                                BarCode_Get_Focus();
+                                return;
+                            }
+                        }
                         Double dblDueAmount = dbPOS.Get_Order_Amount_By_OrderId(iNewInvNo, iSelectedOrderId);
 
                         //if (Add_Discount_Orders_Item(false, iSelectedOrderId.ToString() + " (", dblDueAmount, iSelectedOrderId))
@@ -7163,7 +7211,7 @@ namespace SDCafeSales.Views
             double iTotalTax2 = 0;
             double iTotalTax3 = 0;
 
-            util.Logger("Add_Discount_Orders_Item ! InvNo  :" + iNewInvNo.ToString());
+            util.Logger("Add_Discount_Orders_Item ! InvNo  :" + iNewInvNo.ToString() + " Order Id : " + iOrderId.ToString());
 
             pnlReceipt.Visible = false;
 
@@ -7304,10 +7352,9 @@ namespace SDCafeSales.Views
                             row.DefaultCellStyle.ForeColor = Color.Red;
                         }*/
                         //this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView_By_RFTagID(rfids[0].Id);
-                        if (iOrderId > 0)
-                        {
 
-                        }
+                        // Set IsDiscounted = true for the order
+                        bool bIsUpdated = dbPOS.Update_Order_IsDiscounted(iNewInvNo, iOrderId, true);
                     }
 
                     dgv_Orders_Initialize();
@@ -7377,8 +7424,8 @@ namespace SDCafeSales.Views
                 LastModStation = "",
                 RFTagId = 0,
                 ParentId = 0,
-                OrderCategoryId = 4     // Discount
-                ,BarCode = ""
+                OrderCategoryId = 4,     // Discount
+                BarCode = ""
             });
             int iNewOrderId = dbPOS.Insert_Order(orders[0]);
             util.Logger(" ## Discount : " + orders[0].Id.ToString() + ", PRODID=" + orders[0].ProductId + ", Discount Amount = " + orders[0].Amount.ToString("C2"));
@@ -7869,7 +7916,7 @@ namespace SDCafeSales.Views
                                                         FrmCashPay.p_TipAmt,
                                                         FrmCashPay.m_fCashRounding,
                                                         FrmCashPay.strPaymentType, false);
-                    Process_Receipt(false, true);
+                    Process_Receipt(false, false);
 
                     util.Logger("--------------- Cash Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString());
                     txtSelectedMenu.Text = "Payment & Printing Receipt is Done : Invoice# " + iNewInvNo.ToString();
@@ -8299,9 +8346,22 @@ namespace SDCafeSales.Views
         {
             // Get the last invoice no from POS1 database
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
-            POS1_TranCollectionModel col = dbPOS1.Get_Last_TranCollection();
-            iReprintInvNo = col.InvoiceNo;
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            DataAccessCard dbCard = new DataAccessCard();
+            List<POS1_TranCollectionModel> cols = new List<POS1_TranCollectionModel>();
+            List<POS1_OrderCompleteModel> orderComItems = new List<POS1_OrderCompleteModel>();
+            List<CCardReceipt> cardReceipts = new List<CCardReceipt>();
+
+            POS1_TranCollectionModel lastcol = dbPOS1.Get_Last_TranCollection();
+            iReprintInvNo = lastcol.InvoiceNo;
             Print_Receipt(false, true, iReprintInvNo);
+
+            cols = dbPOS1.Get_TranCollection_by_InvoiceNo(iReprintInvNo);
+            orderComItems = dbPOS1.Get_OrderComplete_by_InvoiceNo(iReprintInvNo);
+            cardReceipts = dbCard.Get_Approved_CardReceipt_By_InvoiceNo(iReprintInvNo);
+
+            ShowReceiptInfoOnScreen(cols, orderComItems, cardReceipts);
+
             BarCode_Get_Focus();
 
         }

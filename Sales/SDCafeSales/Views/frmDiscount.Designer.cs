@@ -102,7 +102,7 @@
             | SDCafeCommon.Utilities.Corners.BottomRight)));
             this.bt_AmountDiscSet.Size = new System.Drawing.Size(424, 67);
             this.bt_AmountDiscSet.TabIndex = 67;
-            this.bt_AmountDiscSet.Text = "Set Amount Discount";
+            this.bt_AmountDiscSet.Text = "Enter Discount Amount";
             this.bt_AmountDiscSet.Click += new System.EventHandler(this.bt_AmountDiscSet_Click);
             // 
             // bt_15Percent

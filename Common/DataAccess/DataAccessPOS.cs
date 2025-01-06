@@ -957,6 +957,16 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
+                List<POS_OrdersModel> orders = new List<POS_OrdersModel>();
+                orders = Get_Order_By_OrderId(OrderId);
+                if (orders.Count > 0)
+                {
+                    if ((orders[0].ParentId > 0) && (orders[0].OrderCategoryId == 4))   // Discount
+                    {
+                        // Update the Parent Order to IsDiscounted = false
+                        Update_Order_IsDiscounted(orders[0].InvoiceNo, orders[0].ParentId, false);
+                    }
+                }
                 string query = "DELETE from Orders WHERE id=" + OrderId + " and InvoiceNo = " + iNewInvNo;
                 var count = connection.Execute(query);
                 return count;
@@ -1755,6 +1765,21 @@ namespace SDCafeCommon.DataAccess
                                     "VALUES (@ButtonProdId, @ButtonName, @ProductId, @SortOrder)";
                 var count = connection.Execute(query, p_bib);
                 return count;
+            }
+        }
+
+        public bool Update_Order_IsDiscounted(int iNewInvNo, int iOrderId, bool bIsDiscounted)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = $"UPDATE Orders SET IsDiscounted = {(bIsDiscounted ? 1 : 0)} ";
+                string strWhere = "WHERE ProductId > 0 ";
+                if (iOrderId > 0)
+                    strWhere += $"And Id = {iOrderId} ";
+                if (iNewInvNo > 0)
+                    strWhere += $"And InvoiceNo = {iNewInvNo} ";
+                var count = connection.Execute(query);
+                return count > 0;
             }
         }
     }
