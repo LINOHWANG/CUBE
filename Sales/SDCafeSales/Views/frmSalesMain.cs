@@ -21,6 +21,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net;
 using Newtonsoft.Json.Linq;
+using System.Media;
 
 namespace SDCafeSales.Views
 {
@@ -7144,7 +7145,7 @@ namespace SDCafeSales.Views
                 {
                     // Already discounted order
                     txtSelectedMenu.Text = "One or more item(s) is(are) already discounted !";
-                    Console.Beep(9000, 1000);
+                    SystemSounds.Beep.Play();
                     BarCode_Get_Focus();
                     return;
                 }
@@ -7183,7 +7184,7 @@ namespace SDCafeSales.Views
                             {
                                 // Already discounted order
                                 txtSelectedMenu.Text = "The Selected Item : " + orders[0].ProductName + " is already discounted !";
-                                Console.Beep(9000, 1000);
+                                SystemSounds.Beep.Play();
                                 BarCode_Get_Focus();
                                 return;
                             }

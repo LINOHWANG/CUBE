@@ -13,6 +13,7 @@ using SDCafeCommon.DataAccess;
 using SDCafeCommon.Utilities;
 using SDCafeOffice.Properties;
 using SDCafeOffice.Views;
+using System.Media;
 
 namespace SDCafeOffice
 {
@@ -188,7 +189,8 @@ namespace SDCafeOffice
                     txtMessage.Text = "Login Failed ! Please check your passcode or grade !";
                     strPassCode = string.Empty;
                     txtPassCode.Text = strPassCode;
-                    Console.Beep(3000, 1000);
+                    //Console.Beep(3000, 1000);
+                    SystemSounds.Beep.Play();
 
                 }
 
@@ -270,8 +272,8 @@ namespace SDCafeOffice
                     txtMessage.Text = "Login Failed ! Please check your passcode or grade !";
                     strPassCode = string.Empty;
                     txtPassCode.Text = strPassCode;
-                    Console.Beep(3000, 1000);
-
+                    //Console.Beep(3000, 1000);
+                    SystemSounds.Beep.Play();
                 }
 
                 //this.Show();
