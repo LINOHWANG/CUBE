@@ -116,7 +116,7 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS1")))
             {
-                var output = connection.Query<POS1_OrderCompleteModel>($"select * from OrderComplete where InvoiceNo = {iNewInvNo}").ToList();
+                var output = connection.Query<POS1_OrderCompleteModel>($"select * from OrderComplete where InvoiceNo = {iNewInvNo} Order by Id").ToList();
                 return output;
             }
         }

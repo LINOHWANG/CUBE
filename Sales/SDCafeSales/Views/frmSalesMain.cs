@@ -7144,6 +7144,7 @@ namespace SDCafeSales.Views
                 {
                     // Already discounted order
                     txtSelectedMenu.Text = "One or more item(s) is(are) already discounted !";
+                    Console.Beep(9000, 1000);
                     BarCode_Get_Focus();
                     return;
                 }
@@ -7182,6 +7183,7 @@ namespace SDCafeSales.Views
                             {
                                 // Already discounted order
                                 txtSelectedMenu.Text = "The Selected Item : " + orders[0].ProductName + " is already discounted !";
+                                Console.Beep(9000, 1000);
                                 BarCode_Get_Focus();
                                 return;
                             }
@@ -8354,7 +8356,10 @@ namespace SDCafeSales.Views
 
             POS1_TranCollectionModel lastcol = dbPOS1.Get_Last_TranCollection();
             iReprintInvNo = lastcol.InvoiceNo;
-            Print_Receipt(false, true, iReprintInvNo);
+            
+            util.Logger("Reprint Last Invoice No = " + iReprintInvNo.ToString());
+
+            Print_Receipt(false, false, iReprintInvNo);
 
             cols = dbPOS1.Get_TranCollection_by_InvoiceNo(iReprintInvNo);
             orderComItems = dbPOS1.Get_OrderComplete_by_InvoiceNo(iReprintInvNo);

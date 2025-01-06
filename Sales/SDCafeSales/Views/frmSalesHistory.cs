@@ -1612,6 +1612,7 @@ namespace SDCafeSales.Views
         private void ShowOrderItems(int p_intInvNo)
         {
             int iItemCount = 0;
+            float fAmount = 0;
             string strPTypeName = String.Empty;
             dgvItems.Rows.Clear();
             DataAccessPOS dbPOS = new DataAccessPOS();
@@ -1625,8 +1626,9 @@ namespace SDCafeSales.Views
                     iItemCount++;
                     // Get Product Type Name
                     strPTypeName = dbPOS.Get_ProductTypeName_By_Id(order.ProductTypeId);
+                    fAmount = order.Amount + order.Tax1 + order.Tax2 + order.Tax3;
                     dgvItems.Rows.Add(iItemCount.ToString(), strPTypeName, order.ProductName, order.OutUnitPrice.ToString(), order.Quantity,
-                                        order.Tax1, order.Tax2, order.Tax3, order.Amount + order.Tax1 + order.Tax2 + order.Tax3, order.IsVoid);
+                                        order.Tax1, order.Tax2, order.Tax3, fAmount.ToString("0.00"), order.IsVoid);
                     // Set row tag
                     dgvItems.Rows[iItemCount - 1].Tag = order.Id.ToString();
                     if (order.IsVoid)

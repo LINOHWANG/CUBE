@@ -464,6 +464,11 @@ namespace SDCafeOffice
 
 
                     }
+                    if (prod.IsButtonInButton)
+                    {
+                        // Set the row color to LightPink
+                        this.dgvData.Rows[dgvData.RowCount - 2].DefaultCellStyle.BackColor = Color.LightPink;
+                    }
                     this.dgvData.FirstDisplayedScrollingRowIndex = dgvData.RowCount - 1;
                 }
                 progBarExport.Visible = false;
