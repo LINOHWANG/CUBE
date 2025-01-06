@@ -1778,6 +1778,7 @@ namespace SDCafeCommon.DataAccess
                     strWhere += $"And Id = {iOrderId} ";
                 if (iNewInvNo > 0)
                     strWhere += $"And InvoiceNo = {iNewInvNo} ";
+                query = query + strWhere;
                 var count = connection.Execute(query);
                 return count > 0;
             }
