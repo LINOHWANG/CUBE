@@ -695,6 +695,22 @@ namespace SDCafeOffice.Views
             }
             // Define the printer to use.
             printerSettings.PrinterName = strPrinterName;
+
+            var printers = System.Drawing.Printing.PrinterSettings.InstalledPrinters;
+
+            int printerIndex = 0;
+
+            foreach (String s in printers)
+            {
+                if (s.Equals(strPrinterName))
+                {
+                    break;
+                }
+                printerIndex++;
+            }
+            if (printerIndex == printers.Count)
+                printerIndex = 0;
+
             //xlApp.ActivePrinter.StartsWith(strPrinterName);
             //-----------------------------------------------------------------------------------------------------
             // Fill Contents
@@ -707,17 +723,31 @@ namespace SDCafeOffice.Views
             cell = xlWorkSheet.Evaluate("UNITPRICE");
             if (cell != null) cell.Value = "Price : $" + string.Format(txt_OUnitPrice.Text,"C2");
             //xlWorkSheet.PrintOutEx(1, xlWorkBook.Worksheets.Count, 1, false,"EPSON-1", false, Type.Missing, false);
-            xlWorkSheet.PrintOutEx(1, 1, iCopies, false, printerSettings.PrinterName);
+
+
+            //xlWorkSheet.PrintOutEx(1,1,1, false, printerSettings.PrinterName);
+            for (int i = 0; i < iCopies; i++)
+            {
+                xlWorkSheet.PrintOutEx(1, 1, 1, false, printers[printerIndex]);
+            }
+
             // --------------------------------------- Save Excel File -------------------------------------
             // Save and Close 
             //xlWorkBook.SaveAs(strExcelFullFileName, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, 
-            //                                        Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-            xlWorkBook.Save();
-            xlWorkBook.Close(true, misValue, misValue);
-            xlApp.Quit();
+            //
+            // Cleanup:
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            //Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+
             Marshal.ReleaseComObject(xlWorkSheet);
+            xlWorkBook.Close(true, misValue, misValue);
             Marshal.ReleaseComObject(xlWorkBook);
+            xlApp.Quit();
             Marshal.ReleaseComObject(xlApp);
+            xlWorkSheet = null;
+            xlWorkBook = null;
+            xlApp = null;
 
         }
 
