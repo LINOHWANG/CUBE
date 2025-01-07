@@ -7180,10 +7180,10 @@ namespace SDCafeSales.Views
                         orders = dbPOS.Get_Order_By_OrderId(iSelectedOrderId);
                         if (orders.Count > 0)
                         {
-                            if (orders[0].IsDiscounted)
+                            if ((orders[0].IsDiscounted) || (orders[0].OrderCategoryId != 0))
                             {
                                 // Already discounted order
-                                txtSelectedMenu.Text = "The Selected Item : " + orders[0].ProductName + " is already discounted !";
+                                txtSelectedMenu.Text = "The Selected Item : " + orders[0].ProductName + " is already discounted or not a sales item!";
                                 SystemSounds.Beep.Play();
                                 BarCode_Get_Focus();
                                 return;
