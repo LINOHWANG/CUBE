@@ -622,14 +622,14 @@ namespace SDCafeCommon.DataAccess
                             "PromoStartDate, PromoEndDate, PromoDay1, PromoDay2, PromoDay3, " +
                             "IsPrinter1, IsPrinter2, IsPrinter3, IsPrinter4, IsPrinter5, " +
                             "PromoPrice1, PromoPrice2, PromoPrice3, IsSoldOut, Deposit, RecyclingFee, ChillCharge, MemoText, BarCode, TaxCode, " +
-                            "IsManualItem, Balance," +
-                            "IsMainSalesButton, IsSalesButton, ForeColor, BackColor, CategoryId, IsButtonInButton ) " +
+                            "IsManualItem, Balance,IsMainSalesButton, IsSalesButton, ForeColor, BackColor, " +
+                            "CategoryId, IsButtonInButton, Brand, Size ) " +
                             "VALUES(@ProductName,@SecondName,@ProductTypeId,CAST(@OutUnitPrice as decimal(10,2)),CAST(@OutUnitPrice as decimal(10,2)),@IsTax1,@IsTax2,@IsTax3,@IsTaxInverseCalculation, " +
                             "@PromoStartDate,@PromoEndDate,@PromoDay1,@PromoDay2,@PromoDay3,@IsPrinter1,@IsPrinter2,@IsPrinter3,@IsPrinter4,@IsPrinter5,"+
                             "CAST(@PromoPrice1 as decimal(10,2)),CAST(@PromoPrice2 as decimal(10,2)),CAST(@PromoPrice3 as decimal(10,2)),@IsSoldOut," +
                             "CAST(@Deposit as decimal(10,2)),CAST(@RecyclingFee as decimal(10,2)),CAST(@ChillCharge as decimal(10,2)), @MemoText, @BarCode, @TaxCode, " +
-                            "@IsManualItem, @Balance, @IsMainSalesButton, " +
-                            "@IsSalesButton, @ForeColor, @BackColor, @CategoryId, @IsButtonInButton ); " +
+                            "@IsManualItem, @Balance, @IsMainSalesButton,@IsSalesButton, @ForeColor,  " +
+                            "@BackColor, @CategoryId, @IsButtonInButton , @Brand, @Size); " +
                             "SELECT CAST(SCOPE_IDENTITY() as int)";
                 //var count = connection.Execute(query, pos_ProductModel);
                 var id = connection.QuerySingle<int>(query, pos_ProductModel);
@@ -656,8 +656,8 @@ namespace SDCafeCommon.DataAccess
                                 "IsPrinter1=@IsPrinter1, IsPrinter2=@IsPrinter2, IsPrinter3=@IsPrinter3, IsPrinter4=@IsPrinter4, IsPrinter5=@IsPrinter5, " +
                                 "PromoPrice1=CAST(@PromoPrice1 as decimal(10,2)), PromoPrice2=CAST(@PromoPrice2 as decimal(10,2)), PromoPrice3=CAST(@PromoPrice3 as decimal(10,2)), IsSoldOut=@IsSoldOut, " +
                                 "Deposit=CAST(@Deposit as decimal(10,2)), RecyclingFee=CAST(@RecyclingFee as decimal(10,2)),ChillCharge=CAST(@ChillCharge as decimal(10,2)), MemoText=@MemoText, " +
-                                "BarCode=@BarCode, TaxCode=@TaxCode, IsManualItem=@IsManualItem, Balance=@Balance, " +
-                                "IsMainSalesButton = @IsMainSalesButton, IsSalesButton=@IsSalesButton, ForeColor = @ForeColor, BackColor = @BackColor, CategoryId=@CategoryId, IsButtonInButton=@IsButtonInButton  " +
+                                "BarCode=@BarCode, TaxCode=@TaxCode, IsManualItem=@IsManualItem, Balance=@Balance,IsMainSalesButton = @IsMainSalesButton, IsSalesButton=@IsSalesButton, ForeColor = @ForeColor, BackColor = @BackColor,  " +
+                                "CategoryId=@CategoryId, IsButtonInButton=@IsButtonInButton, Brand=@Brand, Size = @Size  " +
                                 "WHERE Id = @Id";
                 var count = connection.Execute(query, pos_ProductModel);
                 return count;

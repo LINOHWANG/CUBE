@@ -1404,12 +1404,13 @@ namespace SDCafeKitchen.Views
             if (iSelected_ProdId == 0)
             {
                 strSelProdId = String.Empty;
+                FrmProd = new frmProduct(strSelProdId, "", true, null);
             }
             else
             {
                 strSelProdId = iSelected_ProdId.ToString();
+                FrmProd = new frmProduct(strSelProdId, "", false, null);
             }
-            FrmProd = new frmProduct(strSelProdId, null);
             FrmProd.ShowDialog(); // Show();
             bt_Refresh.PerformClick();
         }

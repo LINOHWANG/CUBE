@@ -49,5 +49,8 @@ namespace SDCafeCommon.Model
 
         public int CategoryId { get; set; }
         public bool IsButtonInButton { get; set; }
+        public string Brand { get; set; }
+        public string Size { get; set; }
+
     }
 }

@@ -90,10 +90,12 @@
             this.label23 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
+            this.bt_Receiving = new SDCafeCommon.Utilities.CustomButton();
             this.checkSalesButton = new System.Windows.Forms.CheckBox();
             this.label24 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btButtonColor = new SDCafeCommon.Utilities.CustomButton();
             this.picBackColor = new System.Windows.Forms.PictureBox();
             this.picForeColor = new System.Windows.Forms.PictureBox();
             this.cb_TaxCode = new System.Windows.Forms.ComboBox();
@@ -101,13 +103,15 @@
             this.cb_Category = new System.Windows.Forms.ComboBox();
             this.label27 = new System.Windows.Forms.Label();
             this.checkBIB = new System.Windows.Forms.CheckBox();
-            this.btButtonColor = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_Receiving = new SDCafeCommon.Utilities.CustomButton();
             this.bt_RprintLabel = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Delete = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Add = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
+            this.label28 = new System.Windows.Forms.Label();
+            this.txt_Brand = new System.Windows.Forms.TextBox();
+            this.label29 = new System.Windows.Forms.Label();
+            this.txt_Size = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -255,7 +259,7 @@
             this.checkPRT4.AutoSize = true;
             this.checkPRT4.Enabled = false;
             this.checkPRT4.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT4.Location = new System.Drawing.Point(670, 314);
+            this.checkPRT4.Location = new System.Drawing.Point(815, 329);
             this.checkPRT4.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT4.Name = "checkPRT4";
             this.checkPRT4.Size = new System.Drawing.Size(67, 22);
@@ -269,7 +273,7 @@
             this.checkPRT3.AutoSize = true;
             this.checkPRT3.Enabled = false;
             this.checkPRT3.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT3.Location = new System.Drawing.Point(591, 314);
+            this.checkPRT3.Location = new System.Drawing.Point(801, 327);
             this.checkPRT3.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT3.Name = "checkPRT3";
             this.checkPRT3.Size = new System.Drawing.Size(67, 22);
@@ -283,7 +287,7 @@
             this.checkPRT2.AutoSize = true;
             this.checkPRT2.Enabled = false;
             this.checkPRT2.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkPRT2.Location = new System.Drawing.Point(504, 314);
+            this.checkPRT2.Location = new System.Drawing.Point(802, 332);
             this.checkPRT2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT2.Name = "checkPRT2";
             this.checkPRT2.Size = new System.Drawing.Size(67, 22);
@@ -297,13 +301,14 @@
             this.checkPRT1.AutoSize = true;
             this.checkPRT1.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkPRT1.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.checkPRT1.Location = new System.Drawing.Point(441, 314);
+            this.checkPRT1.Location = new System.Drawing.Point(808, 327);
             this.checkPRT1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.checkPRT1.Name = "checkPRT1";
             this.checkPRT1.Size = new System.Drawing.Size(67, 22);
             this.checkPRT1.TabIndex = 14;
             this.checkPRT1.Text = "PRT1";
             this.checkPRT1.UseVisualStyleBackColor = true;
+            this.checkPRT1.Visible = false;
             // 
             // checkPRT5
             // 
@@ -588,12 +593,13 @@
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label13.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label13.Location = new System.Drawing.Point(356, 314);
+            this.label13.Location = new System.Drawing.Point(802, 327);
             this.label13.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(73, 22);
             this.label13.TabIndex = 36;
             this.label13.Text = "Printer";
+            this.label13.Visible = false;
             // 
             // label14
             // 
@@ -731,7 +737,7 @@
             // 
             this.txt_Balance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.txt_Balance.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Balance.Location = new System.Drawing.Point(100, 26);
+            this.txt_Balance.Location = new System.Drawing.Point(104, 21);
             this.txt_Balance.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Balance.Name = "txt_Balance";
             this.txt_Balance.Size = new System.Drawing.Size(136, 29);
@@ -789,7 +795,7 @@
             // 
             this.txt_Receiving.BackColor = System.Drawing.Color.Silver;
             this.txt_Receiving.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Receiving.Location = new System.Drawing.Point(100, 61);
+            this.txt_Receiving.Location = new System.Drawing.Point(104, 56);
             this.txt_Receiving.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Receiving.Name = "txt_Receiving";
             this.txt_Receiving.Size = new System.Drawing.Size(136, 29);
@@ -808,9 +814,9 @@
             this.groupBox2.Controls.Add(this.txt_Receiving);
             this.groupBox2.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.ForeColor = System.Drawing.Color.Black;
-            this.groupBox2.Location = new System.Drawing.Point(456, 354);
+            this.groupBox2.Location = new System.Drawing.Point(456, 393);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(249, 129);
+            this.groupBox2.Size = new System.Drawing.Size(249, 105);
             this.groupBox2.TabIndex = 59;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "QTY Balance (Inventory)";
@@ -820,7 +826,7 @@
             this.label23.AutoSize = true;
             this.label23.Font = new System.Drawing.Font("Arial Narrow", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.label23.Location = new System.Drawing.Point(99, 87);
+            this.label23.Location = new System.Drawing.Point(103, 82);
             this.label23.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(137, 20);
@@ -831,7 +837,7 @@
             // 
             this.label22.AutoSize = true;
             this.label22.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label22.Location = new System.Drawing.Point(9, 29);
+            this.label22.Location = new System.Drawing.Point(13, 24);
             this.label22.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(67, 23);
@@ -842,12 +848,29 @@
             // 
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label21.Location = new System.Drawing.Point(9, 67);
+            this.label21.Location = new System.Drawing.Point(13, 62);
             this.label21.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(85, 23);
             this.label21.TabIndex = 60;
             this.label21.Text = "Receiving";
+            // 
+            // bt_Receiving
+            // 
+            this.bt_Receiving.BackColor = System.Drawing.Color.DarkGray;
+            this.bt_Receiving.CornerRadius = 30;
+            this.bt_Receiving.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
+            this.bt_Receiving.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.bt_Receiving.Location = new System.Drawing.Point(271, 54);
+            this.bt_Receiving.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_Receiving.Name = "bt_Receiving";
+            this.bt_Receiving.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Receiving.Size = new System.Drawing.Size(142, 44);
+            this.bt_Receiving.TabIndex = 58;
+            this.bt_Receiving.Text = "Receiving";
+            this.bt_Receiving.Visible = false;
+            this.bt_Receiving.Click += new System.EventHandler(this.bt_Receiving_Click);
             // 
             // checkSalesButton
             // 
@@ -892,12 +915,28 @@
             this.groupBox3.Controls.Add(this.picBackColor);
             this.groupBox3.Controls.Add(this.picForeColor);
             this.groupBox3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold);
-            this.groupBox3.Location = new System.Drawing.Point(711, 352);
+            this.groupBox3.Location = new System.Drawing.Point(711, 366);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(158, 131);
             this.groupBox3.TabIndex = 66;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Button Color";
+            // 
+            // btButtonColor
+            // 
+            this.btButtonColor.BackColor = System.Drawing.Color.DarkGray;
+            this.btButtonColor.CornerRadius = 5;
+            this.btButtonColor.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btButtonColor.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btButtonColor.Location = new System.Drawing.Point(16, 89);
+            this.btButtonColor.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.btButtonColor.Name = "btButtonColor";
+            this.btButtonColor.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.btButtonColor.Size = new System.Drawing.Size(129, 29);
+            this.btButtonColor.TabIndex = 65;
+            this.btButtonColor.Text = "TEST";
             // 
             // picBackColor
             // 
@@ -927,7 +966,7 @@
             this.cb_TaxCode.FormattingEnabled = true;
             this.cb_TaxCode.Location = new System.Drawing.Point(527, 273);
             this.cb_TaxCode.Name = "cb_TaxCode";
-            this.cb_TaxCode.Size = new System.Drawing.Size(153, 30);
+            this.cb_TaxCode.Size = new System.Drawing.Size(174, 30);
             this.cb_TaxCode.TabIndex = 67;
             this.cb_TaxCode.TextChanged += new System.EventHandler(this.cb_TaxCode_TextChanged);
             // 
@@ -975,39 +1014,6 @@
             this.checkBIB.Text = "Button In Button ?";
             this.checkBIB.UseVisualStyleBackColor = true;
             this.checkBIB.CheckedChanged += new System.EventHandler(this.checkBIB_CheckedChanged);
-            // 
-            // btButtonColor
-            // 
-            this.btButtonColor.BackColor = System.Drawing.Color.DarkGray;
-            this.btButtonColor.CornerRadius = 5;
-            this.btButtonColor.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btButtonColor.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btButtonColor.Location = new System.Drawing.Point(16, 89);
-            this.btButtonColor.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.btButtonColor.Name = "btButtonColor";
-            this.btButtonColor.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft) 
-            | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.btButtonColor.Size = new System.Drawing.Size(129, 29);
-            this.btButtonColor.TabIndex = 65;
-            this.btButtonColor.Text = "TEST";
-            // 
-            // bt_Receiving
-            // 
-            this.bt_Receiving.BackColor = System.Drawing.Color.DarkGray;
-            this.bt_Receiving.CornerRadius = 30;
-            this.bt_Receiving.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Receiving.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.bt_Receiving.Location = new System.Drawing.Point(271, 54);
-            this.bt_Receiving.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_Receiving.Name = "bt_Receiving";
-            this.bt_Receiving.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Receiving.Size = new System.Drawing.Size(142, 44);
-            this.bt_Receiving.TabIndex = 58;
-            this.bt_Receiving.Text = "Receiving";
-            this.bt_Receiving.Visible = false;
-            this.bt_Receiving.Click += new System.EventHandler(this.bt_Receiving_Click);
             // 
             // bt_RprintLabel
             // 
@@ -1083,12 +1089,58 @@
             this.bt_Save.Text = "Save";
             this.bt_Save.Click += new System.EventHandler(this.bt_Save_Click);
             // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label28.Location = new System.Drawing.Point(422, 310);
+            this.label28.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(67, 22);
+            this.label28.TabIndex = 73;
+            this.label28.Text = "Brand";
+            // 
+            // txt_Brand
+            // 
+            this.txt_Brand.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Brand.Location = new System.Drawing.Point(529, 307);
+            this.txt_Brand.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_Brand.Name = "txt_Brand";
+            this.txt_Brand.Size = new System.Drawing.Size(172, 29);
+            this.txt_Brand.TabIndex = 72;
+            this.txt_Brand.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label29.Location = new System.Drawing.Point(423, 345);
+            this.label29.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(49, 22);
+            this.label29.TabIndex = 75;
+            this.label29.Text = "Size";
+            // 
+            // txt_Size
+            // 
+            this.txt_Size.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Size.Location = new System.Drawing.Point(530, 342);
+            this.txt_Size.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_Size.Name = "txt_Size";
+            this.txt_Size.Size = new System.Drawing.Size(172, 29);
+            this.txt_Size.TabIndex = 74;
+            this.txt_Size.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // frmProduct
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 643);
             this.ControlBox = false;
+            this.Controls.Add(this.label29);
+            this.Controls.Add(this.txt_Size);
+            this.Controls.Add(this.label28);
+            this.Controls.Add(this.txt_Brand);
             this.Controls.Add(this.checkBIB);
             this.Controls.Add(this.label27);
             this.Controls.Add(this.cb_Category);
@@ -1244,5 +1296,9 @@
         private System.Windows.Forms.ComboBox cb_Category;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.CheckBox checkBIB;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.TextBox txt_Brand;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.TextBox txt_Size;
     }
 }

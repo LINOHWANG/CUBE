@@ -56,6 +56,15 @@
       <HintPath>..\..\Kitchen\SDCafeKitchen\packages\Dapper.1.60.6\lib\net451\Dapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenFoodFacts4Net.ApiClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OpenFoodFacts4Net.ApiClient.2.0.0\lib\netstandard2.0\OpenFoodFacts4Net.ApiClient.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenFoodFacts4Net.Json, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OpenFoodFacts4Net.Json.1.0.0\lib\netstandard2.0\OpenFoodFacts4Net.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />

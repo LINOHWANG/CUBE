@@ -170,6 +170,7 @@
             this.text_BarCode.Name = "text_BarCode";
             this.text_BarCode.Size = new System.Drawing.Size(219, 29);
             this.text_BarCode.TabIndex = 53;
+            this.text_BarCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.text_BarCode_KeyPress);
             // 
             // cb_PType
             // 

@@ -41,6 +41,9 @@ namespace SDCafeSales.Views
         //List<OpenFoodFacts4Net.Json.Data.GetProductResponse> off_ProdResp = new List<OpenFoodFacts4Net.Json.Data.GetProductResponse>();
         Task<OpenFoodFacts4Net.Json.Data.GetProductResponse> off_ProdResp = null; //Feature #3632
 
+        private string m_strBrand;
+        private string m_strSize;
+
         public Color[] btColor =
 {
             Color.Crimson,
@@ -252,16 +255,20 @@ namespace SDCafeSales.Views
                     if (off_ProdResp.Result.Product.ImageUrl != null)
                         util.Logger("Product found : ImageUrl = " + off_ProdResp.Result.Product.ImageUrl);
                     if (off_ProdResp.Result.Product.ServingSize != null)
+                    {
                         util.Logger("Product found : ServingSize = " + off_ProdResp.Result.Product.ServingSize);
-
-                    if (off_ProdResp.Result.Product.Categories != "")
-                        p_strCategory = off_ProdResp.Result.Product.Categories;
-                    else
-                        p_strCategory = "";
-                    if (off_ProdResp.Result.Product.ImageUrl != "")
-                        p_strImageUrl = off_ProdResp.Result.Product.ImageUrl;
-                    else
-                        p_strImageUrl = "";
+                        m_strSize = off_ProdResp.Result.Product.ServingSize;
+                    }
+                    if (off_ProdResp.Result.Product.BrandsTags != null)
+                    {
+                        List<string> brands = new List<string>();
+                        brands = off_ProdResp.Result.Product.BrandsTags.ToList();
+                        foreach (string brand in brands)
+                        {
+                            util.Logger("Product found : Brand = " + brand);
+                            m_strBrand = brand;
+                        }
+                    }
                     if (off_ProdResp.Result.Product.ProductName != null)
                     {
                         if (off_ProdResp.Result.Product.ProductName != "")
@@ -372,6 +379,8 @@ namespace SDCafeSales.Views
                 p_NewProduct.PromoPrice2 = 0;
                 p_NewProduct.PromoPrice3 = 0;
                 p_NewProduct.IsTaxInverseCalculation = false;
+                p_NewProduct.Brand = m_strBrand;
+                p_NewProduct.Size = m_strSize;
                 // Check Product Type
                 if (p_strCategory != "")
                 {

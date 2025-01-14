@@ -19,6 +19,7 @@ using Font = Microsoft.Office.Interop.Excel.Font;
 using System.Runtime.InteropServices;
 using System.Drawing.Printing;
 using System.Security.Cryptography;
+using OpenFoodFacts4Net.Json;
 
 namespace SDCafeOffice.Views
 {
@@ -39,15 +40,24 @@ namespace SDCafeOffice.Views
         private Color m_ButtonBackColor;
         private Color m_ButtonForeColor;
         private frmMain FrmMain;
+        private bool m_blnAddNewProd;
+        private string m_strBarCode;
+
+        OpenFoodFacts4Net.ApiClient.Client off_Apiclient = new OpenFoodFacts4Net.ApiClient.Client(); //Feature #3632
+        List<OpenFoodFacts4Net.Json.Data.Product> off_Products = new List<OpenFoodFacts4Net.Json.Data.Product>(); //Feature #3632
+        //List<OpenFoodFacts4Net.Json.Data.GetProductResponse> off_ProdResp = new List<OpenFoodFacts4Net.Json.Data.GetProductResponse>();
+        Task<OpenFoodFacts4Net.Json.Data.GetProductResponse> off_ProdResp = null; //Feature #3632
 
         public frmProduct()
         {
             InitializeComponent();
         }
 
-        public frmProduct(String strInProdID, frmMain _FrmMain)
+        public frmProduct(String strInProdID, string _strBarCode, bool _b_AddNewProduct, frmMain _FrmMain)
         {
             FrmMain = _FrmMain;
+            m_strBarCode = _strBarCode;
+            m_blnAddNewProd = _b_AddNewProduct;
             InitializeComponent();
             txt_ProdId.Text = strInProdID;
             txt_ProdId.Enabled = false;
@@ -58,6 +68,12 @@ namespace SDCafeOffice.Views
             if (String.IsNullOrEmpty(strInProdID))
             {
                 txtMessage.Text = "No product was selected. Insert(Save) mode is on!";
+                if ((m_blnAddNewProd) && (!string.IsNullOrEmpty(m_strBarCode)))
+                {
+                    txt_BarCode.Text = m_strBarCode;
+                    txtMessage.Text = "Add New Product Mode is on!";
+                    LookUpProductFromOpenFoodFacts();
+                }
             }
             else
             {
@@ -65,7 +81,75 @@ namespace SDCafeOffice.Views
                 Load_Product_Info(strInProdID);
             }
         }
+        private async void LookUpProductFromOpenFoodFacts()
+        {
+            string p_strProductName = "";
+            try
+            {
+                off_ProdResp = off_Apiclient.GetProductAsync(m_strBarCode);
+                await Task.WhenAll(off_ProdResp);
+            }
+            catch (Exception ex)
+            {
+                util.Logger("Barcode Not found : " + ex.Message);
+                off_ProdResp = null;
+            }
 
+            if (off_ProdResp != null)
+            {
+                if (off_ProdResp.Result != null)
+                {
+                    if (off_ProdResp.Result.Product.ProductName != null)
+                        util.Logger("Product found : Product = " + off_ProdResp.Result.Product.ProductName);
+                    if (off_ProdResp.Result.Product.Categories != null)
+                        util.Logger("Product found : Categories = " + off_ProdResp.Result.Product.Categories);
+                    if (off_ProdResp.Result.Product.ImageUrl != null)
+                        util.Logger("Product found : ImageUrl = " + off_ProdResp.Result.Product.ImageUrl);
+                    if (off_ProdResp.Result.Product.ServingSize != null)
+                    {
+                        util.Logger("Product found : ServingSize = " + off_ProdResp.Result.Product.ServingSize);
+                        txt_Size.Text = off_ProdResp.Result.Product.ServingSize;
+                    }
+                    if (off_ProdResp.Result.Product.BrandsTags != null)
+                    {
+                        List<string> brands = new List<string>();
+                        brands = off_ProdResp.Result.Product.BrandsTags.ToList();
+                        foreach (string brand in brands)
+                        {
+                            util.Logger("Product found : Brand = " + brand);
+                            txt_Brand.Text = brand;
+                        }
+                    }
+                    /*if (off_ProdResp.Result.Product.Categories != "")
+                        p_strCategory = off_ProdResp.Result.Product.Categories;
+                    else
+                        p_strCategory = "";
+                    if (off_ProdResp.Result.Product.ImageUrl != "")
+                        p_strImageUrl = off_ProdResp.Result.Product.ImageUrl;
+                    else
+                        p_strImageUrl = "";
+                    */
+                    if (off_ProdResp.Result.Product.ProductName != null)
+                    {
+                        if (off_ProdResp.Result.Product.ProductName != "")
+                            p_strProductName = off_ProdResp.Result.Product.ProductName;
+                        else
+                            p_strProductName = "";
+                    }
+                }
+                else
+                {
+                    p_strProductName = "";
+                }
+            }
+            else
+            {
+                p_strProductName = "";
+            }
+            txt_ProductName.Text = p_strProductName;
+            txt_SecondName.Text = "";
+            txt_ProductName.Focus();
+        }
         private void Load_Category_Combo_Contents()
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
@@ -253,6 +337,23 @@ namespace SDCafeOffice.Views
 
                 checkBIB.Checked = prods[0].IsButtonInButton;
 
+                if (string.IsNullOrEmpty(prods[0].Brand))
+                {
+                    txt_Brand.Text = "";
+                }
+                else
+                {
+                    txt_Brand.Text = prods[0].Brand;
+                }
+                if (string.IsNullOrEmpty(prods[0].Size))
+                {
+                    txt_Size.Text = "";
+                }
+                else
+                {
+                    txt_Size.Text = prods[0].Size;
+                }
+
             }
 
         }
@@ -415,7 +516,9 @@ namespace SDCafeOffice.Views
                 ForeColor = m_ButtonForeColor.ToArgb().ToString(),
                 BackColor = m_ButtonBackColor.ToArgb().ToString(),
                 CategoryId = iCategoryId,
-                IsButtonInButton = checkBIB.Checked
+                IsButtonInButton = checkBIB.Checked,
+                Brand = txt_Brand.Text,
+                Size = txt_Size.Text
             });
             int iProdCnt = dbPOS.Update_Product(prods[0]);
             if (string.IsNullOrEmpty(txt_BarCode.Text))
@@ -557,7 +660,9 @@ namespace SDCafeOffice.Views
                 ForeColor = m_ButtonForeColor.ToArgb().ToString(),
                 BackColor = m_ButtonBackColor.ToArgb().ToString(),
                 CategoryId = iCategoryId,
-                IsButtonInButton = checkBIB.Checked
+                IsButtonInButton = checkBIB.Checked,
+                Brand = txt_Brand.Text,
+                Size = txt_Size.Text
 
             });
             int iProdId = dbPOS.Insert_Product(prods[0]);

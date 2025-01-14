@@ -388,7 +388,7 @@ namespace SDCafeOffice
                 // in case of only one product, show the product form
                 if (prods.Count == 1)
                 {
-                    FrmProd = new frmProduct(prods[0].Id.ToString(), this);
+                    FrmProd = new frmProduct(prods[0].Id.ToString(), "", false, this);
                     FrmProd.m_strStation = strStation;
                     FrmProd.m_strUserPass = strUserPass;
                     FrmProd.ShowDialog();
@@ -474,6 +474,23 @@ namespace SDCafeOffice
                 progBarExport.Visible = false;
                 Cursor.Current = Cursors.Default;
                 text_BarCode.Focus();
+            }
+            else
+            {
+                //MessageBox.Show("No Product Found!", "Information");
+                util.Logger("No Product Found!");
+                // if text_BarCode.Text is not empty, then show the product form with the barcode
+                if (!String.IsNullOrEmpty(text_BarCode.Text))
+                {
+                    // Add new product
+                    FrmProd = new frmProduct("", text_BarCode.Text, true, this);
+                    FrmProd.m_strStation = strStation;
+                    FrmProd.m_strUserPass = strUserPass;
+                    FrmProd.ShowDialog();
+                    text_PName.Text = "";
+                    text_BarCode.Text = "";
+                    text_BarCode.Focus();
+                }
             }
         }
 
@@ -1061,7 +1078,7 @@ namespace SDCafeOffice
                     {
                         strSelProdId = row.Cells[0].Value.ToString();
                     }
-                    FrmProd = new frmProduct(strSelProdId, this);
+                    FrmProd = new frmProduct(strSelProdId,"",false, this);
                     FrmProd.m_strStation = strStation;
                     FrmProd.m_strUserPass =  strUserPass;
                     FrmProd.ShowDialog();
