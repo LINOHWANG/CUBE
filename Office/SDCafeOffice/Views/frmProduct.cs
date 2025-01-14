@@ -47,6 +47,9 @@ namespace SDCafeOffice.Views
         List<OpenFoodFacts4Net.Json.Data.Product> off_Products = new List<OpenFoodFacts4Net.Json.Data.Product>(); //Feature #3632
         //List<OpenFoodFacts4Net.Json.Data.GetProductResponse> off_ProdResp = new List<OpenFoodFacts4Net.Json.Data.GetProductResponse>();
         Task<OpenFoodFacts4Net.Json.Data.GetProductResponse> off_ProdResp = null; //Feature #3632
+        private int m_iSelectedTypeId;
+        private int m_iSelectedCategoryId;
+        private string m_strTaxCode;
 
         public frmProduct()
         {
@@ -366,7 +369,13 @@ namespace SDCafeOffice.Views
 
         private void bt_Save_Click(object sender, EventArgs e)
         {
-            DataAccessPOS dbPOS = new DataAccessPOS();
+            bool blnValid = ValidationInputData();
+
+            if (!blnValid)
+            {
+                //txtMessage.Text = "Please check your fields!";
+                return;
+            }
 
             if (String.IsNullOrEmpty(txt_ProdId.Text))
             {
@@ -384,14 +393,13 @@ namespace SDCafeOffice.Views
             }
         }
 
-        private bool Update_Product_From_View()
+        private bool ValidationInputData()
         {
-            m_blnOnSave = true;
-
             DataAccessPOS dbPOS = new DataAccessPOS();
-            int iTypeId = 0;
-            int iCategoryId = 0;
-            string strTaxCode = "";
+
+            m_iSelectedTypeId = 0;
+            m_iSelectedCategoryId = 0;
+            m_strTaxCode = "";
 
             if (String.IsNullOrEmpty(txt_ProductName.Text))
             {
@@ -404,13 +412,12 @@ namespace SDCafeOffice.Views
             {
                 txt_ProductName.BackColor = Color.Empty;
             }
-
             if (cb_ProdType.SelectedItem != null)
             {
                 pTypes = dbPOS.Get_ProductTypeId_By_TypeName(cb_ProdType.SelectedItem.ToString());
                 if (pTypes.Count == 1)
                 {
-                    iTypeId = pTypes[0].Id;
+                    m_iSelectedTypeId = pTypes[0].Id;
                 }
                 cb_ProdType.BackColor = Color.Empty;
             }
@@ -421,13 +428,12 @@ namespace SDCafeOffice.Views
                 cb_ProdType.BackColor = Color.DarkRed;
                 return false;
             }
-
             if (cb_Category.SelectedItem != null)
             {
                 categories = dbPOS.Get_Category_By_Name(cb_Category.SelectedItem.ToString());
                 if (categories.Count == 1)
                 {
-                    iCategoryId = categories[0].Id;
+                    m_iSelectedCategoryId = categories[0].Id;
                 }
                 cb_Category.BackColor = Color.Empty;
             }
@@ -438,8 +444,6 @@ namespace SDCafeOffice.Views
                 cb_Category.BackColor = Color.DarkRed;
                 return false;
             }
-
-
             if (String.IsNullOrEmpty(txt_IUnitPrice.Text)) txt_IUnitPrice.Text = "0";
             if (String.IsNullOrEmpty(txt_OUnitPrice.Text)) txt_OUnitPrice.Text = "0";
 
@@ -462,19 +466,24 @@ namespace SDCafeOffice.Views
             {
                 if (cb_TaxCode.SelectedItem != null)
                 {
-                    strTaxCode = cb_TaxCode.SelectedItem.ToString();
+                    m_strTaxCode = cb_TaxCode.SelectedItem.ToString();
                 }
                 else
                 {
-                    strTaxCode = "";
+                    m_strTaxCode = "";
                 }
-
             }
             catch (System.NullReferenceException ex)
             {
-                strTaxCode = "";
+                m_strTaxCode = "";
             }
+            return true;
+        }
 
+        private bool Update_Product_From_View()
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            m_blnOnSave = true;
 
             prods.Clear();
             prods.Add(new POS_ProductModel()
@@ -482,7 +491,7 @@ namespace SDCafeOffice.Views
                 Id = int.Parse(txt_ProdId.Text),
                 ProductName = txt_ProductName.Text,
                 SecondName = txt_SecondName.Text,
-                ProductTypeId = iTypeId,
+                ProductTypeId = m_iSelectedTypeId,
                 InUnitPrice = float.Parse(txt_IUnitPrice.Text),
                 OutUnitPrice = float.Parse(txt_OUnitPrice.Text),
                 IsTax1 = checkTax1.Checked,
@@ -510,12 +519,12 @@ namespace SDCafeOffice.Views
                 IsManualItem = checkManual.Checked,
                 Balance = int.Parse(txt_Balance.Text),
                 BarCode = txt_BarCode.Text,
-                TaxCode = strTaxCode,
+                TaxCode = m_strTaxCode,
                 IsMainSalesButton = checkMainSalesButton.Checked,
                 IsSalesButton = checkSalesButton.Checked,
                 ForeColor = m_ButtonForeColor.ToArgb().ToString(),
                 BackColor = m_ButtonBackColor.ToArgb().ToString(),
-                CategoryId = iCategoryId,
+                CategoryId = m_iSelectedCategoryId,
                 IsButtonInButton = checkBIB.Checked,
                 Brand = txt_Brand.Text,
                 Size = txt_Size.Text
@@ -541,92 +550,12 @@ namespace SDCafeOffice.Views
         {
             m_blnOnSave = true;
             DataAccessPOS dbPOS = new DataAccessPOS();
-            int iTypeId = 0;
-            int iCategoryId = 0;
-            string strTaxCode = "";
-
-            if (String.IsNullOrEmpty(txt_ProductName.Text))
-            {
-                txtMessage.Text = "Product Name is empty!";
-                txt_ProductName.Focus();
-                txt_ProductName.BackColor = Color.DarkRed;
-                return false;
-            }
-            else
-            {
-                txt_ProductName.BackColor = Color.Empty;
-            }
-            if (cb_ProdType.SelectedItem != null)
-            {
-                pTypes = dbPOS.Get_ProductTypeId_By_TypeName(cb_ProdType.SelectedItem.ToString());
-                if (pTypes.Count == 1)
-                {
-                    iTypeId = pTypes[0].Id;
-                }
-                cb_ProdType.BackColor = Color.Empty;
-            }
-            else
-            {
-                txtMessage.Text = "Please select a Product Type!";
-                cb_ProdType.Focus();
-                cb_ProdType.BackColor = Color.DarkRed;
-                return false;
-            }
-            if (cb_Category.SelectedItem != null)
-            {
-                categories = dbPOS.Get_Category_By_Name(cb_Category.SelectedItem.ToString());
-                if (categories.Count == 1)
-                {
-                    iCategoryId = categories[0].Id;
-                }
-                cb_Category.BackColor = Color.Empty;
-            }
-            else
-            {
-                txtMessage.Text = "Please select a Category!";
-                cb_Category.Focus();
-                cb_Category.BackColor = Color.DarkRed;
-                return false;
-            }
-            if (String.IsNullOrEmpty(txt_IUnitPrice.Text)) txt_IUnitPrice.Text = "0";
-            if (String.IsNullOrEmpty(txt_OUnitPrice.Text)) txt_OUnitPrice.Text = "0";
-
-            if (String.IsNullOrEmpty(cb_PromDay1.Text)) cb_PromDay1.Text = "0";
-            if (String.IsNullOrEmpty(cb_PromDay2.Text)) cb_PromDay2.Text = "0";
-            if (String.IsNullOrEmpty(cb_PromDay3.Text)) cb_PromDay3.Text = "0";
-            if (String.IsNullOrEmpty(txt_PromPrice1.Text)) txt_PromPrice1.Text = "0";
-            if (String.IsNullOrEmpty(txt_PromPrice2.Text)) txt_PromPrice2.Text = "0";
-            if (String.IsNullOrEmpty(txt_PromPrice3.Text)) txt_PromPrice3.Text = "0";
-
-            if (String.IsNullOrEmpty(txt_Deposit.Text)) txt_Deposit.Text = "0";
-            if (String.IsNullOrEmpty(txt_RecyclingFee.Text)) txt_RecyclingFee.Text = "0";
-            if (String.IsNullOrEmpty(txt_ChillCharge.Text)) txt_ChillCharge.Text = "0";
-
-            if (String.IsNullOrEmpty(txt_Balance.Text)) txt_Balance.Text = "0";
-
-            if (txt_Memo.Text.Length > 500) txt_Memo.Text = txt_Memo.Text.Substring(0, 500);
-
-            try
-            {
-                if (cb_TaxCode.SelectedItem != null)
-                {
-                    strTaxCode = cb_TaxCode.SelectedItem.ToString();
-                }
-                else
-                {
-                    strTaxCode = "";
-                }
-            }
-            catch (System.NullReferenceException ex)
-            {
-                strTaxCode = "";
-            }
 
             prods.Add(new POS_ProductModel()
             {
                 ProductName = txt_ProductName.Text,
                 SecondName = txt_SecondName.Text,
-                ProductTypeId = iTypeId,
+                ProductTypeId = m_iSelectedTypeId,
                 InUnitPrice = float.Parse(txt_IUnitPrice.Text),
                 OutUnitPrice = float.Parse(txt_OUnitPrice.Text),
                 IsTax1 = checkTax1.Checked,
@@ -652,14 +581,14 @@ namespace SDCafeOffice.Views
                 ChillCharge = float.Parse(txt_ChillCharge.Text),
                 MemoText = txt_Memo.Text,
                 BarCode = txt_BarCode.Text, //string.Empty,
-                TaxCode = strTaxCode,
+                TaxCode = m_strTaxCode,
                 IsManualItem = checkManual.Checked,
                 Balance = int.Parse(txt_Balance.Text),
                 IsMainSalesButton = checkMainSalesButton.Checked,
                 IsSalesButton = checkSalesButton.Checked,
                 ForeColor = m_ButtonForeColor.ToArgb().ToString(),
                 BackColor = m_ButtonBackColor.ToArgb().ToString(),
-                CategoryId = iCategoryId,
+                CategoryId = m_iSelectedCategoryId,
                 IsButtonInButton = checkBIB.Checked,
                 Brand = txt_Brand.Text,
                 Size = txt_Size.Text
@@ -703,6 +632,11 @@ namespace SDCafeOffice.Views
 
         private void bt_Add_Click(object sender, EventArgs e)
         {
+            bool blnValid = ValidationInputData();
+            if (!blnValid)
+            {
+                return;
+            }
             Insert_Product_From_View();
         }
 
@@ -727,7 +661,10 @@ namespace SDCafeOffice.Views
                         bt_Exit.PerformClick();
                     }
                 }
-
+            }
+            else
+            {
+                txtMessage.Text = "Please select a Product to delete!";
             }
         }
 
