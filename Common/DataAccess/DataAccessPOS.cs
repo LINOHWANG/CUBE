@@ -1183,15 +1183,21 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                var output = connection.Query<POS_ProductModel>($"select Top {iTop} * from Product WHERE ProductTypeId = {iSelectedProdTypeID} Order by IsManualItem Desc, {p_strSortOrder}").ToList();
+                var output = connection.Query<POS_ProductModel>($"select Top {iTop} * from Product WHERE ProductTypeId = {iSelectedProdTypeID} Order by {p_strSortOrder}").ToList();
                 return output;
             }
         }
-        public List<POS_ProductModel> Get_All_DefaultSales_Products()
+        public List<POS_ProductModel> Get_All_DefaultSales_Products(string p_strSortOrder)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                var output = connection.Query<POS_ProductModel>($"select * from Product WHERE ISNULL(IsMainSalesButton,0) = 1 Order by IsManualItem Desc, OutUnitPrice").ToList();
+                //var output = connection.Query<POS_ProductModel>($"select * from Product WHERE ISNULL(IsMainSalesButton,0) = 1 Order by IsManualItem Desc, OutUnitPrice").ToList();
+                string strSQL = $"select * from Product WHERE ISNULL(IsMainSalesButton,0) = 1 Order by IsManualItem Desc, OutUnitPrice";
+                if (p_strSortOrder != "")
+                {
+                    strSQL = $"select * from Product WHERE ISNULL(IsMainSalesButton,0) = 1 Order by {p_strSortOrder}";
+                }
+                var output = connection.Query<POS_ProductModel>(strSQL).ToList();
                 return output;
             }
         }
