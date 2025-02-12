@@ -4966,6 +4966,7 @@ namespace SDCafeSales.Views
         private void Process_Receipt(bool IsInvoice, bool IsMerchantCopy)
         {
             util.Logger("Process_Receipt InvNo  :" + iNewInvNo.ToString());
+
             if (!IsInvoice)
             {
                 //Print_Receipt(IsInvoice, false);
@@ -5001,6 +5002,13 @@ namespace SDCafeSales.Views
             List<POS1_TranCollectionModel> cols = new List<POS1_TranCollectionModel>();
             List<POS1_OrderCompleteModel> orderComItems = new List<POS1_OrderCompleteModel>();
             List<CCardReceipt> cardReceipts = new List<CCardReceipt>();
+
+            // Open Cash Drawer
+            if (dbPOS.Get_SysConfig_By_Name("IS_CASHDRAWER_OPEN")[0].ConfigValue.Trim().Contains("TRUE"))
+            {
+                util.Logger("Process_Receipt Open Cash Drawer");
+                bt_OpenCashDrawer.PerformClick();
+            }
 
             cols = dbPOS1.Get_TranCollection_by_InvoiceNo(iNewInvNo);
             orderComItems = dbPOS1.Get_OrderComplete_by_InvoiceNo(iNewInvNo);
