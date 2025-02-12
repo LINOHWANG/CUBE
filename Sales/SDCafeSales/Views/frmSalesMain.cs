@@ -5008,7 +5008,7 @@ namespace SDCafeSales.Views
             orderComItems = dbPOS1.Get_OrderComplete_by_InvoiceNo(iNewInvNo);
             cardReceipts = dbCard.Get_Approved_CardReceipt_By_InvoiceNo(iNewInvNo);
 
-            // Open Cash Drawer
+            // Open Cash Drawer Feature #3697
             if (dbPOS.Get_SysConfig_By_Name("IS_CASHDRAWER_OPEN")[0].ConfigValue.Trim().Contains("TRUE"))
             {
                 util.Logger("Process_Receipt Open Cash Drawer");
