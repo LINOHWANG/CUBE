@@ -1785,9 +1785,9 @@ namespace SDCafeSales.Views
                                     ProductTypeId = 0,
                                     InUnitPrice = 0,
                                     OutUnitPrice = 0,
-                                    IsTax1 = false,//prods[0].IsTax1,
-                                    IsTax2 = false,//prods[0].IsTax2,
-                                    IsTax3 = false,//prods[0].IsTax3,
+                                    IsTax1 = false,//prods[0].IsTax1,Bug #3702 
+                                    IsTax2 = false,//prods[0].IsTax2,Bug #3702 
+                                    IsTax3 = false,//prods[0].IsTax3,Bug #3702 
                                     Quantity = 1,
                                     Amount = prods[0].Deposit,
                                     Tax1Rate = m_TaxRate1,
@@ -1869,9 +1869,9 @@ namespace SDCafeSales.Views
                                     ProductTypeId = 0,
                                     InUnitPrice = 0,
                                     OutUnitPrice = 0,
-                                    IsTax1 = false,//prods[0].IsTax1,
-                                    IsTax2 = false,//prods[0].IsTax2,
-                                    IsTax3 = false,//prods[0].IsTax3,
+                                    IsTax1 = false,//prods[0].IsTax1,Bug #3702 
+                                    IsTax2 = false,//prods[0].IsTax2,Bug #3702 
+                                    IsTax3 = false,//prods[0].IsTax3,Bug #3702 
                                     Quantity = 1,
                                     Amount = prods[0].RecyclingFee,
                                     Tax1Rate = m_TaxRate1,
@@ -1952,9 +1952,9 @@ namespace SDCafeSales.Views
                                     ProductTypeId = 0,
                                     InUnitPrice = 0,
                                     OutUnitPrice = 0,
-                                    IsTax1 = false,//prods[0].IsTax1,
-                                    IsTax2 = false,//prods[0].IsTax2,
-                                    IsTax3 = false,//prods[0].IsTax3,
+                                    IsTax1 = false,//prods[0].IsTax1,Bug #3702 
+                                    IsTax2 = false,//prods[0].IsTax2,Bug #3702 
+                                    IsTax3 = false,//prods[0].IsTax3,Bug #3702 
                                     Quantity = 1,
                                     Amount = prods[0].ChillCharge,
                                     Tax1Rate = m_TaxRate1,
@@ -3061,7 +3061,7 @@ namespace SDCafeSales.Views
                 }
                 else //  (orders.Count == 0)
                 {
-                    // Multi
+                    // Multi Bug #3701
                     if ((txtQTY.Text != "") && (txtQTY.Text != "0"))
                     {
                         try
@@ -3186,9 +3186,9 @@ namespace SDCafeSales.Views
                                 ProductTypeId = 0,
                                 InUnitPrice = 0,
                                 OutUnitPrice = prods[0].Deposit,
-                                IsTax1 = false,//prods[0].IsTax1,
-                                IsTax2 = false,//prods[0].IsTax2,
-                                IsTax3 = false,//prods[0].IsTax3,
+                                IsTax1 = false,//prods[0].IsTax1,Bug #3702 
+                                IsTax2 = false,//prods[0].IsTax2,Bug #3702 
+                                IsTax3 = false,//prods[0].IsTax3,Bug #3702 
                                 Quantity = iOrderQty,
                                 Amount = prods[0].Deposit * iOrderQty,
                                 Tax1Rate = m_TaxRate1,
@@ -3262,9 +3262,9 @@ namespace SDCafeSales.Views
                                 ProductTypeId = 0,
                                 InUnitPrice = 0,
                                 OutUnitPrice = prods[0].RecyclingFee,
-                                IsTax1 = false,//prods[0].IsTax1,
-                                IsTax2 = false,//prods[0].IsTax2,
-                                IsTax3 = false,//prods[0].IsTax3,
+                                IsTax1 = false,//prods[0].IsTax1,Bug #3702 
+                                IsTax2 = false,//prods[0].IsTax2,Bug #3702 
+                                IsTax3 = false,//prods[0].IsTax3,Bug #3702 
                                 Quantity = iOrderQty,
                                 Amount = prods[0].RecyclingFee * iOrderQty,
                                 Tax1Rate = m_TaxRate1,
@@ -3337,9 +3337,9 @@ namespace SDCafeSales.Views
                                 ProductTypeId = 0,
                                 InUnitPrice = 0,
                                 OutUnitPrice = prods[0].ChillCharge,
-                                IsTax1 = false,//prods[0].IsTax1,
-                                IsTax2 = false,//prods[0].IsTax2,
-                                IsTax3 = false,//prods[0].IsTax3,
+                                IsTax1 = false,//prods[0].IsTax1,Bug #3702 
+                                IsTax2 = false,//prods[0].IsTax2,Bug #3702 
+                                IsTax3 = false,//prods[0].IsTax3,Bug #3702 
                                 Quantity = iOrderQty,
                                 Amount = prods[0].ChillCharge * iOrderQty,
                                 Tax1Rate = m_TaxRate1,
@@ -3547,7 +3547,7 @@ namespace SDCafeSales.Views
                 }
                 else //  (orders.Count == 0)
                 {
-                    // Multi
+                    // Multi Bug #3701
                     if ((txtQTY.Text != "") && (txtQTY.Text != "0"))
                     {
                         try
@@ -3669,9 +3669,9 @@ namespace SDCafeSales.Views
                                 ProductTypeId = 0,
                                 InUnitPrice = 0,
                                 OutUnitPrice = prods[0].Deposit,
-                                IsTax1 = false,//prods[0].IsTax1,
-                                IsTax2 = false,//prods[0].IsTax2,
-                                IsTax3 = false,//prods[0].IsTax3,
+                                IsTax1 = false,//prods[0].IsTax1, Bug #3702 
+                                IsTax2 = false,//prods[0].IsTax2,Bug #3702 
+                                IsTax3 = false,//prods[0].IsTax3,Bug #3702 
                                 Quantity = iOrderQty,
                                 Amount = prods[0].Deposit * iOrderQty,
                                 Tax1Rate = m_TaxRate1,
@@ -3745,9 +3745,9 @@ namespace SDCafeSales.Views
                                 ProductTypeId = 0,
                                 InUnitPrice = 0,
                                 OutUnitPrice = prods[0].RecyclingFee,
-                                IsTax1 = false,//prods[0].IsTax1,
-                                IsTax2 = false,//prods[0].IsTax2,
-                                IsTax3 = false,//prods[0].IsTax3,
+                                IsTax1 = false,//prods[0].IsTax1,Bug #3702 
+                                IsTax2 = false,//prods[0].IsTax2,Bug #3702 
+                                IsTax3 = false,//prods[0].IsTax3,Bug #3702 
                                 Quantity = iOrderQty,
                                 Amount = prods[0].RecyclingFee * iOrderQty,
                                 Tax1Rate = m_TaxRate1,
@@ -3821,9 +3821,9 @@ namespace SDCafeSales.Views
                                 ProductTypeId = 0,
                                 InUnitPrice = 0,
                                 OutUnitPrice = prods[0].ChillCharge,
-                                IsTax1 = false,//prods[0].IsTax1,
-                                IsTax2 = false,//prods[0].IsTax2,
-                                IsTax3 = false,//prods[0].IsTax3,
+                                IsTax1 = false,//prods[0].IsTax1,Bug #3702 
+                                IsTax2 = false,//prods[0].IsTax2,Bug #3702 
+                                IsTax3 = false,//prods[0].IsTax3,Bug #3702 
                                 Quantity = iOrderQty,
                                 Amount = prods[0].ChillCharge * iOrderQty,
                                 Tax1Rate = m_TaxRate1,
