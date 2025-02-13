@@ -57,6 +57,7 @@
             this.bt_Query = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Print = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_Email = new SDCafeCommon.Utilities.CustomButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDataTender)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart_DailyTrend)).BeginInit();
@@ -175,7 +176,7 @@
             // 
             this.rbRptType.AutoSize = true;
             this.rbRptType.Font = new System.Drawing.Font("Arial", 14.25F);
-            this.rbRptType.Location = new System.Drawing.Point(481, 24);
+            this.rbRptType.Location = new System.Drawing.Point(449, 24);
             this.rbRptType.Name = "rbRptType";
             this.rbRptType.Size = new System.Drawing.Size(97, 26);
             this.rbRptType.TabIndex = 50;
@@ -188,7 +189,7 @@
             // 
             this.rbRptItem.AutoSize = true;
             this.rbRptItem.Font = new System.Drawing.Font("Arial", 14.25F);
-            this.rbRptItem.Location = new System.Drawing.Point(481, 59);
+            this.rbRptItem.Location = new System.Drawing.Point(449, 59);
             this.rbRptItem.Name = "rbRptItem";
             this.rbRptItem.Size = new System.Drawing.Size(93, 26);
             this.rbRptItem.TabIndex = 51;
@@ -322,12 +323,12 @@
             // 
             this.bt_Excel.CornerRadius = 30;
             this.bt_Excel.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Excel.Location = new System.Drawing.Point(860, 45);
+            this.bt_Excel.Location = new System.Drawing.Point(750, 5);
             this.bt_Excel.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Excel.Name = "bt_Excel";
             this.bt_Excel.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Excel.Size = new System.Drawing.Size(142, 40);
+            this.bt_Excel.Size = new System.Drawing.Size(122, 40);
             this.bt_Excel.TabIndex = 44;
             this.bt_Excel.Text = "Excel";
             this.bt_Excel.Click += new System.EventHandler(this.bt_Excel_Click);
@@ -336,12 +337,12 @@
             // 
             this.bt_Query.CornerRadius = 30;
             this.bt_Query.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Query.Location = new System.Drawing.Point(709, 1);
+            this.bt_Query.Location = new System.Drawing.Point(619, 5);
             this.bt_Query.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Query.Name = "bt_Query";
             this.bt_Query.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Query.Size = new System.Drawing.Size(142, 40);
+            this.bt_Query.Size = new System.Drawing.Size(122, 40);
             this.bt_Query.TabIndex = 43;
             this.bt_Query.Text = "Query";
             this.bt_Query.Click += new System.EventHandler(this.bt_Query_Click);
@@ -352,11 +353,11 @@
             this.bt_Exit.CornerRadius = 30;
             this.bt_Exit.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
             this.bt_Exit.ForeColor = System.Drawing.Color.White;
-            this.bt_Exit.Location = new System.Drawing.Point(860, 1);
+            this.bt_Exit.Location = new System.Drawing.Point(880, 5);
             this.bt_Exit.Name = "bt_Exit";
             this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Exit.Size = new System.Drawing.Size(142, 40);
+            this.bt_Exit.Size = new System.Drawing.Size(122, 40);
             this.bt_Exit.TabIndex = 42;
             this.bt_Exit.Text = "Exit";
             this.bt_Exit.Click += new System.EventHandler(this.bt_Exit_Click);
@@ -365,21 +366,36 @@
             // 
             this.bt_Print.CornerRadius = 30;
             this.bt_Print.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Print.Location = new System.Drawing.Point(709, 45);
+            this.bt_Print.Location = new System.Drawing.Point(619, 49);
             this.bt_Print.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Print.Name = "bt_Print";
             this.bt_Print.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Print.Size = new System.Drawing.Size(142, 40);
+            this.bt_Print.Size = new System.Drawing.Size(122, 40);
             this.bt_Print.TabIndex = 41;
             this.bt_Print.Text = "Print";
             this.bt_Print.Click += new System.EventHandler(this.bt_Print_Click);
+            // 
+            // bt_Email
+            // 
+            this.bt_Email.CornerRadius = 30;
+            this.bt_Email.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
+            this.bt_Email.Location = new System.Drawing.Point(750, 49);
+            this.bt_Email.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_Email.Name = "bt_Email";
+            this.bt_Email.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Email.Size = new System.Drawing.Size(122, 40);
+            this.bt_Email.TabIndex = 86;
+            this.bt_Email.Text = "Email";
+            this.bt_Email.Click += new System.EventHandler(this.bt_Email_Click);
             // 
             // frmSalesReport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.bt_Email);
             this.Controls.Add(this.chart_DailyTrend);
             this.Controls.Add(this.bt_DailyTrend);
             this.Controls.Add(this.bt_DateThisYear);
@@ -444,5 +460,6 @@
         private SDCafeCommon.Utilities.CustomButton bt_DateToday;
         private SDCafeCommon.Utilities.CustomButton bt_DailyTrend;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart_DailyTrend;
+        private SDCafeCommon.Utilities.CustomButton bt_Email;
     }
 }

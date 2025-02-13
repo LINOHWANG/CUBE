@@ -42,6 +42,12 @@
             this.txt_BarCode = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.cbBox_Category = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txt_Deposit = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.txt_RecyclingFee = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txt_ChillCharge = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // pnlNums
@@ -51,9 +57,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlNums.AutoSize = true;
             this.pnlNums.BackColor = System.Drawing.SystemColors.Desktop;
-            this.pnlNums.Location = new System.Drawing.Point(12, 202);
+            this.pnlNums.Location = new System.Drawing.Point(12, 307);
             this.pnlNums.Name = "pnlNums";
-            this.pnlNums.Size = new System.Drawing.Size(459, 324);
+            this.pnlNums.Size = new System.Drawing.Size(459, 301);
             this.pnlNums.TabIndex = 16;
             // 
             // label1
@@ -100,6 +106,7 @@
             this.txt_UnitlPrice.Size = new System.Drawing.Size(290, 29);
             this.txt_UnitlPrice.TabIndex = 19;
             this.txt_UnitlPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_UnitlPrice.Click += new System.EventHandler(this.txt_UnitlPrice_Click);
             this.txt_UnitlPrice.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_UnitlPrice_KeyPress);
             // 
             // cb_Tax1
@@ -192,11 +199,86 @@
             this.cbBox_Category.TabIndex = 28;
             this.cbBox_Category.SelectedIndexChanged += new System.EventHandler(this.cbBox_Category_SelectedIndexChanged);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(11, 195);
+            this.label6.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(140, 22);
+            this.label6.TabIndex = 30;
+            this.label6.Text = "Bottle Deposit";
+            // 
+            // txt_Deposit
+            // 
+            this.txt_Deposit.BackColor = System.Drawing.Color.White;
+            this.txt_Deposit.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Deposit.Location = new System.Drawing.Point(181, 192);
+            this.txt_Deposit.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_Deposit.Name = "txt_Deposit";
+            this.txt_Deposit.Size = new System.Drawing.Size(290, 29);
+            this.txt_Deposit.TabIndex = 29;
+            this.txt_Deposit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_Deposit.Click += new System.EventHandler(this.txt_Deposit_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(11, 234);
+            this.label7.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(140, 22);
+            this.label7.TabIndex = 32;
+            this.label7.Text = "Recycling Fee";
+            // 
+            // txt_RecyclingFee
+            // 
+            this.txt_RecyclingFee.BackColor = System.Drawing.Color.White;
+            this.txt_RecyclingFee.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_RecyclingFee.Location = new System.Drawing.Point(179, 231);
+            this.txt_RecyclingFee.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_RecyclingFee.Name = "txt_RecyclingFee";
+            this.txt_RecyclingFee.Size = new System.Drawing.Size(290, 29);
+            this.txt_RecyclingFee.TabIndex = 31;
+            this.txt_RecyclingFee.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_RecyclingFee.Click += new System.EventHandler(this.txt_RecyclingFee_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(11, 273);
+            this.label8.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(124, 22);
+            this.label8.TabIndex = 34;
+            this.label8.Text = "Chill Charge";
+            // 
+            // txt_ChillCharge
+            // 
+            this.txt_ChillCharge.BackColor = System.Drawing.Color.White;
+            this.txt_ChillCharge.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_ChillCharge.Location = new System.Drawing.Point(181, 270);
+            this.txt_ChillCharge.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_ChillCharge.Name = "txt_ChillCharge";
+            this.txt_ChillCharge.Size = new System.Drawing.Size(290, 29);
+            this.txt_ChillCharge.TabIndex = 33;
+            this.txt_ChillCharge.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_ChillCharge.Click += new System.EventHandler(this.txt_ChillCharge_Click);
+            // 
             // frmAddProduct
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 538);
+            this.ClientSize = new System.Drawing.Size(484, 620);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.txt_ChillCharge);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.txt_RecyclingFee);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.txt_Deposit);
             this.Controls.Add(this.cbBox_Category);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -234,5 +316,11 @@
         private System.Windows.Forms.TextBox txt_BarCode;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox cbBox_Category;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox txt_Deposit;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox txt_RecyclingFee;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txt_ChillCharge;
     }
 }

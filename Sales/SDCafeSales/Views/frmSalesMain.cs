@@ -22,6 +22,7 @@ using System.Net.Http;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using System.Media;
+using System.Xml;
 
 namespace SDCafeSales.Views
 {
@@ -48,6 +49,9 @@ namespace SDCafeSales.Views
         List<POS_PromoProductsModel> pprods = new List<POS_PromoProductsModel>();
         List<POS_ProdOrdersModel> prodOrders = new List<POS_ProdOrdersModel>();
         List<POS_SysConfigModel> sysConfs = new List<POS_SysConfigModel>();
+
+        List<POS_TimeTableModel> timeTables = new List<POS_TimeTableModel>();
+        POS_TimeTableModel timeTable = new POS_TimeTableModel();
 
 
         ToolTip tTip = new ToolTip();
@@ -361,6 +365,9 @@ namespace SDCafeSales.Views
             m_ImageList.Images.Add(Properties.Resources.history_40dp);             //14
             m_ImageList.Images.Add(Properties.Resources.arrow_back_40dp);             //15
             m_ImageList.Images.Add(Properties.Resources.menu_40dp);             //16
+            m_ImageList.Images.Add(Properties.Resources.clock_In);             //17
+            m_ImageList.Images.Add(Properties.Resources.clock_Out);             //18
+
             bt_Exit.ImageList = m_ImageList;
             bt_Exit.ImageIndex = 1;
 
@@ -452,6 +459,20 @@ namespace SDCafeSales.Views
             bt_RecallOrder.ImageAlign = ContentAlignment.MiddleLeft;
             bt_RecallOrder.Text = "Recall" + System.Environment.NewLine + "Order";
             bt_RecallOrder.TextAlign = ContentAlignment.MiddleRight;
+
+            bt_ClockIn.ImageList = m_ImageList;
+            bt_ClockIn.ImageIndex = 17;
+            bt_ClockIn.ImageAlign = ContentAlignment.MiddleLeft;
+            bt_ClockIn.Text = "Clock In";
+            bt_ClockIn.TextAlign = ContentAlignment.MiddleRight;
+
+            bt_ClockOut.ImageList = m_ImageList;
+            bt_ClockOut.ImageIndex = 18;
+            bt_ClockOut.ImageAlign = ContentAlignment.MiddleLeft;
+            bt_ClockOut.Text = "Clock Out";
+            bt_ClockOut.TextAlign = ContentAlignment.MiddleRight;
+
+
 
             Check_AutoReceipt(false);
             Show_AutoReceipt_Button();
@@ -1764,9 +1785,9 @@ namespace SDCafeSales.Views
                                     ProductTypeId = 0,
                                     InUnitPrice = 0,
                                     OutUnitPrice = 0,
-                                    IsTax1 = prods[0].IsTax1,
-                                    IsTax2 = prods[0].IsTax2,
-                                    IsTax3 = prods[0].IsTax3,
+                                    IsTax1 = false,//prods[0].IsTax1,
+                                    IsTax2 = false,//prods[0].IsTax2,
+                                    IsTax3 = false,//prods[0].IsTax3,
                                     Quantity = 1,
                                     Amount = prods[0].Deposit,
                                     Tax1Rate = m_TaxRate1,
@@ -1848,9 +1869,9 @@ namespace SDCafeSales.Views
                                     ProductTypeId = 0,
                                     InUnitPrice = 0,
                                     OutUnitPrice = 0,
-                                    IsTax1 = prods[0].IsTax1,
-                                    IsTax2 = prods[0].IsTax2,
-                                    IsTax3 = prods[0].IsTax3,
+                                    IsTax1 = false,//prods[0].IsTax1,
+                                    IsTax2 = false,//prods[0].IsTax2,
+                                    IsTax3 = false,//prods[0].IsTax3,
                                     Quantity = 1,
                                     Amount = prods[0].RecyclingFee,
                                     Tax1Rate = m_TaxRate1,
@@ -1931,9 +1952,9 @@ namespace SDCafeSales.Views
                                     ProductTypeId = 0,
                                     InUnitPrice = 0,
                                     OutUnitPrice = 0,
-                                    IsTax1 = prods[0].IsTax1,
-                                    IsTax2 = prods[0].IsTax2,
-                                    IsTax3 = prods[0].IsTax3,
+                                    IsTax1 = false,//prods[0].IsTax1,
+                                    IsTax2 = false,//prods[0].IsTax2,
+                                    IsTax3 = false,//prods[0].IsTax3,
                                     Quantity = 1,
                                     Amount = prods[0].ChillCharge,
                                     Tax1Rate = m_TaxRate1,
@@ -3040,6 +3061,26 @@ namespace SDCafeSales.Views
                 }
                 else //  (orders.Count == 0)
                 {
+                    // Multi
+                    if ((txtQTY.Text != "") && (txtQTY.Text != "0"))
+                    {
+                        try
+                        {
+                            iOrderQty = Int32.Parse(txtQTY.Text);
+                        }
+                        catch
+                        {
+                            iOrderQty = 1;
+                        }
+                        txtQTY.Text = "";
+                    }
+
+                    bQTYPromotionProduct = Check_QTY_Promotion_Product(prods[0], (float)iOrderQty);
+                    if (bQTYPromotionProduct)
+                    {
+                        prods[0].OutUnitPrice = prods[0].PromoPrice1;
+                        //orders[0].OutUnitPrice = prods[0].PromoPrice1;
+                    }
                     ////////////////////////////////////////////////
                     // Add the ordered item into Orders table
                     ////////////////////////////////////////////////
@@ -3145,9 +3186,9 @@ namespace SDCafeSales.Views
                                 ProductTypeId = 0,
                                 InUnitPrice = 0,
                                 OutUnitPrice = prods[0].Deposit,
-                                IsTax1 = prods[0].IsTax1,
-                                IsTax2 = prods[0].IsTax2,
-                                IsTax3 = prods[0].IsTax3,
+                                IsTax1 = false,//prods[0].IsTax1,
+                                IsTax2 = false,//prods[0].IsTax2,
+                                IsTax3 = false,//prods[0].IsTax3,
                                 Quantity = iOrderQty,
                                 Amount = prods[0].Deposit * iOrderQty,
                                 Tax1Rate = m_TaxRate1,
@@ -3221,9 +3262,9 @@ namespace SDCafeSales.Views
                                 ProductTypeId = 0,
                                 InUnitPrice = 0,
                                 OutUnitPrice = prods[0].RecyclingFee,
-                                IsTax1 = prods[0].IsTax1,
-                                IsTax2 = prods[0].IsTax2,
-                                IsTax3 = prods[0].IsTax3,
+                                IsTax1 = false,//prods[0].IsTax1,
+                                IsTax2 = false,//prods[0].IsTax2,
+                                IsTax3 = false,//prods[0].IsTax3,
                                 Quantity = iOrderQty,
                                 Amount = prods[0].RecyclingFee * iOrderQty,
                                 Tax1Rate = m_TaxRate1,
@@ -3296,9 +3337,9 @@ namespace SDCafeSales.Views
                                 ProductTypeId = 0,
                                 InUnitPrice = 0,
                                 OutUnitPrice = prods[0].ChillCharge,
-                                IsTax1 = prods[0].IsTax1,
-                                IsTax2 = prods[0].IsTax2,
-                                IsTax3 = prods[0].IsTax3,
+                                IsTax1 = false,//prods[0].IsTax1,
+                                IsTax2 = false,//prods[0].IsTax2,
+                                IsTax3 = false,//prods[0].IsTax3,
                                 Quantity = iOrderQty,
                                 Amount = prods[0].ChillCharge * iOrderQty,
                                 Tax1Rate = m_TaxRate1,
@@ -3519,6 +3560,13 @@ namespace SDCafeSales.Views
                         }
                         txtQTY.Text = "";
                     }
+
+                    bQTYPromotionProduct = Check_QTY_Promotion_Product(prods[0], (float)iOrderQty);
+                    if (bQTYPromotionProduct)
+                    {
+                        prods[0].OutUnitPrice = prods[0].PromoPrice1;
+                        //orders[0].OutUnitPrice = prods[0].PromoPrice1;
+                    }
                     if (prods[0].TaxCode != null)
                     {
                         if (prods[0].TaxCode != "")
@@ -3621,9 +3669,9 @@ namespace SDCafeSales.Views
                                 ProductTypeId = 0,
                                 InUnitPrice = 0,
                                 OutUnitPrice = prods[0].Deposit,
-                                IsTax1 = prods[0].IsTax1,
-                                IsTax2 = prods[0].IsTax2,
-                                IsTax3 = prods[0].IsTax3,
+                                IsTax1 = false,//prods[0].IsTax1,
+                                IsTax2 = false,//prods[0].IsTax2,
+                                IsTax3 = false,//prods[0].IsTax3,
                                 Quantity = iOrderQty,
                                 Amount = prods[0].Deposit * iOrderQty,
                                 Tax1Rate = m_TaxRate1,
@@ -3697,9 +3745,9 @@ namespace SDCafeSales.Views
                                 ProductTypeId = 0,
                                 InUnitPrice = 0,
                                 OutUnitPrice = prods[0].RecyclingFee,
-                                IsTax1 = prods[0].IsTax1,
-                                IsTax2 = prods[0].IsTax2,
-                                IsTax3 = prods[0].IsTax3,
+                                IsTax1 = false,//prods[0].IsTax1,
+                                IsTax2 = false,//prods[0].IsTax2,
+                                IsTax3 = false,//prods[0].IsTax3,
                                 Quantity = iOrderQty,
                                 Amount = prods[0].RecyclingFee * iOrderQty,
                                 Tax1Rate = m_TaxRate1,
@@ -3773,9 +3821,9 @@ namespace SDCafeSales.Views
                                 ProductTypeId = 0,
                                 InUnitPrice = 0,
                                 OutUnitPrice = prods[0].ChillCharge,
-                                IsTax1 = prods[0].IsTax1,
-                                IsTax2 = prods[0].IsTax2,
-                                IsTax3 = prods[0].IsTax3,
+                                IsTax1 = false,//prods[0].IsTax1,
+                                IsTax2 = false,//prods[0].IsTax2,
+                                IsTax3 = false,//prods[0].IsTax3,
                                 Quantity = iOrderQty,
                                 Amount = prods[0].ChillCharge * iOrderQty,
                                 Tax1Rate = m_TaxRate1,
@@ -8408,6 +8456,123 @@ namespace SDCafeSales.Views
             this.BringToFront();
             BarCode_Get_Focus();
 
+        }
+
+        private void bt_ClockIn_Click(object sender, EventArgs e)
+        {
+            string strPassCode = "";
+            using (var FrmEnterNumber = new frmEnterNumber(this))
+            {
+                this.TopMost = false;
+                FrmEnterNumber.p_Title = "Please Enter Clock In Password!";
+                FrmEnterNumber.StartPosition = FormStartPosition.CenterScreen;
+
+                FrmEnterNumber.TopLevel = true;
+                FrmEnterNumber.ShowDialog();
+
+                this.TopMost = true;
+                strPassCode = FrmEnterNumber.p_strNumber;
+                if (FrmEnterNumber.p_bIsNumberSet)
+                {
+                    try
+                    {
+                        DataAccessPOS dbPOS = new DataAccessPOS();
+                        loginUsers = dbPOS.UserLogin(strPassCode);
+
+                        if (loginUsers.Count == 1)
+                        {
+                            timeTables = dbPOS.Get_Last_ClockIn(loginUsers[0].Id);
+                            if (timeTables.Count == 0)
+                            {
+                                timeTable.UserId = loginUsers[0].Id;
+                                timeTable.DateTimeStarted = DateTime.Now;
+                                timeTable.DateTimeFinished = null;
+                                timeTable.InCount = 1;
+                                timeTable.Wage = loginUsers[0].Wage;
+                                dbPOS.Insert_TimeTable(timeTable);
+                                txtSelectedMenu.Text = "Clock In Success ! " + loginUsers[0].FirstName;
+                            }
+                            else
+                            {
+                                txtSelectedMenu.Text = "Already Clock In ! " + loginUsers[0].FirstName;
+                            }
+
+                            //util.Logger("UserLogin Failed with PassCode :" + strPassCode);
+                        }
+                        else
+                        {
+                            txtSelectedMenu.Text = "User Does Not Exists! Please check PassCode!";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        txtSelectedMenu.Text = "Error! " + ex.Message;
+                        util.Logger("UserLogin Error :" + ex.Message);
+                    }
+                }
+            }
+        }
+
+        private void bt_ClockOut_Click(object sender, EventArgs e)
+        {
+            string strPassCode = "";
+            using (var FrmEnterNumber = new frmEnterNumber(this))
+            {
+                this.TopMost = false;
+                FrmEnterNumber.p_Title = "Please Enter Clock Out Password!";
+                FrmEnterNumber.StartPosition = FormStartPosition.CenterScreen;
+
+                FrmEnterNumber.TopLevel = true;
+                FrmEnterNumber.ShowDialog();
+
+                this.TopMost = true;
+                strPassCode = FrmEnterNumber.p_strNumber;
+                if (FrmEnterNumber.p_bIsNumberSet)
+                {
+                    try
+                    {
+                        DataAccessPOS dbPOS = new DataAccessPOS();
+                        loginUsers = dbPOS.UserLogin(strPassCode);
+
+                        if (loginUsers.Count == 1)
+                        {
+                            timeTables = dbPOS.Get_Last_ClockIn(loginUsers[0].Id);
+                            if (timeTables.Count > 0)
+                            {
+                                timeTable.UserId = loginUsers[0].Id;
+                                timeTable.DateTimeStarted = timeTables[0].DateTimeStarted;
+                                if (timeTables[0].DateTimeFinished == null)
+                                {
+                                    timeTable.DateTimeFinished = DateTime.Now;
+                                    timeTable.InCount = 1;
+                                    timeTable.Wage = loginUsers[0].Wage;
+                                    dbPOS.Update_TimeTable(timeTable);
+                                    txtSelectedMenu.Text = "Clock Out Success ! " + loginUsers[0].FirstName;
+                                }
+                                else
+                                {
+                                    txtSelectedMenu.Text = "Already Clock Out ! " + loginUsers[0].FirstName + " " + timeTables[0].DateTimeFinished;
+                                }
+                            }
+                            else
+                            {
+                                txtSelectedMenu.Text = "Clock In data does not exist, please Clock in first ! " + loginUsers[0].FirstName;
+                            }
+
+                            //util.Logger("UserLogin Failed with PassCode :" + strPassCode);
+                        }
+                        else
+                        {
+                            txtSelectedMenu.Text = "User Does Not Exists! Please check PassCode!";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        txtSelectedMenu.Text = "Error! " + ex.Message;
+                        util.Logger("UserLogin Error :" + ex.Message);
+                    }
+                }
+            }
         }
     }
     public class TagReportEvent : Object

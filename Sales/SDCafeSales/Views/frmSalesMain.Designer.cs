@@ -70,6 +70,8 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.lbl_TypePages = new System.Windows.Forms.Label();
             this.pnlSideBar = new System.Windows.Forms.Panel();
+            this.bt_ClockOut = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_ClockIn = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Office = new SDCafeCommon.Utilities.CustomButton();
             this.bt_RecallOrder = new SDCafeCommon.Utilities.CustomButton();
             this.bt_SaveOrder = new SDCafeCommon.Utilities.CustomButton();
@@ -504,6 +506,8 @@
             // 
             this.pnlSideBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.pnlSideBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlSideBar.Controls.Add(this.bt_ClockOut);
+            this.pnlSideBar.Controls.Add(this.bt_ClockIn);
             this.pnlSideBar.Controls.Add(this.bt_Office);
             this.pnlSideBar.Controls.Add(this.bt_RecallOrder);
             this.pnlSideBar.Controls.Add(this.bt_SaveOrder);
@@ -522,6 +526,40 @@
             this.pnlSideBar.Size = new System.Drawing.Size(148, 689);
             this.pnlSideBar.TabIndex = 58;
             // 
+            // bt_ClockOut
+            // 
+            this.bt_ClockOut.BackColor = System.Drawing.Color.White;
+            this.bt_ClockOut.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.bt_ClockOut.CornerRadius = 5;
+            this.bt_ClockOut.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
+            this.bt_ClockOut.ForeColor = System.Drawing.Color.Black;
+            this.bt_ClockOut.Location = new System.Drawing.Point(13, 272);
+            this.bt_ClockOut.Name = "bt_ClockOut";
+            this.bt_ClockOut.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_ClockOut.Size = new System.Drawing.Size(116, 47);
+            this.bt_ClockOut.TabIndex = 70;
+            this.bt_ClockOut.Text = "Clock Out";
+            this.bt_ClockOut.Click += new System.EventHandler(this.bt_ClockOut_Click);
+            // 
+            // bt_ClockIn
+            // 
+            this.bt_ClockIn.BackColor = System.Drawing.Color.White;
+            this.bt_ClockIn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.bt_ClockIn.CornerRadius = 5;
+            this.bt_ClockIn.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
+            this.bt_ClockIn.ForeColor = System.Drawing.Color.Black;
+            this.bt_ClockIn.Location = new System.Drawing.Point(13, 219);
+            this.bt_ClockIn.Name = "bt_ClockIn";
+            this.bt_ClockIn.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_ClockIn.Size = new System.Drawing.Size(116, 47);
+            this.bt_ClockIn.TabIndex = 69;
+            this.bt_ClockIn.Text = "Clock In";
+            this.bt_ClockIn.Click += new System.EventHandler(this.bt_ClockIn_Click);
+            // 
             // bt_Office
             // 
             this.bt_Office.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
@@ -529,7 +567,7 @@
             this.bt_Office.CornerRadius = 5;
             this.bt_Office.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
             this.bt_Office.ForeColor = System.Drawing.Color.Black;
-            this.bt_Office.Location = new System.Drawing.Point(13, 239);
+            this.bt_Office.Location = new System.Drawing.Point(13, 325);
             this.bt_Office.Name = "bt_Office";
             this.bt_Office.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -545,7 +583,7 @@
             this.bt_RecallOrder.CornerRadius = 5;
             this.bt_RecallOrder.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
             this.bt_RecallOrder.ForeColor = System.Drawing.Color.White;
-            this.bt_RecallOrder.Location = new System.Drawing.Point(13, 176);
+            this.bt_RecallOrder.Location = new System.Drawing.Point(13, 166);
             this.bt_RecallOrder.Name = "bt_RecallOrder";
             this.bt_RecallOrder.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -561,7 +599,7 @@
             this.bt_SaveOrder.CornerRadius = 5;
             this.bt_SaveOrder.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
             this.bt_SaveOrder.ForeColor = System.Drawing.Color.White;
-            this.bt_SaveOrder.Location = new System.Drawing.Point(13, 123);
+            this.bt_SaveOrder.Location = new System.Drawing.Point(13, 113);
             this.bt_SaveOrder.Name = "bt_SaveOrder";
             this.bt_SaveOrder.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
@@ -1223,6 +1261,8 @@
         private SDCafeCommon.Utilities.CustomButton bt_LastReprint;
         private SDCafeCommon.Utilities.CustomButton bt_Office;
         private System.Windows.Forms.Panel pnlReceipt;
+        private SDCafeCommon.Utilities.CustomButton bt_ClockOut;
+        private SDCafeCommon.Utilities.CustomButton bt_ClockIn;
     }
 }
 

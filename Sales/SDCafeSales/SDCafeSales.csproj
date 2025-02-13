@@ -100,6 +100,12 @@
     <Compile Include="Views\frmEditOrderPrice.Designer.cs">
       <DependentUpon>frmEditOrderPrice.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\frmEnterNumber.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\frmEnterNumber.Designer.cs">
+      <DependentUpon>frmEnterNumber.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\frmEnterAmount.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -168,6 +174,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\frmEditOrderPrice.resx">
       <DependentUpon>frmEditOrderPrice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\frmEnterNumber.resx">
+      <DependentUpon>frmEnterNumber.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\frmEnterAmount.resx">
       <DependentUpon>frmEnterAmount.cs</DependentUpon>

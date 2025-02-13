@@ -74,13 +74,13 @@ namespace SDCafeOffice.Views
             this.dgvData.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             this.dgvData.ColumnCount = 8;
             this.dgvData.Columns[0].Name = "Type";
-            this.dgvData.Columns[0].Width = 180;
+            this.dgvData.Columns[0].Width = 100;
             this.dgvData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvData.Columns[1].Name = "Product Name";
             this.dgvData.Columns[1].Width = 200;
             this.dgvData.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvData.Columns[2].Name = "QTY";
-            this.dgvData.Columns[2].Width = 100;
+            this.dgvData.Columns[2].Width = 80;
             this.dgvData.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvData.Columns[3].Name = "Amount";
             this.dgvData.Columns[3].Width = 120;
@@ -92,7 +92,7 @@ namespace SDCafeOffice.Views
             this.dgvData.Columns[5].Width = 100;
             this.dgvData.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             this.dgvData.Columns[6].Name = m_strTax3Name; // "Tax3";
-            this.dgvData.Columns[6].Width = 0;
+            this.dgvData.Columns[6].Width = 100;
             this.dgvData.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             this.dgvData.Columns[7].Name = "Total";
             this.dgvData.Columns[7].Width = 120;
@@ -109,6 +109,10 @@ namespace SDCafeOffice.Views
             dgvData.AllowUserToResizeRows = false;
             dgvData.RowTemplate.Resizable = DataGridViewTriState.True;
             dgvData.RowTemplate.MinimumHeight = 30;
+
+            bt_Excel.Enabled = false;
+            bt_Email.Enabled = false;
+            bt_Print.Enabled = false;
         }
         private void dgvDataTender_Initialize()
         {
@@ -526,6 +530,11 @@ namespace SDCafeOffice.Views
             int n = 0;
             if (ordercomps.Count > 0)
             {
+
+                bt_Excel.Enabled = true;
+                bt_Email.Enabled = true;
+                bt_Print.Enabled = true;
+
                 foreach (var ordcomp in ordercomps)
                 {
                     if (n == 0)
@@ -747,19 +756,25 @@ namespace SDCafeOffice.Views
                     r.ReadOnly = false;
                 }
             }
+            else
+            {
+                bt_Excel.Enabled = false;
+                bt_Email.Enabled = false;
+                bt_Print.Enabled = false;
+            }
         }
 
         private void bt_Print_Click(object sender, EventArgs e)
         {
 
-            Create_Excel_Sales_Report("EPSON-1");
+            Create_Excel_Sales_Report("EPSON-1", false);
         }
 
         private void bt_Excel_Click(object sender, EventArgs e)
         {
-            Create_Excel_Sales_Report("FILE");
+            Create_Excel_Sales_Report("FILE", false);
         }
-        private void Create_Excel_Sales_Report(string strDestination)
+        private void Create_Excel_Sales_Report(string strDestination, bool p_bIsEmail)
         {
 
             Excel.Application xlApp = new Microsoft.Office.Interop.Excel.Application();
@@ -862,7 +877,65 @@ namespace SDCafeOffice.Views
             else
             {
                 xlWorkBook.SaveAs(strExcelFullFileName, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-                xlApp.Visible = true;
+                if (p_bIsEmail)
+                {
+                    xlWorkBook.Close(true, misValue, misValue);
+                    xlApp.Quit();
+                    Marshal.ReleaseComObject(xlWorkSheet);
+                    Marshal.ReleaseComObject(xlWorkBook);
+                    Marshal.ReleaseComObject(xlApp);
+                }
+                else
+                {
+                    xlApp.Visible = true;
+                }
+            }
+
+            // --------------------------------------- Release Memory -------------------------------------
+            // Release memory
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            // --------------------------------------- Send Email -------------------------------------
+            if (p_bIsEmail)
+            {
+                DataAccessPOS dbPOS = new DataAccessPOS();
+                DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
+                string strBizTitle = dbPOS.Get_SysConfig_By_Name("BIZ_TITLE")[0].ConfigValue.Trim();
+                string strConfig = dbPOS.Get_SysConfig_By_Name("CON_SEND_EMAIL_REPORT")[0].ConfigValue.Trim();
+                if (strConfig.Contains("TRUE"))
+                {
+
+                        string strHTMLBody = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>" + System.Environment.NewLine +
+                             "<html>" + System.Environment.NewLine +
+                             "<head>" + System.Environment.NewLine +
+                             " <style>#grad1 {" + System.Environment.NewLine +
+                             " background-image: linear-gradient(to right, white , gray);" + System.Environment.NewLine +
+                             " font-family: verdana;" + System.Environment.NewLine +
+                             " }</style>" + System.Environment.NewLine +
+                             "</head>" + System.Environment.NewLine +
+                             "<body>" + System.Environment.NewLine +
+                             " <h3 style='color: #000000;'> Dear Business Owner,</h3>" + System.Environment.NewLine +
+                             " <h4 style='color: #000000;'> Sales Report to Email action has been taken at YOUR POS today..<br /> " + System.Environment.NewLine +
+                             " <span style='color: #FF0000;'> <strong>Please find attached excel file for your reference.</strong> </span>" + System.Environment.NewLine +
+                             " <br /> Sales Date : " + dttm_TranStart.Value.ToString("yyyy-MM-dd") + " to " + dttm_TranEnd.Value.ToString("yyyy-MM-dd") +
+                             " <br /><i> This email was automatically generated and sent from YOUR POS.. </i>" + System.Environment.NewLine +
+                             " <br />Best Regards," + System.Environment.NewLine +
+                             " </h4>" + System.Environment.NewLine +
+                             " <h3 ><strong><span style='color: #0000ff;'>TechServe POS</span></strong><span style='color: #566573;'> &copy; 2023 <a href='https://techservepos.com'>techservepos.com</a></span></h3>" + System.Environment.NewLine +
+                             "</body>" + System.Environment.NewLine +
+                             "</html>" + System.Environment.NewLine;
+                        bool bSent = util.SendEmail("[" + strBizTitle + "] Sales Report : " + dttm_TranStart.Value.ToString("yyyy-MM-dd") + " to " + dttm_TranEnd.Value.ToString("yyyy-MM-dd"), strHTMLBody, strExcelFullFileName);
+                        if (bSent)
+                        {
+                            // Show Messagebox
+                            MessageBox.Show("Email Sent Successfully", "Email", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Sending Email failed!", "Email", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                }
             }
 
         }
@@ -980,8 +1053,8 @@ namespace SDCafeOffice.Views
             // --------------------------------------- Summary Title ---------------------------------
             xlWorkSheet.Cells[iStartRow, 1] = "> Product";
             xlWorkSheet.Cells[iStartRow, 2] = "QTY";
-            xlWorkSheet.Cells[iStartRow, 3] = "GST";
-            xlWorkSheet.Cells[iStartRow, 4] = "PST";
+            xlWorkSheet.Cells[iStartRow, 3] = m_strTax1Name;// "GST";
+            xlWorkSheet.Cells[iStartRow, 4] = m_strTax2Name + " / " + m_strTax3Name;
             iStartRow++;
 
             DataAccessPOS dbPOS = new DataAccessPOS();
@@ -1066,7 +1139,7 @@ namespace SDCafeOffice.Views
                                 ;
                                 xlWorkSheet.Cells[iStartRow, 2] = "( " + iTypeQTY.ToString("0") + " Ea)";
                                 xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("0.00");
-                                xlWorkSheet.Cells[iStartRow, 4] = iTypeTax2.ToString("0.00");
+                                xlWorkSheet.Cells[iStartRow, 4] = (iTypeTax2 + iTypeTax3).ToString("0.00");
                                 //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
                                 iStartRow++;
@@ -1110,7 +1183,7 @@ namespace SDCafeOffice.Views
                                 xlWorkSheet.Cells[iStartRow, 1] = "> " + dbPOS.Get_ProductName_By_Id(iTempProdId); // ordcomp.ProductName;
                                 xlWorkSheet.Cells[iStartRow, 2] = "( " + iTypeQTY.ToString("0") + " Ea)";
                                 xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("0.00");
-                                xlWorkSheet.Cells[iStartRow, 4] = iTypeTax2.ToString("0.00");
+                                xlWorkSheet.Cells[iStartRow, 4] = (iTypeTax2 + iTypeTax3).ToString("0.00");
                                 xlWorkSheet.Rows[iStartRow].WrapText = true;
                                 //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
@@ -1202,7 +1275,7 @@ namespace SDCafeOffice.Views
                     ;
                     xlWorkSheet.Cells[iStartRow, 2] = "( " + iTypeQTY.ToString("0") + " Ea)";
                     xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 4] = iTypeTax2.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = (iTypeTax2 + iTypeTax3).ToString("0.00");
                     //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
                     iStartRow++;
@@ -1229,7 +1302,7 @@ namespace SDCafeOffice.Views
                     xlWorkSheet.Cells[iStartRow, 1] = "> " + dbPOS.Get_ProductName_By_Id(iTempProdId); // ordcomp.ProductName;
                     xlWorkSheet.Cells[iStartRow, 2] = "( " + iTypeQTY.ToString("0") + " Ea)";
                     xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 4] = iTypeTax2.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = (iTypeTax2 + iTypeTax3).ToString("0.00");
                     xlWorkSheet.Rows[iStartRow].WrapText = true;
                     //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
@@ -1295,7 +1368,18 @@ namespace SDCafeOffice.Views
 
                 xlWorkSheet.Cells[iStartRow, 2] = "( " + iSumQTY.ToString("0") + " Ea)";
                 xlWorkSheet.Cells[iStartRow, 3] = iSumTax1.ToString("0.00");
+                xlWorkSheet.Cells[iStartRow, 4] = (iSumTax2 + iSumTax3).ToString("0.00");
+
+                // Tax2
+                iStartRow++;
+                xlWorkSheet.Cells[iStartRow, 2] = m_strTax2Name;
+                xlWorkSheet.Cells[iStartRow, 3] = "";
                 xlWorkSheet.Cells[iStartRow, 4] = iSumTax2.ToString("0.00");
+                // Tax3
+                iStartRow++;
+                xlWorkSheet.Cells[iStartRow, 2] = m_strTax3Name;
+                xlWorkSheet.Cells[iStartRow, 3] = "";
+                xlWorkSheet.Cells[iStartRow, 4] = iSumTax3.ToString("0.00");
                 //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
                 //iStartRow++;
@@ -1319,7 +1403,7 @@ namespace SDCafeOffice.Views
             Excel.XlColorIndex.xlColorIndexAutomatic);
 
             // --------------------------------------- Set Boder on Total ---------------------------------
-            formatRange = xlWorkSheet.get_Range("A" + (iStartRow - 1).ToString(), "D" + (iStartRow).ToString());
+            formatRange = xlWorkSheet.get_Range("A" + (iStartRow - 3).ToString(), "D" + (iStartRow).ToString());
             formatRange.EntireRow.Font.Bold = true;
             formatRange.BorderAround(Excel.XlLineStyle.xlContinuous,
             Excel.XlBorderWeight.xlMedium, Excel.XlColorIndex.xlColorIndexAutomatic,
@@ -1551,6 +1635,10 @@ namespace SDCafeOffice.Views
                     xlWorkSheet.Cells[iStartRow, 2] = iCardTotalNetAmount.ToString("0.00");
                     xlWorkSheet.Cells[iStartRow, 3] = iCardTotalTip.ToString("0.00");
                     xlWorkSheet.Cells[iStartRow, 4] = iCardTotalTotal.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                    xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                    xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                    xlWorkSheet.Cells[iStartRow, 4].Interior.Color = Excel.XlRgbColor.rgbLightGray;
                     iStartRow++;
                 }
             }
@@ -1560,6 +1648,11 @@ namespace SDCafeOffice.Views
             xlWorkSheet.Cells[iStartRow, 2] = iTotalNetAmount.ToString("0.00");
             xlWorkSheet.Cells[iStartRow, 3] = iTotalTip.ToString("0.00");
             xlWorkSheet.Cells[iStartRow, 4] = iTotalTotal.ToString("0.00");
+            xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
+            xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
+            xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
+            xlWorkSheet.Cells[iStartRow, 4].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
+
 
             //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
             // --------------------------------------- Set Boder ---------------------------------
@@ -1785,6 +1878,11 @@ namespace SDCafeOffice.Views
                 }
             }
 
+        }
+
+        private void bt_Email_Click(object sender, EventArgs e)
+        {
+            Create_Excel_Sales_Report("FILE", true);
         }
     }
 }

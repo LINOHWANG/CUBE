@@ -797,7 +797,7 @@ namespace SDCafeOffice.Views
         {
             if (m_blnOnSave) return;
             // QTY must be greater than 1
-            if (cb_PromDay1.Text.Length > 0)
+            if ((cb_PromDay1.Text.Length > 0) && (cb_PromDay1.Text != "0"))
             {
                 if (int.Parse(cb_PromDay1.Text) < 2)
                 {

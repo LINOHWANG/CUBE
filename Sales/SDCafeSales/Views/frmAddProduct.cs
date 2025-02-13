@@ -23,8 +23,22 @@ namespace SDCafeSales.Views
         public CustomButton selectedBTN;
         public string m_strBarCode;
         public String m_strNewPrice;
+        
+        public String m_strBottleDeposit;
+        public String m_strRecyclingFee;
+        public String m_strChillCharge;
+
+        public bool b_IsPrice;
+        public bool b_IsDeposit;
+        public bool b_IsRecyclingFee;
+        public bool b_IsChillCharge;
+
         public String m_strProductName;
         public double m_dblUnitPrice = 0;
+        public double m_dblDeposit = 0;
+        public double m_dblRecyclingFee = 0;
+        public double m_dblChillCharge = 0;
+
         public bool bTax1 = true, bTax2 = false, bTax3 = false;
         public bool m_bAddNow;
         public float p_Amount { get; set; }
@@ -229,6 +243,12 @@ namespace SDCafeSales.Views
             this.BringToFront();
             this.TopMost = true;
             this.TopMost = false;
+
+            b_IsPrice = true;
+            b_IsDeposit = false;
+            b_IsRecyclingFee = false;
+            b_IsChillCharge = false;
+
         }
         ////Feature #3632
         private async void LookUpProductFromOpenFoodFacts()
@@ -308,6 +328,38 @@ namespace SDCafeSales.Views
             }
         }
 
+        private void txt_UnitlPrice_Click(object sender, EventArgs e)
+        {
+            b_IsPrice = true;
+            b_IsDeposit = false;
+            b_IsRecyclingFee = false;
+            b_IsChillCharge = false;
+        }
+
+        private void txt_Deposit_Click(object sender, EventArgs e)
+        {
+            b_IsPrice = false;
+            b_IsDeposit = true;
+            b_IsRecyclingFee = false;
+            b_IsChillCharge = false;
+        }
+
+        private void txt_RecyclingFee_Click(object sender, EventArgs e)
+        {
+            b_IsPrice = false;
+            b_IsDeposit = false;
+            b_IsRecyclingFee = true;
+            b_IsChillCharge = false;
+        }
+
+        private void txt_ChillCharge_Click(object sender, EventArgs e)
+        {
+            b_IsPrice = false;
+            b_IsDeposit = false;
+            b_IsRecyclingFee = false;
+            b_IsChillCharge = true;
+        }
+
         private void LoadProductCategories()
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
@@ -322,7 +374,41 @@ namespace SDCafeSales.Views
                 }
             }
         }
+        private bool ValidateNumbers()
+        {
+            bool bValid = false;
+            m_dblDeposit = 0;
+            m_dblRecyclingFee = 0;
+            m_dblChillCharge = 0;
 
+            try
+            {
+                if (m_strNewPrice != "")
+                {
+                    m_dblUnitPrice = Convert.ToDouble(m_strNewPrice);
+                }
+                if (m_strBottleDeposit != "")
+                {
+                    m_dblDeposit = Convert.ToDouble(m_strBottleDeposit);
+                }
+                if (m_strRecyclingFee != "")
+                {
+                    m_dblRecyclingFee = Convert.ToDouble(m_strRecyclingFee);
+                }
+                if (m_strChillCharge != "")
+                {
+                    m_dblChillCharge = Convert.ToDouble(m_strChillCharge);
+                }
+                bValid = true;
+            }
+            catch (Exception ex)
+            {
+                util.Logger("Error in ValidateNumbers : " + ex.Message);
+                bValid = false;
+            }
+
+            return bValid;
+        }
         private void ClickNumberButton(object sender, EventArgs e)
         {
             //Button btn = (Button)sender;
@@ -342,7 +428,13 @@ namespace SDCafeSales.Views
                 m_strProductName = txt_ProdlName.Text;
                 m_strNewPrice = txt_UnitlPrice.Text;
                 if (m_strNewPrice == "") return;
-                m_dblUnitPrice = Convert.ToDouble(m_strNewPrice);
+
+                bool bNumberValid = ValidateNumbers();
+                if (!bNumberValid)
+                {
+                    MessageBox.Show("Please enter valid number for Price, Deposit, Recycling Fee, Chill Charge", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 bTax1 = cb_Tax1.Checked;
                 bTax2 = cb_Tax2.Checked;
                 bTax3 = cb_Tax3.Checked;
@@ -367,9 +459,9 @@ namespace SDCafeSales.Views
                 p_NewProduct.IsPrinter4 = false;
                 p_NewProduct.IsPrinter5 = false;
                 p_NewProduct.MemoText = string.Empty;
-                p_NewProduct.Deposit = 0;
-                p_NewProduct.RecyclingFee = 0;
-                p_NewProduct.ChillCharge = 0;
+                p_NewProduct.Deposit = (float)m_dblDeposit;
+                p_NewProduct.RecyclingFee = (float)m_dblRecyclingFee;
+                p_NewProduct.ChillCharge = (float)m_dblChillCharge;
                 p_NewProduct.PromoStartDate = string.Empty;
                 p_NewProduct.PromoEndDate = string.Empty;
                 p_NewProduct.PromoDay1 = 0;
@@ -381,6 +473,7 @@ namespace SDCafeSales.Views
                 p_NewProduct.IsTaxInverseCalculation = false;
                 p_NewProduct.Brand = m_strBrand;
                 p_NewProduct.Size = m_strSize;
+                p_NewProduct.CategoryId = 1; // Default Category to 'Sales' Bug #3698
                 // Check Product Type
                 if (p_strCategory != "")
                 {
@@ -406,9 +499,27 @@ namespace SDCafeSales.Views
             }
             if (btn.Text == "DEL")  // DELETE
             {
-                m_strNewPrice = string.Empty;
-                txt_UnitlPrice.Text = m_strNewPrice;
-                m_dblUnitPrice = 0;
+                if (b_IsPrice)
+                {
+                    m_strNewPrice = string.Empty;
+                    txt_UnitlPrice.Text = m_strNewPrice;
+                    m_dblUnitPrice = 0;
+                }
+                else if (b_IsDeposit)
+                {
+                    m_strBottleDeposit = string.Empty;
+                    txt_Deposit.Text = m_strBottleDeposit;
+                }
+                else if (b_IsRecyclingFee)
+                {
+                    m_strRecyclingFee = string.Empty;
+                    txt_RecyclingFee.Text = m_strRecyclingFee;
+                }
+                else if (b_IsChillCharge)
+                {
+                    m_strChillCharge = string.Empty;
+                    txt_ChillCharge.Text = m_strChillCharge;
+                }
                 m_bAddNow = false;
                 return;
             }
@@ -421,21 +532,68 @@ namespace SDCafeSales.Views
                 return;
             }
 
-            txt_UnitlPrice.Text = m_strNewPrice + btn.Text;
-            //if ((txt_NewPrice.Text.Length > 2) && (txt_NewPrice.Text.IndexOf('.') < 0))
-            if (txt_UnitlPrice.Text.Length > 2)
+            if (b_IsPrice)
             {
-                string strTemp = m_strNewPrice + btn.Text;
-                int i = strTemp.IndexOf('.');
-                if (strTemp.IndexOf('.') > -1)
+                txt_UnitlPrice.Text = m_strNewPrice + btn.Text;
+                //if ((txt_NewPrice.Text.Length > 2) && (txt_NewPrice.Text.IndexOf('.') < 0))
+                if (txt_UnitlPrice.Text.Length > 2)
                 {
-                    strTemp = strTemp.Remove(strTemp.IndexOf('.'), 1);
+                    string strTemp = m_strNewPrice + btn.Text;
+                    int i = strTemp.IndexOf('.');
+                    if (strTemp.IndexOf('.') > -1)
+                    {
+                        strTemp = strTemp.Remove(strTemp.IndexOf('.'), 1);
+                    }
+                    txt_UnitlPrice.Text = strTemp.Insert(strTemp.Length - 2, ".");
                 }
-                txt_UnitlPrice.Text = strTemp.Insert(strTemp.Length - 2, ".");
+                m_strNewPrice = txt_UnitlPrice.Text;
             }
-            m_strNewPrice = txt_UnitlPrice.Text;
+            else if (b_IsDeposit)
+            {
+                txt_Deposit.Text = m_strBottleDeposit + btn.Text;
+                if (txt_Deposit.Text.Length > 2)
+                {
+                    string strTemp = m_strBottleDeposit + btn.Text;
+                    int i = strTemp.IndexOf('.');
+                    if (strTemp.IndexOf('.') > -1)
+                    {
+                        strTemp = strTemp.Remove(strTemp.IndexOf('.'), 1);
+                    }
+                    txt_Deposit.Text = strTemp.Insert(strTemp.Length - 2, ".");
+                }
+                m_strBottleDeposit = txt_Deposit.Text;
+            }
+            else if (b_IsRecyclingFee)
+            {
+                txt_RecyclingFee.Text = m_strRecyclingFee + btn.Text;
+                if (txt_RecyclingFee.Text.Length > 2)
+                {
+                    string strTemp = m_strRecyclingFee + btn.Text;
+                    int i = strTemp.IndexOf('.');
+                    if (strTemp.IndexOf('.') > -1)
+                    {
+                        strTemp = strTemp.Remove(strTemp.IndexOf('.'), 1);
+                    }
+                    txt_RecyclingFee.Text = strTemp.Insert(strTemp.Length - 2, ".");
+                }
+                m_strRecyclingFee = txt_RecyclingFee.Text;
+            }
+            else if (b_IsChillCharge)
+            {
+                txt_ChillCharge.Text = m_strChillCharge + btn.Text;
+                if (txt_ChillCharge.Text.Length > 2)
+                {
+                    string strTemp = m_strChillCharge + btn.Text;
+                    int i = strTemp.IndexOf('.');
+                    if (strTemp.IndexOf('.') > -1)
+                    {
+                        strTemp = strTemp.Remove(strTemp.IndexOf('.'), 1);
+                    }
+                    txt_ChillCharge.Text = strTemp.Insert(strTemp.Length - 2, ".");
+                }
+                m_strChillCharge = txt_ChillCharge.Text;
+            }
         }
-
-
     }
+
 }
