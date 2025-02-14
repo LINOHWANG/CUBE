@@ -24,20 +24,20 @@ namespace SDCafeSales.Views
         public string m_strBarCode;
         public String m_strNewPrice;
         
-        public String m_strBottleDeposit;
-        public String m_strRecyclingFee;
-        public String m_strChillCharge;
+        public String m_strBottleDeposit;//Feature #3703
+        public String m_strRecyclingFee;//Feature #3703
+        public String m_strChillCharge;//Feature #3703
 
-        public bool b_IsPrice;
-        public bool b_IsDeposit;
-        public bool b_IsRecyclingFee;
-        public bool b_IsChillCharge;
+        public bool b_IsPrice;//Feature #3703
+        public bool b_IsDeposit;//Feature #3703
+        public bool b_IsRecyclingFee;//Feature #3703
+        public bool b_IsChillCharge;//Feature #3703
 
         public String m_strProductName;
         public double m_dblUnitPrice = 0;
-        public double m_dblDeposit = 0;
-        public double m_dblRecyclingFee = 0;
-        public double m_dblChillCharge = 0;
+        public double m_dblDeposit = 0;//Feature #3703
+        public double m_dblRecyclingFee = 0;//Feature #3703
+        public double m_dblChillCharge = 0;//Feature #3703
 
         public bool bTax1 = true, bTax2 = false, bTax3 = false;
         public bool m_bAddNow;
@@ -244,10 +244,10 @@ namespace SDCafeSales.Views
             this.TopMost = true;
             this.TopMost = false;
 
-            b_IsPrice = true;
-            b_IsDeposit = false;
-            b_IsRecyclingFee = false;
-            b_IsChillCharge = false;
+            b_IsPrice = true;//Feature #3703
+            b_IsDeposit = false;//Feature #3703
+            b_IsRecyclingFee = false;//Feature #3703
+            b_IsChillCharge = false;//Feature #3703
 
         }
         ////Feature #3632
@@ -459,9 +459,9 @@ namespace SDCafeSales.Views
                 p_NewProduct.IsPrinter4 = false;
                 p_NewProduct.IsPrinter5 = false;
                 p_NewProduct.MemoText = string.Empty;
-                p_NewProduct.Deposit = (float)m_dblDeposit;
-                p_NewProduct.RecyclingFee = (float)m_dblRecyclingFee;
-                p_NewProduct.ChillCharge = (float)m_dblChillCharge;
+                p_NewProduct.Deposit = (float)m_dblDeposit; //Feature #3703
+                p_NewProduct.RecyclingFee = (float)m_dblRecyclingFee; //Feature #3703
+                p_NewProduct.ChillCharge = (float)m_dblChillCharge; //Feature #3703
                 p_NewProduct.PromoStartDate = string.Empty;
                 p_NewProduct.PromoEndDate = string.Empty;
                 p_NewProduct.PromoDay1 = 0;

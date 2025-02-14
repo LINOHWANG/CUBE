@@ -111,7 +111,7 @@ namespace SDCafeOffice.Views
                     if (off_ProdResp.Result.Product.ServingSize != null)
                     {
                         util.Logger("Product found : ServingSize = " + off_ProdResp.Result.Product.ServingSize);
-                        txt_Size.Text = off_ProdResp.Result.Product.ServingSize;
+                        //txt_Size.Text = off_ProdResp.Result.Product.ServingSize;
                     }
                     if (off_ProdResp.Result.Product.BrandsTags != null)
                     {
@@ -150,7 +150,7 @@ namespace SDCafeOffice.Views
                 p_strProductName = "";
             }
             txt_ProductName.Text = p_strProductName;
-            txt_SecondName.Text = "";
+            txt_SecondName.Text = "NEW ON " + DateTime.Now.ToString("yyyy-MM-dd");
             txt_ProductName.Focus();
         }
         private void Load_Category_Combo_Contents()
@@ -906,5 +906,6 @@ namespace SDCafeOffice.Views
                 checkSalesButton.Checked = true;
             }
         }
+ 
     }
 }

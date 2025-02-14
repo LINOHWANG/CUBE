@@ -294,12 +294,13 @@
             this.lblTest.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.lblTest.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTest.ForeColor = System.Drawing.Color.DarkBlue;
-            this.lblTest.Location = new System.Drawing.Point(346, -5);
+            this.lblTest.Location = new System.Drawing.Point(339, -1);
             this.lblTest.Name = "lblTest";
-            this.lblTest.Size = new System.Drawing.Size(140, 53);
+            this.lblTest.Size = new System.Drawing.Size(140, 31);
             this.lblTest.TabIndex = 99;
             this.lblTest.Text = "text";
             this.lblTest.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblTest.Visible = false;
             // 
             // bt_Process
             // 

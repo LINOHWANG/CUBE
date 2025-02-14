@@ -2296,10 +2296,11 @@ namespace SDCafeSales.Views
             {
                 foreach (DataGridViewRow row in dgv_Orders.Rows)
                 {
-                    if (row.Cells[7].Value != null)
+                    // Barcode row.Cells[8]
+                    if (row.Cells[8].Value != null)
                     {
                         row.Selected = false;
-                        if (row.Cells[7].Value.ToString() == strBarCode && row.Tag == null)
+                        if (row.Cells[8].Value.ToString() == strBarCode && row.Tag == null)
                         {
                             row.Selected = true;
                             this.dgv_Orders.FirstDisplayedScrollingRowIndex = row.Index;
@@ -3602,9 +3603,9 @@ namespace SDCafeSales.Views
                         Tax1Rate = m_TaxRate1,
                         Tax2Rate = m_TaxRate2,
                         Tax3Rate = m_TaxRate3,
-                        Tax1 = prods[0].IsTax1 ? m_TaxRate1 * prods[0].OutUnitPrice : 0,
-                        Tax2 = prods[0].IsTax2 ? m_TaxRate2 * prods[0].OutUnitPrice : 0,
-                        Tax3 = prods[0].IsTax3 ? m_TaxRate3 * prods[0].OutUnitPrice : 0,
+                        Tax1 = prods[0].IsTax1 ? m_TaxRate1 * (prods[0].OutUnitPrice * iOrderQty) : 0,
+                        Tax2 = prods[0].IsTax2 ? m_TaxRate2 * (prods[0].OutUnitPrice * iOrderQty) : 0,
+                        Tax3 = prods[0].IsTax3 ? m_TaxRate3 * (prods[0].OutUnitPrice * iOrderQty) : 0,
                         Deposit = prods[0].Deposit,
                         RecyclingFee = prods[0].RecyclingFee,
                         ChillCharge = prods[0].ChillCharge,
