@@ -124,6 +124,7 @@
             this.dgv_Orders.RowHeadersVisible = false;
             this.dgv_Orders.Size = new System.Drawing.Size(387, 432);
             this.dgv_Orders.TabIndex = 7;
+            this.dgv_Orders.SelectionChanged += new System.EventHandler(this.dgv_Orders_SelectionChanged);
             // 
             // pnlMenu
             // 
@@ -643,16 +644,16 @@
             // 
             // bt_HideSideBar
             // 
-            this.bt_HideSideBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.bt_HideSideBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.bt_HideSideBar.CornerRadius = 20;
             this.bt_HideSideBar.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_HideSideBar.ForeColor = System.Drawing.Color.Black;
-            this.bt_HideSideBar.Location = new System.Drawing.Point(3, 398);
+            this.bt_HideSideBar.Location = new System.Drawing.Point(3, 391);
             this.bt_HideSideBar.Name = "bt_HideSideBar";
             this.bt_HideSideBar.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_HideSideBar.Size = new System.Drawing.Size(134, 29);
+            this.bt_HideSideBar.Size = new System.Drawing.Size(134, 40);
             this.bt_HideSideBar.TabIndex = 63;
             this.bt_HideSideBar.Text = "Hide Side Bar >>";
             this.bt_HideSideBar.Click += new System.EventHandler(this.bt_HideSideBar_Click_1);
@@ -1030,16 +1031,16 @@
             // 
             // bt_ShowSideBar
             // 
-            this.bt_ShowSideBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.bt_ShowSideBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.bt_ShowSideBar.CornerRadius = 20;
             this.bt_ShowSideBar.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_ShowSideBar.ForeColor = System.Drawing.Color.Black;
-            this.bt_ShowSideBar.Location = new System.Drawing.Point(862, 403);
+            this.bt_ShowSideBar.ForeColor = System.Drawing.Color.White;
+            this.bt_ShowSideBar.Location = new System.Drawing.Point(862, 398);
             this.bt_ShowSideBar.Name = "bt_ShowSideBar";
             this.bt_ShowSideBar.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_ShowSideBar.Size = new System.Drawing.Size(134, 29);
+            this.bt_ShowSideBar.Size = new System.Drawing.Size(134, 40);
             this.bt_ShowSideBar.TabIndex = 60;
             this.bt_ShowSideBar.Text = "<< Show Side Bar";
             this.bt_ShowSideBar.Click += new System.EventHandler(this.bt_ShowSideBar_Click_1);

@@ -223,6 +223,16 @@ namespace SDCafeSales.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap dialpad_40dp {
+            get {
+                object obj = ResourceManager.GetObject("dialpad_40dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap download_40dp {
             get {
                 object obj = ResourceManager.GetObject("download_40dp", resourceCulture);
@@ -386,6 +396,26 @@ namespace SDCafeSales.Properties {
         public static System.Drawing.Bitmap shutterstock_Receipt_Vector_238191226__Converted__eps {
             get {
                 object obj = ResourceManager.GetObject("shutterstock_Receipt+Vector_238191226 [Converted].eps", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap side_navigation_30dp {
+            get {
+                object obj = ResourceManager.GetObject("side_navigation_30dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap side_navigation_40dp {
+            get {
+                object obj = ResourceManager.GetObject("side_navigation_40dp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

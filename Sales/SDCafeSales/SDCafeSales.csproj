@@ -263,6 +263,9 @@
     <None Include="Resources\history_40dp.png" />
     <None Include="Resources\arrow_back_40dp.png" />
     <None Include="Resources\menu_40dp.png" />
+    <None Include="Resources\side_navigation_40dp.png" />
+    <None Include="Resources\dialpad_40dp.png" />
+    <None Include="Resources\side_navigation_30dp.png" />
     <Content Include="tse_sales_20241209.ico" />
     <None Include="Resources\CUBE_LOGO2.png" />
     <None Include="Resources\shutterstock_Receipt+Vector_238191226 [Converted].eps.jpg" />

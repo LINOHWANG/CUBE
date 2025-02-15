@@ -357,6 +357,8 @@ namespace SDCafeOffice.Views
                     txt_Size.Text = prods[0].Size;
                 }
 
+                checkPromoExactQTY.Checked = prods[0].IsPromoExactQty;
+
             }
 
         }
@@ -527,7 +529,8 @@ namespace SDCafeOffice.Views
                 CategoryId = m_iSelectedCategoryId,
                 IsButtonInButton = checkBIB.Checked,
                 Brand = txt_Brand.Text,
-                Size = txt_Size.Text
+                Size = txt_Size.Text,
+                IsPromoExactQty = checkPromoExactQTY.Checked
             });
             int iProdCnt = dbPOS.Update_Product(prods[0]);
             if (string.IsNullOrEmpty(txt_BarCode.Text))
@@ -591,8 +594,8 @@ namespace SDCafeOffice.Views
                 CategoryId = m_iSelectedCategoryId,
                 IsButtonInButton = checkBIB.Checked,
                 Brand = txt_Brand.Text,
-                Size = txt_Size.Text
-
+                Size = txt_Size.Text,
+                IsPromoExactQty = checkPromoExactQTY.Checked
             });
             int iProdId = dbPOS.Insert_Product(prods[0]);
             if (string.IsNullOrEmpty(txt_BarCode.Text))
@@ -807,7 +810,35 @@ namespace SDCafeOffice.Views
                 }
             }
         }
+        private void cb_PromDay2_TextChanged(object sender, EventArgs e)
+        {
+            if (m_blnOnSave) return;
+            // QTY must be greater than 1
+            if ((cb_PromDay2.Text.Length > 0) && (cb_PromDay2.Text != "0"))
+            {
+                if (int.Parse(cb_PromDay2.Text) < 2)
+                {
+                    cb_PromDay2.Text = "2";
+                    // Show Messagebox with warning msg
+                    MessageBox.Show("Promotion QTY must be greater than 1!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+        }
 
+        private void cb_PromDay3_TextChanged(object sender, EventArgs e)
+        {
+            if (m_blnOnSave) return;
+            // QTY must be greater than 1
+            if ((cb_PromDay3.Text.Length > 0) && (cb_PromDay3.Text != "0"))
+            {
+                if (int.Parse(cb_PromDay3.Text) < 2)
+                {
+                    cb_PromDay3.Text = "2";
+                    // Show Messagebox with warning msg
+                    MessageBox.Show("Promotion QTY must be greater than 1!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+        }
         private void txt_Receiving_KeyPress(object sender, KeyPressEventArgs e)
         {
             float fBeforeQTY = 0;
@@ -906,6 +937,17 @@ namespace SDCafeOffice.Views
                 checkSalesButton.Checked = true;
             }
         }
- 
+
+        private void checkPromoExactQTY_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkPromoExactQTY.Checked)
+            {
+                lblPromoQTY.Text = "Promo QTY (=)";
+            }
+            else
+            {
+                lblPromoQTY.Text = "Promo QTY (>=)";
+            }
+        }
     }
 }

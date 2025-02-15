@@ -52,5 +52,7 @@ namespace SDCafeCommon.Model
         public string Brand { get; set; }
         public string Size { get; set; }
 
+        public bool IsPromoExactQty { get; set; }
+
     }
 }

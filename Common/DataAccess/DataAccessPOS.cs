@@ -421,6 +421,7 @@ namespace SDCafeCommon.DataAccess
             }
         }
 
+
         public List<POS_StationModel> Get_Station_By_HostName(string pHostName)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -623,13 +624,13 @@ namespace SDCafeCommon.DataAccess
                             "IsPrinter1, IsPrinter2, IsPrinter3, IsPrinter4, IsPrinter5, " +
                             "PromoPrice1, PromoPrice2, PromoPrice3, IsSoldOut, Deposit, RecyclingFee, ChillCharge, MemoText, BarCode, TaxCode, " +
                             "IsManualItem, Balance,IsMainSalesButton, IsSalesButton, ForeColor, BackColor, " +
-                            "CategoryId, IsButtonInButton, Brand, Size ) " +
+                            "CategoryId, IsButtonInButton, Brand, Size, IsPromoExactQty ) " +
                             "VALUES(@ProductName,@SecondName,@ProductTypeId,CAST(@OutUnitPrice as decimal(10,2)),CAST(@OutUnitPrice as decimal(10,2)),@IsTax1,@IsTax2,@IsTax3,@IsTaxInverseCalculation, " +
                             "@PromoStartDate,@PromoEndDate,@PromoDay1,@PromoDay2,@PromoDay3,@IsPrinter1,@IsPrinter2,@IsPrinter3,@IsPrinter4,@IsPrinter5,"+
-                            "CAST(@PromoPrice1 as decimal(10,2)),CAST(@PromoPrice2 as decimal(10,2)),CAST(@PromoPrice3 as decimal(10,2)),@IsSoldOut," +
+                            "CAST(@PromoPrice1 as decimal(10,3)),CAST(@PromoPrice2 as decimal(10,3)),CAST(@PromoPrice3 as decimal(10,3)),@IsSoldOut," +
                             "CAST(@Deposit as decimal(10,2)),CAST(@RecyclingFee as decimal(10,2)),CAST(@ChillCharge as decimal(10,2)), @MemoText, @BarCode, @TaxCode, " +
                             "@IsManualItem, @Balance, @IsMainSalesButton,@IsSalesButton, @ForeColor,  " +
-                            "@BackColor, @CategoryId, @IsButtonInButton , @Brand, @Size); " +
+                            "@BackColor, @CategoryId, @IsButtonInButton , @Brand, @Size, @IsPromoExactQty); " +
                             "SELECT CAST(SCOPE_IDENTITY() as int)";
                 //var count = connection.Execute(query, pos_ProductModel);
                 var id = connection.QuerySingle<int>(query, pos_ProductModel);
@@ -654,10 +655,10 @@ namespace SDCafeCommon.DataAccess
                                 "InUnitPrice=CAST(@InUnitPrice as decimal(10,2)),OutUnitPrice=CAST(@OutUnitPrice as decimal(10,2)), IsTax1=@IsTax1, IsTax2=@IsTax2, IsTax3=@IsTax3, IsTaxInverseCalculation=@IsTaxInverseCalculation, " +
                                 "PromoStartDate=@PromoStartDate, PromoEndDate=@PromoEndDate, PromoDay1=@PromoDay1, PromoDay2=@PromoDay2, PromoDay3=@PromoDay3, " +
                                 "IsPrinter1=@IsPrinter1, IsPrinter2=@IsPrinter2, IsPrinter3=@IsPrinter3, IsPrinter4=@IsPrinter4, IsPrinter5=@IsPrinter5, " +
-                                "PromoPrice1=CAST(@PromoPrice1 as decimal(10,2)), PromoPrice2=CAST(@PromoPrice2 as decimal(10,2)), PromoPrice3=CAST(@PromoPrice3 as decimal(10,2)), IsSoldOut=@IsSoldOut, " +
+                                "PromoPrice1=CAST(@PromoPrice1 as decimal(10,3)), PromoPrice2=CAST(@PromoPrice2 as decimal(10,3)), PromoPrice3=CAST(@PromoPrice3 as decimal(10,3)), IsSoldOut=@IsSoldOut, " +
                                 "Deposit=CAST(@Deposit as decimal(10,2)), RecyclingFee=CAST(@RecyclingFee as decimal(10,2)),ChillCharge=CAST(@ChillCharge as decimal(10,2)), MemoText=@MemoText, " +
                                 "BarCode=@BarCode, TaxCode=@TaxCode, IsManualItem=@IsManualItem, Balance=@Balance,IsMainSalesButton = @IsMainSalesButton, IsSalesButton=@IsSalesButton, ForeColor = @ForeColor, BackColor = @BackColor,  " +
-                                "CategoryId=@CategoryId, IsButtonInButton=@IsButtonInButton, Brand=@Brand, Size = @Size  " +
+                                "CategoryId=@CategoryId, IsButtonInButton=@IsButtonInButton, Brand=@Brand, Size = @Size, IsPromoExactQty = @IsPromoExactQty  " +
                                 "WHERE Id = @Id";
                 var count = connection.Execute(query, pos_ProductModel);
                 return count;
@@ -830,6 +831,14 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
+        public List<POS_OrdersModel> Get_NonRFID_NonFixed_Order_By_ProdId(int iNewInvNo, int productId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_OrdersModel>($"select * from Orders where ProductId = {productId} and InvoiceNo = {iNewInvNo} and RFTagId < 1 and IsFixedOrder = 0").ToList();
+                return output;
+            }
+        }
         public List<POS_OrdersModel> Get_NonRFID_Order_By_OrderId(int iNewInvNo, int iOrderId)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -859,14 +868,15 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                string query = "UPDATE Orders SET OutUnitPrice = CAST(@OutUnitPrice as decimal(10,2)), Quantity =@Quantity, Amount=CAST(@Amount as decimal(10,2)), " +
+                string query = "UPDATE Orders SET OutUnitPrice = CAST(@OutUnitPrice as decimal(10,3)), Quantity =@Quantity, Amount=CAST(@Amount as decimal(10,2)), " +
                                         "Tax1=CAST(@Tax1 as decimal(10,2)), " +
                                         "Tax2=CAST(@Tax2 as decimal(10,2)), " +
                                         "Tax3=CAST(@Tax3 as decimal(10,2)), " +
                                         "IsTax1=@IsTax1, " +
                                         "IsTax2=@IsTax2, " +
                                         "IsTax3=@IsTax3, " +
-                                        "OrderCategoryId=@OrderCategoryId " +
+                                        "OrderCategoryId=@OrderCategoryId, " +
+                                        "IsFixedOrder=@IsFixedOrder " +
                             " WHERE Id=@Id";
                 var count = connection.Execute(query, pos_OrdersModel);
                 return count;
@@ -884,16 +894,16 @@ namespace SDCafeCommon.DataAccess
                                 "Tax3Rate	,Tax1	,Tax2	,Tax3	,InvoiceNo	,IsPaidComplete	,CompleteDate	, " +
                                 "CompleteTime	,CreateDate	,CreateTime	,CreateUserId	,CreateUserName	,CreateStation	, " +
                                 "LastModDate	,LastModTime	,LastModUserId	,LastModUserName	,LastModStation, RFTagID, " +
-                                "ParentId, OrderCategoryId, IsDiscounted, BarCode ) " +
+                                "ParentId, OrderCategoryId, IsDiscounted, BarCode, IsFixedOrder ) " +
                                 " OUTPUT INSERTED.[Id] " +
                                 "VALUES (@TranType	,@ProductId	,@ProductName	,@SecondName	,@ProductTypeId	,  " +
-                                "CAST(@InUnitPrice as decimal(10,2)), CAST(@OutUnitPrice as decimal(10,2))	,@IsTax1	,@IsTax2	,@IsTax3	,@UnitCategoryId	, " +
+                                "CAST(@InUnitPrice as decimal(10,2)), CAST(@OutUnitPrice as decimal(10,3))	,@IsTax1	,@IsTax2	,@IsTax3	,@UnitCategoryId	, " +
                                 "CAST(@Deposit as decimal(10,2)) ,CAST(@RecyclingFee as decimal(10,2))	,CAST(@ChillCharge as decimal(10,2))	,@IsPointException	,@IsManualPrice	, " +
                                 "@IsTaxInverseCalculation	,@Tare	,@Quantity	,CAST(@Amount as decimal(10,2))	,CAST(@Tax1Rate as decimal(10,2))	,CAST(@Tax2Rate as decimal(10,2))	, " +
                                 "CAST(@Tax3Rate as decimal(10,2))	,CAST(@Tax1 as decimal(10,2))	,CAST(@Tax2 as decimal(10,2))	,CAST(@Tax3 as decimal(10,2))	,@InvoiceNo	,@IsPaidComplete	,@CompleteDate	, " +
                                 "@CompleteTime	,@CreateDate	,@CreateTime	,@CreateUserId	,@CreateUserName	,@CreateStation	, " +
                                 "@LastModDate	,@LastModTime	,@LastModUserId	,@LastModUserName	,@LastModStation, @RFTagID, " +
-                                "@ParentId, @OrderCategoryId, @IsDiscounted, @BarCode ) ";
+                                "@ParentId, @OrderCategoryId, @IsDiscounted, @BarCode, @IsFixedOrder ) ";
                 //var count = connection.Execute(query, pos_OrdersModel);
                 //if (count == 1) return true;
                 //return false;
@@ -910,7 +920,14 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
-
+        public List<POS_OrdersModel> Get_Fixed_Order_By_InvoiceNo(int iNewInvNo)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_OrdersModel>($"select * from Orders where InvoiceNo = {iNewInvNo} and IsFixedOrder = 1 ").ToList();
+                return output;
+            }
+        }
         public int Get_Tag_Count_by_ProdId(int iProdId)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -958,6 +975,7 @@ namespace SDCafeCommon.DataAccess
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 List<POS_OrdersModel> orders = new List<POS_OrdersModel>();
+                List<POS_OrdersModel> childOrders = new List<POS_OrdersModel>();
                 orders = Get_Order_By_OrderId(OrderId);
                 if (orders.Count > 0)
                 {
@@ -965,6 +983,14 @@ namespace SDCafeCommon.DataAccess
                     {
                         // Update the Parent Order to IsDiscounted = false
                         Update_Order_IsDiscounted(orders[0].InvoiceNo, orders[0].ParentId, false);
+                    }
+                    childOrders = Get_Child_Order_By_OrderId(iNewInvNo, OrderId);
+                    if (childOrders.Count > 0)
+                    {
+                        foreach (POS_OrdersModel childOrder in childOrders)
+                        {
+                            Delete_Order_By_OrderId(iNewInvNo, childOrder.Id);
+                        }
                     }
                 }
                 string query = "DELETE from Orders WHERE id=" + OrderId + " and InvoiceNo = " + iNewInvNo;
@@ -1465,7 +1491,14 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
-
+        public List<POS_OrdersModel> Get_NonRFID_NonFixed_Order_By_BarCode(int iNewInvNo, string strBarCode)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_OrdersModel>($"select * from Orders where BarCode = '{strBarCode}' and InvoiceNo = {iNewInvNo} and RFTagId < 1 and IsFixedOrder = 0").ToList();
+                return output;
+            }
+        }
         public int Get_Orders_Count_by_InvoiceNo(int iNewInvNo)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -1789,5 +1822,7 @@ namespace SDCafeCommon.DataAccess
                 return count > 0;
             }
         }
+
+
     }
 }
