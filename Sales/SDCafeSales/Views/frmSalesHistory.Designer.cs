@@ -60,6 +60,14 @@
             this.txt_RefundTips = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
             this.txt_TotalRefundCount = new System.Windows.Forms.TextBox();
+            this.chk_Void = new System.Windows.Forms.CheckBox();
+            this.bt_DateThisYear = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_DateLast3M = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_DateLastMonth = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_DateThisMonth = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_DateThisWeek = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_DateYesterday = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_DateToday = new SDCafeCommon.Utilities.CustomButton();
             this.bt_CashRefund = new SDCafeCommon.Utilities.CustomButton();
             this.bt_CardRefund = new SDCafeCommon.Utilities.CustomButton();
             this.bt_CardVoid = new SDCafeCommon.Utilities.CustomButton();
@@ -68,13 +76,6 @@
             this.bt_Query = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_ReprintReceipt = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_DateToday = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_DateYesterday = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_DateThisWeek = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_DateThisMonth = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_DateLastMonth = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_DateLast3M = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_DateThisYear = new SDCafeCommon.Utilities.CustomButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).BeginInit();
             this.SuspendLayout();
@@ -96,7 +97,7 @@
             this.dttm_TranStart.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dttm_TranStart.Location = new System.Drawing.Point(112, 7);
             this.dttm_TranStart.Name = "dttm_TranStart";
-            this.dttm_TranStart.Size = new System.Drawing.Size(188, 29);
+            this.dttm_TranStart.Size = new System.Drawing.Size(153, 29);
             this.dttm_TranStart.TabIndex = 1;
             // 
             // dttm_TranEnd
@@ -105,7 +106,7 @@
             this.dttm_TranEnd.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dttm_TranEnd.Location = new System.Drawing.Point(112, 42);
             this.dttm_TranEnd.Name = "dttm_TranEnd";
-            this.dttm_TranEnd.Size = new System.Drawing.Size(188, 29);
+            this.dttm_TranEnd.Size = new System.Drawing.Size(153, 29);
             this.dttm_TranEnd.TabIndex = 2;
             // 
             // label5
@@ -308,7 +309,7 @@
             this.cb_Tender.FormattingEnabled = true;
             this.cb_Tender.Location = new System.Drawing.Point(112, 77);
             this.cb_Tender.Name = "cb_Tender";
-            this.cb_Tender.Size = new System.Drawing.Size(188, 30);
+            this.cb_Tender.Size = new System.Drawing.Size(153, 30);
             this.cb_Tender.TabIndex = 58;
             // 
             // progBarExport
@@ -399,206 +400,17 @@
             this.txt_TotalRefundCount.TabIndex = 68;
             this.txt_TotalRefundCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // bt_CashRefund
+            // chk_Void
             // 
-            this.bt_CashRefund.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.bt_CashRefund.CornerRadius = 30;
-            this.bt_CashRefund.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
-            this.bt_CashRefund.Location = new System.Drawing.Point(666, 60);
-            this.bt_CashRefund.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_CashRefund.Name = "bt_CashRefund";
-            this.bt_CashRefund.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_CashRefund.Size = new System.Drawing.Size(160, 47);
-            this.bt_CashRefund.TabIndex = 69;
-            this.bt_CashRefund.Text = "Cash Refund";
-            this.bt_CashRefund.Click += new System.EventHandler(this.bt_CashRefund_Click);
-            // 
-            // bt_CardRefund
-            // 
-            this.bt_CardRefund.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.bt_CardRefund.CornerRadius = 30;
-            this.bt_CardRefund.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
-            this.bt_CardRefund.Location = new System.Drawing.Point(833, 60);
-            this.bt_CardRefund.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_CardRefund.Name = "bt_CardRefund";
-            this.bt_CardRefund.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_CardRefund.Size = new System.Drawing.Size(160, 47);
-            this.bt_CardRefund.TabIndex = 61;
-            this.bt_CardRefund.Text = "Card Refund";
-            this.bt_CardRefund.Click += new System.EventHandler(this.bt_CardRefund_Click);
-            // 
-            // bt_CardVoid
-            // 
-            this.bt_CardVoid.BackColor = System.Drawing.Color.Firebrick;
-            this.bt_CardVoid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.bt_CardVoid.CornerRadius = 30;
-            this.bt_CardVoid.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
-            this.bt_CardVoid.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.bt_CardVoid.Location = new System.Drawing.Point(494, 58);
-            this.bt_CardVoid.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_CardVoid.Name = "bt_CardVoid";
-            this.bt_CardVoid.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_CardVoid.Size = new System.Drawing.Size(160, 47);
-            this.bt_CardVoid.TabIndex = 60;
-            this.bt_CardVoid.Text = "Card Void";
-            this.bt_CardVoid.Click += new System.EventHandler(this.bt_CardVoid_Click);
-            // 
-            // bt_ExcelExport
-            // 
-            this.bt_ExcelExport.BackColor = System.Drawing.Color.Green;
-            this.bt_ExcelExport.CornerRadius = 30;
-            this.bt_ExcelExport.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
-            this.bt_ExcelExport.Location = new System.Drawing.Point(666, 7);
-            this.bt_ExcelExport.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_ExcelExport.Name = "bt_ExcelExport";
-            this.bt_ExcelExport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_ExcelExport.Size = new System.Drawing.Size(160, 47);
-            this.bt_ExcelExport.TabIndex = 56;
-            this.bt_ExcelExport.Text = "Ecel Export";
-            this.bt_ExcelExport.Click += new System.EventHandler(this.bt_ExcelExport_Click);
-            // 
-            // bt_SetVoid
-            // 
-            this.bt_SetVoid.BackColor = System.Drawing.Color.Firebrick;
-            this.bt_SetVoid.CornerRadius = 30;
-            this.bt_SetVoid.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
-            this.bt_SetVoid.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.bt_SetVoid.Location = new System.Drawing.Point(322, 60);
-            this.bt_SetVoid.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_SetVoid.Name = "bt_SetVoid";
-            this.bt_SetVoid.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_SetVoid.Size = new System.Drawing.Size(160, 47);
-            this.bt_SetVoid.TabIndex = 43;
-            this.bt_SetVoid.Text = "Manual Void";
-            this.bt_SetVoid.Click += new System.EventHandler(this.bt_SetVoid_Click);
-            // 
-            // bt_Query
-            // 
-            this.bt_Query.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.bt_Query.CornerRadius = 30;
-            this.bt_Query.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_Query.Location = new System.Drawing.Point(322, 7);
-            this.bt_Query.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_Query.Name = "bt_Query";
-            this.bt_Query.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Query.Size = new System.Drawing.Size(160, 47);
-            this.bt_Query.TabIndex = 36;
-            this.bt_Query.Text = "Query";
-            this.bt_Query.Click += new System.EventHandler(this.bt_Query_Click);
-            // 
-            // bt_Exit
-            // 
-            this.bt_Exit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.bt_Exit.CornerRadius = 30;
-            this.bt_Exit.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Exit.ForeColor = System.Drawing.Color.White;
-            this.bt_Exit.Location = new System.Drawing.Point(835, 7);
-            this.bt_Exit.Name = "bt_Exit";
-            this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Exit.Size = new System.Drawing.Size(160, 47);
-            this.bt_Exit.TabIndex = 35;
-            this.bt_Exit.Text = "Exit";
-            this.bt_Exit.Click += new System.EventHandler(this.bt_Exit_Click);
-            // 
-            // bt_ReprintReceipt
-            // 
-            this.bt_ReprintReceipt.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.bt_ReprintReceipt.CornerRadius = 30;
-            this.bt_ReprintReceipt.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold);
-            this.bt_ReprintReceipt.Location = new System.Drawing.Point(494, 7);
-            this.bt_ReprintReceipt.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_ReprintReceipt.Name = "bt_ReprintReceipt";
-            this.bt_ReprintReceipt.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_ReprintReceipt.Size = new System.Drawing.Size(160, 47);
-            this.bt_ReprintReceipt.TabIndex = 23;
-            this.bt_ReprintReceipt.Text = "Re-Print";
-            this.bt_ReprintReceipt.Click += new System.EventHandler(this.bt_ReprintReceipt_Click);
-            // 
-            // bt_DateToday
-            // 
-            this.bt_DateToday.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.bt_DateToday.CornerRadius = 30;
-            this.bt_DateToday.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_DateToday.Location = new System.Drawing.Point(12, 118);
-            this.bt_DateToday.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_DateToday.Name = "bt_DateToday";
-            this.bt_DateToday.Size = new System.Drawing.Size(107, 30);
-            this.bt_DateToday.TabIndex = 70;
-            this.bt_DateToday.Text = "Today";
-            this.bt_DateToday.Click += new System.EventHandler(this.bt_DateToday_Click);
-            // 
-            // bt_DateYesterday
-            // 
-            this.bt_DateYesterday.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.bt_DateYesterday.CornerRadius = 30;
-            this.bt_DateYesterday.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_DateYesterday.Location = new System.Drawing.Point(131, 118);
-            this.bt_DateYesterday.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_DateYesterday.Name = "bt_DateYesterday";
-            this.bt_DateYesterday.Size = new System.Drawing.Size(107, 30);
-            this.bt_DateYesterday.TabIndex = 71;
-            this.bt_DateYesterday.Text = "Yesterday";
-            this.bt_DateYesterday.Click += new System.EventHandler(this.bt_DateYesterday_Click);
-            // 
-            // bt_DateThisWeek
-            // 
-            this.bt_DateThisWeek.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.bt_DateThisWeek.CornerRadius = 30;
-            this.bt_DateThisWeek.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_DateThisWeek.Location = new System.Drawing.Point(250, 118);
-            this.bt_DateThisWeek.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_DateThisWeek.Name = "bt_DateThisWeek";
-            this.bt_DateThisWeek.Size = new System.Drawing.Size(107, 30);
-            this.bt_DateThisWeek.TabIndex = 72;
-            this.bt_DateThisWeek.Text = "This Week";
-            this.bt_DateThisWeek.Click += new System.EventHandler(this.bt_DateThisWeek_Click);
-            // 
-            // bt_DateThisMonth
-            // 
-            this.bt_DateThisMonth.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.bt_DateThisMonth.CornerRadius = 30;
-            this.bt_DateThisMonth.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_DateThisMonth.Location = new System.Drawing.Point(369, 118);
-            this.bt_DateThisMonth.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_DateThisMonth.Name = "bt_DateThisMonth";
-            this.bt_DateThisMonth.Size = new System.Drawing.Size(107, 30);
-            this.bt_DateThisMonth.TabIndex = 73;
-            this.bt_DateThisMonth.Text = "This Month";
-            this.bt_DateThisMonth.Click += new System.EventHandler(this.bt_DateThisMonth_Click);
-            // 
-            // bt_DateLastMonth
-            // 
-            this.bt_DateLastMonth.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.bt_DateLastMonth.CornerRadius = 30;
-            this.bt_DateLastMonth.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_DateLastMonth.Location = new System.Drawing.Point(487, 118);
-            this.bt_DateLastMonth.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_DateLastMonth.Name = "bt_DateLastMonth";
-            this.bt_DateLastMonth.Size = new System.Drawing.Size(107, 30);
-            this.bt_DateLastMonth.TabIndex = 74;
-            this.bt_DateLastMonth.Text = "Last Month";
-            this.bt_DateLastMonth.Click += new System.EventHandler(this.bt_DateLastMonth_Click);
-            // 
-            // bt_DateLast3M
-            // 
-            this.bt_DateLast3M.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.bt_DateLast3M.CornerRadius = 30;
-            this.bt_DateLast3M.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_DateLast3M.Location = new System.Drawing.Point(606, 118);
-            this.bt_DateLast3M.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.bt_DateLast3M.Name = "bt_DateLast3M";
-            this.bt_DateLast3M.Size = new System.Drawing.Size(107, 30);
-            this.bt_DateLast3M.TabIndex = 75;
-            this.bt_DateLast3M.Text = "Last 3 Months";
-            this.bt_DateLast3M.Click += new System.EventHandler(this.bt_DateLast3M_Click);
+            this.chk_Void.AutoSize = true;
+            this.chk_Void.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chk_Void.ForeColor = System.Drawing.Color.Maroon;
+            this.chk_Void.Location = new System.Drawing.Point(288, 78);
+            this.chk_Void.Name = "chk_Void";
+            this.chk_Void.Size = new System.Drawing.Size(102, 27);
+            this.chk_Void.TabIndex = 77;
+            this.chk_Void.Text = "Void Only";
+            this.chk_Void.UseVisualStyleBackColor = true;
             // 
             // bt_DateThisYear
             // 
@@ -613,11 +425,213 @@
             this.bt_DateThisYear.Text = "This Year";
             this.bt_DateThisYear.Click += new System.EventHandler(this.bt_DateThisYear_Click);
             // 
+            // bt_DateLast3M
+            // 
+            this.bt_DateLast3M.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.bt_DateLast3M.CornerRadius = 30;
+            this.bt_DateLast3M.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_DateLast3M.Location = new System.Drawing.Point(606, 118);
+            this.bt_DateLast3M.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_DateLast3M.Name = "bt_DateLast3M";
+            this.bt_DateLast3M.Size = new System.Drawing.Size(107, 30);
+            this.bt_DateLast3M.TabIndex = 75;
+            this.bt_DateLast3M.Text = "Last 3 Months";
+            this.bt_DateLast3M.Click += new System.EventHandler(this.bt_DateLast3M_Click);
+            // 
+            // bt_DateLastMonth
+            // 
+            this.bt_DateLastMonth.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.bt_DateLastMonth.CornerRadius = 30;
+            this.bt_DateLastMonth.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_DateLastMonth.Location = new System.Drawing.Point(487, 118);
+            this.bt_DateLastMonth.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_DateLastMonth.Name = "bt_DateLastMonth";
+            this.bt_DateLastMonth.Size = new System.Drawing.Size(107, 30);
+            this.bt_DateLastMonth.TabIndex = 74;
+            this.bt_DateLastMonth.Text = "Last Month";
+            this.bt_DateLastMonth.Click += new System.EventHandler(this.bt_DateLastMonth_Click);
+            // 
+            // bt_DateThisMonth
+            // 
+            this.bt_DateThisMonth.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.bt_DateThisMonth.CornerRadius = 30;
+            this.bt_DateThisMonth.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_DateThisMonth.Location = new System.Drawing.Point(369, 118);
+            this.bt_DateThisMonth.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_DateThisMonth.Name = "bt_DateThisMonth";
+            this.bt_DateThisMonth.Size = new System.Drawing.Size(107, 30);
+            this.bt_DateThisMonth.TabIndex = 73;
+            this.bt_DateThisMonth.Text = "This Month";
+            this.bt_DateThisMonth.Click += new System.EventHandler(this.bt_DateThisMonth_Click);
+            // 
+            // bt_DateThisWeek
+            // 
+            this.bt_DateThisWeek.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.bt_DateThisWeek.CornerRadius = 30;
+            this.bt_DateThisWeek.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_DateThisWeek.Location = new System.Drawing.Point(250, 118);
+            this.bt_DateThisWeek.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_DateThisWeek.Name = "bt_DateThisWeek";
+            this.bt_DateThisWeek.Size = new System.Drawing.Size(107, 30);
+            this.bt_DateThisWeek.TabIndex = 72;
+            this.bt_DateThisWeek.Text = "This Week";
+            this.bt_DateThisWeek.Click += new System.EventHandler(this.bt_DateThisWeek_Click);
+            // 
+            // bt_DateYesterday
+            // 
+            this.bt_DateYesterday.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.bt_DateYesterday.CornerRadius = 30;
+            this.bt_DateYesterday.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_DateYesterday.Location = new System.Drawing.Point(131, 118);
+            this.bt_DateYesterday.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_DateYesterday.Name = "bt_DateYesterday";
+            this.bt_DateYesterday.Size = new System.Drawing.Size(107, 30);
+            this.bt_DateYesterday.TabIndex = 71;
+            this.bt_DateYesterday.Text = "Yesterday";
+            this.bt_DateYesterday.Click += new System.EventHandler(this.bt_DateYesterday_Click);
+            // 
+            // bt_DateToday
+            // 
+            this.bt_DateToday.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.bt_DateToday.CornerRadius = 30;
+            this.bt_DateToday.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_DateToday.Location = new System.Drawing.Point(12, 118);
+            this.bt_DateToday.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_DateToday.Name = "bt_DateToday";
+            this.bt_DateToday.Size = new System.Drawing.Size(107, 30);
+            this.bt_DateToday.TabIndex = 70;
+            this.bt_DateToday.Text = "Today";
+            this.bt_DateToday.Click += new System.EventHandler(this.bt_DateToday_Click);
+            // 
+            // bt_CashRefund
+            // 
+            this.bt_CashRefund.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.bt_CashRefund.CornerRadius = 30;
+            this.bt_CashRefund.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_CashRefund.Location = new System.Drawing.Point(712, 60);
+            this.bt_CashRefund.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_CashRefund.Name = "bt_CashRefund";
+            this.bt_CashRefund.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_CashRefund.Size = new System.Drawing.Size(140, 47);
+            this.bt_CashRefund.TabIndex = 69;
+            this.bt_CashRefund.Text = "Cash Refund";
+            this.bt_CashRefund.Click += new System.EventHandler(this.bt_CashRefund_Click);
+            // 
+            // bt_CardRefund
+            // 
+            this.bt_CardRefund.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.bt_CardRefund.CornerRadius = 30;
+            this.bt_CardRefund.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_CardRefund.Location = new System.Drawing.Point(857, 60);
+            this.bt_CardRefund.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_CardRefund.Name = "bt_CardRefund";
+            this.bt_CardRefund.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_CardRefund.Size = new System.Drawing.Size(140, 47);
+            this.bt_CardRefund.TabIndex = 61;
+            this.bt_CardRefund.Text = "Card Refund";
+            this.bt_CardRefund.Click += new System.EventHandler(this.bt_CardRefund_Click);
+            // 
+            // bt_CardVoid
+            // 
+            this.bt_CardVoid.BackColor = System.Drawing.Color.Firebrick;
+            this.bt_CardVoid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.bt_CardVoid.CornerRadius = 30;
+            this.bt_CardVoid.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_CardVoid.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.bt_CardVoid.Location = new System.Drawing.Point(565, 58);
+            this.bt_CardVoid.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_CardVoid.Name = "bt_CardVoid";
+            this.bt_CardVoid.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_CardVoid.Size = new System.Drawing.Size(140, 47);
+            this.bt_CardVoid.TabIndex = 60;
+            this.bt_CardVoid.Text = "Card Void";
+            this.bt_CardVoid.Click += new System.EventHandler(this.bt_CardVoid_Click);
+            // 
+            // bt_ExcelExport
+            // 
+            this.bt_ExcelExport.BackColor = System.Drawing.Color.Green;
+            this.bt_ExcelExport.CornerRadius = 30;
+            this.bt_ExcelExport.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_ExcelExport.Location = new System.Drawing.Point(712, 7);
+            this.bt_ExcelExport.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_ExcelExport.Name = "bt_ExcelExport";
+            this.bt_ExcelExport.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_ExcelExport.Size = new System.Drawing.Size(140, 47);
+            this.bt_ExcelExport.TabIndex = 56;
+            this.bt_ExcelExport.Text = "Excel Export";
+            this.bt_ExcelExport.Click += new System.EventHandler(this.bt_ExcelExport_Click);
+            // 
+            // bt_SetVoid
+            // 
+            this.bt_SetVoid.BackColor = System.Drawing.Color.Firebrick;
+            this.bt_SetVoid.CornerRadius = 30;
+            this.bt_SetVoid.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_SetVoid.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.bt_SetVoid.Location = new System.Drawing.Point(416, 60);
+            this.bt_SetVoid.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_SetVoid.Name = "bt_SetVoid";
+            this.bt_SetVoid.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_SetVoid.Size = new System.Drawing.Size(140, 47);
+            this.bt_SetVoid.TabIndex = 43;
+            this.bt_SetVoid.Text = "Manual Void";
+            this.bt_SetVoid.Click += new System.EventHandler(this.bt_SetVoid_Click);
+            // 
+            // bt_Query
+            // 
+            this.bt_Query.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.bt_Query.CornerRadius = 30;
+            this.bt_Query.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_Query.Location = new System.Drawing.Point(416, 7);
+            this.bt_Query.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_Query.Name = "bt_Query";
+            this.bt_Query.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Query.Size = new System.Drawing.Size(140, 47);
+            this.bt_Query.TabIndex = 36;
+            this.bt_Query.Text = "Query";
+            this.bt_Query.Click += new System.EventHandler(this.bt_Query_Click);
+            // 
+            // bt_Exit
+            // 
+            this.bt_Exit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.bt_Exit.CornerRadius = 30;
+            this.bt_Exit.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_Exit.ForeColor = System.Drawing.Color.White;
+            this.bt_Exit.Location = new System.Drawing.Point(859, 7);
+            this.bt_Exit.Name = "bt_Exit";
+            this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_Exit.Size = new System.Drawing.Size(140, 47);
+            this.bt_Exit.TabIndex = 35;
+            this.bt_Exit.Text = "Exit";
+            this.bt_Exit.Click += new System.EventHandler(this.bt_Exit_Click);
+            // 
+            // bt_ReprintReceipt
+            // 
+            this.bt_ReprintReceipt.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.bt_ReprintReceipt.CornerRadius = 30;
+            this.bt_ReprintReceipt.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_ReprintReceipt.Location = new System.Drawing.Point(565, 7);
+            this.bt_ReprintReceipt.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.bt_ReprintReceipt.Name = "bt_ReprintReceipt";
+            this.bt_ReprintReceipt.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_ReprintReceipt.Size = new System.Drawing.Size(140, 47);
+            this.bt_ReprintReceipt.TabIndex = 23;
+            this.bt_ReprintReceipt.Text = "Re-Print";
+            this.bt_ReprintReceipt.Click += new System.EventHandler(this.bt_ReprintReceipt_Click);
+            // 
             // frmSalesHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 725);
+            this.Controls.Add(this.chk_Void);
             this.Controls.Add(this.bt_DateThisYear);
             this.Controls.Add(this.bt_DateLast3M);
             this.Controls.Add(this.bt_DateLastMonth);
@@ -723,5 +737,6 @@
         private SDCafeCommon.Utilities.CustomButton bt_DateLastMonth;
         private SDCafeCommon.Utilities.CustomButton bt_DateLast3M;
         private SDCafeCommon.Utilities.CustomButton bt_DateThisYear;
+        private System.Windows.Forms.CheckBox chk_Void;
     }
 }

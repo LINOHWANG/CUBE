@@ -334,15 +334,14 @@
             // 
             this.bt_Promotion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.bt_Promotion.CornerRadius = 30;
-            this.bt_Promotion.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_Promotion.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_Promotion.Location = new System.Drawing.Point(12, 171);
             this.bt_Promotion.Name = "bt_Promotion";
             this.bt_Promotion.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
             this.bt_Promotion.Size = new System.Drawing.Size(142, 47);
             this.bt_Promotion.TabIndex = 37;
-            this.bt_Promotion.Text = "Promotions";
-            this.bt_Promotion.Visible = false;
+            this.bt_Promotion.Text = "Promotions (Mix && Match)";
             this.bt_Promotion.Click += new System.EventHandler(this.bt_Promotion_Click);
             // 
             // bt_SalesReport

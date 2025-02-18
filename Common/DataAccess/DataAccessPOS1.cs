@@ -192,6 +192,26 @@ namespace SDCafeCommon.DataAccess
                 }
             }
         }
+        public List<POS1_TranCollectionModel> Get_TranCollection_by_Date_Tender_Void(string strStartDate, string strEndDate, string strTender)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS1")))
+            {
+                strTender = strTender.Trim();
+                if (strTender == "All")
+                {
+                    var output = connection.Query<POS1_TranCollectionModel>($"select * from TranCollection where CreateDate >= '{strStartDate}' and CreateDate <= '{strEndDate}' And IsVoid = 1 " +
+                                                                                               "order by CreateDate desc, CreateTime desc").ToList();
+                    return output;
+                }
+                else
+                {
+                    var output = connection.Query<POS1_TranCollectionModel>($"select * from TranCollection where CreateDate >= '{strStartDate}' and CreateDate <= '{strEndDate}' And IsVoid = 1 " +
+                                                                                               $" And CollectionType like '%{strTender}%' " +
+                                                                           "order by CreateDate desc, CreateTime desc").ToList();
+                    return output;
+                }
+            }
+        }
         public List<POS1_TranCollectionModel> Get_TranCollection_by_DateTimeRange(string strStartDate, string strStartTime, string strEndDate, string strEndTime)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS1")))

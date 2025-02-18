@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
-using Dapper;
-using SDCafeCommon.Utilities;
+﻿using Dapper;
 using SDCafeCommon.Model;
-using SDCafeCommon.DataAccess;
+using SDCafeCommon.Utilities;
+using System;
+using System.Collections.Generic;
 using System.Data;
-using System.Windows.Forms;
-using System.Runtime.InteropServices.ComTypes;
+using System.Data.SqlClient;
+using System.Linq;
 
 namespace SDCafeCommon.DataAccess
 {
@@ -276,8 +271,8 @@ namespace SDCafeCommon.DataAccess
                 string strWhere = "";
                 if (p_bIsManual)
                     strWhere += " Where ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0");
-                                    //" OR ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
-                                    //" OR ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
+                //" OR ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
+                //" OR ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
                 string strOrderby = " Order By IsManualItem Desc, ProductName";
                 query += strWhere + strOrderby;
                 var output = connection.Query<POS_ProductModel>(query).ToList();
@@ -341,7 +336,7 @@ namespace SDCafeCommon.DataAccess
                 string query = "";
                 if (m_blnUnresolved)
                     query = $"select * from TimeTable where DateTimeStarted >= '{strStartDate}' and DateTimeStarted <= '{strEndDate}'  " +
-                                            "And DateTimeFinished Is NULL " + 
+                                            "And DateTimeFinished Is NULL " +
                                             "order by DateTimeStarted, UserId";
                 else
                     query = $"select * from TimeTable where DateTimeStarted >= '{strStartDate}' and DateTimeStarted <= '{strEndDate}' " +
@@ -536,7 +531,7 @@ namespace SDCafeCommon.DataAccess
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 double dblUnitPrice = 0;
-                string query = "SELECT * FROM PRODUCT WHERE Id = (Select top 1 ProdId from PromoProducts where promoid="+ iSelectedPromoId+")";
+                string query = "SELECT * FROM PRODUCT WHERE Id = (Select top 1 ProdId from PromoProducts where promoid=" + iSelectedPromoId + ")";
                 var output = connection.Query<POS_ProductModel>(query).ToList();
                 if (output.Count > 0)
                 {
@@ -612,7 +607,7 @@ namespace SDCafeCommon.DataAccess
             {
                 if (pos_ProductModel.ProductName.Length > 30)
                 {
-                    pos_ProductModel.ProductName = pos_ProductModel.ProductName.Substring(0,30);
+                    pos_ProductModel.ProductName = pos_ProductModel.ProductName.Substring(0, 30);
                 }
                 if (pos_ProductModel.SecondName.Length > 30)
                 {
@@ -626,7 +621,7 @@ namespace SDCafeCommon.DataAccess
                             "IsManualItem, Balance,IsMainSalesButton, IsSalesButton, ForeColor, BackColor, " +
                             "CategoryId, IsButtonInButton, Brand, Size, IsPromoExactQty ) " +
                             "VALUES(@ProductName,@SecondName,@ProductTypeId,CAST(@OutUnitPrice as decimal(10,2)),CAST(@OutUnitPrice as decimal(10,2)),@IsTax1,@IsTax2,@IsTax3,@IsTaxInverseCalculation, " +
-                            "@PromoStartDate,@PromoEndDate,@PromoDay1,@PromoDay2,@PromoDay3,@IsPrinter1,@IsPrinter2,@IsPrinter3,@IsPrinter4,@IsPrinter5,"+
+                            "@PromoStartDate,@PromoEndDate,@PromoDay1,@PromoDay2,@PromoDay3,@IsPrinter1,@IsPrinter2,@IsPrinter3,@IsPrinter4,@IsPrinter5," +
                             "CAST(@PromoPrice1 as decimal(10,3)),CAST(@PromoPrice2 as decimal(10,3)),CAST(@PromoPrice3 as decimal(10,3)),@IsSoldOut," +
                             "CAST(@Deposit as decimal(10,2)),CAST(@RecyclingFee as decimal(10,2)),CAST(@ChillCharge as decimal(10,2)), @MemoText, @BarCode, @TaxCode, " +
                             "@IsManualItem, @Balance, @IsMainSalesButton,@IsSalesButton, @ForeColor,  " +
@@ -692,7 +687,7 @@ namespace SDCafeCommon.DataAccess
             }
         }
 
-        
+
         public bool Check_ProdType_AbleTo_Donate(int iProdTypeId)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -764,13 +759,13 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                string query = "UPDATE RFIDTags SET IsUsed=1, IsDonation=1, DateTimeDonation='" +pos_RFIDTagsModel.DateTimeDonation + "' " +
+                string query = "UPDATE RFIDTags SET IsUsed=1, IsDonation=1, DateTimeDonation='" + pos_RFIDTagsModel.DateTimeDonation + "' " +
                                "WHERE Id=" + pos_RFIDTagsModel.Id;
                 var count = connection.Execute(query);
                 return count;
             }
         }
-        
+
         public int Set_RFIDTag_Discount_ByID(POS_RFIDTagsModel pos_RFIDTagsModel)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -936,7 +931,7 @@ namespace SDCafeCommon.DataAccess
                 return output.Count;
             }
         }
-        
+
         public int Get_Latest_OrderId_by_InvoiceNo_ProductId(int iInvoiceNo, int iProdId)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -1025,7 +1020,7 @@ namespace SDCafeCommon.DataAccess
                     fTotTax2 = output[0].Tax2;
                     fTotTax3 = output[0].Tax3;
                 }
-                return fTotalAmount+fTotTax1+fTotTax2+fTotTax3;
+                return fTotalAmount + fTotTax1 + fTotTax2 + fTotTax3;
             }
         }
         //This is only for Discount
@@ -1257,9 +1252,9 @@ namespace SDCafeCommon.DataAccess
                 string strWhere = $" Where ProductName like '%{p_strProdName}%' Or SecondName like '%{p_strProdName}%'";
                 if (p_bIsManual)
                     strWhere += " And ISNULL(IsManualItem,0) = " + (p_bIsManual ? "1" : "0");
-                    //" And ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
-                    //" And ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
-                    string strOrderby = " Order By ProductName";
+                //" And ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
+                //" And ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
+                string strOrderby = " Order By ProductName";
                 query += strWhere + strOrderby;
                 var output = connection.Query<POS_ProductModel>(query).ToList();
                 return output;
@@ -1754,19 +1749,19 @@ namespace SDCafeCommon.DataAccess
                         var output = connection.Query<POS_ButtonInButtonsModel>($"select * from ButtonInButtons WHERE ButtonProdId = {bib.Id}").ToList();
                         if (output.Count > 0)
                         {
-                                    //public string PTypeName { get; set; }
-                                    //public int ButtonProdId { get; set; }
-                                    //public string ButtonName { get; set; }
-                                    //List<POS_ProductModel> ProductList { get; set; }
-                                bibList.Add(
-                                    new POS_BIBListModel
-                                        {
-                                        PTypeName = Get_ProductTypeName_By_Id(bib.ProductTypeId),
-                                        ButtonProdId = bib.Id,
-                                        ButtonName = bib.ProductName,
-                                        ProdCount = output.Count
-                                        }
-                                );
+                            //public string PTypeName { get; set; }
+                            //public int ButtonProdId { get; set; }
+                            //public string ButtonName { get; set; }
+                            //List<POS_ProductModel> ProductList { get; set; }
+                            bibList.Add(
+                                new POS_BIBListModel
+                                {
+                                    PTypeName = Get_ProductTypeName_By_Id(bib.ProductTypeId),
+                                    ButtonProdId = bib.Id,
+                                    ButtonName = bib.ProductName,
+                                    ProdCount = output.Count
+                                }
+                            );
                         }
                         else
                         {

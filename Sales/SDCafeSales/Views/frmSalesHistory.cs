@@ -83,6 +83,8 @@ namespace SDCafeSales.Views
 
             string strTenderType = "";
             int iRowCount = 0;
+            bool bIsVoidOnly = chk_Void.Checked;
+
             if (cb_Tender.SelectedIndex > 0)
             {
                 strTenderType = cb_Tender.SelectedItem.ToString();
@@ -92,7 +94,14 @@ namespace SDCafeSales.Views
                 strTenderType = "All";
             }
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
-            trancols = dbPOS1.Get_TranCollection_by_Date_Tender(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranEnd.Value.ToString("yyyy-MM-dd"), strTenderType);
+            if (bIsVoidOnly)
+            {
+                trancols = dbPOS1.Get_TranCollection_by_Date_Tender_Void(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranEnd.Value.ToString("yyyy-MM-dd"), strTenderType);
+            }
+            else
+            {
+                trancols = dbPOS1.Get_TranCollection_by_Date_Tender(dttm_TranStart.Value.ToString("yyyy-MM-dd"), dttm_TranEnd.Value.ToString("yyyy-MM-dd"), strTenderType);
+            }
             if (trancols.Count > 0)
             {
                 iTotalCount = trancols.Count;
@@ -1730,7 +1739,7 @@ namespace SDCafeSales.Views
                 if (dbPOS1.IsVoidCollection(Convert.ToInt32(strSelInvNo)) == true)
                 {
                     bt_SetVoid.Text = "Cancel Void";
-                    bt_SetVoid.BackColor = Color.GreenYellow;
+                    bt_SetVoid.BackColor = Color.DarkGoldenrod;
                     bt_CardVoid.Enabled = false;
                     bt_CardRefund.Enabled = false;
                     // If transaction voided via Card payment, disable Manual Void
@@ -1738,11 +1747,15 @@ namespace SDCafeSales.Views
                     {
                         bt_SetVoid.Enabled = false;
                     }
+                    else
+                    {
+                        bt_SetVoid.Enabled = true;
+                    }
                 }
                 else
                 {
                     bt_SetVoid.Text = "Manual Void";
-                    bt_SetVoid.BackColor = Color.LightSalmon;
+                    bt_SetVoid.BackColor = Color.Firebrick;
                 }
             }
             else

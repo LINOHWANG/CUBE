@@ -2956,7 +2956,7 @@ namespace SDCafeSales.Views
         {
             string strTaxShort = "";
             int iSeq = 0;
-            bool bQTYPromotionProduct = false;
+            //bool bQTYPromotionProduct = false;
             int iQTYPromotionIndex = 0;
             int iQTYOriginalPrice = 0;
             int iOrderQty = 1;
@@ -3853,7 +3853,7 @@ namespace SDCafeSales.Views
             string strTaxShort = "";
             int iSeq = 0;
             int iOrderQty = 1;
-            bool bQTYPromotionProduct = false;
+            //bool bQTYPromotionProduct = false;
             int iQTYPromotionIndex = 0;
             structDivMod divmodPromo = new structDivMod();
 
@@ -4409,7 +4409,8 @@ namespace SDCafeSales.Views
                 return false;
             }
             Consolidate_Fixed_Promo_Orders();
-            Check_Assorted_Promotions();
+            //Feature #3707 
+            if (iQTYPromotionIndex == 0) Check_Assorted_Promotions();
             Calculate_Total_Due();
             //
             return true;
@@ -8681,7 +8682,7 @@ namespace SDCafeSales.Views
 
         private void bt_Plus_Click(object sender, EventArgs e)
         {
-            bool bQTYPromotionProduct = false;
+            //bool bQTYPromotionProduct = false;
             float fTax1, fTax2, fTax3 = 0;
             int iQTYPromotionIndex = 0;
             structDivMod divmodPromo = new structDivMod();
@@ -8849,7 +8850,7 @@ namespace SDCafeSales.Views
 
         private void bt_Minus_Click(object sender, EventArgs e)
         {
-            bool bQTYPromotionProduct = false;
+            //bool bQTYPromotionProduct = false;
             float fTax1, fTax2, fTax3 = 0;
             int iQTYPromotionIndex = 0;
 
