@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace SDCafeOffice.Views
 {
@@ -25,7 +26,10 @@ namespace SDCafeOffice.Views
         private int m_Rows = 0;
         private int m_Cols = 0;
         private CustomButton m_btnSelected;
-
+        private Color m_colorFore;
+        private Color m_colorBack;
+        private Graphics grpRec;
+        private bool m_blnModified = false;
         public frmSalesButton()
         {
             InitializeComponent();
@@ -35,6 +39,7 @@ namespace SDCafeOffice.Views
         {
             m_intQueryTop = 100;
             LoadSalesButtonSettings();
+            UpdateButton(m_blnModified);
         }
 
         private void LoadSalesButtonSettings()
@@ -160,8 +165,8 @@ namespace SDCafeOffice.Views
             txt_ForeColor.Text = m_btnSelected.ForeColor.Name;
             txt_FontName.Text = m_btnSelected.Font.Name;
             txt_FontSize.Text = m_btnSelected.Font.Size.ToString();
-            txt_BtnCol.Text = iRow.ToString();
-            txt_BtnRow.Text = iCol.ToString();
+            txt_BtnRow.Text = iRow.ToString();
+            txt_BtnCol.Text = iCol.ToString();
             //txt_FontStyle.Text = m_btnSelected.Font.Style.ToString();
             txt_ProdId.Text = m_btnSelected.Tag.ToString();
             iProdId = Convert.ToInt32(m_btnSelected.Tag);
@@ -170,13 +175,46 @@ namespace SDCafeOffice.Views
                 DataAccessPOS dbPOS = new DataAccessPOS();
                 POS_ProductModel prod = dbPOS.Get_One_Product_By_ID(iProdId);
                 txt_ProdName.Text = prod.ProductName;
+                txt_ProdName.BackColor = Color.White;
+                bt_Unlink.Enabled = true;
             }
             else
             {
                 txt_ProdName.Text = "No Product";
+                txt_ProdName.BackColor = Color.DimGray;
+                bt_Unlink.Enabled = false;
             }
+            
             chk_Visible.Checked = true;
 
+            // if grpRec is not yet created on the pnlMain, draw a rectangle around the button
+            if (grpRec == null)
+            {
+                grpRec = pnlMenu.CreateGraphics();
+                Pen p = new Pen(Color.Red, 5);
+                grpRec.DrawRectangle(p, m_btnSelected.Left, m_btnSelected.Top, m_btnSelected.Width, m_btnSelected.Height);
+            }
+            //else, move the rectangle to the new button
+            else
+            {
+                // clear the rectangle with transparent color
+                grpRec.Clear(pnlMenu.BackColor);
+                Pen p = new Pen(Color.Red, 5);
+                grpRec.DrawRectangle(p, m_btnSelected.Left, m_btnSelected.Top, m_btnSelected.Width, m_btnSelected.Height);
+            }
+
+
+        }
+        private void UpdateButton(bool p_blnModified)
+        {
+            if (p_blnModified)
+            {
+                bt_Save.Enabled = true;
+            }
+            else
+            {
+                bt_Save.Enabled = false;
+            }
         }
 
         private void bt_SetLayout_Click(object sender, EventArgs e)
@@ -188,6 +226,23 @@ namespace SDCafeOffice.Views
             int iLineWidth = 0;
             int iLineHeight = 0;
             int iSpacing = 5;
+
+            if (txt_Rows.Text == "" || txt_Cols.Text == "")
+            {
+                MessageBox.Show("Please enter Rows and Cols");
+                return;
+            }
+            if (txt_Rows.Text == m_Rows.ToString() && txt_Cols.Text == m_Cols.ToString())
+            {
+                MessageBox.Show("No change in Rows and Cols");
+                return;
+            }
+            // ask user to confirm processing
+            DialogResult result = MessageBox.Show("Do you want to set the layout? Existing layout will be destroyed!", "Confirmation", MessageBoxButtons.YesNo);
+            if (result == DialogResult.No)
+            {
+                return;
+            }
 
             btnArray = new CustomButton[m_intQueryTop];
             for (int i = 0; i < m_intQueryTop; i++)
@@ -386,34 +441,34 @@ namespace SDCafeOffice.Views
             dgvProds.Rows.Clear();
             //this.dataGridActivity.AutoGenerateColumns = false;
             //this.dataGridActivity.RowHeadersVisible = false;
-            this.dgvProds.MultiSelect = true;
+            this.dgvProds.MultiSelect = false;
             this.dgvProds.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgvProds.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvProds.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             this.dgvProds.ColumnCount = 4;
             this.dgvProds.Columns[0].Name = "Id";
-            this.dgvProds.Columns[0].Width = 60;
+            this.dgvProds.Columns[0].Width = 50;
             this.dgvProds.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvProds.Columns[1].Name = "Type Name";
-            this.dgvProds.Columns[1].Width = 100;
+            this.dgvProds.Columns[1].Width = 80;
             this.dgvProds.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvProds.Columns[2].Name = "Product Name";
-            this.dgvProds.Columns[2].Width = 150;
+            this.dgvProds.Columns[2].Width = 120;
             this.dgvProds.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvProds.Columns[3].Name = "Price";
-            this.dgvProds.Columns[3].Width = 70;
+            this.dgvProds.Columns[3].Width = 50;
             this.dgvProds.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            this.dgvProds.DefaultCellStyle.Font = new System.Drawing.Font("Arial", 14F, GraphicsUnit.Pixel);
+            this.dgvProds.DefaultCellStyle.Font = new System.Drawing.Font("Arial Narrow", 11F, GraphicsUnit.Pixel);
             this.dgvProds.EnableHeadersVisualStyles = false;
-            this.dgvProds.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Arial", 16F, GraphicsUnit.Pixel);
+            this.dgvProds.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Arial Narrow", 12F, GraphicsUnit.Pixel);
             this.dgvProds.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvProds.ColumnHeadersDefaultCellStyle.BackColor = Color.LightBlue;
             // fix the row height
             dgvProds.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             dgvProds.AllowUserToResizeRows = false;
             dgvProds.RowTemplate.Resizable = DataGridViewTriState.True;
-            dgvProds.RowTemplate.MinimumHeight = 40;
+            dgvProds.RowTemplate.MinimumHeight = 30;
 
 
         }
@@ -423,6 +478,9 @@ namespace SDCafeOffice.Views
             // get the selected product id and product name and set txt_ProdId and txt_ProdName
             int iProdId = 0;
             string strProdName = "";
+            
+            if (m_btnSelected == null) return;
+
             iProdId = Convert.ToInt32(dgvProds.CurrentRow.Cells[0].Value);
             strProdName = dgvProds.CurrentRow.Cells[2].Value.ToString();
             txt_ProdId.Text = iProdId.ToString();
@@ -430,6 +488,90 @@ namespace SDCafeOffice.Views
 
             m_btnSelected.Tag = iProdId;
             m_btnSelected.Text = strProdName.ToString();
+
+            // Set default button color
+            m_btnSelected.BackColor = Color.White;
+            m_btnSelected.ForeColor = Color.Black;
+            txt_BackColor.Text = m_btnSelected.BackColor.Name;
+            txt_ForeColor.Text = m_btnSelected.ForeColor.Name;
+
+            m_blnModified = true;
+            UpdateButton(m_blnModified);
         }
+
+        private void txt_ForeColor_Click(object sender, EventArgs e)
+        {
+            ColorDialog clrDialog = new ColorDialog();
+
+            //show the colour dialog and check that user clicked ok
+            if (clrDialog.ShowDialog() == DialogResult.OK)
+            {
+                //save the colour that the user chose
+                m_colorFore = clrDialog.Color;
+                m_btnSelected.ForeColor = clrDialog.Color;
+                txt_ForeColor.ForeColor = clrDialog.Color;
+                txt_BackColor.ForeColor = clrDialog.Color;
+                txt_ForeColor.Text = m_colorFore.ToString();
+                txt_ForeColor.Text = txt_ForeColor.Text.Replace("Color [", "");
+                txt_ForeColor.Text = txt_ForeColor.Text.Replace("]", "");
+                m_blnModified = true;
+                UpdateButton(m_blnModified);
+            }
+        }
+
+        private void txt_BackColor_Click(object sender, EventArgs e)
+        {
+            ColorDialog clrDialog = new ColorDialog();
+
+            //show the colour dialog and check that user clicked ok
+            if (clrDialog.ShowDialog() == DialogResult.OK)
+            {
+                //save the colour that the user chose
+                m_colorBack = clrDialog.Color;
+                m_btnSelected.BackColor = clrDialog.Color;
+                txt_BackColor.BackColor = clrDialog.Color;
+                txt_ForeColor.BackColor = clrDialog.Color;
+                txt_BackColor.Text = m_colorBack.ToString();
+                txt_BackColor.Text = txt_BackColor.Text.Replace("Color [", "");
+                txt_BackColor.Text = txt_BackColor.Text.Replace("]", "");
+                m_blnModified = true;
+                UpdateButton(m_blnModified);
+            }
+        }
+
+        private void txt_FontName_Click(object sender, EventArgs e)
+        {
+            FontDialog fontDialog1 = new FontDialog();
+            fontDialog1.ShowColor = false;
+
+            fontDialog1.Font = txt_FontName.Font;
+
+            if (fontDialog1.ShowDialog() != DialogResult.Cancel)
+            {
+                txt_FontName.Font = fontDialog1.Font;
+                txt_FontName.Text = fontDialog1.Font.Name;
+                txt_FontSize.Text = fontDialog1.Font.Size.ToString();
+                m_btnSelected.Font = fontDialog1.Font;
+                m_blnModified = true;
+                UpdateButton(m_blnModified);
+            }
+        }
+
+        private void bt_Unlink_Click(object sender, EventArgs e)
+        {
+            m_btnSelected.Tag = 0;
+            m_btnSelected.Text = "No Product";
+            txt_ProdId.Text = "0";
+            txt_ProdName.Text = "";
+            m_btnSelected.ForeColor = Color.White;
+            m_btnSelected.BackColor = Color.DimGray;
+
+            txt_ProdName.BackColor = Color.DimGray;
+            bt_Unlink.Enabled = false;
+
+            m_blnModified = true;
+            UpdateButton(m_blnModified);
+        }
+
     }
 }

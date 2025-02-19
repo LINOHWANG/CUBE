@@ -230,6 +230,9 @@ namespace SDCafeSales.Views
         public string strTax2Name = "Tax2";
         public string strTax3Name = "Tax3";
         private float m_fExchangeRateCADUSD;
+        private int m_Rows;
+        private int m_Cols;
+        private List<POS_SalesButtonModel> salesButtonList;
 
         public bool m_blnPrintTaxDetails { get; set; }
         public string m_strProdBtnSortOrder { get; set; }
@@ -295,6 +298,7 @@ namespace SDCafeSales.Views
                 Load_System_Info();
                 Load_ImageList();
                 Load_Existing_Orders();
+                LoadSalesButtonSettings();
                 PopulateMenuTypeButtons();
                 PopulateMenuButtons(false, 0);
                 ToggleNumTypeButtons();
@@ -311,7 +315,40 @@ namespace SDCafeSales.Views
             strBarCode = string.Empty;
             BarCode_Get_Focus();
         }
+        private void LoadSalesButtonSettings()
+        {
+            int xPos = 0;
+            int yPos = 0;
+            int iLines = 0;
+            int iColor = 0;
 
+            btnArray = new CustomButton[m_intQueryTop];
+            for (int i = 0; i < m_intQueryTop; i++)
+            {
+                // Initialize one variable 
+                //btnArray[i] = new System.Windows.Forms.Button();
+                btnArray[i] = new CustomButton();
+                btnArray[i].Click -= new System.EventHandler(ClickMenuButton);
+            }
+            m_Rows = 0;
+            m_Cols = 0;
+            // get Rows and Cols from sysConfig
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            List<POS_SysConfigModel> sysConfigs = new List<POS_SysConfigModel>();
+            POS_SysConfigModel sysConfig = new POS_SysConfigModel();
+            sysConfigs = dbPOS.Get_SysConfig_By_Name("SALESBUTTON_ROWS");
+            if (sysConfigs.Count > 0)
+            {
+                m_Rows = Convert.ToInt32(sysConfigs[0].ConfigValue);
+            }
+            sysConfigs = dbPOS.Get_SysConfig_By_Name("SALESBUTTON_COLS");
+            if (sysConfigs.Count > 0)
+            {
+                m_Cols = Convert.ToInt32(sysConfigs[0].ConfigValue);
+            }
+
+            salesButtonList = dbPOS.Get_All_SalesButton();
+        }
         private void Load_Update_Exchage_Rate()
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
@@ -2900,7 +2937,16 @@ namespace SDCafeSales.Views
                 }
                 else
                 {
-                    prods = dbPOS.Get_All_DefaultSales_Products(m_strProdBtnSortOrder);
+                    // Feature #3706
+                    if (salesButtonList.Count > 0)
+                    {
+                        PopulateSalesButtons();
+                        return;
+                    }
+                    else
+                    {
+                        prods = dbPOS.Get_All_DefaultSales_Products(m_strProdBtnSortOrder);
+                    }
                 }
             }
 
@@ -3035,7 +3081,68 @@ namespace SDCafeSales.Views
             pnlMenu.Enabled = true; // not need now to this button now 
             //label1.Visible = true;
         }
+        private void PopulateSalesButtons()
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            POS_ProductModel prod = new POS_ProductModel();
+            FontFamily fontFamily = new FontFamily("Arial");
+            FontStyle fontStyle = new FontStyle();
+            string strProdName = "";
+            int iButtonCount = 0;
 
+            foreach (POS_SalesButtonModel salesButton in salesButtonList)
+            {
+                if (salesButton.ProductId > 0)
+                {
+                    prod = dbPOS.Get_One_Product_By_ID(salesButton.ProductId);
+                    if (prod == null)
+                    {
+                        strProdName = "No Product";
+                    }
+                    else
+                    {
+                        strProdName = prod.ProductName;
+                    }
+                }
+                else
+                {
+                    prod.ProductName = "No Product";
+                    strProdName = prod.ProductName;
+                    continue;
+                }
+                btnArray[iButtonCount].Name = salesButton.Row.ToString() + "," + salesButton.Col.ToString();
+                btnArray[iButtonCount].Text = strProdName;
+                fontFamily = new FontFamily(salesButton.FontName);
+                fontStyle = (FontStyle)salesButton.FontStyle;
+                btnArray[iButtonCount].Font = new System.Drawing.Font(fontFamily, salesButton.FontSize, fontStyle);
+                btnArray[iButtonCount].ForeColor = Color.FromName(salesButton.ForeColor);
+                btnArray[iButtonCount].BackColor = Color.FromName(salesButton.BackColor);
+                btnArray[iButtonCount].Left = (int)salesButton.ButtonLeft;
+                btnArray[iButtonCount].Top = (int)salesButton.ButtonTop;
+                btnArray[iButtonCount].Width = (int)salesButton.Width;
+                btnArray[iButtonCount].Height = (int)salesButton.Height;
+                btnArray[iButtonCount].Tag = salesButton.ProductId;
+                btnArray[iButtonCount].CornerRadius = 30;
+                btnArray[iButtonCount].RoundCorners = SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight | SDCafeCommon.Utilities.Corners.BottomLeft;
+                btnArray[iButtonCount].Click += new System.EventHandler(ClickMenuButton);
+                if (prod.IsManualItem)
+                {
+                    //btnArray[iButtonCount].ForeColor = Color.DarkRed;
+                    btnArray[iButtonCount].Text = prod.ProductName;
+                }
+                else
+                {
+                    btnArray[iButtonCount].Text = prod.ProductName + Environment.NewLine + prod.OutUnitPrice.ToString("c2");
+                }
+                if ((salesButton.IsVisible == false) || (salesButton.ProductId == 0))
+                {
+                    btnArray[iButtonCount].ForeColor = Color.White;
+                    btnArray[iButtonCount].BackColor = Color.DimGray;
+                }
+                pnlMenu.Controls.Add(btnArray[iButtonCount]);
+                iButtonCount++;
+            }
+        }
         private void ClickMenuBackButton(object sender, EventArgs e)
         {
             PopulateMenuButtons(false, 0);
@@ -7575,23 +7682,30 @@ namespace SDCafeSales.Views
                 int itxtHeight = 12;
                 int iheaderHeight = 14;
                 int ititleHeight = 17;
+                bool blnPrintLogo = false;
                 //////////////////////////////////////////////////////////////////////////
                 // Print Logo ------------------------------------------------------
                 strImageFile = dbPOS.Get_SysConfig_By_Name("RECEIPT_LOGO_IMAGE")[0].ConfigValue;
-                if (strImageFile.Length > 0)
+                blnPrintLogo = dbPOS.Get_SysConfig_By_Name("IS_RECEIPT_LOGO_PRINT")[0].ConfigValue == "TRUE" ? true:false;
+                
+                Rectangle txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, ititleHeight));
+
+                if ((strImageFile.Length > 0) && (blnPrintLogo))
                 {
                     Image logoImg = Image.FromFile(strImageFile);
                     Rectangle logoRect = new Rectangle(new Point(0, 0), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iLogoHeight));
                     //e1.Graphics.DrawRectangle(Pens.Black, logoRect);
                     e1.Graphics.DrawImage(logoImg, logoRect, new Rectangle(0, 0, logoImg.Width, logoImg.Height), GraphicsUnit.Pixel);
+                    iNextLineYPoint = iNextLineYPoint + iLogoHeight;
                 }
-                //////////////////////////////////////////////////////////////////////////
-                // Print Header ------------------------------------------------------
-                iNextLineYPoint = iNextLineYPoint + iLogoHeight;
-                Rectangle txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, ititleHeight));
-                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, ititleHeight));
-                //e1.Graphics.DrawRectangle(Pens.Black, txtRect);
-                e1.Graphics.DrawString(dbPOS.Get_SysConfig_By_Name("BIZ_TITLE")[0].ConfigValue, fntTitle, brsBlack, (RectangleF)txtRect, format1);
+                else
+                {
+                    //////////////////////////////////////////////////////////////////////////
+                    // Print Header ------------------------------------------------------
+                    txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, ititleHeight));
+                    //e1.Graphics.DrawRectangle(Pens.Black, txtRect);
+                    e1.Graphics.DrawString(dbPOS.Get_SysConfig_By_Name("BIZ_TITLE")[0].ConfigValue, fntTitle, brsBlack, (RectangleF)txtRect, format1);
+                }
                 // Print Header ------------------------------------------------------
                 iNextLineYPoint = iNextLineYPoint + ititleHeight;
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight));
@@ -7805,6 +7919,10 @@ namespace SDCafeSales.Views
                 txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight * 2));
                 e1.Graphics.DrawString("*99999" + iInvoiceNo.ToString("0000000")+ "*", fntInvNoBarCode, brsBlack, (RectangleF)txtRect, format1);
 
+                // print space line
+                iNextLineYPoint = iNextLineYPoint + (iheaderHeight * 1);
+                txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, iheaderHeight));
+                e1.Graphics.DrawString(" ", fntFooter, brsBlack, (RectangleF)txtRect, format1);
 
             }; //if (IsInvoice)
             try

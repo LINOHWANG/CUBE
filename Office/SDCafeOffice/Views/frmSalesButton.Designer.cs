@@ -34,6 +34,10 @@
             this.txt_Rows = new System.Windows.Forms.TextBox();
             this.txt_Cols = new System.Windows.Forms.TextBox();
             this.grpButtonProp = new System.Windows.Forms.GroupBox();
+            this.bt_Unlink = new SDCafeCommon.Utilities.CustomButton();
+            this.chk_Visible = new System.Windows.Forms.CheckBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.txt_FontSize = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.txt_ProdId = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -50,13 +54,11 @@
             this.txt_BtnRow = new System.Windows.Forms.TextBox();
             this.dgvProds = new System.Windows.Forms.DataGridView();
             this.txt_SearchText = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
             this.bt_SetLayout = new SDCafeCommon.Utilities.CustomButton();
-            this.label11 = new System.Windows.Forms.Label();
-            this.txt_FontSize = new System.Windows.Forms.TextBox();
-            this.chk_Visible = new System.Windows.Forms.CheckBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.grpButtonProp.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProds)).BeginInit();
             this.SuspendLayout();
@@ -64,7 +66,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 17);
+            this.label1.Location = new System.Drawing.Point(9, 17);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(42, 20);
@@ -75,7 +77,7 @@
             // 
             this.pnlMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(40)))));
             this.pnlMenu.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlMenu.Location = new System.Drawing.Point(397, 14);
+            this.pnlMenu.Location = new System.Drawing.Point(383, 14);
             this.pnlMenu.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.pnlMenu.Name = "pnlMenu";
             this.pnlMenu.Size = new System.Drawing.Size(608, 393);
@@ -84,7 +86,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 43);
+            this.label2.Location = new System.Drawing.Point(9, 43);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(64, 20);
@@ -97,6 +99,7 @@
             this.txt_Rows.Name = "txt_Rows";
             this.txt_Rows.Size = new System.Drawing.Size(100, 25);
             this.txt_Rows.TabIndex = 13;
+            this.txt_Rows.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txt_Cols
             // 
@@ -104,9 +107,11 @@
             this.txt_Cols.Name = "txt_Cols";
             this.txt_Cols.Size = new System.Drawing.Size(100, 25);
             this.txt_Cols.TabIndex = 14;
+            this.txt_Cols.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // grpButtonProp
             // 
+            this.grpButtonProp.Controls.Add(this.bt_Unlink);
             this.grpButtonProp.Controls.Add(this.chk_Visible);
             this.grpButtonProp.Controls.Add(this.label11);
             this.grpButtonProp.Controls.Add(this.txt_FontSize);
@@ -124,12 +129,53 @@
             this.grpButtonProp.Controls.Add(this.txt_FontName);
             this.grpButtonProp.Controls.Add(this.txt_BtnCol);
             this.grpButtonProp.Controls.Add(this.txt_BtnRow);
-            this.grpButtonProp.Location = new System.Drawing.Point(397, 415);
+            this.grpButtonProp.Location = new System.Drawing.Point(383, 415);
             this.grpButtonProp.Name = "grpButtonProp";
             this.grpButtonProp.Size = new System.Drawing.Size(608, 147);
             this.grpButtonProp.TabIndex = 16;
             this.grpButtonProp.TabStop = false;
             this.grpButtonProp.Text = "Button Properties";
+            // 
+            // bt_Unlink
+            // 
+            this.bt_Unlink.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.bt_Unlink.CornerRadius = 30;
+            this.bt_Unlink.ForeColor = System.Drawing.Color.White;
+            this.bt_Unlink.Location = new System.Drawing.Point(491, 87);
+            this.bt_Unlink.Name = "bt_Unlink";
+            this.bt_Unlink.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_Unlink.Size = new System.Drawing.Size(94, 46);
+            this.bt_Unlink.TabIndex = 31;
+            this.bt_Unlink.Text = "Unlink";
+            this.bt_Unlink.Click += new System.EventHandler(this.bt_Unlink_Click);
+            // 
+            // chk_Visible
+            // 
+            this.chk_Visible.AutoSize = true;
+            this.chk_Visible.Location = new System.Drawing.Point(406, 101);
+            this.chk_Visible.Name = "chk_Visible";
+            this.chk_Visible.Size = new System.Drawing.Size(69, 24);
+            this.chk_Visible.TabIndex = 30;
+            this.chk_Visible.Text = "Visible";
+            this.chk_Visible.UseVisualStyleBackColor = true;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(460, 59);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(65, 20);
+            this.label11.TabIndex = 29;
+            this.label11.Text = "Font Size";
+            // 
+            // txt_FontSize
+            // 
+            this.txt_FontSize.Location = new System.Drawing.Point(541, 56);
+            this.txt_FontSize.Name = "txt_FontSize";
+            this.txt_FontSize.Size = new System.Drawing.Size(44, 25);
+            this.txt_FontSize.TabIndex = 28;
             // 
             // label10
             // 
@@ -158,10 +204,12 @@
             // 
             // txt_BackColor
             // 
+            this.txt_BackColor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txt_BackColor.Location = new System.Drawing.Point(288, 100);
             this.txt_BackColor.Name = "txt_BackColor";
             this.txt_BackColor.Size = new System.Drawing.Size(90, 25);
             this.txt_BackColor.TabIndex = 24;
+            this.txt_BackColor.Click += new System.EventHandler(this.txt_BackColor_Click);
             // 
             // label8
             // 
@@ -174,10 +222,12 @@
             // 
             // txt_ForeColor
             // 
+            this.txt_ForeColor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txt_ForeColor.Location = new System.Drawing.Point(101, 99);
             this.txt_ForeColor.Name = "txt_ForeColor";
             this.txt_ForeColor.Size = new System.Drawing.Size(90, 25);
             this.txt_ForeColor.TabIndex = 22;
+            this.txt_ForeColor.Click += new System.EventHandler(this.txt_ForeColor_Click);
             // 
             // label6
             // 
@@ -224,10 +274,12 @@
             // 
             // txt_FontName
             // 
+            this.txt_FontName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txt_FontName.Location = new System.Drawing.Point(264, 58);
             this.txt_FontName.Name = "txt_FontName";
             this.txt_FontName.Size = new System.Drawing.Size(186, 25);
             this.txt_FontName.TabIndex = 16;
+            this.txt_FontName.Click += new System.EventHandler(this.txt_FontName_Click);
             // 
             // txt_BtnCol
             // 
@@ -246,32 +298,25 @@
             // dgvProds
             // 
             this.dgvProds.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvProds.Location = new System.Drawing.Point(13, 117);
+            this.dgvProds.Location = new System.Drawing.Point(13, 131);
             this.dgvProds.Name = "dgvProds";
-            this.dgvProds.Size = new System.Drawing.Size(375, 393);
+            this.dgvProds.Size = new System.Drawing.Size(361, 352);
             this.dgvProds.TabIndex = 19;
             this.dgvProds.DoubleClick += new System.EventHandler(this.dgvProds_DoubleClick);
             // 
             // txt_SearchText
             // 
-            this.txt_SearchText.Location = new System.Drawing.Point(100, 86);
+            this.txt_SearchText.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.txt_SearchText.Location = new System.Drawing.Point(13, 100);
             this.txt_SearchText.Name = "txt_SearchText";
-            this.txt_SearchText.Size = new System.Drawing.Size(288, 25);
+            this.txt_SearchText.Size = new System.Drawing.Size(361, 25);
             this.txt_SearchText.TabIndex = 21;
+            this.txt_SearchText.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txt_SearchText.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_SearchText_KeyPress);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(9, 89);
-            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(51, 20);
-            this.label7.TabIndex = 22;
-            this.label7.Text = "Search";
             // 
             // bt_Exit
             // 
+            this.bt_Exit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.bt_Exit.Location = new System.Drawing.Point(118, 516);
             this.bt_Exit.Name = "bt_Exit";
             this.bt_Exit.Size = new System.Drawing.Size(94, 46);
@@ -281,6 +326,7 @@
             // 
             // bt_Save
             // 
+            this.bt_Save.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.bt_Save.Location = new System.Drawing.Point(13, 516);
             this.bt_Save.Name = "bt_Save";
             this.bt_Save.Size = new System.Drawing.Size(94, 46);
@@ -290,45 +336,46 @@
             // 
             // bt_SetLayout
             // 
+            this.bt_SetLayout.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.bt_SetLayout.CornerRadius = 30;
             this.bt_SetLayout.Location = new System.Drawing.Point(206, 17);
             this.bt_SetLayout.Name = "bt_SetLayout";
-            this.bt_SetLayout.Size = new System.Drawing.Size(94, 46);
+            this.bt_SetLayout.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_SetLayout.Size = new System.Drawing.Size(168, 46);
             this.bt_SetLayout.TabIndex = 15;
             this.bt_SetLayout.Text = "Set Layout";
             this.bt_SetLayout.Click += new System.EventHandler(this.bt_SetLayout_Click);
             // 
-            // label11
+            // label12
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(460, 59);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(65, 20);
-            this.label11.TabIndex = 29;
-            this.label11.Text = "Font Size";
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(9, 77);
+            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(236, 20);
+            this.label12.TabIndex = 23;
+            this.label12.Text = "Product Search (type and press enter)";
             // 
-            // txt_FontSize
+            // label7
             // 
-            this.txt_FontSize.Location = new System.Drawing.Point(541, 56);
-            this.txt_FontSize.Name = "txt_FontSize";
-            this.txt_FontSize.Size = new System.Drawing.Size(44, 25);
-            this.txt_FontSize.TabIndex = 28;
-            // 
-            // chk_Visible
-            // 
-            this.chk_Visible.AutoSize = true;
-            this.chk_Visible.Location = new System.Drawing.Point(406, 101);
-            this.chk_Visible.Name = "chk_Visible";
-            this.chk_Visible.Size = new System.Drawing.Size(69, 24);
-            this.chk_Visible.TabIndex = 30;
-            this.chk_Visible.Text = "Visible";
-            this.chk_Visible.UseVisualStyleBackColor = true;
+            this.label7.AutoSize = true;
+            this.label7.ForeColor = System.Drawing.Color.Maroon;
+            this.label7.Location = new System.Drawing.Point(13, 486);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(279, 20);
+            this.label7.TabIndex = 24;
+            this.label7.Text = "Double Click to Link with the selected button";
             // 
             // frmSalesButton
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1020, 574);
+            this.ClientSize = new System.Drawing.Size(1001, 574);
             this.Controls.Add(this.label7);
+            this.Controls.Add(this.label12);
             this.Controls.Add(this.txt_SearchText);
             this.Controls.Add(this.dgvProds);
             this.Controls.Add(this.bt_Exit);
@@ -344,7 +391,7 @@
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "frmSalesButton";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "frmSalesButton";
+            this.Text = "Sales Button Layout Setting";
             this.Load += new System.EventHandler(this.frmSalesButton_Load);
             this.grpButtonProp.ResumeLayout(false);
             this.grpButtonProp.PerformLayout();
@@ -379,11 +426,13 @@
         private System.Windows.Forms.TextBox txt_BackColor;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txt_ForeColor;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox txt_ProdId;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox txt_FontSize;
         private System.Windows.Forms.CheckBox chk_Visible;
+        private SDCafeCommon.Utilities.CustomButton bt_Unlink;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label7;
     }
 }
