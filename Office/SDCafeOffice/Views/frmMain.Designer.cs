@@ -46,6 +46,7 @@
             this.gb_SysConfig = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.text_ConfigName = new System.Windows.Forms.TextBox();
+            this.bt_BIBProd = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Category = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Stop = new SDCafeCommon.Utilities.CustomButton();
             this.bt_ProductImport = new SDCafeCommon.Utilities.CustomButton();
@@ -61,7 +62,7 @@
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_LoginUser = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Product = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_BIBProd = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_SalesButton = new SDCafeCommon.Utilities.CustomButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
             this.gb_Prod.SuspendLayout();
             this.gb_SysConfig.SuspendLayout();
@@ -258,12 +259,27 @@
             this.text_ConfigName.Size = new System.Drawing.Size(175, 29);
             this.text_ConfigName.TabIndex = 62;
             // 
+            // bt_BIBProd
+            // 
+            this.bt_BIBProd.BackColor = System.Drawing.Color.OliveDrab;
+            this.bt_BIBProd.CornerRadius = 30;
+            this.bt_BIBProd.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_BIBProd.ForeColor = System.Drawing.Color.White;
+            this.bt_BIBProd.Location = new System.Drawing.Point(12, 331);
+            this.bt_BIBProd.Name = "bt_BIBProd";
+            this.bt_BIBProd.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft)));
+            this.bt_BIBProd.Size = new System.Drawing.Size(142, 47);
+            this.bt_BIBProd.TabIndex = 55;
+            this.bt_BIBProd.Text = "Buttons in Button";
+            this.bt_BIBProd.Click += new System.EventHandler(this.bt_BIBProd_Click);
+            // 
             // bt_Category
             // 
             this.bt_Category.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.bt_Category.CornerRadius = 30;
             this.bt_Category.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_Category.Location = new System.Drawing.Point(12, 332);
+            this.bt_Category.Location = new System.Drawing.Point(12, 278);
             this.bt_Category.Name = "bt_Category";
             this.bt_Category.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -420,7 +436,7 @@
             this.bt_ProdType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.bt_ProdType.CornerRadius = 30;
             this.bt_ProdType.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_ProdType.Location = new System.Drawing.Point(12, 279);
+            this.bt_ProdType.Location = new System.Drawing.Point(12, 225);
             this.bt_ProdType.Name = "bt_ProdType";
             this.bt_ProdType.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
@@ -472,26 +488,27 @@
             this.bt_Product.Text = "Product";
             this.bt_Product.Click += new System.EventHandler(this.bt_Product_Click);
             // 
-            // bt_BIBProd
+            // bt_SalesButton
             // 
-            this.bt_BIBProd.BackColor = System.Drawing.Color.OliveDrab;
-            this.bt_BIBProd.CornerRadius = 30;
-            this.bt_BIBProd.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_BIBProd.ForeColor = System.Drawing.Color.White;
-            this.bt_BIBProd.Location = new System.Drawing.Point(12, 224);
-            this.bt_BIBProd.Name = "bt_BIBProd";
-            this.bt_BIBProd.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            this.bt_SalesButton.BackColor = System.Drawing.Color.MidnightBlue;
+            this.bt_SalesButton.CornerRadius = 30;
+            this.bt_SalesButton.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_SalesButton.ForeColor = System.Drawing.Color.White;
+            this.bt_SalesButton.Location = new System.Drawing.Point(12, 384);
+            this.bt_SalesButton.Name = "bt_SalesButton";
+            this.bt_SalesButton.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_BIBProd.Size = new System.Drawing.Size(142, 47);
-            this.bt_BIBProd.TabIndex = 55;
-            this.bt_BIBProd.Text = "Buttons in Button";
-            this.bt_BIBProd.Click += new System.EventHandler(this.bt_BIBProd_Click);
+            this.bt_SalesButton.Size = new System.Drawing.Size(142, 47);
+            this.bt_SalesButton.TabIndex = 56;
+            this.bt_SalesButton.Text = "Sales Buttons";
+            this.bt_SalesButton.Click += new System.EventHandler(this.bt_SalesButton_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.bt_SalesButton);
             this.Controls.Add(this.bt_BIBProd);
             this.Controls.Add(this.gb_SysConfig);
             this.Controls.Add(this.gb_Prod);
@@ -564,5 +581,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox text_ConfigName;
         private SDCafeCommon.Utilities.CustomButton bt_BIBProd;
+        private SDCafeCommon.Utilities.CustomButton bt_SalesButton;
     }
 }

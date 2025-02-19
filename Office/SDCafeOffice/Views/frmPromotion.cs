@@ -21,7 +21,7 @@ namespace SDCafeOffice.Views
         List<POS_ProductModel> prods = new List<POS_ProductModel>();
         List<POS_ProductTypeModel> ptypes = new List<POS_ProductTypeModel>();
         List<POS_PromoProductsModel> pprods = new List<POS_PromoProductsModel>();
-
+        private double m_dblPromoUnitPrice = 0;
 
         public frmPromotion()
         {
@@ -33,8 +33,8 @@ namespace SDCafeOffice.Views
             txt_PromoID.Text = strPromoId;
             txt_PromoID.Enabled = false;
             Load_PromoType_Combo_Contents();
-            
-            Load_AllProducts_DataGrid();
+
+            Search_All_Products();
             Load_PromoProducts_DataGrid();
 
             if (String.IsNullOrEmpty(txt_PromoID.Text))
@@ -48,22 +48,23 @@ namespace SDCafeOffice.Views
                 txtMessage.Text = "Selected Promotion ID : " + strPromoId;
                 Load_Promotion_Info(strPromoId);
             }
+            txt_ProdSearch.Focus();
         }
 
-        private void Load_AllProducts_DataGrid()
+        private void Load_Products_DataGrid(List<POS_ProductModel> p_Prods)
         {
             dgvDataFrom_Initialize();
-            
 
+            int iProdCount = 0;
             DataAccessPOS dbPOS = new DataAccessPOS();
-            prods = dbPOS.Get_All_Products();
-            lbl_AllProds.Text = "All Products ( " + prods.Count.ToString() + " )";
-            if (prods.Count > 0)
+            //p_Prods = dbPOS.Get_All_Products();
+            if (p_Prods.Count > 0)
             {
-                foreach (var prod in prods)
+                foreach (var prod in p_Prods)
                 {
                     if (!prod.IsManualItem)
                     {
+                        iProdCount++;
                         this.dgvDataFrom.Rows.Add(new String[] { prod.Id.ToString(),
                                                          dbPOS.Get_ProductTypeName_By_Id(prod.ProductTypeId),
                                                          prod.ProductName,
@@ -83,6 +84,7 @@ namespace SDCafeOffice.Views
 
                 }
             }
+            lbl_AllProds.Text = "Products ( " + iProdCount.ToString() + " )";
         }
         private void Load_PromoProducts_DataGrid()
         {
@@ -165,6 +167,13 @@ namespace SDCafeOffice.Views
         }
         private void bt_Save_Click(object sender, EventArgs e)
         {
+            // if dgvDataTo has no rows, return
+            if (dgvDataTo.RowCount <= 1)
+            {
+                MessageBox.Show("Please select at least one product for the promotion!");
+                return;
+            }
+            
             if (String.IsNullOrEmpty(txt_PromoID.Text))
             {
                 Insert_Promotion_From_View();
@@ -212,9 +221,21 @@ namespace SDCafeOffice.Views
             int iCnt = dbPOS.Update_Promotion(ppromos[0]);
             // Need to rebuild PromoProducts table for the promotion
             // Remove existing promoproducts and add again from dgvPromoTo
-            //xxx
+            Save_PromoProducts();
             txtMessage.Text = "Promotion successfully Updated : " + txt_PromoName.Text;
             txtMessage.ForeColor = Color.White;
+        }
+
+        private void Save_PromoProducts()
+        {
+            // Remove existing promoproducts and add again from dgvPromoTo to the database
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            int iSelectedPromoId = Convert.ToInt32(txt_PromoID.Text);
+            if (iSelectedPromoId > 0)
+            {
+                dbPOS.Delete_PromoProducts_By_PromoId(iSelectedPromoId);
+                AddPromotionProducts(iSelectedPromoId);
+            }
         }
 
         private void Insert_Promotion_From_View()
@@ -510,6 +531,56 @@ namespace SDCafeOffice.Views
 
         }
 
+        private void Search_Products(string p_strText)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            prods.Clear();
+            prods = dbPOS.Get_All_Products_By_ProdName_Price(p_strText, m_dblPromoUnitPrice);
+            if (prods.Count > 0)
+            {
+                Load_Products_DataGrid(prods);
+            }
+            else
+            {
+                prods.Clear();
+                prods = dbPOS.Get_All_Products_By_BarCode(p_strText, false);
+                Load_Products_DataGrid(prods);
+            }
+        }
+        private void Search_All_Products()
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            prods.Clear();
+            prods = dbPOS.Get_All_Products();
+            Load_Products_DataGrid(prods);
+        }
+        private void txt_ProdSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            // if enter key is pressed, search with the product name
+            if (e.KeyCode == Keys.Enter) 
+            {
+                if (txt_ProdSearch.Text.Length >= 2)
+                    Search_Products(txt_ProdSearch.Text);
+                else
+                {
+                    Search_All_Products();
+                }
+            }
+            txtMessage.Text = "Search results of " + txt_ProdSearch.Text;
+            txt_ProdSearch.Text = "";
 
+        }
+
+        private void txt_PromoValue_TextChanged(object sender, EventArgs e)
+        {
+            if (double.TryParse(txt_PromoValue.Text, out double result))
+            {
+                m_dblPromoUnitPrice = result;
+            }
+            else
+            {
+                m_dblPromoUnitPrice = 0; // or handle the error as needed
+            }
+        }
     }
 }

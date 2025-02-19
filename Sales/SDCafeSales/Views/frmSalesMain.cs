@@ -239,6 +239,7 @@ namespace SDCafeSales.Views
             public int iDiv;
             public int iMod;
         }
+
         public frmSalesMain(Form callingForm) :this()
         {
             FrmLogOn = callingForm;
@@ -737,7 +738,7 @@ namespace SDCafeSales.Views
                                 });
                                 this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = corder.RFTagId;
                                 DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
-                                row.DefaultCellStyle.ForeColor = Color.Red;
+                                row.DefaultCellStyle.ForeColor = Color.DarkGray;
                             }
                             if (corder.RFTagId > 0)
                             {
@@ -753,7 +754,7 @@ namespace SDCafeSales.Views
 
                         }
                     }
-                    else if (order.OrderCategoryId > 0) // Discount
+                    else if (order.OrderCategoryId == 4) // Promo Discount                        /
                     {
                         strTaxShort = "";
                         strTaxShort += order.IsTax1 ? strTax1Name.Substring(0, 1) : "";
@@ -771,6 +772,8 @@ namespace SDCafeSales.Views
                                                                                    order.ProductId.ToString(),
                                                                                    order.BarCode
                                 });
+                        DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
+                        row.DefaultCellStyle.ForeColor = Color.Red;
 
                     }
                     if (order.RFTagId > 0)
@@ -2117,10 +2120,129 @@ namespace SDCafeSales.Views
         private bool Add_Discount_Orders_By_Promotion(string strPromoName, int iPromoType, float fPromoValue, int iPromoQTY, int iOrderedQTY, int iDiscountTimes, string strSQLWhere)
         {
             string strTaxShort = "";
+            structDivMod divmodPromoQTY = new structDivMod();
+            PromoDiscOrderModel PromoDiscOrder = new PromoDiscOrderModel();
             int iSeq = 0;
 
             DataAccessPOS dbPOS = new DataAccessPOS();
-            util.Logger("Add_Discount_Orders_By_Promotion");
+            util.Logger("Add_Discount_Orders_By_Promotion = " + strPromoName + " : " + strSQLWhere);
+            //double iTotalAmount = 0;
+            double iTotQTY = 0;
+            double iTotalTax1 = 0;
+            double iTotalTax2 = 0;
+            double iTotalTax3 = 0;
+            dbPOS.Delete_Promotion_Discount_Orders(strStation);
+            //iTotalAmount = dbPOS.Get_Orders_Amount_By_MultipleProdId(strSQLWhere);
+            //iTotQTY = dbPOS.Get_Orders_Average_Amount_By_MultipleProdId(strStation, strSQLWhere);
+            //iTotalTax1 = dbPOS.Get_Orders_Tax1_MultipleProdId(strSQLWhere);
+            //iTotalTax2 = dbPOS.Get_Orders_Tax2_MultipleProdId(strSQLWhere);
+            //iTotalTax3 = dbPOS.Get_Orders_Tax3_MultipleProdId(strSQLWhere);
+            PromoDiscOrder = dbPOS.Get_Orders_PromoOrder_By_MultipleProdId(strStation, strSQLWhere);
+
+            util.Logger("Add_Discount_Orders_By_Promotion : Amount = " + PromoDiscOrder.Amount);
+            util.Logger("Add_Discount_Orders_By_Promotion : OutUnitPrice = " + PromoDiscOrder.OutUnitPrice);
+            util.Logger("Add_Discount_Orders_By_Promotion : Qty = " + PromoDiscOrder.Qty);
+            util.Logger("Add_Discount_Orders_By_Promotion : IsTax1 = " + PromoDiscOrder.IsTax1);
+            util.Logger("Add_Discount_Orders_By_Promotion : IsTax2 = " + PromoDiscOrder.IsTax2);
+            util.Logger("Add_Discount_Orders_By_Promotion : IsTax3 = " + PromoDiscOrder.IsTax3);
+            PromoDiscOrder.PromoName = strPromoName;
+            divmodPromoQTY.iDiv = (int)PromoDiscOrder.Qty / iPromoQTY;
+            util.Logger("Add_Discount_Orders_By_Promotion : divmodPromoQTY.iDiv = " + divmodPromoQTY.iDiv);
+            divmodPromoQTY.iMod = (int)PromoDiscOrder.Qty % iPromoQTY;
+            util.Logger("Add_Discount_Orders_By_Promotion : divmodPromoQTY.iMod = " + divmodPromoQTY.iMod);
+
+            PromoDiscOrder.Qty = divmodPromoQTY.iDiv * iPromoQTY;
+            PromoDiscOrder.Amount = PromoDiscOrder.Qty * (fPromoValue - PromoDiscOrder.OutUnitPrice);
+
+            util.Logger("Add_Discount_Orders_By_Promotion : Final PromoDiscOrder.Qty = " + PromoDiscOrder.Qty);
+            util.Logger("Add_Discount_Orders_By_Promotion : Final Amount = " + PromoDiscOrder.Amount);
+            pnlReceipt.Visible = false;
+
+            if (iPromoType == 1)
+			{
+                orders.Clear();
+                ////////////////////////////////////////////////
+                // Add the ordered item into Orders table
+                ////////////////////////////////////////////////
+                orders.Add(new POS_OrdersModel()
+                {
+                    TranType = "20",
+                    ProductId = 0,
+                    ProductName = strPromoName + " (Save)",
+                    SecondName = strPromoName + " (Save)",
+                    ProductTypeId = 0,
+                    InUnitPrice = 0,
+                    OutUnitPrice = (float)(fPromoValue - PromoDiscOrder.OutUnitPrice),
+                    IsTax1 = PromoDiscOrder.IsTax1,
+                    IsTax2 = PromoDiscOrder.IsTax2,
+                    IsTax3 = PromoDiscOrder.IsTax3,
+                    Quantity = (float)PromoDiscOrder.Qty,
+                    Amount = (float)PromoDiscOrder.Amount,
+                    Tax1Rate = m_TaxRate1,
+                    Tax2Rate = m_TaxRate2,
+                    Tax3Rate = m_TaxRate3,
+                    Tax1 = PromoDiscOrder.IsTax1 ? (float)(PromoDiscOrder.Amount * m_TaxRate1) : 0,
+                    Tax2 = PromoDiscOrder.IsTax2 ? (float)(PromoDiscOrder.Amount * m_TaxRate2) : 0,
+                    Tax3 = PromoDiscOrder.IsTax3 ? (float)(PromoDiscOrder.Amount * m_TaxRate3) : 0,
+                    InvoiceNo = iNewInvNo,
+                    IsPaidComplete = false,
+                    CompleteDate = "",
+                    CompleteTime = "",
+                    CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), //DateTime.Now.ToShortDateString(),
+                    CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
+                    CreateUserId = System.Convert.ToInt32(strUserID),
+                    CreateUserName = strUserName,
+                    CreateStation = strStation,
+                    LastModDate = "",
+                    LastModTime = "",
+                    LastModUserId = System.Convert.ToInt32(strUserID),
+                    LastModUserName = "",
+                    LastModStation = "",
+                    RFTagId = 0,
+                    ParentId = 0,
+                    OrderCategoryId = 4,     // Discount
+                    IsDiscounted = true,     // Advanced Promo Discount
+                    BarCode = ""
+                });
+                int iNewOrderId = dbPOS.Insert_Order(orders[0]);
+                util.Logger(" ## Discount_Orders_By_Promotion : " + orders[0].Id.ToString() + ", PROD=" + orders[0].ProductName + ", New Amount = " + orders[0].Amount.ToString());
+                if (iNewOrderId > 0)
+                {
+                    ////////////////////////////////////////////////
+                    // Add the ordered item into datagrid view
+                    ////////////////////////////////////////////////
+                    float iAmount = orders[0].Amount;
+                    iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
+                    strTaxShort = "";
+                    strTaxShort += orders[0].IsTax1 ? strTax1Name.Substring(0, 1) : "";
+                    strTaxShort += orders[0].IsTax2 ? strTax2Name.Substring(0, 1) : "";
+                    strTaxShort += orders[0].IsTax3 ? strTax3Name.Substring(0, 1) : "";
+                    this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
+                                                                            orders[0].ProductName,
+                                                                            "1",
+                                                                            orders[0].OutUnitPrice.ToString("0.00"),
+                                                                            iAmount.ToString("0.00"),
+                                                                            strTaxShort,
+                                                                            iNewOrderId.ToString(),
+                                                                            prods[0].Id.ToString(),
+                                                                            prods[0].BarCode
+                        });
+                    this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = 0;
+                    DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
+                    row.DefaultCellStyle.ForeColor = Color.Red;
+                    //this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView_By_RFTagID(rfids[0].Id);
+                }
+                
+            }
+            return true;
+        }
+        private bool Add_Discount_Orders_By_Promotion_DiscountRate(string strPromoName, int iPromoType, float fPromoValue, int iPromoQTY, int iOrderedQTY, int iDiscountTimes, string strSQLWhere)
+        {
+            string strTaxShort = "";
+            int iSeq = 0;
+
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            util.Logger("Add_Discount_Orders_By_Promotion = " + strPromoName + " : " + strSQLWhere);
             //double iTotalAmount = 0;
             double iAverageAmount = 0;
             double iTotalTax1 = 0;
@@ -2128,16 +2250,17 @@ namespace SDCafeSales.Views
             double iTotalTax3 = 0;
             dbPOS.Delete_Promotion_Discount_Orders(strStation);
             //iTotalAmount = dbPOS.Get_Orders_Amount_By_MultipleProdId(strSQLWhere);
-			iAverageAmount = dbPOS.Get_Orders_Average_Amount_By_MultipleProdId(strStation, strSQLWhere);
+            iAverageAmount = dbPOS.Get_Orders_Average_Amount_By_MultipleProdId(strStation, strSQLWhere);
             //iTotalTax1 = dbPOS.Get_Orders_Tax1_MultipleProdId(strSQLWhere);
             //iTotalTax2 = dbPOS.Get_Orders_Tax2_MultipleProdId(strSQLWhere);
             //iTotalTax3 = dbPOS.Get_Orders_Tax3_MultipleProdId(strSQLWhere);
             pnlReceipt.Visible = false;
 
             if (iPromoType == 1)
-			{
-				double iDiscountRate = fPromoValue;
-			
+            {
+                // round up 2nd decimal point
+                double iDiscountRate = Math.Round((double)fPromoValue, 2);
+
                 if (iDiscountRate > 0 && iDiscountRate <= 100)
                 {
                     orders.Clear();
@@ -2183,7 +2306,8 @@ namespace SDCafeSales.Views
                         OrderCategoryId = 4     // Discount
                         ,
                         IsDiscounted = true     // Promotion
-                        ,BarCode = ""
+                        ,
+                        BarCode = ""
                     });
                     int iNewOrderId = dbPOS.Insert_Order(orders[0]);
                     util.Logger(" ## Discount_Orders_By_Promotion : " + orders[0].Id.ToString() + ", PROD=" + orders[0].ProductName + ", New Amount = " + orders[0].Amount.ToString());
@@ -3495,7 +3619,8 @@ namespace SDCafeSales.Views
                 return false;
             }
             Consolidate_Fixed_Promo_Orders();
-            Check_Assorted_Promotions();
+            //Feature #3707 QTY promotion have higher priority than assorted promotion
+            if (iQTYPromotionIndex == 0) Check_Assorted_Promotions();
             Calculate_Total_Due();
             return true;
         }
@@ -4409,7 +4534,7 @@ namespace SDCafeSales.Views
                 return false;
             }
             Consolidate_Fixed_Promo_Orders();
-            //Feature #3707 
+            //Feature #3707 QTY promotion have higher priority than assorted promotion
             if (iQTYPromotionIndex == 0) Check_Assorted_Promotions();
             Calculate_Total_Due();
             //

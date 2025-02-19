@@ -423,6 +423,7 @@
             this.Controls.Add(this.dgvData);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmSalesReport";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sales Report";
             this.Load += new System.EventHandler(this.frmSalesReport_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).EndInit();

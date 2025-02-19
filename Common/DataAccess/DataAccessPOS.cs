@@ -118,7 +118,7 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                string query = "UPDATE Promotion SET PromoName = @PromoName, PromoType=@PromoType, PromoValue=@PromoValue, " +
+                string query = "UPDATE Promotion SET PromoName = @PromoName, PromoType=@PromoType, PromoValue=CAST(@PromoValue as decimal(10,2)), " +
                                 "PromoQTY=@PromoQTY, PromoStartDttm=@PromoStartDttm, PromoEndDttm = @PromoEndDttm " +
                                 "WHERE Id=@Id";
                 var count = connection.Execute(query, pOS_PromotionModel);
@@ -404,6 +404,18 @@ namespace SDCafeCommon.DataAccess
             {
                 var output = connection.Query<POS_ProductModel>($"select * from Product where id = {prodID}").ToList();
                 return output;
+            }
+        }
+
+        public POS_ProductModel Get_One_Product_By_ID(int prodID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_ProductModel>($"select * from Product where id = {prodID}").ToList();
+                if (output.Count > 0)
+                    return output[0];
+                else
+                    return null;
             }
         }
 
@@ -1261,7 +1273,24 @@ namespace SDCafeCommon.DataAccess
             }
 
         }
+        public List<POS_ProductModel> Get_All_Products_By_ProdName_Price(string p_strProdName, double p_UnitPrice)
+        {
+            p_strProdName = '%' + p_strProdName.Trim() + '%';
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = $"select * from Product ";
+                string strWhere = $" Where (ProductName like '%{p_strProdName}%' Or SecondName like '%{p_strProdName}%')";
+                if (p_UnitPrice > 0)
+                    strWhere += " And ISNULL(OutUnitPrice,0) >= " + p_UnitPrice.ToString();
+                //" And ISNULL(IsMainSalesButton,0) = " + (p_bIsMainSales ? "1" : "0") +
+                //" And ISNULL(IsSalesButton,0) = " + (p_bIsSales ? "1" : "0");
+                string strOrderby = " Order By ProductName";
+                query += strWhere + strOrderby;
+                var output = connection.Query<POS_ProductModel>(query).ToList();
+                return output;
+            }
 
+        }
         public List<POS_PromotionModel> Get_All_Promotions()
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -1442,6 +1471,27 @@ namespace SDCafeCommon.DataAccess
                     dblAverageAmt = output[0].Amount;
                 }
                 return dblAverageAmt;
+            }
+        }
+        public PromoDiscOrderModel Get_Orders_PromoOrder_By_MultipleProdId(string strStation, string strSQLWhere)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                PromoDiscOrderModel pDiscOrder = new PromoDiscOrderModel();
+                string query = "SELECT * from Orders WHERE OrderCategoryId = 0 And ProductId in (" + strSQLWhere + ") And CreateStation = '" + strStation + "'";
+                var output = connection.Query<POS_OrdersModel>(query).ToList();
+                if (output.Count > 0)
+                {
+                    pDiscOrder.Qty = output.FindAll(ord => ord.ProductId > 0).Sum(x => x.Quantity);
+                    pDiscOrder.Amount = output.FindAll(ord => ord.ProductId > 0).Sum(x => x.Amount);
+
+                    pDiscOrder.OutUnitPrice = output[0].OutUnitPrice;
+                    pDiscOrder.IsTax1 = output[0].IsTax1;
+                    pDiscOrder.IsTax2 = output[0].IsTax2;
+                    pDiscOrder.IsTax3 = output[0].IsTax3;
+
+                }
+                return pDiscOrder;
             }
         }
 
@@ -1818,6 +1868,34 @@ namespace SDCafeCommon.DataAccess
             }
         }
 
+        public List<POS_SalesButtonModel> Get_All_SalesButton()
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_SalesButtonModel>($"select * from SalesButton").ToList();
+                return output;
+            }
+        }
 
+        public int Delete_All_SalesButton()
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "DELETE from SalesButton";
+                var count = connection.Execute(query);
+                return count;
+            }
+        }
+
+        public int Insert_SalesButton(POS_SalesButtonModel p_salesButton)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = "INSERT INTO SalesButton (Row, Col, ButtonLeft, ButtonTop, Width, Height, FontName, FontSize, FontStyle, ForeColor, BackColor, ProductId, IsVisible) " +
+                                    "VALUES (@Row, @Col, @ButtonLeft, @ButtonTop, @Width, @Height, @FontName, @FontSize, @FontStyle, @ForeColor,@BackColor, @ProductId, @IsVisible)";
+                var count = connection.Execute(query, p_salesButton);
+                return count;
+            }
+        }
     }
 }

@@ -58,8 +58,9 @@ namespace SDCafeOffice
         public frmTax FrmTax;
         public frmCategory FrmCategory;
         public frmBIB FrmBIB;
-
         public frmSalesReport FrmSalesReport;
+        public frmSalesButton FrmSalesButton;
+
         private int iDataGridHeight;
         private int iDataGridTop;
         private string p_strSelectedTypeName;
@@ -2083,6 +2084,13 @@ namespace SDCafeOffice
 
             // not allow to add new row
             dgvData.AllowUserToAddRows = false;
+        }
+
+        private void bt_SalesButton_Click(object sender, EventArgs e)
+        {
+            bt_ProductExport.Enabled = false;
+            FrmSalesButton = new frmSalesButton();
+            FrmSalesButton.ShowDialog();
         }
     }
 }

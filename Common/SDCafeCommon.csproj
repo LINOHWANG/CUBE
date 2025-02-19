@@ -76,11 +76,13 @@
     <Compile Include="Model\POS_PromotionModel.cs" />
     <Compile Include="Model\POS_PromoTypelkupModel.cs" />
     <Compile Include="Model\POS_RFIDTagsModel.cs" />
+    <Compile Include="Model\POS_SalesButtonModel.cs" />
     <Compile Include="Model\POS_SavedOrdersModel.cs" />
     <Compile Include="Model\POS_StationModel.cs" />
     <Compile Include="Model\POS_SysConfigModel.cs" />
     <Compile Include="Model\POS_TaxModel.cs" />
     <Compile Include="Model\POS_TimeTableModel.cs" />
+    <Compile Include="Model\PromoDiscOrderModel.cs" />
     <Compile Include="PinPad\CCardProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PinPad\CCardTranConst.cs" />

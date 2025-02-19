@@ -263,7 +263,7 @@ namespace SDCafeSales.Views
                                 });
                                 this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = corder.RFTagId;
                                 DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
-                                row.DefaultCellStyle.ForeColor = Color.Red;
+                                row.DefaultCellStyle.ForeColor = Color.DarkGray;
                             }
                             if (corder.RFTagId > 0)
                             {
@@ -279,7 +279,7 @@ namespace SDCafeSales.Views
 
                         }
                     }
-                    else if (order.OrderCategoryId > 0) // Discount
+                    else if (order.OrderCategoryId == 4) // Promo Discount
                     {
                         iAmount = order.Amount;
                         this.dgv_Orders.Rows.Add(new String[] { iIndex.ToString(),
@@ -292,6 +292,8 @@ namespace SDCafeSales.Views
                                                                                    order.ProductId.ToString(),
                                                                                    order.BarCode
                                 });
+                        DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
+                        row.DefaultCellStyle.ForeColor = Color.Red;
                     }
                     if (order.RFTagId > 0)
                     {
