@@ -59,6 +59,7 @@
             this.bt_SetLayout = new SDCafeCommon.Utilities.CustomButton();
             this.label12 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.bt_UpdateProduct = new SDCafeCommon.Utilities.CustomButton();
             this.grpButtonProp.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProds)).BeginInit();
             this.SuspendLayout();
@@ -302,6 +303,7 @@
             this.dgvProds.Name = "dgvProds";
             this.dgvProds.Size = new System.Drawing.Size(361, 352);
             this.dgvProds.TabIndex = 19;
+            this.dgvProds.Click += new System.EventHandler(this.dgvProds_Click);
             this.dgvProds.DoubleClick += new System.EventHandler(this.dgvProds_DoubleClick);
             // 
             // txt_SearchText
@@ -369,11 +371,22 @@
             this.label7.TabIndex = 24;
             this.label7.Text = "Double Click to Link with the selected button";
             // 
+            // bt_UpdateProduct
+            // 
+            this.bt_UpdateProduct.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.bt_UpdateProduct.Location = new System.Drawing.Point(280, 517);
+            this.bt_UpdateProduct.Name = "bt_UpdateProduct";
+            this.bt_UpdateProduct.Size = new System.Drawing.Size(94, 46);
+            this.bt_UpdateProduct.TabIndex = 25;
+            this.bt_UpdateProduct.Text = "Update Product";
+            this.bt_UpdateProduct.Click += new System.EventHandler(this.bt_UpdateProduct_Click);
+            // 
             // frmSalesButton
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1001, 574);
+            this.Controls.Add(this.bt_UpdateProduct);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.txt_SearchText);
@@ -434,5 +447,6 @@
         private SDCafeCommon.Utilities.CustomButton bt_Unlink;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label7;
+        private SDCafeCommon.Utilities.CustomButton bt_UpdateProduct;
     }
 }

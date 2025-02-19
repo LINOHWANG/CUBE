@@ -30,6 +30,8 @@ namespace SDCafeOffice.Views
         private Color m_colorBack;
         private Graphics grpRec;
         private bool m_blnModified = false;
+        private int m_intSelectedProdId;
+
         public frmSalesButton()
         {
             InitializeComponent();
@@ -40,6 +42,8 @@ namespace SDCafeOffice.Views
             m_intQueryTop = 100;
             LoadSalesButtonSettings();
             UpdateButton(m_blnModified);
+            SearchProduct(txt_SearchText.Text);
+
         }
 
         private void LoadSalesButtonSettings()
@@ -177,14 +181,19 @@ namespace SDCafeOffice.Views
                 txt_ProdName.Text = prod.ProductName;
                 txt_ProdName.BackColor = Color.White;
                 bt_Unlink.Enabled = true;
+
+                m_intSelectedProdId = iProdId;
             }
             else
             {
                 txt_ProdName.Text = "No Product";
                 txt_ProdName.BackColor = Color.DimGray;
                 bt_Unlink.Enabled = false;
+
+                m_intSelectedProdId = 0;
             }
-            
+            UpdateButton(m_blnModified);
+
             chk_Visible.Checked = true;
 
             // if grpRec is not yet created on the pnlMain, draw a rectangle around the button
@@ -202,7 +211,20 @@ namespace SDCafeOffice.Views
                 Pen p = new Pen(Color.Red, 5);
                 grpRec.DrawRectangle(p, m_btnSelected.Left, m_btnSelected.Top, m_btnSelected.Width, m_btnSelected.Height);
             }
-
+            // compare the 2nd column of the row from dgvData using foreach loop with btnArray[iButtonCount].Tag value
+            // if they are the same, set the row backcolor hightlighted
+            foreach (DataGridViewRow row in dgvProds.Rows)
+            {
+                if (row.Cells[0].Value == null) continue;
+                if (row.Cells[0].Value.ToString() == m_btnSelected.Tag.ToString())
+                {
+                    // set the row selected
+                    row.Selected = true;
+                    // scroll to the selected row
+                    dgvProds.FirstDisplayedScrollingRowIndex = row.Index;
+                    break;
+                }
+            }
 
         }
         private void UpdateButton(bool p_blnModified)
@@ -214,6 +236,14 @@ namespace SDCafeOffice.Views
             else
             {
                 bt_Save.Enabled = false;
+            }
+            if (m_intSelectedProdId > 0)
+            {
+                bt_UpdateProduct.Enabled = true;
+            }
+            else
+            {
+                bt_UpdateProduct.Enabled = false;
             }
         }
 
@@ -267,7 +297,7 @@ namespace SDCafeOffice.Views
                 {
                     btnArray[iBtnCount] = new CustomButton();
                     btnArray[iBtnCount].Text = ""; // "btn " + iBtnCount.ToString();
-                    btnArray[iBtnCount].Font = new System.Drawing.Font("Arial", 12, FontStyle.Bold);
+                    btnArray[iBtnCount].Font = new System.Drawing.Font("Arial Narrow", 11, FontStyle.Bold);
                     btnArray[iBtnCount].ForeColor = Color.Black;
                     btnArray[iBtnCount].BackColor = Color.White;
                     btnArray[iBtnCount].Left = xPos;
@@ -407,6 +437,7 @@ namespace SDCafeOffice.Views
             dgvProds_Initialize();
 
             int iProdCount = 0;
+            bool blnExistOnSalesButton = false;
             DataAccessPOS dbPOS = new DataAccessPOS();
             //p_Prods = dbPOS.Get_All_Products();
             if (p_Prods.Count > 0)
@@ -431,12 +462,22 @@ namespace SDCafeOffice.Views
                         }*/
                     this.dgvProds.FirstDisplayedScrollingRowIndex = dgvProds.RowCount - 1;
 
+                    blnExistOnSalesButton = dbPOS.Check_SalesButton_By_ProductId(prod.Id);
+                    if (blnExistOnSalesButton)
+                    {
+                        // set the row backcolor hightlighted
+                        this.dgvProds.Rows[dgvProds.RowCount - 1].DefaultCellStyle.BackColor = Color.Beige;
+                        // set the forecolor to dark red
+                        this.dgvProds.Rows[dgvProds.RowCount - 1].DefaultCellStyle.ForeColor = Color.DarkRed;
+                    }
                 }
             }
             //lbl_AllProds.Text = "Products ( " + iProdCount.ToString() + " )";
         }
         private void dgvProds_Initialize()
         {
+            this.dgvProds.AllowUserToAddRows = false;
+            this.dgvProds.RowHeadersVisible = false;
             this.dgvProds.AutoSize = false;
             dgvProds.Rows.Clear();
             //this.dataGridActivity.AutoGenerateColumns = false;
@@ -453,10 +494,10 @@ namespace SDCafeOffice.Views
             this.dgvProds.Columns[1].Width = 80;
             this.dgvProds.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvProds.Columns[2].Name = "Product Name";
-            this.dgvProds.Columns[2].Width = 120;
+            this.dgvProds.Columns[2].Width = 130;
             this.dgvProds.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvProds.Columns[3].Name = "Price";
-            this.dgvProds.Columns[3].Width = 50;
+            this.dgvProds.Columns[3].Width = 80;
             this.dgvProds.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             this.dgvProds.DefaultCellStyle.Font = new System.Drawing.Font("Arial Narrow", 11F, GraphicsUnit.Pixel);
@@ -496,7 +537,10 @@ namespace SDCafeOffice.Views
             txt_ForeColor.Text = m_btnSelected.ForeColor.Name;
 
             m_blnModified = true;
+            m_intSelectedProdId = iProdId;
             UpdateButton(m_blnModified);
+
+
         }
 
         private void txt_ForeColor_Click(object sender, EventArgs e)
@@ -573,5 +617,33 @@ namespace SDCafeOffice.Views
             UpdateButton(m_blnModified);
         }
 
+        private void bt_UpdateProduct_Click(object sender, EventArgs e)
+        {
+            // Open fromProduct and passing m_intProductId and update the product
+            frmProduct frmProd = new frmProduct(m_intSelectedProdId.ToString(),"",false,null);
+            frmProd.ShowDialog();
+            SearchProduct(txt_SearchText.Text);
+
+            // compare the 2nd column of the row from dgvData using foreach loop with btnArray[iButtonCount].Tag value
+            // if they are the same, set the row backcolor hightlighted
+            foreach (DataGridViewRow row in dgvProds.Rows)
+            {
+                if (row.Cells[0].Value == null) continue;
+                if (row.Cells[0].Value.ToString() == m_intSelectedProdId.ToString())
+                {
+                    // set the row selected
+                    row.Selected = true;
+                    // scroll to the selected row
+                    dgvProds.FirstDisplayedScrollingRowIndex = row.Index;
+                    break;
+                }
+            }
+        }
+
+        private void dgvProds_Click(object sender, EventArgs e)
+        {
+            m_intSelectedProdId = Convert.ToInt32(dgvProds.CurrentRow.Cells[0].Value);
+            UpdateButton(m_blnModified);
+        }
     }
 }

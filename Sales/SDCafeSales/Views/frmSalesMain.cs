@@ -3081,6 +3081,7 @@ namespace SDCafeSales.Views
             pnlMenu.Enabled = true; // not need now to this button now 
             //label1.Visible = true;
         }
+        // Feature #3706
         private void PopulateSalesButtons()
         {
             DataAccessPOS dbPOS = new DataAccessPOS();

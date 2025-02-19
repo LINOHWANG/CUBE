@@ -1897,5 +1897,17 @@ namespace SDCafeCommon.DataAccess
                 return count;
             }
         }
+
+        public bool Check_SalesButton_By_ProductId(int p_ProdId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_SalesButtonModel>($"select * from SalesButton where ProductId  = {p_ProdId}").ToList();
+                if (output.Count > 0)
+                    return true;
+                else
+                    return false;
+            }
+        }
     }
 }
