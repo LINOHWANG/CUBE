@@ -225,6 +225,8 @@ namespace SDCafeOffice.Views
                     break;
                 }
             }
+            grpButtonProp.ForeColor = Color.DarkRed;
+            // set the frame color to red
 
         }
         private void UpdateButton(bool p_blnModified)
@@ -256,6 +258,13 @@ namespace SDCafeOffice.Views
             int iLineWidth = 0;
             int iLineHeight = 0;
             int iSpacing = 5;
+            int iNewRows = 0;
+            int iNewCols = 0;
+
+            // set iNewRows and iNewCols values from txt_Rows.text and txt_Cols.text
+            iNewCols = Convert.ToInt32(txt_Cols.Text);
+            iNewRows = Convert.ToInt32(txt_Rows.Text);
+
 
             if (txt_Rows.Text == "" || txt_Cols.Text == "")
             {
@@ -268,11 +277,23 @@ namespace SDCafeOffice.Views
                 return;
             }
             // ask user to confirm processing
-            DialogResult result = MessageBox.Show("Do you want to set the layout? Existing layout will be destroyed!", "Confirmation", MessageBoxButtons.YesNo);
-            if (result == DialogResult.No)
+            if ((m_Cols > iNewCols) || (m_Rows > iNewRows))
             {
-                return;
+                DialogResult result = MessageBox.Show("New layout is smaller than current." +
+                                                        Environment.NewLine + // add new line
+                                                        "Do you want to set the new layout?" + 
+                                                        Environment.NewLine + // add new line
+                                                        "Existing layout may be destroyed!", "Confirmation", MessageBoxButtons.YesNo);
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
             }
+            //DialogResult result = MessageBox.Show("Do you want to set the layout? Existing layout will be destroyed!", "Confirmation", MessageBoxButtons.YesNo);
+            //if (result == DialogResult.No)
+            //{
+            //  return;
+            //}
 
             btnArray = new CustomButton[m_intQueryTop];
             for (int i = 0; i < m_intQueryTop; i++)
@@ -289,6 +310,9 @@ namespace SDCafeOffice.Views
             iLineWidth = (pnlMenu.Width / m_Cols) - 5;
             iLineHeight = (pnlMenu.Height / m_Rows) - 5;
 
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            salesButtonList = dbPOS.Get_All_SalesButton();
+
             pnlMenu.Controls.Clear();
             // Add btnArray to pnlMenu based on Rows and Cols
             for (int i = 0; i < m_Rows; i++)
@@ -296,7 +320,6 @@ namespace SDCafeOffice.Views
                 for (int j = 0; j < m_Cols; j++)
                 {
                     btnArray[iBtnCount] = new CustomButton();
-                    btnArray[iBtnCount].Text = ""; // "btn " + iBtnCount.ToString();
                     btnArray[iBtnCount].Font = new System.Drawing.Font("Arial Narrow", 11, FontStyle.Bold);
                     btnArray[iBtnCount].ForeColor = Color.Black;
                     btnArray[iBtnCount].BackColor = Color.White;
@@ -304,7 +327,25 @@ namespace SDCafeOffice.Views
                     btnArray[iBtnCount].Top = yPos;
                     btnArray[iBtnCount].Width = iLineWidth;
                     btnArray[iBtnCount].Height = iLineHeight;
+                    btnArray[iBtnCount].Text = ""; // "btn " + iBtnCount.ToString();
                     btnArray[iBtnCount].Tag = 0;
+
+                    if (salesButtonList.Count > 0)
+                    {
+                        foreach (POS_SalesButtonModel salesButton in salesButtonList)
+                        {
+                            if (salesButton.Row == i && salesButton.Col == j)
+                            {
+                                btnArray[iBtnCount].Text = dbPOS.Get_ProductName_By_Id(salesButton.ProductId);
+                                btnArray[iBtnCount].Font = new System.Drawing.Font(salesButton.FontName, salesButton.FontSize, (FontStyle)salesButton.FontStyle);
+                                btnArray[iBtnCount].ForeColor = Color.FromName(salesButton.ForeColor);
+                                btnArray[iBtnCount].BackColor = Color.FromName(salesButton.BackColor);
+                                btnArray[iBtnCount].Tag = salesButton.ProductId.ToString();
+                                break;
+                            }
+                        }
+                    }
+
                     btnArray[iBtnCount].CornerRadius = 30;
                     btnArray[iBtnCount].RoundCorners = SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight | SDCafeCommon.Utilities.Corners.BottomLeft;
                     // save row and col to the button name property
