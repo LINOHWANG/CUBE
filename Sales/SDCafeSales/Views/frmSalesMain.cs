@@ -3116,8 +3116,16 @@ namespace SDCafeSales.Views
                 fontFamily = new FontFamily(salesButton.FontName);
                 fontStyle = (FontStyle)salesButton.FontStyle;
                 btnArray[iButtonCount].Font = new System.Drawing.Font(fontFamily, salesButton.FontSize, fontStyle);
-                btnArray[iButtonCount].ForeColor = Color.FromName(salesButton.ForeColor);
-                btnArray[iButtonCount].BackColor = Color.FromName(salesButton.BackColor);
+                try
+                {
+                    btnArray[iButtonCount].ForeColor = Color.FromArgb(Convert.ToInt32(salesButton.ForeColor)); //Color.FromName(salesButton.ForeColor);
+                    btnArray[iButtonCount].BackColor = Color.FromArgb(Convert.ToInt32(salesButton.BackColor)); //Color.FromName(salesButton.BackColor);
+                }
+                catch
+                {
+                    btnArray[iButtonCount].ForeColor = Color.Black;
+                    btnArray[iButtonCount].BackColor = Color.White;
+                }
                 btnArray[iButtonCount].Left = (int)salesButton.ButtonLeft;
                 btnArray[iButtonCount].Top = (int)salesButton.ButtonTop;
                 btnArray[iButtonCount].Width = (int)salesButton.Width;

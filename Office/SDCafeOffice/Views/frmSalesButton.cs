@@ -99,6 +99,8 @@ namespace SDCafeOffice.Views
             FontFamily fontFamily = new FontFamily("Arial");
             FontStyle fontStyle = new FontStyle();
             string strProdName = "";
+            Color colorDefaultFore = Color.Black;
+            Color colorDefaultBack = Color.White;
 
             foreach (POS_SalesButtonModel salesButton in salesButtonList)
             {
@@ -124,8 +126,16 @@ namespace SDCafeOffice.Views
                 fontFamily = new FontFamily(salesButton.FontName);
                 fontStyle = (FontStyle)salesButton.FontStyle;
                 btnArray[iButtonCount].Font = new System.Drawing.Font(fontFamily, salesButton.FontSize, fontStyle);
-                btnArray[iButtonCount].ForeColor = Color.FromName(salesButton.ForeColor);
-                btnArray[iButtonCount].BackColor = Color.FromName(salesButton.BackColor);
+                try
+                {
+                    btnArray[iButtonCount].ForeColor = Color.FromArgb(Convert.ToInt32(salesButton.ForeColor));
+                    btnArray[iButtonCount].BackColor = Color.FromArgb(Convert.ToInt32(salesButton.BackColor));
+                }
+                catch (Exception ex)
+                {
+                    btnArray[iButtonCount].ForeColor = colorDefaultFore;
+                    btnArray[iButtonCount].BackColor = colorDefaultBack;
+                }
                 btnArray[iButtonCount].Left = (int)salesButton.ButtonLeft;
                 btnArray[iButtonCount].Top = (int)salesButton.ButtonTop;
                 btnArray[iButtonCount].Width = (int)salesButton.Width;
@@ -165,8 +175,12 @@ namespace SDCafeOffice.Views
             iRow = Int32.Parse(strRowCol[0]);
             iCol = Int32.Parse(strRowCol[1]);
 
-            txt_BackColor.Text = m_btnSelected.BackColor.Name;
-            txt_ForeColor.Text = m_btnSelected.ForeColor.Name;
+            txt_BackColor.Text = m_btnSelected.BackColor.ToArgb().ToString();
+            txt_ForeColor.Text = m_btnSelected.ForeColor.ToArgb().ToString();
+            txt_ForeColor.ForeColor = m_btnSelected.ForeColor;
+            txt_ForeColor.BackColor = m_btnSelected.BackColor;
+            txt_BackColor.ForeColor = m_btnSelected.ForeColor;
+            txt_BackColor.BackColor = m_btnSelected.BackColor;
             txt_FontName.Text = m_btnSelected.Font.Name;
             txt_FontSize.Text = m_btnSelected.Font.Size.ToString();
             txt_BtnRow.Text = iRow.ToString();
@@ -338,8 +352,16 @@ namespace SDCafeOffice.Views
                             {
                                 btnArray[iBtnCount].Text = dbPOS.Get_ProductName_By_Id(salesButton.ProductId);
                                 btnArray[iBtnCount].Font = new System.Drawing.Font(salesButton.FontName, salesButton.FontSize, (FontStyle)salesButton.FontStyle);
-                                btnArray[iBtnCount].ForeColor = Color.FromName(salesButton.ForeColor);
-                                btnArray[iBtnCount].BackColor = Color.FromName(salesButton.BackColor);
+                                try
+                                {
+                                    btnArray[iBtnCount].ForeColor = Color.FromArgb(Convert.ToInt32(salesButton.ForeColor));
+                                    btnArray[iBtnCount].BackColor = Color.FromArgb(Convert.ToInt32(salesButton.BackColor));
+                                }
+                                catch (Exception ex)
+                                {
+                                    btnArray[iBtnCount].ForeColor = Color.Black;
+                                    btnArray[iBtnCount].BackColor = Color.White;
+                                }
                                 btnArray[iBtnCount].Tag = salesButton.ProductId.ToString();
                                 break;
                             }
@@ -357,6 +379,8 @@ namespace SDCafeOffice.Views
                 }
                 yPos += (iLineHeight + iSpacing);
                 xPos = 0;
+                m_blnModified = true;
+                UpdateButton(m_blnModified);
             }
         }
 
@@ -401,8 +425,8 @@ namespace SDCafeOffice.Views
                     salesButton.FontName = btnArray[iBtnCount].Font.Name;
                     salesButton.FontSize = btnArray[iBtnCount].Font.Size;
                     salesButton.FontStyle = (int)btnArray[iBtnCount].Font.Style;
-                    salesButton.ForeColor = btnArray[iBtnCount].ForeColor.Name;
-                    salesButton.BackColor = btnArray[iBtnCount].BackColor.Name;
+                    salesButton.ForeColor = btnArray[iBtnCount].ForeColor.ToArgb().ToString();
+                    salesButton.BackColor = btnArray[iBtnCount].BackColor.ToArgb().ToString();
                     salesButton.ProductId = Convert.ToInt32(btnArray[iBtnCount].Tag);
                     salesButton.IsVisible = true;
                     dbPOS.Insert_SalesButton(salesButton);
@@ -596,9 +620,7 @@ namespace SDCafeOffice.Views
                 m_btnSelected.ForeColor = clrDialog.Color;
                 txt_ForeColor.ForeColor = clrDialog.Color;
                 txt_BackColor.ForeColor = clrDialog.Color;
-                txt_ForeColor.Text = m_colorFore.ToString();
-                txt_ForeColor.Text = txt_ForeColor.Text.Replace("Color [", "");
-                txt_ForeColor.Text = txt_ForeColor.Text.Replace("]", "");
+                txt_ForeColor.Text = m_colorFore.ToArgb().ToString();
                 m_blnModified = true;
                 UpdateButton(m_blnModified);
             }
@@ -616,9 +638,7 @@ namespace SDCafeOffice.Views
                 m_btnSelected.BackColor = clrDialog.Color;
                 txt_BackColor.BackColor = clrDialog.Color;
                 txt_ForeColor.BackColor = clrDialog.Color;
-                txt_BackColor.Text = m_colorBack.ToString();
-                txt_BackColor.Text = txt_BackColor.Text.Replace("Color [", "");
-                txt_BackColor.Text = txt_BackColor.Text.Replace("]", "");
+                txt_BackColor.Text = m_colorBack.ToArgb().ToString();
                 m_blnModified = true;
                 UpdateButton(m_blnModified);
             }

@@ -22,6 +22,7 @@ namespace SDCafeOffice.Views
         List<POS_ProductTypeModel> ptypes = new List<POS_ProductTypeModel>();
         List<POS_PromoProductsModel> pprods = new List<POS_PromoProductsModel>();
         private double m_dblPromoUnitPrice = 0;
+        private int m_iSelectedPromoId;
 
         public frmPromotion()
         {
@@ -32,6 +33,7 @@ namespace SDCafeOffice.Views
             InitializeComponent();
             txt_PromoID.Text = strPromoId;
             txt_PromoID.Enabled = false;
+            m_iSelectedPromoId = Convert.ToInt32(strPromoId);
             Load_PromoType_Combo_Contents();
 
             Search_All_Products();
@@ -64,6 +66,12 @@ namespace SDCafeOffice.Views
                 {
                     if (!prod.IsManualItem)
                     {
+                        // Check if the product is multi qty promotion product
+                        if (Check_QTY_Promotion_Product(prod))
+                        {
+                            // skip the multi qty product
+                            continue;
+                        }
                         iProdCount++;
                         this.dgvDataFrom.Rows.Add(new String[] { prod.Id.ToString(),
                                                          dbPOS.Get_ProductTypeName_By_Id(prod.ProductTypeId),
@@ -80,23 +88,59 @@ namespace SDCafeOffice.Views
                              this.dgvData.Rows[dgvData.RowCount - 2].Cells[4].Style.BackColor = Color.Green;
                          }*/
                         this.dgvDataFrom.FirstDisplayedScrollingRowIndex = dgvDataFrom.RowCount - 1;
+                        if (m_iSelectedPromoId > 0)
+                        {
+                            POS_PromoProductsModel promoProd = new POS_PromoProductsModel();
+                            promoProd.PromoId = m_iSelectedPromoId;
+                            promoProd.ProdId = prod.Id;
+                            bool blnExist = dbPOS.Check_PromoProducts(promoProd);
+                            if (blnExist)
+                            {
+                                // set the row color to green and bold font
+                                // set the row backcolor hightlighted
+                                this.dgvDataFrom.Rows[dgvDataFrom.RowCount - 1].DefaultCellStyle.BackColor = Color.Beige;
+                                // set the forecolor to dark red
+                                this.dgvDataFrom.Rows[dgvDataFrom.RowCount - 1].DefaultCellStyle.ForeColor = Color.DarkRed;
+
+                            }
+                        }
+                        
                     }
 
                 }
             }
             lbl_AllProds.Text = "Products ( " + iProdCount.ToString() + " )";
         }
+
+        private bool Check_QTY_Promotion_Product(POS_ProductModel p_Product)
+        {
+            // Check weather p_Product is promotion product
+            if (p_Product.PromoStartDate != "" && p_Product.PromoEndDate != "")
+            {
+                DateTime dtStartDate = DateTime.Parse(p_Product.PromoStartDate);
+                DateTime dtEndDate = DateTime.Parse(p_Product.PromoEndDate);
+                DateTime dtNow = DateTime.Now;
+                if (dtNow >= dtStartDate && dtNow <= dtEndDate)
+                {
+                    if (p_Product.PromoDay1 > 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         private void Load_PromoProducts_DataGrid()
         {
             dgvDataTo_Initialize();
 
-            if (txt_PromoID.Text != "")
+            if (m_iSelectedPromoId > 0)
             {
                 DataAccessPOS dbPOS = new DataAccessPOS();
-                int iSelectedPromoId = Convert.ToInt32(txt_PromoID.Text);
-                if (iSelectedPromoId > 0)
+
+                if (m_iSelectedPromoId > 0)
                 {
-                    pprods = dbPOS.Get_PromoProducts_By_PromoId(iSelectedPromoId);
+                    pprods = dbPOS.Get_PromoProducts_By_PromoId(m_iSelectedPromoId);
 
                     lbl_SelectedProds.Text = "Selected Products ( " + pprods.Count.ToString() + " )";
                     if (pprods.Count > 0)
@@ -342,6 +386,8 @@ namespace SDCafeOffice.Views
         }
         private void dgvDataFrom_Initialize()
         {
+            this.dgvDataFrom.AllowUserToAddRows = false;
+            this.dgvDataFrom.RowHeadersVisible = false;
             this.dgvDataFrom.AutoSize = false;
             dgvDataFrom.Rows.Clear();
             //this.dataGridActivity.AutoGenerateColumns = false;
@@ -358,7 +404,7 @@ namespace SDCafeOffice.Views
             this.dgvDataFrom.Columns[1].Width = 100;
             this.dgvDataFrom.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataFrom.Columns[2].Name = "Product Name";
-            this.dgvDataFrom.Columns[2].Width = 150;
+            this.dgvDataFrom.Columns[2].Width = 200;
             this.dgvDataFrom.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataFrom.Columns[3].Name = "Price";
             this.dgvDataFrom.Columns[3].Width = 70;
@@ -377,6 +423,8 @@ namespace SDCafeOffice.Views
         }
         private void dgvDataTo_Initialize()
         {
+            this.dgvDataTo.AllowUserToAddRows = false;
+            this.dgvDataTo.RowHeadersVisible = false;
             this.dgvDataTo.AutoSize = false;
             dgvDataTo.Rows.Clear();
             //this.dataGridActivity.AutoGenerateColumns = false;
@@ -394,7 +442,7 @@ namespace SDCafeOffice.Views
             this.dgvDataTo.Columns[1].Width = 100;
             this.dgvDataTo.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataTo.Columns[2].Name = "Product Name";
-            this.dgvDataTo.Columns[2].Width = 150;
+            this.dgvDataTo.Columns[2].Width = 200;
             this.dgvDataTo.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataTo.Columns[3].Name = "Price";
             this.dgvDataTo.Columns[3].Width = 70;

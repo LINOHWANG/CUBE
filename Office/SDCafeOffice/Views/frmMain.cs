@@ -2083,7 +2083,7 @@ namespace SDCafeOffice
             dgvData.RowTemplate.MinimumHeight = 40;
 
             // not allow to add new row
-            dgvData.AllowUserToAddRows = false;
+            //dgvData.AllowUserToAddRows = false;
         }
 
         private void bt_SalesButton_Click(object sender, EventArgs e)
