@@ -1201,7 +1201,14 @@ namespace SDCafeOffice
                         return;
                     }
                     FrmBIB = new frmBIB(strSelButtonProdId,this);
-                    FrmBIB.p_int_ProductId = Convert.ToInt32(strSelButtonProdId);
+                    try
+                    {
+                        FrmBIB.p_int_ProductId = Convert.ToInt32(strSelButtonProdId);
+                    }
+                    catch (Exception ex)
+                    {
+                        FrmBIB.p_int_ProductId = 0;
+                    }
                     FrmBIB.ShowDialog();
 
                     bt_BIBProd.PerformClick();
@@ -2083,7 +2090,9 @@ namespace SDCafeOffice
             dgvData.RowTemplate.MinimumHeight = 40;
 
             // not allow to add new row
-            //dgvData.AllowUserToAddRows = false;
+            this.dgvData.AllowUserToAddRows = false;
+            this.dgvData.RowHeadersVisible = false;
+
         }
 
         private void bt_SalesButton_Click(object sender, EventArgs e)

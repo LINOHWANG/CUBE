@@ -31,6 +31,10 @@ namespace SDCafeOffice.Views
         private Graphics grpRec;
         private bool m_blnModified = false;
         private int m_intSelectedProdId;
+        private bool m_blnBIBSearch;
+        private List<POS_BIBListModel> bibList = new List<POS_BIBListModel>();
+        private POS_ProductModel m_selectedProd;
+        private ImageList m_ImageList;
 
         public frmSalesButton()
         {
@@ -40,10 +44,20 @@ namespace SDCafeOffice.Views
         private void frmSalesButton_Load(object sender, EventArgs e)
         {
             m_intQueryTop = 100;
+            Load_ImageList();
             LoadSalesButtonSettings();
             UpdateButton(m_blnModified);
             SearchProduct(txt_SearchText.Text);
 
+        }
+
+
+        private void Load_ImageList()
+        {
+            m_ImageList = new ImageList();
+            m_ImageList.ImageSize = new Size(40, 40);
+            m_ImageList.ColorDepth = ColorDepth.Depth32Bit;
+            m_ImageList.Images.Add(Properties.Resources.menu_40dp);             //0
         }
 
         private void LoadSalesButtonSettings()
@@ -118,10 +132,12 @@ namespace SDCafeOffice.Views
                 }
                 else
                 {
+                    prod = new POS_ProductModel();
                     prod.ProductName = "No Product";
                     strProdName = prod.ProductName;
                 }
                 btnArray[iButtonCount].Name = salesButton.Row.ToString() + "," + salesButton.Col.ToString();
+                btnArray[iButtonCount].AccessibleName = salesButton.IsBIB.ToString();
                 btnArray[iButtonCount].Text = strProdName;
                 fontFamily = new FontFamily(salesButton.FontName);
                 fontStyle = (FontStyle)salesButton.FontStyle;
@@ -149,6 +165,14 @@ namespace SDCafeOffice.Views
                 {
                     btnArray[iButtonCount].ForeColor = Color.White;
                     btnArray[iButtonCount].BackColor = Color.DimGray;
+                }
+
+                if (prod.IsButtonInButton)
+                {
+                    btnArray[iButtonCount].ImageList = m_ImageList;
+                    btnArray[iButtonCount].ImageIndex = 0;
+                    btnArray[iButtonCount].ImageAlign = ContentAlignment.MiddleLeft;
+                    btnArray[iButtonCount].TextAlign = ContentAlignment.MiddleRight;
                 }
                 pnlMenu.Controls.Add(btnArray[iButtonCount]);
                 iButtonCount++;
@@ -188,6 +212,14 @@ namespace SDCafeOffice.Views
             //txt_FontStyle.Text = m_btnSelected.Font.Style.ToString();
             txt_ProdId.Text = m_btnSelected.Tag.ToString();
             iProdId = Convert.ToInt32(m_btnSelected.Tag);
+            if (m_btnSelected.AccessibleName == "True")
+            {
+                chk_BIB.Checked = true;
+            }
+            else
+            {
+                chk_BIB.Checked = false;
+            }
             if (iProdId > 0)
             {
                 DataAccessPOS dbPOS = new DataAccessPOS();
@@ -208,7 +240,7 @@ namespace SDCafeOffice.Views
             }
             UpdateButton(m_blnModified);
 
-            chk_Visible.Checked = true;
+            chk_BIB.Checked = true;
 
             // if grpRec is not yet created on the pnlMain, draw a rectangle around the button
             if (grpRec == null)
@@ -279,13 +311,15 @@ namespace SDCafeOffice.Views
             iNewCols = Convert.ToInt32(txt_Cols.Text);
             iNewRows = Convert.ToInt32(txt_Rows.Text);
 
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            salesButtonList = dbPOS.Get_All_SalesButton();
 
             if (txt_Rows.Text == "" || txt_Cols.Text == "")
             {
                 MessageBox.Show("Please enter Rows and Cols");
                 return;
             }
-            if (txt_Rows.Text == m_Rows.ToString() && txt_Cols.Text == m_Cols.ToString())
+            if ((txt_Rows.Text == m_Rows.ToString() && txt_Cols.Text == m_Cols.ToString() && salesButtonList.Count == (m_Rows * m_Cols)))
             {
                 MessageBox.Show("No change in Rows and Cols");
                 return;
@@ -323,9 +357,6 @@ namespace SDCafeOffice.Views
 
             iLineWidth = (pnlMenu.Width / m_Cols) - 5;
             iLineHeight = (pnlMenu.Height / m_Rows) - 5;
-
-            DataAccessPOS dbPOS = new DataAccessPOS();
-            salesButtonList = dbPOS.Get_All_SalesButton();
 
             pnlMenu.Controls.Clear();
             // Add btnArray to pnlMenu based on Rows and Cols
@@ -429,6 +460,14 @@ namespace SDCafeOffice.Views
                     salesButton.BackColor = btnArray[iBtnCount].BackColor.ToArgb().ToString();
                     salesButton.ProductId = Convert.ToInt32(btnArray[iBtnCount].Tag);
                     salesButton.IsVisible = true;
+                    if (btnArray[iBtnCount].AccessibleName == "True")
+                    {
+                        salesButton.IsBIB = true;
+                    }
+                    else
+                    {
+                        salesButton.IsBIB = false;
+                    }
                     dbPOS.Insert_SalesButton(salesButton);
                     iBtnCount++;
                 }
@@ -477,7 +516,67 @@ namespace SDCafeOffice.Views
             // if enter key is pressed, search the product
             if (e.KeyChar == (char)13)
             {
-                SearchProduct(txt_SearchText.Text);
+                if (m_blnBIBSearch)
+                {
+                    SearchBIB(txt_SearchText.Text);
+                }
+                else
+                {
+                    SearchProduct(txt_SearchText.Text);
+                }
+            }
+        }
+
+        private void SearchBIB(string text)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            bibList = dbPOS.Get_All_ButtonInButtons_List();
+            if (bibList.Count > 0)
+            {
+                Load_BIB_DataGrid(bibList);
+            }
+
+        }
+
+        private void Load_BIB_DataGrid(List<POS_BIBListModel> p_bibList)
+        {
+            dgvProds_Initialize();
+
+            int iCount = 0;
+            bool blnExistOnSalesButton = false;
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            //p_Prods = dbPOS.Get_All_Products();
+            if (p_bibList.Count > 0)
+            {
+                foreach (var bib in p_bibList)
+                {
+
+                    iCount++;
+                    this.dgvProds.Rows.Add(new String[] { bib.ButtonProdId.ToString(),
+                                                    "",
+                                                    bib.ButtonName,
+                                                    ""
+                    });
+
+                    /* if (ptype.IsBatchDonation)
+                        {
+                            this.dgvData.Rows[dgvData.RowCount - 2].Cells[3].Style.BackColor = Color.Green;
+                        }
+                        if (ptype.IsBatchDiscount)
+                        {
+                            this.dgvData.Rows[dgvData.RowCount - 2].Cells[4].Style.BackColor = Color.Green;
+                        }*/
+                    this.dgvProds.FirstDisplayedScrollingRowIndex = dgvProds.RowCount - 1;
+
+                    blnExistOnSalesButton = dbPOS.Check_SalesButton_By_BIBProductId(bib.ButtonProdId);
+                    if (blnExistOnSalesButton)
+                    {
+                        // set the row backcolor hightlighted
+                        this.dgvProds.Rows[dgvProds.RowCount - 1].DefaultCellStyle.BackColor = Color.Beige;
+                        // set the forecolor to dark red
+                        this.dgvProds.Rows[dgvProds.RowCount - 1].DefaultCellStyle.ForeColor = Color.DarkRed;
+                    }
+                }
             }
         }
 
@@ -535,6 +634,11 @@ namespace SDCafeOffice.Views
                         // set the forecolor to dark red
                         this.dgvProds.Rows[dgvProds.RowCount - 1].DefaultCellStyle.ForeColor = Color.DarkRed;
                     }
+                    if (prod.IsButtonInButton)
+                    {
+                        // set the row backcolor hightlighted
+                        this.dgvProds.Rows[dgvProds.RowCount - 1].DefaultCellStyle.BackColor = Color.DimGray;
+                    }
                 }
             }
             //lbl_AllProds.Text = "Products ( " + iProdCount.ToString() + " )";
@@ -589,6 +693,11 @@ namespace SDCafeOffice.Views
 
             iProdId = Convert.ToInt32(dgvProds.CurrentRow.Cells[0].Value);
             strProdName = dgvProds.CurrentRow.Cells[2].Value.ToString();
+
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            m_selectedProd = new POS_ProductModel();
+            m_selectedProd = dbPOS.Get_One_Product_By_ID(iProdId);
+
             txt_ProdId.Text = iProdId.ToString();
             txt_ProdName.Text = strProdName;
 
@@ -598,11 +707,19 @@ namespace SDCafeOffice.Views
             // Set default button color
             m_btnSelected.BackColor = Color.White;
             m_btnSelected.ForeColor = Color.Black;
+
             txt_BackColor.Text = m_btnSelected.BackColor.Name;
             txt_ForeColor.Text = m_btnSelected.ForeColor.Name;
 
             m_blnModified = true;
             m_intSelectedProdId = iProdId;
+
+            if (m_selectedProd.IsButtonInButton)
+            {
+                m_btnSelected.ImageList = m_ImageList;
+                m_btnSelected.ImageIndex = 0;
+            }
+
             UpdateButton(m_blnModified);
 
 
@@ -664,6 +781,8 @@ namespace SDCafeOffice.Views
 
         private void bt_Unlink_Click(object sender, EventArgs e)
         {
+            if (m_btnSelected == null) return;
+
             m_btnSelected.Tag = 0;
             m_btnSelected.Text = "No Product";
             txt_ProdId.Text = "0";
@@ -680,6 +799,7 @@ namespace SDCafeOffice.Views
 
         private void bt_UpdateProduct_Click(object sender, EventArgs e)
         {
+            if (m_blnBIBSearch) return;
             // Open fromProduct and passing m_intProductId and update the product
             frmProduct frmProd = new frmProduct(m_intSelectedProdId.ToString(),"",false,null);
             frmProd.ShowDialog();
@@ -705,6 +825,13 @@ namespace SDCafeOffice.Views
         {
             m_intSelectedProdId = Convert.ToInt32(dgvProds.CurrentRow.Cells[0].Value);
             UpdateButton(m_blnModified);
+        }
+
+        private void chk_BIBSearch_CheckedChanged(object sender, EventArgs e)
+        {
+            m_blnBIBSearch = chk_BIBSearch.Checked;
+            
+            txt_SearchText_KeyPress(sender, new KeyPressEventArgs((char)13));
         }
     }
 }

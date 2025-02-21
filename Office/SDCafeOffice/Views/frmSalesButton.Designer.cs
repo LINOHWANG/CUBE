@@ -34,8 +34,7 @@
             this.txt_Rows = new System.Windows.Forms.TextBox();
             this.txt_Cols = new System.Windows.Forms.TextBox();
             this.grpButtonProp = new System.Windows.Forms.GroupBox();
-            this.bt_Unlink = new SDCafeCommon.Utilities.CustomButton();
-            this.chk_Visible = new System.Windows.Forms.CheckBox();
+            this.chk_BIB = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.txt_FontSize = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -54,12 +53,14 @@
             this.txt_BtnRow = new System.Windows.Forms.TextBox();
             this.dgvProds = new System.Windows.Forms.DataGridView();
             this.txt_SearchText = new System.Windows.Forms.TextBox();
-            this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
-            this.bt_SetLayout = new SDCafeCommon.Utilities.CustomButton();
             this.label12 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.chk_BIBSearch = new System.Windows.Forms.CheckBox();
             this.bt_UpdateProduct = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_Unlink = new SDCafeCommon.Utilities.CustomButton();
+            this.bt_SetLayout = new SDCafeCommon.Utilities.CustomButton();
             this.grpButtonProp.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProds)).BeginInit();
             this.SuspendLayout();
@@ -113,7 +114,7 @@
             // grpButtonProp
             // 
             this.grpButtonProp.Controls.Add(this.bt_Unlink);
-            this.grpButtonProp.Controls.Add(this.chk_Visible);
+            this.grpButtonProp.Controls.Add(this.chk_BIB);
             this.grpButtonProp.Controls.Add(this.label11);
             this.grpButtonProp.Controls.Add(this.txt_FontSize);
             this.grpButtonProp.Controls.Add(this.label10);
@@ -137,35 +138,20 @@
             this.grpButtonProp.TabStop = false;
             this.grpButtonProp.Text = "Button Properties";
             // 
-            // bt_Unlink
+            // chk_BIB
             // 
-            this.bt_Unlink.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.bt_Unlink.CornerRadius = 30;
-            this.bt_Unlink.ForeColor = System.Drawing.Color.White;
-            this.bt_Unlink.Location = new System.Drawing.Point(491, 87);
-            this.bt_Unlink.Name = "bt_Unlink";
-            this.bt_Unlink.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
-            | SDCafeCommon.Utilities.Corners.BottomLeft) 
-            | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_Unlink.Size = new System.Drawing.Size(94, 46);
-            this.bt_Unlink.TabIndex = 31;
-            this.bt_Unlink.Text = "Unlink";
-            this.bt_Unlink.Click += new System.EventHandler(this.bt_Unlink_Click);
-            // 
-            // chk_Visible
-            // 
-            this.chk_Visible.AutoSize = true;
-            this.chk_Visible.Location = new System.Drawing.Point(406, 101);
-            this.chk_Visible.Name = "chk_Visible";
-            this.chk_Visible.Size = new System.Drawing.Size(69, 24);
-            this.chk_Visible.TabIndex = 30;
-            this.chk_Visible.Text = "Visible";
-            this.chk_Visible.UseVisualStyleBackColor = true;
+            this.chk_BIB.AutoSize = true;
+            this.chk_BIB.Location = new System.Drawing.Point(216, 90);
+            this.chk_BIB.Name = "chk_BIB";
+            this.chk_BIB.Size = new System.Drawing.Size(69, 24);
+            this.chk_BIB.TabIndex = 30;
+            this.chk_BIB.Text = "Visible";
+            this.chk_BIB.UseVisualStyleBackColor = true;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(460, 59);
+            this.label11.Location = new System.Drawing.Point(460, 57);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(65, 20);
             this.label11.TabIndex = 29;
@@ -173,7 +159,7 @@
             // 
             // txt_FontSize
             // 
-            this.txt_FontSize.Location = new System.Drawing.Point(541, 56);
+            this.txt_FontSize.Location = new System.Drawing.Point(541, 54);
             this.txt_FontSize.Name = "txt_FontSize";
             this.txt_FontSize.Size = new System.Drawing.Size(44, 25);
             this.txt_FontSize.TabIndex = 28;
@@ -197,7 +183,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(208, 102);
+            this.label9.Location = new System.Drawing.Point(19, 120);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(76, 20);
             this.label9.TabIndex = 25;
@@ -206,7 +192,7 @@
             // txt_BackColor
             // 
             this.txt_BackColor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txt_BackColor.Location = new System.Drawing.Point(288, 100);
+            this.txt_BackColor.Location = new System.Drawing.Point(101, 116);
             this.txt_BackColor.Name = "txt_BackColor";
             this.txt_BackColor.Size = new System.Drawing.Size(90, 25);
             this.txt_BackColor.TabIndex = 24;
@@ -215,7 +201,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(21, 101);
+            this.label8.Location = new System.Drawing.Point(19, 91);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(74, 20);
             this.label8.TabIndex = 23;
@@ -224,7 +210,7 @@
             // txt_ForeColor
             // 
             this.txt_ForeColor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txt_ForeColor.Location = new System.Drawing.Point(101, 99);
+            this.txt_ForeColor.Location = new System.Drawing.Point(101, 89);
             this.txt_ForeColor.Name = "txt_ForeColor";
             this.txt_ForeColor.Size = new System.Drawing.Size(90, 25);
             this.txt_ForeColor.TabIndex = 22;
@@ -249,7 +235,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(223, 60);
+            this.label5.Location = new System.Drawing.Point(212, 58);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(37, 20);
             this.label5.TabIndex = 19;
@@ -258,7 +244,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(111, 60);
+            this.label4.Location = new System.Drawing.Point(111, 58);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(30, 20);
             this.label4.TabIndex = 18;
@@ -267,7 +253,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(19, 60);
+            this.label3.Location = new System.Drawing.Point(19, 58);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(35, 20);
             this.label3.TabIndex = 17;
@@ -276,7 +262,7 @@
             // txt_FontName
             // 
             this.txt_FontName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txt_FontName.Location = new System.Drawing.Point(264, 58);
+            this.txt_FontName.Location = new System.Drawing.Point(255, 56);
             this.txt_FontName.Name = "txt_FontName";
             this.txt_FontName.Size = new System.Drawing.Size(186, 25);
             this.txt_FontName.TabIndex = 16;
@@ -284,14 +270,14 @@
             // 
             // txt_BtnCol
             // 
-            this.txt_BtnCol.Location = new System.Drawing.Point(147, 58);
+            this.txt_BtnCol.Location = new System.Drawing.Point(147, 56);
             this.txt_BtnCol.Name = "txt_BtnCol";
             this.txt_BtnCol.Size = new System.Drawing.Size(44, 25);
             this.txt_BtnCol.TabIndex = 15;
             // 
             // txt_BtnRow
             // 
-            this.txt_BtnRow.Location = new System.Drawing.Point(60, 58);
+            this.txt_BtnRow.Location = new System.Drawing.Point(60, 56);
             this.txt_BtnRow.Name = "txt_BtnRow";
             this.txt_BtnRow.Size = new System.Drawing.Size(44, 25);
             this.txt_BtnRow.TabIndex = 14;
@@ -316,6 +302,50 @@
             this.txt_SearchText.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txt_SearchText.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_SearchText_KeyPress);
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(9, 77);
+            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(208, 16);
+            this.label12.TabIndex = 23;
+            this.label12.Text = "Product Search (type and press enter)";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.ForeColor = System.Drawing.Color.Maroon;
+            this.label7.Location = new System.Drawing.Point(13, 486);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(279, 20);
+            this.label7.TabIndex = 24;
+            this.label7.Text = "Double Click to Link with the selected button";
+            // 
+            // chk_BIBSearch
+            // 
+            this.chk_BIBSearch.AutoSize = true;
+            this.chk_BIBSearch.Location = new System.Drawing.Point(239, 77);
+            this.chk_BIBSearch.Name = "chk_BIBSearch";
+            this.chk_BIBSearch.Size = new System.Drawing.Size(135, 24);
+            this.chk_BIBSearch.TabIndex = 26;
+            this.chk_BIBSearch.Text = "Buttons in Button";
+            this.chk_BIBSearch.UseVisualStyleBackColor = true;
+            this.chk_BIBSearch.Visible = false;
+            this.chk_BIBSearch.CheckedChanged += new System.EventHandler(this.chk_BIBSearch_CheckedChanged);
+            // 
+            // bt_UpdateProduct
+            // 
+            this.bt_UpdateProduct.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.bt_UpdateProduct.Location = new System.Drawing.Point(280, 517);
+            this.bt_UpdateProduct.Name = "bt_UpdateProduct";
+            this.bt_UpdateProduct.Size = new System.Drawing.Size(94, 46);
+            this.bt_UpdateProduct.TabIndex = 25;
+            this.bt_UpdateProduct.Text = "Update Product";
+            this.bt_UpdateProduct.Click += new System.EventHandler(this.bt_UpdateProduct_Click);
+            // 
             // bt_Exit
             // 
             this.bt_Exit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
@@ -336,6 +366,21 @@
             this.bt_Save.Text = "Save";
             this.bt_Save.Click += new System.EventHandler(this.bt_Save_Click);
             // 
+            // bt_Unlink
+            // 
+            this.bt_Unlink.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.bt_Unlink.CornerRadius = 30;
+            this.bt_Unlink.ForeColor = System.Drawing.Color.White;
+            this.bt_Unlink.Location = new System.Drawing.Point(491, 85);
+            this.bt_Unlink.Name = "bt_Unlink";
+            this.bt_Unlink.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
+            | SDCafeCommon.Utilities.Corners.BottomLeft) 
+            | SDCafeCommon.Utilities.Corners.BottomRight)));
+            this.bt_Unlink.Size = new System.Drawing.Size(94, 46);
+            this.bt_Unlink.TabIndex = 31;
+            this.bt_Unlink.Text = "Unlink";
+            this.bt_Unlink.Click += new System.EventHandler(this.bt_Unlink_Click);
+            // 
             // bt_SetLayout
             // 
             this.bt_SetLayout.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
@@ -350,42 +395,12 @@
             this.bt_SetLayout.Text = "Set Layout";
             this.bt_SetLayout.Click += new System.EventHandler(this.bt_SetLayout_Click);
             // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(9, 77);
-            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(236, 20);
-            this.label12.TabIndex = 23;
-            this.label12.Text = "Product Search (type and press enter)";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.ForeColor = System.Drawing.Color.Maroon;
-            this.label7.Location = new System.Drawing.Point(13, 486);
-            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(279, 20);
-            this.label7.TabIndex = 24;
-            this.label7.Text = "Double Click to Link with the selected button";
-            // 
-            // bt_UpdateProduct
-            // 
-            this.bt_UpdateProduct.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.bt_UpdateProduct.Location = new System.Drawing.Point(280, 517);
-            this.bt_UpdateProduct.Name = "bt_UpdateProduct";
-            this.bt_UpdateProduct.Size = new System.Drawing.Size(94, 46);
-            this.bt_UpdateProduct.TabIndex = 25;
-            this.bt_UpdateProduct.Text = "Update Product";
-            this.bt_UpdateProduct.Click += new System.EventHandler(this.bt_UpdateProduct_Click);
-            // 
             // frmSalesButton
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1001, 574);
+            this.Controls.Add(this.chk_BIBSearch);
             this.Controls.Add(this.bt_UpdateProduct);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label12);
@@ -443,10 +458,11 @@
         private System.Windows.Forms.TextBox txt_ProdId;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox txt_FontSize;
-        private System.Windows.Forms.CheckBox chk_Visible;
+        private System.Windows.Forms.CheckBox chk_BIB;
         private SDCafeCommon.Utilities.CustomButton bt_Unlink;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label7;
         private SDCafeCommon.Utilities.CustomButton bt_UpdateProduct;
+        private System.Windows.Forms.CheckBox chk_BIBSearch;
     }
 }

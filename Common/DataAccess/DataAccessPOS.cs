@@ -901,7 +901,7 @@ namespace SDCafeCommon.DataAccess
                                 "Tax3Rate	,Tax1	,Tax2	,Tax3	,InvoiceNo	,IsPaidComplete	,CompleteDate	, " +
                                 "CompleteTime	,CreateDate	,CreateTime	,CreateUserId	,CreateUserName	,CreateStation	, " +
                                 "LastModDate	,LastModTime	,LastModUserId	,LastModUserName	,LastModStation, RFTagID, " +
-                                "ParentId, OrderCategoryId, IsDiscounted, BarCode, IsFixedOrder ) " +
+                                "ParentId, OrderCategoryId, IsDiscounted, BarCode, IsFixedOrder , PromoId) " +
                                 " OUTPUT INSERTED.[Id] " +
                                 "VALUES (@TranType	,@ProductId	,@ProductName	,@SecondName	,@ProductTypeId	,  " +
                                 "CAST(@InUnitPrice as decimal(10,2)), CAST(@OutUnitPrice as decimal(10,3))	,@IsTax1	,@IsTax2	,@IsTax3	,@UnitCategoryId	, " +
@@ -910,7 +910,7 @@ namespace SDCafeCommon.DataAccess
                                 "CAST(@Tax3Rate as decimal(10,2))	,CAST(@Tax1 as decimal(10,2))	,CAST(@Tax2 as decimal(10,2))	,CAST(@Tax3 as decimal(10,2))	,@InvoiceNo	,@IsPaidComplete	,@CompleteDate	, " +
                                 "@CompleteTime	,@CreateDate	,@CreateTime	,@CreateUserId	,@CreateUserName	,@CreateStation	, " +
                                 "@LastModDate	,@LastModTime	,@LastModUserId	,@LastModUserName	,@LastModStation, @RFTagID, " +
-                                "@ParentId, @OrderCategoryId, @IsDiscounted, @BarCode, @IsFixedOrder ) ";
+                                "@ParentId, @OrderCategoryId, @IsDiscounted, @BarCode, @IsFixedOrder , @PromoId) ";
                 //var count = connection.Execute(query, pos_OrdersModel);
                 //if (count == 1) return true;
                 //return false;
@@ -1495,11 +1495,11 @@ namespace SDCafeCommon.DataAccess
             }
         }
 
-        public int Delete_Promotion_Discount_Orders(string strStation)
+        public int Delete_Promotion_Discount_Orders(string strStation, int p_PromoId)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                string query = "DELETE from Orders WHERE OrderCategoryId=4 And IsDiscounted=1 And CreateStation = '" + strStation + "'";
+                string query = $"DELETE from Orders WHERE OrderCategoryId=4 And IsDiscounted=1 And CreateStation = '" + strStation + $"' And PromoId = {p_PromoId}";
                 var count = connection.Execute(query);
                 return count;
             }
@@ -1891,8 +1891,8 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                string query = "INSERT INTO SalesButton (Row, Col, ButtonLeft, ButtonTop, Width, Height, FontName, FontSize, FontStyle, ForeColor, BackColor, ProductId, IsVisible) " +
-                                    "VALUES (@Row, @Col, @ButtonLeft, @ButtonTop, @Width, @Height, @FontName, @FontSize, @FontStyle, @ForeColor,@BackColor, @ProductId, @IsVisible)";
+                string query = "INSERT INTO SalesButton (Row, Col, ButtonLeft, ButtonTop, Width, Height, FontName, FontSize, FontStyle, ForeColor, BackColor, ProductId, IsVisible, IsBIB) " +
+                                    "VALUES (@Row, @Col, @ButtonLeft, @ButtonTop, @Width, @Height, @FontName, @FontSize, @FontStyle, @ForeColor,@BackColor, @ProductId, @IsVisible, @IsBIB)";
                 var count = connection.Execute(query, p_salesButton);
                 return count;
             }
@@ -1902,7 +1902,18 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                var output = connection.Query<POS_SalesButtonModel>($"select * from SalesButton where ProductId  = {p_ProdId}").ToList();
+                var output = connection.Query<POS_SalesButtonModel>($"select * from SalesButton where ProductId  = {p_ProdId} and IsBIB = 0").ToList();
+                if (output.Count > 0)
+                    return true;
+                else
+                    return false;
+            }
+        }
+        public bool Check_SalesButton_By_BIBProductId(int p_ProdId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_SalesButtonModel>($"select * from SalesButton where ProductId  = {p_ProdId} and IsBIB = 1").ToList();
                 if (output.Count > 0)
                     return true;
                 else

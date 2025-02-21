@@ -196,7 +196,8 @@ namespace SDCafeSales.Views
             dgv_Orders.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             dgv_Orders.AllowUserToResizeRows = false;
             dgv_Orders.RowTemplate.Resizable = DataGridViewTriState.True;
-            dgv_Orders.RowTemplate.MinimumHeight = 40;
+            dgv_Orders.RowTemplate.MinimumHeight = 20;
+            dgv_Orders.RowTemplate.Height = 40;
             dgv_Orders.AllowUserToAddRows = false;
         }
         private void Load_Existing_Orders()
@@ -264,6 +265,9 @@ namespace SDCafeSales.Views
                                 this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = corder.RFTagId;
                                 DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
                                 row.DefaultCellStyle.ForeColor = Color.DarkGray;
+                                // Reduce the row height
+                                dgv_Orders.Rows[dgv_Orders.Rows.Count - 1].Height = 20;
+                                //dgv_Orders.Refresh();
                             }
                             if (corder.RFTagId > 0)
                             {

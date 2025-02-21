@@ -33,7 +33,14 @@ namespace SDCafeOffice.Views
             InitializeComponent();
             txt_PromoID.Text = strPromoId;
             txt_PromoID.Enabled = false;
-            m_iSelectedPromoId = Convert.ToInt32(strPromoId);
+            if (string.IsNullOrEmpty(strPromoId))
+            {
+                m_iSelectedPromoId = 0;
+            }
+            else
+            {
+                m_iSelectedPromoId = Convert.ToInt32(strPromoId);
+            }
             Load_PromoType_Combo_Contents();
 
             Search_All_Products();
@@ -70,6 +77,11 @@ namespace SDCafeOffice.Views
                         if (Check_QTY_Promotion_Product(prod))
                         {
                             // skip the multi qty product
+                            continue;
+                        }
+                        if (prod.IsButtonInButton)
+                        {
+                            // skip the button in button product
                             continue;
                         }
                         iProdCount++;

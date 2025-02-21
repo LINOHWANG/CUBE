@@ -22,6 +22,6 @@ namespace SDCafeCommon.Model
         public string BackColor { get; set; }
         public int ProductId { get; set; }
         public bool IsVisible { get; set; }
-
+        public bool IsBIB { get; set; }
     }
 }

@@ -124,6 +124,9 @@
   <data name="Cube_Logo_RECEIPT_20200707" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Cube_Logo_RECEIPT_20200707.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="menu_40dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\menu_40dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="TSE_CI_2024" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\TSE_CI_2024.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

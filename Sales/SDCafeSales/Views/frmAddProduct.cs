@@ -268,6 +268,7 @@ namespace SDCafeSales.Views
             {
                 if (off_ProdResp.Result != null)
                 {
+                    if (off_ProdResp.Result.Product == null) return;
                     if (off_ProdResp.Result.Product.ProductName != null)
                         util.Logger("Product found : Product = " + off_ProdResp.Result.Product.ProductName);
                     if (off_ProdResp.Result.Product.Categories != null)

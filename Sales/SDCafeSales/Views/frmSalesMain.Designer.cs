@@ -122,6 +122,7 @@
             this.dgv_Orders.Name = "dgv_Orders";
             this.dgv_Orders.ReadOnly = true;
             this.dgv_Orders.RowHeadersVisible = false;
+            this.dgv_Orders.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dgv_Orders.Size = new System.Drawing.Size(387, 432);
             this.dgv_Orders.TabIndex = 7;
             this.dgv_Orders.SelectionChanged += new System.EventHandler(this.dgv_Orders_SelectionChanged);

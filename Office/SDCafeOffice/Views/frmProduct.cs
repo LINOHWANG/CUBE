@@ -553,7 +553,7 @@ namespace SDCafeOffice.Views
         {
             m_blnOnSave = true;
             DataAccessPOS dbPOS = new DataAccessPOS();
-
+            prods.Clear();
             prods.Add(new POS_ProductModel()
             {
                 ProductName = txt_ProductName.Text,
@@ -640,6 +640,7 @@ namespace SDCafeOffice.Views
             {
                 return;
             }
+            txt_BarCode.Text = "";
             Insert_Product_From_View();
         }
 

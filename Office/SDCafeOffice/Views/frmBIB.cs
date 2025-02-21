@@ -57,6 +57,8 @@ namespace SDCafeOffice.Views
         }
         private void dgvDataFrom_Initialize()
         {
+            this.dgvDataFrom.AllowUserToAddRows = false;
+            this.dgvDataFrom.RowHeadersVisible = false;
             this.dgvDataFrom.AutoSize = false;
             dgvDataFrom.Rows.Clear();
             //this.dataGridActivity.AutoGenerateColumns = false;
@@ -73,7 +75,7 @@ namespace SDCafeOffice.Views
             this.dgvDataFrom.Columns[1].Width = 100;
             this.dgvDataFrom.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataFrom.Columns[2].Name = "Product Name";
-            this.dgvDataFrom.Columns[2].Width = 150;
+            this.dgvDataFrom.Columns[2].Width = 180;
             this.dgvDataFrom.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataFrom.Columns[3].Name = "Price";
             this.dgvDataFrom.Columns[3].Width = 70;
@@ -92,6 +94,8 @@ namespace SDCafeOffice.Views
         }
         private void dgvDataTo_Initialize()
         {
+            this.dgvDataTo.AllowUserToAddRows = false;
+            this.dgvDataTo.RowHeadersVisible = false;
             this.dgvDataTo.AutoSize = false;
             dgvDataTo.Rows.Clear();
             //this.dataGridActivity.AutoGenerateColumns = false;
@@ -109,7 +113,7 @@ namespace SDCafeOffice.Views
             this.dgvDataTo.Columns[1].Width = 100;
             this.dgvDataTo.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataTo.Columns[2].Name = "Product Name";
-            this.dgvDataTo.Columns[2].Width = 150;
+            this.dgvDataTo.Columns[2].Width = 180;
             this.dgvDataTo.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgvDataTo.Columns[3].Name = "Price";
             this.dgvDataTo.Columns[3].Width = 70;
