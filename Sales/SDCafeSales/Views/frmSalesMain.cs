@@ -2147,7 +2147,7 @@ namespace SDCafeSales.Views
                             int iDiscountTimes = iOrderedQTY / promo.PromoQTY;
 
                             Add_Discount_Orders_By_Promotion(promo.Id, promo.PromoName, promo.PromoType, promo.PromoValue, promo.PromoQTY, iOrderedQTY, iDiscountTimes, strSQLWhere);
-                            
+
                             dgv_Orders_Initialize();
                             Load_Existing_Orders();
                             Calculate_Total_Due();
