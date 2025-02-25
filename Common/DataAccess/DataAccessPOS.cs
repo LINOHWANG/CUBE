@@ -886,6 +886,7 @@ namespace SDCafeCommon.DataAccess
                                         "IsFixedOrder=@IsFixedOrder " +
                             " WHERE Id=@Id";
                 var count = connection.Execute(query, pos_OrdersModel);
+
                 return count;
             }
         }

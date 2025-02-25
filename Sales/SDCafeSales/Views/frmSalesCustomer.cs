@@ -167,22 +167,25 @@ namespace SDCafeSales.Views
             this.dgv_Orders.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgv_Orders.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgv_Orders.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            this.dgv_Orders.ColumnCount = 5;
+            this.dgv_Orders.ColumnCount = 6;
             this.dgv_Orders.Columns[0].Name = "Seq";
-            this.dgv_Orders.Columns[0].Width = 50;
+            this.dgv_Orders.Columns[0].Width = 40;
             this.dgv_Orders.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgv_Orders.Columns[1].Name = "Product Name";
-            this.dgv_Orders.Columns[1].Width = 110;
+            this.dgv_Orders.Columns[1].Width = 115;
             this.dgv_Orders.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             this.dgv_Orders.Columns[2].Name = "QTY";
             this.dgv_Orders.Columns[2].Width = 50;
             this.dgv_Orders.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             this.dgv_Orders.Columns[3].Name = "Unit Price";
-            this.dgv_Orders.Columns[3].Width = 70;
+            this.dgv_Orders.Columns[3].Width = 55;
             this.dgv_Orders.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             this.dgv_Orders.Columns[4].Name = "Amount";
-            this.dgv_Orders.Columns[4].Width = 85;
+            this.dgv_Orders.Columns[4].Width = 70;
             this.dgv_Orders.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.dgv_Orders.Columns[5].Name = "Tax";
+            this.dgv_Orders.Columns[5].Width = 40;
+            this.dgv_Orders.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             //this.dgv_Orders.Columns[5].Name = "OrderId";
             //this.dgv_Orders.Columns[5].Width = 0;
             //this.dgv_Orders.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -203,6 +206,7 @@ namespace SDCafeSales.Views
         private void Load_Existing_Orders()
         {
             int iIndex = 0;
+            string strTaxShort;
 
             dgv_Orders_Initialize();
             DataAccessPOS dbPOS = new DataAccessPOS();
@@ -221,20 +225,27 @@ namespace SDCafeSales.Views
                     if (order.OrderCategoryId == 0)
                     {
                         iAmount = order.Quantity * order.OutUnitPrice;
+                        iAmount = order.Quantity * order.OutUnitPrice;
+                        strTaxShort = "";
+                        strTaxShort += order.IsTax1 ? FrmSalesMain.strTax1Name.Substring(0, 1) : "";
+                        strTaxShort += order.IsTax2 ? FrmSalesMain.strTax2Name.Substring(0, 1) : "";
+                        strTaxShort += order.IsTax3 ? FrmSalesMain.strTax3Name.Substring(0, 1) : "";
                         this.dgv_Orders.Rows.Add(new String[] { iIndex.ToString(),
                                                                                    order.ProductName,
                                                                                    order.Quantity.ToString(),
                                                                                    order.OutUnitPrice.ToString("0.00"),
                                                                                    //iAmount.ToString("0.00")
                                                                                    order.Amount.ToString("0.00"),
-                                                                                   order.Id.ToString(),
-                                                                                   order.ProductId.ToString(),
-                                                                                   order.BarCode
+                                                                                   strTaxShort
                                 });
                         childOrders.Clear();
                         childOrders = dbPOS.Get_ChildOrders_by_Station(FrmSalesMain.strStation, order.Id);
                         foreach (var corder in childOrders)
                         {
+                            strTaxShort = "";
+                            strTaxShort += corder.IsTax1 ? FrmSalesMain.strTax1Name.Substring(0, 1) : "";
+                            strTaxShort += corder.IsTax2 ? FrmSalesMain.strTax2Name.Substring(0, 1) : "";
+                            strTaxShort += corder.IsTax3 ? FrmSalesMain.strTax3Name.Substring(0, 1) : "";
                             if (corder.OrderCategoryId == 0)
                             {
                                 iAmount = corder.Quantity * corder.OutUnitPrice;
@@ -244,9 +255,7 @@ namespace SDCafeSales.Views
                                                                                    corder.OutUnitPrice.ToString("0.00"),
                                                                                    //iAmount.ToString("0.00"),
                                                                                    corder.Amount.ToString("0.00"),
-                                                                                   corder.Id.ToString(),
-                                                                                   corder.ProductId.ToString(),
-                                                                                   corder.BarCode
+                                                                                   strTaxShort
                                 });
                             }
                             else if (corder.OrderCategoryId > 0) // Discount
@@ -258,9 +267,7 @@ namespace SDCafeSales.Views
                                                                                    corder.OutUnitPrice.ToString("0.00"),
                                                                                    //iAmount.ToString("0.00"),
                                                                                    corder.Amount.ToString("0.00"),
-                                                                                   corder.Id.ToString(),
-                                                                                   corder.ProductId.ToString(),
-                                                                                   corder.BarCode
+                                                                                   strTaxShort
                                 });
                                 this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = corder.RFTagId;
                                 DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
@@ -285,6 +292,10 @@ namespace SDCafeSales.Views
                     }
                     else if (order.OrderCategoryId == 4) // Promo Discount
                     {
+                        strTaxShort = "";
+                        strTaxShort += order.IsTax1 ? FrmSalesMain.strTax1Name.Substring(0, 1) : "";
+                        strTaxShort += order.IsTax2 ? FrmSalesMain.strTax2Name.Substring(0, 1) : "";
+                        strTaxShort += order.IsTax3 ? FrmSalesMain.strTax3Name.Substring(0, 1) : "";
                         iAmount = order.Amount;
                         this.dgv_Orders.Rows.Add(new String[] { iIndex.ToString(),
                                                                                    order.ProductName,
@@ -292,9 +303,7 @@ namespace SDCafeSales.Views
                                                                                    order.OutUnitPrice.ToString("0.00"),
                                                                                    //iAmount.ToString("0.00")
                                                                                    order.Amount.ToString("0.00"),
-                                                                                   order.Id.ToString(),
-                                                                                   order.ProductId.ToString(),
-                                                                                   order.BarCode
+                                                                                   strTaxShort
                                 });
                         DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
                         row.DefaultCellStyle.ForeColor = Color.Red;
