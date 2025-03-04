@@ -1307,8 +1307,10 @@ namespace SDCafeOffice
                     this.dgvData.Rows.Add(new String[] { promo.Id.ToString(),
                                                          promo.PromoName,
                                                          promo.PromoType.ToString(),
-                                                         promo.PromoValue.ToString(),
-                                                         promo.PromoQTY.ToString(),
+                                                         promo.PromoValue1.ToString(),
+                                                         promo.PromoQTY1.ToString(),
+                                                         promo.PromoValue2.ToString(),
+                                                         promo.PromoQTY2.ToString(),
                                                          promo.PromoStartDttm.ToString(),
                                                          promo.PromoEndDttm.ToString()
                     });
@@ -1332,7 +1334,7 @@ namespace SDCafeOffice
             this.dgvData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvData.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            this.dgvData.ColumnCount = 7;
+            this.dgvData.ColumnCount = 9;
             this.dgvData.Columns[0].Name = "Id";
             this.dgvData.Columns[0].Width = 50;
             this.dgvData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -1340,20 +1342,26 @@ namespace SDCafeOffice
             this.dgvData.Columns[1].Width = 200;
             this.dgvData.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             this.dgvData.Columns[2].Name = "Promotion Type";
-            this.dgvData.Columns[2].Width = 120;
+            this.dgvData.Columns[2].Width = 100;
             this.dgvData.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            this.dgvData.Columns[3].Name = "Value";
-            this.dgvData.Columns[3].Width = 120;
+            this.dgvData.Columns[3].Name = "Value 1";
+            this.dgvData.Columns[3].Width = 80;
             this.dgvData.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            this.dgvData.Columns[4].Name = "QTY";
+            this.dgvData.Columns[4].Name = "QTY 1";
             this.dgvData.Columns[4].Width = 50;
             this.dgvData.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[5].Name = "Start Date Time";
-            this.dgvData.Columns[5].Width = 200;
-            this.dgvData.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[6].Name = "End Date Time";
-            this.dgvData.Columns[6].Width = 200;
+            this.dgvData.Columns[5].Name = "Value 2";
+            this.dgvData.Columns[5].Width = 80;
+            this.dgvData.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            this.dgvData.Columns[6].Name = "QTY 2";
+            this.dgvData.Columns[6].Width = 50;
             this.dgvData.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.Columns[7].Name = "Start Date Time";
+            this.dgvData.Columns[7].Width = 200;
+            this.dgvData.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.Columns[8].Name = "End Date Time";
+            this.dgvData.Columns[8].Width = 200;
+            this.dgvData.Columns[8].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             this.dgvData.DefaultCellStyle.Font = new Font("Arial", 16F, GraphicsUnit.Pixel);
 

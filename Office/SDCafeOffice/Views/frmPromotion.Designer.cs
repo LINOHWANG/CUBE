@@ -33,9 +33,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.cb_PromoType = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.txt_PromoValue = new System.Windows.Forms.TextBox();
+            this.txt_PromoValue1 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.txt_PromoQTY = new System.Windows.Forms.TextBox();
+            this.txt_PromoQTY1 = new System.Windows.Forms.TextBox();
             this.dttm_PromoStart = new System.Windows.Forms.DateTimePicker();
             this.label5 = new System.Windows.Forms.Label();
             this.dttm_PromoEnd = new System.Windows.Forms.DateTimePicker();
@@ -57,6 +57,10 @@
             this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
             this.txt_ProdSearch = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.txt_PromoValue2 = new System.Windows.Forms.TextBox();
+            this.txt_PromoQTY2 = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDataFrom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDataTo)).BeginInit();
             this.SuspendLayout();
@@ -78,7 +82,7 @@
             this.txt_PromoName.Location = new System.Drawing.Point(194, 47);
             this.txt_PromoName.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_PromoName.Name = "txt_PromoName";
-            this.txt_PromoName.Size = new System.Drawing.Size(504, 29);
+            this.txt_PromoName.Size = new System.Drawing.Size(353, 29);
             this.txt_PromoName.TabIndex = 4;
             this.txt_PromoName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -106,45 +110,45 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(357, 129);
+            this.label3.Location = new System.Drawing.Point(387, 129);
             this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(177, 22);
             this.label3.TabIndex = 35;
             this.label3.Text = "Each Promo Price";
             // 
-            // txt_PromoValue
+            // txt_PromoValue1
             // 
-            this.txt_PromoValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.txt_PromoValue.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_PromoValue.Location = new System.Drawing.Point(546, 126);
-            this.txt_PromoValue.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.txt_PromoValue.Name = "txt_PromoValue";
-            this.txt_PromoValue.Size = new System.Drawing.Size(152, 29);
-            this.txt_PromoValue.TabIndex = 34;
-            this.txt_PromoValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txt_PromoValue.TextChanged += new System.EventHandler(this.txt_PromoValue_TextChanged);
+            this.txt_PromoValue1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.txt_PromoValue1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_PromoValue1.Location = new System.Drawing.Point(576, 126);
+            this.txt_PromoValue1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_PromoValue1.Name = "txt_PromoValue1";
+            this.txt_PromoValue1.Size = new System.Drawing.Size(121, 29);
+            this.txt_PromoValue1.TabIndex = 34;
+            this.txt_PromoValue1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_PromoValue1.TextChanged += new System.EventHandler(this.txt_PromoValue_TextChanged);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(357, 165);
+            this.label4.Location = new System.Drawing.Point(387, 165);
             this.label4.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(142, 22);
             this.label4.TabIndex = 37;
             this.label4.Text = "Matching QTY";
             // 
-            // txt_PromoQTY
+            // txt_PromoQTY1
             // 
-            this.txt_PromoQTY.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_PromoQTY.Location = new System.Drawing.Point(546, 161);
-            this.txt_PromoQTY.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.txt_PromoQTY.Name = "txt_PromoQTY";
-            this.txt_PromoQTY.Size = new System.Drawing.Size(152, 29);
-            this.txt_PromoQTY.TabIndex = 36;
-            this.txt_PromoQTY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_PromoQTY1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_PromoQTY1.Location = new System.Drawing.Point(576, 161);
+            this.txt_PromoQTY1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_PromoQTY1.Name = "txt_PromoQTY1";
+            this.txt_PromoQTY1.Size = new System.Drawing.Size(121, 29);
+            this.txt_PromoQTY1.TabIndex = 36;
+            this.txt_PromoQTY1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // dttm_PromoStart
             // 
@@ -328,12 +332,12 @@
             this.bt_Delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.bt_Delete.CornerRadius = 30;
             this.bt_Delete.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Delete.Location = new System.Drawing.Point(748, 65);
+            this.bt_Delete.Location = new System.Drawing.Point(793, 8);
             this.bt_Delete.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Delete.Name = "bt_Delete";
             this.bt_Delete.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Delete.Size = new System.Drawing.Size(142, 47);
+            this.bt_Delete.Size = new System.Drawing.Size(92, 68);
             this.bt_Delete.TabIndex = 81;
             this.bt_Delete.Text = "Delete";
             this.bt_Delete.Click += new System.EventHandler(this.bt_Delete_Click);
@@ -343,12 +347,12 @@
             this.bt_Add.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.bt_Add.CornerRadius = 30;
             this.bt_Add.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Add.Location = new System.Drawing.Point(748, 8);
+            this.bt_Add.Location = new System.Drawing.Point(603, 11);
             this.bt_Add.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Add.Name = "bt_Add";
             this.bt_Add.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Add.Size = new System.Drawing.Size(142, 47);
+            this.bt_Add.Size = new System.Drawing.Size(92, 65);
             this.bt_Add.TabIndex = 80;
             this.bt_Add.Text = "Add";
             this.bt_Add.Click += new System.EventHandler(this.bt_Add_Click);
@@ -359,12 +363,12 @@
             this.bt_Exit.CornerRadius = 30;
             this.bt_Exit.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
             this.bt_Exit.ForeColor = System.Drawing.Color.White;
-            this.bt_Exit.Location = new System.Drawing.Point(899, 8);
+            this.bt_Exit.Location = new System.Drawing.Point(894, 8);
             this.bt_Exit.Name = "bt_Exit";
             this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_Exit.Size = new System.Drawing.Size(97, 159);
+            this.bt_Exit.Size = new System.Drawing.Size(92, 68);
             this.bt_Exit.TabIndex = 79;
             this.bt_Exit.Text = "Exit";
             this.bt_Exit.Click += new System.EventHandler(this.bt_Exit_Click);
@@ -373,12 +377,12 @@
             // 
             this.bt_Save.CornerRadius = 30;
             this.bt_Save.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold);
-            this.bt_Save.Location = new System.Drawing.Point(748, 120);
+            this.bt_Save.Location = new System.Drawing.Point(698, 8);
             this.bt_Save.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.bt_Save.Name = "bt_Save";
             this.bt_Save.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Save.Size = new System.Drawing.Size(142, 47);
+            this.bt_Save.Size = new System.Drawing.Size(92, 68);
             this.bt_Save.TabIndex = 78;
             this.bt_Save.Text = "Save";
             this.bt_Save.Click += new System.EventHandler(this.bt_Save_Click);
@@ -407,12 +411,59 @@
             this.label8.TabIndex = 91;
             this.label8.Text = "Search";
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(581, 99);
+            this.label9.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(116, 22);
+            this.label9.TabIndex = 92;
+            this.label9.Text = "Condition 1";
+            // 
+            // txt_PromoValue2
+            // 
+            this.txt_PromoValue2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.txt_PromoValue2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_PromoValue2.Location = new System.Drawing.Point(709, 126);
+            this.txt_PromoValue2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_PromoValue2.Name = "txt_PromoValue2";
+            this.txt_PromoValue2.Size = new System.Drawing.Size(121, 29);
+            this.txt_PromoValue2.TabIndex = 93;
+            this.txt_PromoValue2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // txt_PromoQTY2
+            // 
+            this.txt_PromoQTY2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_PromoQTY2.Location = new System.Drawing.Point(709, 161);
+            this.txt_PromoQTY2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_PromoQTY2.Name = "txt_PromoQTY2";
+            this.txt_PromoQTY2.Size = new System.Drawing.Size(121, 29);
+            this.txt_PromoQTY2.TabIndex = 94;
+            this.txt_PromoQTY2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(714, 99);
+            this.label10.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(116, 22);
+            this.label10.TabIndex = 95;
+            this.label10.Text = "Condition 2";
+            // 
             // frmPromotion
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
             this.ControlBox = false;
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.txt_PromoQTY2);
+            this.Controls.Add(this.txt_PromoValue2);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.txt_ProdSearch);
             this.Controls.Add(this.lbl_SelectedProds);
@@ -435,15 +486,16 @@
             this.Controls.Add(this.dttm_PromoEnd);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.txt_PromoQTY);
+            this.Controls.Add(this.txt_PromoQTY1);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.txt_PromoValue);
+            this.Controls.Add(this.txt_PromoValue1);
             this.Controls.Add(this.cb_PromoType);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txt_PromoName);
             this.Name = "frmPromotion";
             this.Text = "Advanced Promotion Setting";
+            this.Load += new System.EventHandler(this.frmPromotion_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvDataFrom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDataTo)).EndInit();
             this.ResumeLayout(false);
@@ -458,9 +510,9 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cb_PromoType;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txt_PromoValue;
+        private System.Windows.Forms.TextBox txt_PromoValue1;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox txt_PromoQTY;
+        private System.Windows.Forms.TextBox txt_PromoQTY1;
         private System.Windows.Forms.DateTimePicker dttm_PromoStart;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.DateTimePicker dttm_PromoEnd;
@@ -482,5 +534,9 @@
         private System.Windows.Forms.Label lbl_SelectedProds;
         private System.Windows.Forms.TextBox txt_ProdSearch;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox txt_PromoValue2;
+        private System.Windows.Forms.TextBox txt_PromoQTY2;
+        private System.Windows.Forms.Label label10;
     }
 }

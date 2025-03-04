@@ -42,6 +42,7 @@ namespace SDCafeSales.Views
         List<POS_TaxModel> allTaxs = new List<POS_TaxModel>();
         List<POS_StationModel> stations = new List<POS_StationModel>();
         List<POS_OrdersModel> orders = new List<POS_OrdersModel>();
+        List<POS_OrdersModel> fixedorders = new List<POS_OrdersModel>();
         List<POS_OrdersModel> childOrders = new List<POS_OrdersModel>();
         List<POS1_OrderCompleteModel> compOrders = new List<POS1_OrderCompleteModel>();
         List<POS1_ProductPopModel> prodPops = new List<POS1_ProductPopModel>();
@@ -618,6 +619,11 @@ namespace SDCafeSales.Views
             else
                 m_strProdBtnSortOrder = "";
 
+            sysconfs = dbPOS.Get_SysConfig_By_Name("IS_DEBUG");
+            if (sysconfs.Count > 0)
+            {
+                util.m_bln_IsDebugging = sysconfs[0].ConfigValue == "TRUE" ? true : false;
+            }
             Show_AutoReceipt_Button();
         }
         private bool Get_PinPad_Information()
@@ -737,7 +743,8 @@ namespace SDCafeSales.Views
                                                                                    order.Id.ToString(),
                                                                                    order.ProductId.ToString(),
                                                                                    order.BarCode,
-                                                                                   order.PromoId.ToString()
+                                                                                   order.PromoId.ToString(),
+                                                                                   order.PromoIndex.ToString()
                                 });
                         childOrders.Clear();
                         childOrders = dbPOS.Get_ChildOrders_by_Station(strStation,  order.Id);
@@ -814,7 +821,8 @@ namespace SDCafeSales.Views
                                                                                    order.Id.ToString(),
                                                                                    order.ProductId.ToString(),
                                                                                    order.BarCode,
-                                                                                   order.PromoId.ToString()
+                                                                                   order.PromoId.ToString(),
+                                                                                   order.PromoIndex.ToString()
                                 });
                         DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
                         row.DefaultCellStyle.ForeColor = Color.Red;
@@ -2144,25 +2152,11 @@ namespace SDCafeSales.Views
                         // Remove last ","
                         strSQLWhere = strSQLWhere.Substring(0,strSQLWhere.Length-1);
 
+                        // Get Total Ordered QTY for Assorted Promo Products
                         int iOrderedQTY = dbPOS.Get_Order_QTY_By_MutipleProductIds(strStation, strSQLWhere);
 
-                        util.Logger("Check_Assorted_Promotions - " + promo.PromoName.ToString() + " " + promo.Id.ToString() + " = " + strSQLWhere + " ==> iOrderedQTY : " + iOrderedQTY);
+                        Process_Assorted_Promotion(promo, iOrderedQTY, strSQLWhere);
 
-                        if (iOrderedQTY >= promo.PromoQTY)
-                        {
-                            int iDiscountTimes = iOrderedQTY / promo.PromoQTY;
-
-                            Add_Discount_Orders_By_Promotion(promo.Id, promo.PromoName, promo.PromoType, promo.PromoValue, promo.PromoQTY, iOrderedQTY, iDiscountTimes, strSQLWhere);
-
-                            dgv_Orders_Initialize();
-                            Load_Existing_Orders();
-                            Calculate_Total_Due();
-                        }
-                        // else remove discount order
-                        else
-                        {
-                            Remove_Discount_Orders_By_Promotion(promo.Id);
-                        }
 
                     }
 
@@ -2170,10 +2164,83 @@ namespace SDCafeSales.Views
             }
         }
 
+        private void Process_Assorted_Promotion(POS_PromotionModel promo, int iOrderedQTY, string strSQLWhere)
+        {
+            int iAssortedPromoIndex = 0;
+            int iDiscountTimes = 0;
+            int iRemainingQTY = iOrderedQTY;
+            int iDiscountQTY = 0;
+            // if OrderedQTY is equal or smaller than promoqty, remove all existing promotion orders
+            if (iRemainingQTY <= promo.PromoQTY1)
+            {
+                Remove_Discount_Orders_By_PromotionIndex(promo.Id, 1);
+                Remove_Discount_Orders_By_PromotionIndex(promo.Id, 2);
+                dgv_Orders_Initialize();
+                Load_Existing_Orders();
+                Calculate_Total_Due();
+            }
+            while (iRemainingQTY >= promo.PromoQTY1)
+            {
+                iAssortedPromoIndex = Check_Assorted_Promotion_Index(promo, iRemainingQTY);
+                util.Logger("Process_Assorted_Promotion - " + promo.PromoName.ToString() + " " + promo.Id.ToString() + " = " +
+                            " ==> iOrderedQTY : " + iOrderedQTY + ", iRemainingQTY : " + iRemainingQTY + ", PromoIndex = " + iAssortedPromoIndex);
+                if (iAssortedPromoIndex > 0)
+                {
+                    iDiscountQTY = 0;
+                    if (iAssortedPromoIndex == 1)
+                    {
+                        iDiscountTimes = (int) (iRemainingQTY / promo.PromoQTY1);
+                        iDiscountQTY = promo.PromoQTY1 * iDiscountTimes;
+                        Add_Discount_Orders_By_Promotion(promo.Id, iAssortedPromoIndex, promo.PromoName, promo.PromoType, promo.PromoValue1, promo.PromoQTY1, iRemainingQTY, iDiscountTimes, strSQLWhere);
+                        dgv_Orders_Initialize();
+                        Load_Existing_Orders();
+                        Calculate_Total_Due();
+                    }
+                    else if (iAssortedPromoIndex == 2)
+                    {
+                        iDiscountTimes = (int)(iRemainingQTY / promo.PromoQTY2);
+                        iDiscountQTY = promo.PromoQTY2 * iDiscountTimes;
+                        Add_Discount_Orders_By_Promotion(promo.Id, iAssortedPromoIndex, promo.PromoName, promo.PromoType, promo.PromoValue2, promo.PromoQTY2, iRemainingQTY, iDiscountTimes, strSQLWhere);
+                        Remove_Discount_Orders_By_PromotionIndex(promo.Id, iAssortedPromoIndex - 1);
+                        dgv_Orders_Initialize();
+                        Load_Existing_Orders();
+                        Calculate_Total_Due();
+                    }
+                    iRemainingQTY = iRemainingQTY - iDiscountQTY;
+                }
+                // else remove discount order
+                else
+                {
+                    Remove_Discount_Orders_By_Promotion(promo.Id);
+                }
+            }
+        }
+
+        private int Check_Assorted_Promotion_Index(POS_PromotionModel promo, int iOrderedQTY)
+        {
+            int iIndex = 0;
+            if (promo.PromoStartDttm.HasValue && promo.PromoEndDttm.HasValue)
+            {
+                DateTime dtNow = DateTime.Now;
+                if (dtNow >= promo.PromoStartDttm && dtNow <= promo.PromoEndDttm)
+                {
+                    if ((promo.PromoQTY1 <= iOrderedQTY) && (promo.PromoValue1 > 0))
+                    {
+                        iIndex = 1;
+                    }
+                    if ((promo.PromoQTY2 <= iOrderedQTY) && (promo.PromoValue2 > 0))
+                    {
+                        iIndex = 2;
+                    }
+                }
+            }
+            return iIndex;
+        }
+
         private void Remove_Discount_Orders_By_Promotion(int p_PromoId)
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
-            dbPOS.Delete_Promotion_Discount_Orders(strStation, p_PromoId);
+            dbPOS.Delete_ALL_Promotion_Discount_Orders(strStation, p_PromoId);
             foreach (DataGridViewRow row in dgv_Orders.Rows)
             {
                 util.Logger(" Remove_Discount_Orders_By_Promotion : " + row.Cells[0].Value.ToString() + ", " + row.Cells[1].Value.ToString() + ", " + row.Cells[2].Value.ToString() + ", " + row.Cells[3].Value.ToString() + ", " + row.Cells[4].Value.ToString() + ", " + row.Cells[5].Value.ToString() + ", " + row.Cells[6].Value.ToString() + ", " + row.Cells[7].Value.ToString() + ", " + row.Cells[8].Value.ToString() + ", " + row.Cells[9].Value.ToString());
@@ -2184,8 +2251,37 @@ namespace SDCafeSales.Views
                 }
             }
         }
+        private void Remove_Discount_Orders_By_PromotionIndex(int p_PromoId, int p_PromoIndex)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            dbPOS.Delete_Promotion_Discount_Orders(strStation, p_PromoId, p_PromoIndex);
+            foreach (DataGridViewRow row in dgv_Orders.Rows)
+            {
+                if ((row.Cells[9].Value == "") || (row.Cells[10].Value == null)) continue;
 
-        private bool Add_Discount_Orders_By_Promotion(int p_PromoId, string strPromoName, int iPromoType, float fPromoValue, int iPromoQTY, int iOrderedQTY, int iDiscountTimes, string strSQLWhere)
+                util.Logger(" Remove_Discount_Orders_By_PromotionIndex : " + row.Cells[0].Value.ToString() + ", " +
+                    row.Cells[1].Value.ToString() + ", " +
+                    row.Cells[2].Value.ToString() + ", " +
+                    row.Cells[3].Value.ToString() + ", " +
+                    row.Cells[4].Value.ToString() + ", " +
+                    row.Cells[5].Value.ToString() + ", " +
+                    row.Cells[6].Value.ToString() + ", " +
+                    row.Cells[7].Value.ToString() + ", " +
+                    row.Cells[8].Value.ToString() + ", " +
+                    row.Cells[9].Value.ToString() + ", " +
+                    row.Cells[10].Value.ToString());
+                if ((row.Cells[9].Value.ToString() != "0") && 
+                    (row.Cells[9].Value.ToString() == p_PromoId.ToString()) &&
+                    (row.Cells[10].Value.ToString() == p_PromoIndex.ToString())
+                    )
+                {
+                    // delete the row
+                    dgv_Orders.Rows.Remove(row);
+                }
+            }
+        }
+
+        private bool Add_Discount_Orders_By_Promotion(int p_PromoId, int p_PromoIndex, string strPromoName, int iPromoType, float fPromoValue, int iPromoQTY, int iOrderedQTY, int iDiscountTimes, string strSQLWhere)
         {
             string strTaxShort = "";
             structDivMod divmodPromoQTY = new structDivMod();
@@ -2199,7 +2295,7 @@ namespace SDCafeSales.Views
             double iTotalTax1 = 0;
             double iTotalTax2 = 0;
             double iTotalTax3 = 0;
-            dbPOS.Delete_Promotion_Discount_Orders(strStation, p_PromoId);
+            dbPOS.Delete_Promotion_Discount_Orders(strStation, p_PromoId, p_PromoIndex);
             //iTotalAmount = dbPOS.Get_Orders_Amount_By_MultipleProdId(strSQLWhere);
             //iTotQTY = dbPOS.Get_Orders_Average_Amount_By_MultipleProdId(strStation, strSQLWhere);
             //iTotalTax1 = dbPOS.Get_Orders_Tax1_MultipleProdId(strSQLWhere);
@@ -2209,17 +2305,18 @@ namespace SDCafeSales.Views
 
             util.Logger("Add_Discount_Orders_By_Promotion : Amount = " + PromoDiscOrder.Amount);
             util.Logger("Add_Discount_Orders_By_Promotion : OutUnitPrice = " + PromoDiscOrder.OutUnitPrice);
-            util.Logger("Add_Discount_Orders_By_Promotion : Qty = " + PromoDiscOrder.Qty);
             util.Logger("Add_Discount_Orders_By_Promotion : IsTax1 = " + PromoDiscOrder.IsTax1);
             util.Logger("Add_Discount_Orders_By_Promotion : IsTax2 = " + PromoDiscOrder.IsTax2);
             util.Logger("Add_Discount_Orders_By_Promotion : IsTax3 = " + PromoDiscOrder.IsTax3);
             PromoDiscOrder.PromoName = strPromoName;
-            divmodPromoQTY.iDiv = (int)PromoDiscOrder.Qty / iPromoQTY;
-            util.Logger("Add_Discount_Orders_By_Promotion : divmodPromoQTY.iDiv = " + divmodPromoQTY.iDiv);
-            divmodPromoQTY.iMod = (int)PromoDiscOrder.Qty % iPromoQTY;
-            util.Logger("Add_Discount_Orders_By_Promotion : divmodPromoQTY.iMod = " + divmodPromoQTY.iMod);
+            //divmodPromoQTY.iDiv = (int)PromoDiscOrder.Qty / iPromoQTY;
+            //util.Logger("Add_Discount_Orders_By_Promotion : divmodPromoQTY.iDiv = " + divmodPromoQTY.iDiv);
+            //divmodPromoQTY.iMod = (int)PromoDiscOrder.Qty % iPromoQTY;
+            //util.Logger("Add_Discount_Orders_By_Promotion : divmodPromoQTY.iMod = " + divmodPromoQTY.iMod);
 
-            PromoDiscOrder.Qty = divmodPromoQTY.iDiv * iPromoQTY;
+            //PromoDiscOrder.Qty = divmodPromoQTY.iDiv * iPromoQTY;
+            PromoDiscOrder.Qty = iDiscountTimes * iPromoQTY;
+            util.Logger("Add_Discount_Orders_By_Promotion : Qty = " + PromoDiscOrder.Qty);
             PromoDiscOrder.Amount = PromoDiscOrder.Qty * (fPromoValue - PromoDiscOrder.OutUnitPrice);
 
             util.Logger("Add_Discount_Orders_By_Promotion : Final PromoDiscOrder.Qty = " + PromoDiscOrder.Qty);
@@ -2236,8 +2333,8 @@ namespace SDCafeSales.Views
                 {
                     TranType = "20",
                     ProductId = 0,
-                    ProductName = strPromoName + " (Save)",
-                    SecondName = strPromoName + " (Save)",
+                    ProductName = strPromoName + " (Saving)",
+                    SecondName = strPromoName + " (Saving)",
                     ProductTypeId = 0,
                     InUnitPrice = 0,
                     OutUnitPrice = (float)(fPromoValue - PromoDiscOrder.OutUnitPrice),
@@ -2271,7 +2368,8 @@ namespace SDCafeSales.Views
                     OrderCategoryId = 4,     // Discount
                     IsDiscounted = true,     // Advanced Promo Discount
                     BarCode = "",
-                    PromoId = p_PromoId
+                    PromoId = p_PromoId,
+                    PromoIndex = p_PromoIndex
                 });
                 int iNewOrderId = dbPOS.Insert_Order(orders[0]);
 
@@ -2296,7 +2394,8 @@ namespace SDCafeSales.Views
                                                                             iNewOrderId.ToString(),
                                                                             "", /* prod[0].Id.ToString() */
                                                                             "",
-                                                                            p_PromoId.ToString() /*prods[0].BarCode*/
+                                                                            p_PromoId.ToString() /*prods[0].BarCode*/,
+                                                                            p_PromoIndex.ToString()
                         });
                     this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = 0;
 
@@ -2312,112 +2411,7 @@ namespace SDCafeSales.Views
             }
             return true;
         }
-        private bool Add_Discount_Orders_By_Promotion_DiscountRate(int p_PromoId, string strPromoName, int iPromoType, float fPromoValue, int iPromoQTY, int iOrderedQTY, int iDiscountTimes, string strSQLWhere)
-        {
-            string strTaxShort = "";
-            int iSeq = 0;
-
-            DataAccessPOS dbPOS = new DataAccessPOS();
-            util.Logger("Add_Discount_Orders_By_Promotion = " + strPromoName + " : " + strSQLWhere);
-            //double iTotalAmount = 0;
-            double iAverageAmount = 0;
-            double iTotalTax1 = 0;
-            double iTotalTax2 = 0;
-            double iTotalTax3 = 0;
-            dbPOS.Delete_Promotion_Discount_Orders(strStation, p_PromoId);
-            //iTotalAmount = dbPOS.Get_Orders_Amount_By_MultipleProdId(strSQLWhere);
-            iAverageAmount = dbPOS.Get_Orders_Average_Amount_By_MultipleProdId(strStation, strSQLWhere);
-            //iTotalTax1 = dbPOS.Get_Orders_Tax1_MultipleProdId(strSQLWhere);
-            //iTotalTax2 = dbPOS.Get_Orders_Tax2_MultipleProdId(strSQLWhere);
-            //iTotalTax3 = dbPOS.Get_Orders_Tax3_MultipleProdId(strSQLWhere);
-            pnlReceipt.Visible = false;
-
-            if (iPromoType == 1)
-            {
-                // round up 2nd decimal point
-                double iDiscountRate = Math.Round((double)fPromoValue, 2);
-
-                if (iDiscountRate > 0 && iDiscountRate <= 100)
-                {
-                    orders.Clear();
-                    ////////////////////////////////////////////////
-                    // Add the ordered item into Orders table
-                    ////////////////////////////////////////////////
-                    orders.Add(new POS_OrdersModel()
-                    {
-                        TranType = "20",
-                        ProductId = 0,
-                        ProductName = strPromoName + "(" + iDiscountRate.ToString() + "%)",
-                        SecondName = strPromoName + "(" + iDiscountRate.ToString() + "%)",
-                        ProductTypeId = 0,
-                        InUnitPrice = 0,
-                        OutUnitPrice = 0,
-                        IsTax1 = true,
-                        IsTax2 = false,
-                        IsTax3 = false,
-                        Quantity = iDiscountTimes,
-                        Amount = (float)(-(iAverageAmount * iPromoQTY * iDiscountTimes) * (iDiscountRate / 100)),
-                        Tax1Rate = m_TaxRate1,
-                        Tax2Rate = m_TaxRate2,
-                        Tax3Rate = m_TaxRate3,
-                        Tax1 = (float)(-(iAverageAmount * iPromoQTY * iDiscountTimes) * (iDiscountRate / 100) * m_TaxRate1),
-                        Tax2 = 0, // (float)(-iTotalTax2 * (iDiscountRate / 100)),
-                        Tax3 = 0, // (float)(-iTotalTax3 * (iDiscountRate / 100)),
-                        InvoiceNo = iNewInvNo,
-                        IsPaidComplete = false,
-                        CompleteDate = "",
-                        CompleteTime = "",
-                        CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), //DateTime.Now.ToShortDateString(),
-                        CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
-                        CreateUserId = System.Convert.ToInt32(strUserID),
-                        CreateUserName = strUserName,
-                        CreateStation = strStation,
-                        LastModDate = "",
-                        LastModTime = "",
-                        LastModUserId = System.Convert.ToInt32(strUserID),
-                        LastModUserName = "",
-                        LastModStation = "",
-                        RFTagId = 0,
-                        ParentId = 0,
-                        OrderCategoryId = 4     // Discount
-                        ,
-                        IsDiscounted = true     // Promotion
-                        ,
-                        BarCode = "",
-                        PromoId = p_PromoId
-                    });
-                    int iNewOrderId = dbPOS.Insert_Order(orders[0]);
-                    util.Logger(" ## Discount_Orders_By_Promotion : " + orders[0].Id.ToString() + ", PROD=" + orders[0].ProductName + ", New Amount = " + orders[0].Amount.ToString());
-                    if (iNewOrderId > 0)
-                    {
-                        ////////////////////////////////////////////////
-                        // Add the ordered item into datagrid view
-                        ////////////////////////////////////////////////
-                        float iAmount = orders[0].Amount;
-                        iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
-                        strTaxShort = "";
-                        strTaxShort += orders[0].IsTax1 ? strTax1Name.Substring(0, 1) : "";
-                        strTaxShort += orders[0].IsTax2 ? strTax2Name.Substring(0, 1) : "";
-                        strTaxShort += orders[0].IsTax3 ? strTax3Name.Substring(0, 1) : "";
-                        this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
-                                                                               orders[0].ProductName,
-                                                                               "1",
-                                                                               orders[0].OutUnitPrice.ToString("0.00"),
-                                                                               iAmount.ToString("0.00"),
-                                                                               strTaxShort,
-                                                                               iNewOrderId.ToString(),
-                                                                               prods[0].Id.ToString(),
-                                                                               prods[0].BarCode,""
-                            });
-                        this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = 0;
-                        DataGridViewRow row = this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1];
-                        row.DefaultCellStyle.ForeColor = Color.Red;
-                        //this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView_By_RFTagID(rfids[0].Id);
-                    }
-                }
-            }
-            return true;
-        }
+ 
         private void Calculate_Total_Due()
         {
             iSubTotal = 0;
@@ -2542,7 +2536,7 @@ namespace SDCafeSales.Views
             this.dgv_Orders.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgv_Orders.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgv_Orders.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            this.dgv_Orders.ColumnCount = 10;
+            this.dgv_Orders.ColumnCount = 11;
             this.dgv_Orders.Columns[0].Name = "Seq";
             this.dgv_Orders.Columns[0].Width = 40;
             this.dgv_Orders.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -2577,6 +2571,10 @@ namespace SDCafeSales.Views
             this.dgv_Orders.Columns[9].Width = 0;
             this.dgv_Orders.Columns[9].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.dgv_Orders.Columns[9].Visible = false;
+            this.dgv_Orders.Columns[10].Name = "Promo Index";
+            this.dgv_Orders.Columns[10].Width = 0;
+            this.dgv_Orders.Columns[10].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgv_Orders.Columns[10].Visible = false;
 
             this.dgv_Orders.DefaultCellStyle.Font = new Font("Arial Narrow", 12F, FontStyle.Bold);
             this.dgv_Orders.EnableHeadersVisualStyles = false;
@@ -3243,7 +3241,7 @@ namespace SDCafeSales.Views
             // save variables about selected button values
             iSelected_btnArray_Index = Array.IndexOf(btnArray, (CustomButton)sender);
             int iProdID = int.Parse(string.Format("{0}", btn.Tag));
-            if (Add_Order_Manually(iProdID))
+            if (Add_Order_Manually(iProdID,""))
             {
 
             }
@@ -3252,7 +3250,7 @@ namespace SDCafeSales.Views
             BarCode_Get_Focus();
         }
 
-        private bool Add_Order_Manually(int pProdID)
+        private bool Add_Order_Manually(int pProdID, string p_strBarCode)
         {
             string strTaxShort = "";
             int iSeq = 0;
@@ -3321,6 +3319,7 @@ namespace SDCafeSales.Views
                 //Get_Order_By_ProdId(iNewInvNo, pProdID);
                 //orders = dbPOS.Get_NonRFID_Order_By_ProdId(iNewInvNo, pProdID);
                 orders = dbPOS.Get_NonRFID_NonFixed_Order_By_ProdId(iNewInvNo, pProdID);
+                fixedorders = dbPOS.Get_NonRFID_Fixed_Order_By_ProdId(iNewInvNo, pProdID);
                 if (orders.Count == 1)
                 {
                     orders[0].IsFixedOrder = false; // Feature #3705
@@ -3354,7 +3353,8 @@ namespace SDCafeSales.Views
                         }
                     }
                     //int rowIndex = Get_OrderedItem_Index_of_GridView(pProdID);
-                    int rowIndex = Get_OrderedItem_Index_of_GridView_By_ProdID(pProdID);
+                    //int rowIndex = Get_OrderedItem_Index_of_GridView_By_ProdID(pProdID);
+                    int rowIndex = Get_OrderedItem_Index_of_GridView_By_OrderId(orders[0].Id, true);
                     if (rowIndex > -1) // found the product on GridView
                     {
                         m_iSelectedRow = rowIndex;
@@ -3423,6 +3423,39 @@ namespace SDCafeSales.Views
                             iOrderQty = 1;
                         }
                         txtQTY.Text = "";
+                    }
+                    if (fixedorders.Count > 0)
+                    {
+                        iOrderQty += (int)fixedorders.Sum(x => x.Quantity);
+                        // remove the childrows
+                        foreach(var fixedorder in fixedorders)
+                        {
+                            childOrders = dbPOS.Get_Child_Order_By_OrderId(iNewInvNo, fixedorder.Id);
+                            if (childOrders.Count > 0)
+                            {
+                                foreach (var childOrder in childOrders.OrderByDescending(c => c.Id).ToList())
+                                {
+                                    foreach (DataGridViewRow row in dgv_Orders.Rows)
+                                    {
+                                        if (row.Cells[6].Value.ToString() == childOrder.Id.ToString())
+                                        {
+                                            dgv_Orders.Rows.Remove(row);
+                                        }
+                                    }
+                                }
+                            }
+                            dbPOS.Delete_Order_By_OrderId(iNewInvNo, fixedorder.Id);
+                            // remove the rows
+                            foreach (DataGridViewRow row in dgv_Orders.Rows)
+                            {
+                                if (row.Cells[6].Value.ToString() == fixedorder.Id.ToString())
+                                {
+                                    dgv_Orders.Rows.Remove(row);
+                                }
+                            }
+                        }
+
+
                     }
 
                     iQTYPromotionIndex = Check_QTY_Promotion_Product(prods[0], (float)iOrderQty);
@@ -3801,19 +3834,59 @@ namespace SDCafeSales.Views
             else // Product for the tag not exits
             {
                 // Error 
-                util.Logger("Product does not exits : ProdId = " + pProdID);
-                MessageBox.Show("Product does not exits : ProdId = " + pProdID);
+                util.Logger("Product does not exits : barCode = " + p_strBarCode);
+                //MessageBox.Show("Product does not exits : barCode = " + strBarCode);
+                //
+                //using (var FrmYesNo = new frmYesNo(this))
+                //{
+                //    FrmYesNo.Set_Title("POS Sales Main");
+                //    FrmYesNo.Set_Message("Product does not exits !" + System.Environment.NewLine + "BarCode = " + strBarCode + System.Environment.NewLine + "Do you want to Add this Product ?");
+                //    FrmYesNo.StartPosition = FormStartPosition.Manual; // FormStartPosition.CenterScreen; //
+                //    FrmYesNo.Location = new Point((Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2,
+                //              (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2); //Screen.PrimaryScreen.Bounds.Location;
+                //    FrmYesNo.ShowDialog();
+
+                //    if (FrmYesNo.bYesNo)
+                //    {
+
+                //    }
+                //}
+                // Open frmAddProduct
+                using (var FrmAddProduct = new frmAddProduct(this))
+                {
+                    FrmAddProduct.Set_BarCode(p_strBarCode);
+                    FrmAddProduct.p_IsTax1 = true;
+                    FrmAddProduct.p_IsTax2 = true;
+                    FrmAddProduct.p_IsTax3 = false;
+                    FrmAddProduct.StartPosition = FormStartPosition.Manual; // FormStartPosition.CenterScreen; //
+                    FrmAddProduct.Location = new Point((Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2,
+                              (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2); //Screen.PrimaryScreen.Bounds.Location;
+                    FrmAddProduct.ShowDialog();
+
+                    if (FrmAddProduct.m_bAddNow == true)
+                    {
+                        // Add Order
+                        int iNewProdId = dbPOS.Insert_Product(FrmAddProduct.p_NewProduct);
+                        if (iNewProdId > 0) Add_Order_BarCode(strBarCode);
+                    }
+                }
+
+                p_strBarCode = "";
+                txtBarCode.Text = "";   //Bug #2551
                 return false;
             }
-            Consolidate_Fixed_Promo_Orders();
+            //Consolidate_Fixed_Promo_Orders();
             //Feature #3707 QTY promotion have higher priority than assorted promotion
             if (iQTYPromotionIndex == 0) Check_Assorted_Promotions();
             if (m_iSelectedRow > -1)
             {
                 // unselect all
-                dgv_Orders.ClearSelection();
-                dgv_Orders.Rows[m_iSelectedRow].Selected = true;
-                dgv_Orders.FirstDisplayedScrollingRowIndex = m_iSelectedRow;
+                if (dgv_Orders.Rows.Count > m_iSelectedRow)
+                {
+                    dgv_Orders.ClearSelection();
+                    dgv_Orders.Rows[m_iSelectedRow].Selected = true;
+                    dgv_Orders.FirstDisplayedScrollingRowIndex = m_iSelectedRow;
+                }
             }
             Calculate_Total_Due();
             return true;
@@ -4159,12 +4232,12 @@ namespace SDCafeSales.Views
                     }
                     if (p_PromoPriceIndex == 2)
                     {
-                        divmodPromoQTY.iDiv = ((int)p_OrderQty / p_Product.PromoDay2) * (int)p_OrderQty;
+                        divmodPromoQTY.iDiv = ((int)p_OrderQty / p_Product.PromoDay2) * p_Product.PromoDay2;
                         divmodPromoQTY.iMod = (int)p_OrderQty % p_Product.PromoDay2;
                     }
                     if (p_PromoPriceIndex == 3)
                     {
-                        divmodPromoQTY.iDiv = ((int)p_OrderQty / p_Product.PromoDay3) * (int)p_OrderQty;
+                        divmodPromoQTY.iDiv = ((int)p_OrderQty / p_Product.PromoDay3) * p_Product.PromoDay3;
                         divmodPromoQTY.iMod = (int)p_OrderQty % p_Product.PromoDay3;
                     }
                 }
@@ -4201,501 +4274,7 @@ namespace SDCafeSales.Views
             prods = dbPOS.Get_Product_By_BarCode(strBarCode);
             if (prods.Count > 0)
             {
-                orders.Clear();
-                //Get_Order_By_ProdId(iNewInvNo, pProdID);
-                //orders = dbPOS.Get_NonRFID_Order_By_BarCode(iNewInvNo, strBarCode);
-                orders = dbPOS.Get_NonRFID_NonFixed_Order_By_BarCode(iNewInvNo, strBarCode);
-                if (orders.Count == 1)
-                {
-                    // Multi
-                    if ((txtQTY.Text != "") && (txtQTY.Text != "0"))
-                    {
-                        try
-                        {
-                            iOrderQty = Int32.Parse(txtQTY.Text);
-                        }
-                        catch
-                        {
-                            iOrderQty = 1;
-                        }
-                        txtQTY.Text = "";
-                    }
-                    orders[0].Quantity = orders[0].Quantity + iOrderQty;
-                    /*bQTYPromotionProduct = Check_QTY_Promotion_Product(prods[0], orders[0].Quantity);
-                    if (bQTYPromotionProduct)
-                    {
-                        prods[0].OutUnitPrice = prods[0].PromoPrice1;
-                        orders[0].OutUnitPrice = prods[0].PromoPrice1;
-                    }*/
-                    iQTYPromotionIndex = Check_QTY_Promotion_Product(prods[0], orders[0].Quantity);
-                    if (iQTYPromotionIndex > 0)
-                    {
-                        //Feature #3705
-                        if (prods[0].IsPromoExactQty)
-                        {
-                            divmodPromo = Check_QTY_Exclude_Promotion(prods[0], orders[0].Quantity, iQTYPromotionIndex);
-                        }
-                        if (divmodPromo.iDiv > 0)
-                        {
-                            orders[0].Quantity = divmodPromo.iDiv;
-                            orders[0].IsFixedOrder = true; // Feature #3705
-                        }
-                        if (iQTYPromotionIndex == 1)
-                        {
-                            prods[0].OutUnitPrice = prods[0].PromoPrice1;
-                            orders[0].OutUnitPrice = prods[0].PromoPrice1;
-                        }
-                        else if (iQTYPromotionIndex == 2)
-                        {
-                            prods[0].OutUnitPrice = prods[0].PromoPrice2;
-                            orders[0].OutUnitPrice = prods[0].PromoPrice2;
-                        }
-                        else if (iQTYPromotionIndex == 3)
-                        {
-                            prods[0].OutUnitPrice = prods[0].PromoPrice3;
-                            orders[0].OutUnitPrice = prods[0].PromoPrice3;
-                        }
-                    }
-                    //int rowIndex = Get_OrderedItem_Index_of_GridView(pProdID);
-                    int rowIndex = Get_OrderedItem_Index_of_GridView_By_BarCode(strBarCode);
-                    if (rowIndex > -1) // found the product
-                    {
-                        // update datagrid veiw
-                        dgv_Orders.Rows[rowIndex].Cells[2].Value = orders[0].Quantity.ToString();
-                        float iAmount = orders[0].Quantity * prods[0].OutUnitPrice;
-                        dgv_Orders.Rows[rowIndex].Cells[3].Value = prods[0].OutUnitPrice.ToString("0.00");
-                        dgv_Orders.Rows[rowIndex].Cells[4].Value = iAmount.ToString("0.00");
-                        // update orders table
-                        orders[0].Amount = orders[0].OutUnitPrice * orders[0].Quantity;
-                        if (orders[0].IsTax1) orders[0].Tax1 = orders[0].Amount * orders[0].Tax1Rate;
-                        if (orders[0].IsTax2) orders[0].Tax2 = orders[0].Amount * orders[0].Tax2Rate;
-                        if (orders[0].IsTax3) orders[0].Tax3 = orders[0].Amount * orders[0].Tax3Rate;
-                        orders[0].LastModDate = DateTime.Now.ToString("yyyy-MM-dd");
-                        orders[0].LastModTime = DateTime.Now.ToString("HH:mm:ss");
-                        dbPOS.Update_Orders_Amount_Qty(orders[0]);
-
-                        m_iSelectedRow = rowIndex;
-                        // --------------------- Child Orders such as Deposit, Chill charge, Recycling fee
-                        childOrders.Clear();
-                        childOrders = dbPOS.Get_Child_Order_By_OrderId(iNewInvNo, orders[0].Id);
-                        if (childOrders.Count > 0)
-                        {
-                            foreach (var childOrder in childOrders)
-                            {
-                                rowIndex = Get_OrderedItem_Index_of_GridView_By_OrderId(childOrder.Id, false);
-                                if (rowIndex > -1) // found the product
-                                {
-                                    // update datagrid veiw
-                                    //childOrder.Quantity += iOrderQty; Feature #3705
-                                    childOrder.Quantity = orders[0].Quantity;
-                                    dgv_Orders.Rows[rowIndex].Cells[2].Value = childOrder.Quantity.ToString();
-                                    iAmount = childOrder.Quantity * childOrder.OutUnitPrice;
-                                    dgv_Orders.Rows[rowIndex].Cells[3].Value = childOrder.OutUnitPrice.ToString();
-                                    dgv_Orders.Rows[rowIndex].Cells[4].Value = iAmount.ToString("0.00");
-                                    // update orders table
-                                    childOrder.Amount = childOrder.OutUnitPrice * childOrder.Quantity;
-                                    if (childOrder.IsTax1) childOrder.Tax1 = childOrder.Amount * childOrder.Tax1Rate;
-                                    if (childOrder.IsTax2) childOrder.Tax2 = childOrder.Amount * childOrder.Tax2Rate;
-                                    if (childOrder.IsTax3) childOrder.Tax3 = childOrder.Amount * childOrder.Tax3Rate;
-                                    childOrder.LastModDate = DateTime.Now.ToString("yyyy-MM-dd");
-                                    childOrder.LastModTime = DateTime.Now.ToString("HH:mm:ss");
-                                    dbPOS.Update_Orders_Amount_Qty(childOrder);
-                                }
-                            }
-                        }
-                        // --------------------- Child Orders such as Deposit, Chill charge, Recycling fee
-                    }   // if
-                }
-                else if (orders.Count > 1)
-                {
-                    // Error on duplicated data exists
-                    util.Logger("Error on duplicated data exists : InvoiceNo = " + iNewInvNo.ToString());
-                    MessageBox.Show("Error on duplicated data exists : InvoiceNo = " + iNewInvNo.ToString());
-                }
-                else //  (orders.Count == 0)
-                {
-                    // Multi Bug #3701
-                    if ((txtQTY.Text != "") && (txtQTY.Text != "0"))
-                    {
-                        try
-                        {
-                            iOrderQty = Int32.Parse(txtQTY.Text);
-                        }
-                        catch
-                        {
-                            iOrderQty = 1;
-                        }
-                        txtQTY.Text = "";
-                    }
-
-                    /*bQTYPromotionProduct = Check_QTY_Promotion_Product(prods[0], (float)iOrderQty);
-                    if (bQTYPromotionProduct)
-                    {
-                        prods[0].OutUnitPrice = prods[0].PromoPrice1;
-                        //orders[0].OutUnitPrice = prods[0].PromoPrice1;
-                    }*/
-                    bool bIsFixedOrder = false; // Feature #3705
-                    iQTYPromotionIndex = Check_QTY_Promotion_Product(prods[0], (float)iOrderQty);
-                    if (iQTYPromotionIndex > 0)
-                    {
-                        if (prods[0].IsPromoExactQty)
-                        {
-                            divmodPromo = Check_QTY_Exclude_Promotion(prods[0], orders[0].Quantity, iQTYPromotionIndex);
-                        }
-                        if (divmodPromo.iDiv > 0)
-                        {
-                            iOrderQty = divmodPromo.iDiv;
-                            bIsFixedOrder = true; // Feature #3705
-                        }
-                        if (iQTYPromotionIndex == 1)
-                        {
-                            prods[0].OutUnitPrice = prods[0].PromoPrice1;
-                        }
-                        else if (iQTYPromotionIndex == 2)
-                        {
-                            prods[0].OutUnitPrice = prods[0].PromoPrice2;
-                        }
-                        else if (iQTYPromotionIndex == 3)
-                        {
-                            prods[0].OutUnitPrice = prods[0].PromoPrice3;
-                        }
-                    }
-                    if (prods[0].TaxCode != null)
-                    {
-                        if (prods[0].TaxCode != "")
-                        {
-                            SetTaxRates(prods[0].TaxCode);
-                        }
-                        else
-                        {
-                            SetTaxRates(m_strDefaultTaxCode);
-                        }
-                    }
-                    else
-                    {
-                        SetTaxRates(m_strDefaultTaxCode);
-                    }
-                    ////////////////////////////////////////////////
-                    // Add the ordered item into Orders table
-                    ////////////////////////////////////////////////
-                    orders.Add(new POS_OrdersModel()
-                    {
-                        TranType = "20",
-                        ProductId = prods[0].Id,
-                        ProductName = prods[0].ProductName,
-                        SecondName = prods[0].SecondName,
-                        ProductTypeId = prods[0].ProductTypeId,
-                        InUnitPrice = prods[0].InUnitPrice,
-                        OutUnitPrice = prods[0].OutUnitPrice,
-                        IsTax1 = prods[0].IsTax1,
-                        IsTax2 = prods[0].IsTax2,
-                        IsTax3 = prods[0].IsTax3,
-                        Quantity = iOrderQty,
-                        Amount = prods[0].OutUnitPrice * iOrderQty,
-                        Tax1Rate = m_TaxRate1,
-                        Tax2Rate = m_TaxRate2,
-                        Tax3Rate = m_TaxRate3,
-                        Tax1 = prods[0].IsTax1 ? m_TaxRate1 * (prods[0].OutUnitPrice * iOrderQty) : 0,
-                        Tax2 = prods[0].IsTax2 ? m_TaxRate2 * (prods[0].OutUnitPrice * iOrderQty) : 0,
-                        Tax3 = prods[0].IsTax3 ? m_TaxRate3 * (prods[0].OutUnitPrice * iOrderQty) : 0,
-                        Deposit = prods[0].Deposit,
-                        RecyclingFee = prods[0].RecyclingFee,
-                        ChillCharge = prods[0].ChillCharge,
-                        InvoiceNo = iNewInvNo,
-                        IsPaidComplete = false,
-                        CompleteDate = "",
-                        CompleteTime = "",
-                        CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), // DateTime.Now.ToShortDateString(),
-                        CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
-                        CreateUserId = System.Convert.ToInt32(strUserID),
-                        CreateUserName = strUserName,
-                        CreateStation = strStation,
-                        LastModDate = "",
-                        LastModTime = "",
-                        LastModUserId = System.Convert.ToInt32(strUserID),
-                        LastModUserName = "",
-                        LastModStation = "",
-                        RFTagId = 0,
-                        ParentId = 0,
-                        OrderCategoryId = 0,
-                        IsDiscounted = false,
-                        BarCode = prods[0].BarCode,
-                        IsFixedOrder = bIsFixedOrder // Feature #3705
-                    });
-                    //if (dbPOS.Insert_Order(orders[0]))
-                    int iNewOrderId = dbPOS.Insert_Order(orders[0]);
-                    if (iNewOrderId > 0)
-                    {
-                        ////////////////////////////////////////////////
-                        // Add the ordered item into datagrid view
-                        ////////////////////////////////////////////////
-                        float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
-                        iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
-                        strTaxShort += prods[0].IsTax1 ? strTax1Name.Substring(0, 1) : "";
-                        strTaxShort += prods[0].IsTax2 ? strTax2Name.Substring(0, 1) : "";
-                        strTaxShort += prods[0].IsTax3 ? strTax3Name.Substring(0, 1) : "";
-                        this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
-                                                                               prods[0].ProductName,
-                                                                               orders[0].Quantity.ToString(),
-                                                                               prods[0].OutUnitPrice.ToString("0.00"),
-                                                                               iAmount.ToString("0.00"),
-                                                                               strTaxShort,
-                                                                               iNewOrderId.ToString(),
-                                                                               prods[0].Id.ToString(),
-                                                                               prods[0].BarCode,""
-                            });
-
-                        // set the row index
-                        m_iSelectedRow = dgv_Orders.Rows.Count - 1;
-                        /////////////////////////////////////////////////
-                        // Deposit ?
-                        /////////////////////////////////////////////////
-                        if (orders[0].Deposit > 0)
-                        {
-                            // Get Parent Order Id
-                            int iParentId = iNewOrderId; // dbPOS.Get_Latest_OrderId_by_InvoiceNo_ProductId(orders[0].InvoiceNo, orders[0].ProductId);
-                                                         ////////////////////////////////////////////////
-                                                         // Add the Discount order item into Orders table
-                                                         ////////////////////////////////////////////////
-                            orders.Add(new POS_OrdersModel()
-                            {
-                                TranType = "20",
-                                ProductId = 0,
-                                ProductName = "> Deposit",
-                                SecondName = "> Deposit",
-                                ProductTypeId = 0,
-                                InUnitPrice = 0,
-                                OutUnitPrice = prods[0].Deposit,
-                                IsTax1 = false,//prods[0].IsTax1, Bug #3702 
-                                IsTax2 = false,//prods[0].IsTax2,Bug #3702 
-                                IsTax3 = false,//prods[0].IsTax3,Bug #3702 
-                                Quantity = iOrderQty,
-                                Amount = prods[0].Deposit * iOrderQty,
-                                Tax1Rate = m_TaxRate1,
-                                Tax2Rate = m_TaxRate2,
-                                Tax3Rate = m_TaxRate3,
-                                Tax1 = 0,
-                                Tax2 = 0,
-                                Tax3 = 0,
-                                Deposit = 0,
-                                RecyclingFee = 0,
-                                ChillCharge = 0,
-                                InvoiceNo = iNewInvNo,
-                                IsPaidComplete = false,
-                                CompleteDate = "",
-                                CompleteTime = "",
-                                CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), // DateTime.Now.ToShortDateString(),
-                                CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
-                                CreateUserId = System.Convert.ToInt32(strUserID),
-                                CreateUserName = strUserName,
-                                CreateStation = strStation,
-                                LastModDate = "",
-                                LastModTime = "",
-                                LastModUserId = System.Convert.ToInt32(strUserID),
-                                LastModUserName = "",
-                                LastModStation = "",
-                                RFTagId = 0,
-                                ParentId = iParentId,
-                                OrderCategoryId = 1 // Deposit
-                                ,
-                                IsDiscounted = false
-                                ,
-                                BarCode = ""
-                            });
-                            int iNewDepOrderId = dbPOS.Insert_Order(orders[orders.Count - 1]);
-                            if (iNewDepOrderId > 0) //if (dbPOS.Insert_Order(orders[1]))
-                            {
-                                ////////////////////////////////////////////////
-                                // Add the ordered item into datagrid view
-                                ////////////////////////////////////////////////
-                                iAmount = orders[orders.Count - 1].Amount; //Quantity * orders[1].OutUnitPrice;
-                                iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
-                                this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
-                                                                               orders[orders.Count-1].ProductName,
-                                                                               orders[orders.Count-1].Quantity.ToString(),
-                                                                               orders[orders.Count-1].OutUnitPrice.ToString("0.00"),
-                                                                               iAmount.ToString("0.00"),
-                                                                               "",
-                                                                               iNewDepOrderId.ToString(),
-                                                                               orders[orders.Count-1].Id.ToString(),
-                                                                               orders[orders.Count-1].BarCode,""
-                                    });
-                                // Reduce the row height
-                                dgv_Orders.Rows[dgv_Orders.Rows.Count - 1].Height = 20;
-                                dgv_Orders.Refresh();
-                            }
-                        } //if (orders[0].Deposit > 0)
-                        /////////////////////////////////////////////////
-                        // Recycling Fee ?
-                        /////////////////////////////////////////////////
-                        if (orders[0].RecyclingFee > 0)
-                        {
-                            // Get Parent Order Id
-                            int iParentId = iNewOrderId; // dbPOS.Get_Latest_OrderId_by_InvoiceNo_ProductId(orders[0].InvoiceNo, orders[0].ProductId);
-                                                         ////////////////////////////////////////////////
-                                                         // Add the Discount order item into Orders table
-                                                         ////////////////////////////////////////////////
-                            orders.Add(new POS_OrdersModel()
-                            {
-                                TranType = "20",
-                                ProductId = 0,
-                                ProductName = "> Recycling Fee",
-                                SecondName = "> Recycling Fee",
-                                ProductTypeId = 0,
-                                InUnitPrice = 0,
-                                OutUnitPrice = prods[0].RecyclingFee,
-                                IsTax1 = false,//prods[0].IsTax1,Bug #3702 
-                                IsTax2 = false,//prods[0].IsTax2,Bug #3702 
-                                IsTax3 = false,//prods[0].IsTax3,Bug #3702 
-                                Quantity = iOrderQty,
-                                Amount = prods[0].RecyclingFee * iOrderQty,
-                                Tax1Rate = m_TaxRate1,
-                                Tax2Rate = m_TaxRate2,
-                                Tax3Rate = m_TaxRate3,
-                                Tax1 = 0,
-                                Tax2 = 0,
-                                Tax3 = 0,
-                                Deposit = 0,
-                                RecyclingFee = 0,
-                                ChillCharge = 0,
-                                InvoiceNo = iNewInvNo,
-                                IsPaidComplete = false,
-                                CompleteDate = "",
-                                CompleteTime = "",
-                                CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), // DateTime.Now.ToShortDateString(),
-                                CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
-                                CreateUserId = System.Convert.ToInt32(strUserID),
-                                CreateUserName = strUserName,
-                                CreateStation = strStation,
-                                LastModDate = "",
-                                LastModTime = "",
-                                LastModUserId = System.Convert.ToInt32(strUserID),
-                                LastModUserName = "",
-                                LastModStation = "",
-                                RFTagId = 0,
-                                ParentId = iParentId,
-                                OrderCategoryId = 2 // RecyclingFee
-                                ,
-                                IsDiscounted = false
-                                ,
-                                BarCode = ""
-                            });
-                            int iNewRecyOrderId = dbPOS.Insert_Order(orders[orders.Count - 1]);
-                            if (iNewRecyOrderId > 0) //if (dbPOS.Insert_Order(orders[1]))
-                            {
-                                ////////////////////////////////////////////////
-                                // Add the ordered item into datagrid view
-                                ////////////////////////////////////////////////
-                                iAmount = orders[orders.Count - 1].Amount; //Quantity * orders[1].OutUnitPrice;
-                                iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
-                                this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
-                                                                               orders[orders.Count-1].ProductName,
-                                                                               orders[orders.Count-1].Quantity.ToString(),
-                                                                               orders[orders.Count-1].OutUnitPrice.ToString("0.00"),
-                                                                               iAmount.ToString("0.00"),
-                                                                               "",
-                                                                               iNewRecyOrderId.ToString(),
-                                                                               orders[orders.Count-1].Id.ToString(),
-                                                                               orders[orders.Count-1].BarCode,""
-                                    });
-                                // Reduce the row height
-                                dgv_Orders.Rows[dgv_Orders.Rows.Count - 1].Height = 20;
-                                dgv_Orders.Refresh();
-                            }
-                        } //if (orders[0].RecyclingFee > 0)
-                          /////////////////////////////////////////////////
-                          // ChillCharge ?
-                          /////////////////////////////////////////////////
-                        if (orders[0].ChillCharge > 0)
-                        {
-                            // Get Parent Order Id
-                            int iParentId = iNewOrderId; // dbPOS.Get_Latest_OrderId_by_InvoiceNo_ProductId(orders[0].InvoiceNo, orders[0].ProductId);
-                                                         ////////////////////////////////////////////////
-                                                         // Add the Chill Charge Sub order item into Orders table
-                                                         ////////////////////////////////////////////////
-                            orders.Add(new POS_OrdersModel()
-                            {
-                                TranType = "20",
-                                ProductId = 0,
-                                ProductName = "> Chill Charge",
-                                SecondName = "> Chill Charge",
-                                ProductTypeId = 0,
-                                InUnitPrice = 0,
-                                OutUnitPrice = prods[0].ChillCharge,
-                                IsTax1 = false,//prods[0].IsTax1,Bug #3702 
-                                IsTax2 = false,//prods[0].IsTax2,Bug #3702 
-                                IsTax3 = false,//prods[0].IsTax3,Bug #3702 
-                                Quantity = iOrderQty,
-                                Amount = prods[0].ChillCharge * iOrderQty,
-                                Tax1Rate = m_TaxRate1,
-                                Tax2Rate = m_TaxRate2,
-                                Tax3Rate = m_TaxRate3,
-                                Tax1 = 0,
-                                Tax2 = 0,
-                                Tax3 = 0,
-                                Deposit = 0,
-                                RecyclingFee = 0,
-                                ChillCharge = 0,
-                                InvoiceNo = iNewInvNo,
-                                IsPaidComplete = false,
-                                CompleteDate = "",
-                                CompleteTime = "",
-                                CreateDate = DateTime.Now.ToString("yyyy-MM-dd"), // DateTime.Now.ToShortDateString(),
-                                CreateTime = DateTime.Now.ToString("HH:mm:ss"), //DateTime.Now.ToShortTimeString(),
-                                CreateUserId = System.Convert.ToInt32(strUserID),
-                                CreateUserName = strUserName,
-                                CreateStation = strStation,
-                                LastModDate = "",
-                                LastModTime = "",
-                                LastModUserId = System.Convert.ToInt32(strUserID),
-                                LastModUserName = "",
-                                LastModStation = "",
-                                RFTagId = 0,
-                                ParentId = iParentId,
-                                OrderCategoryId = 3 // ChillCharge
-                                ,
-                                IsDiscounted = false
-                                ,
-                                BarCode = ""
-                            });
-                            int iNewChillOrderId = dbPOS.Insert_Order(orders[orders.Count - 1]);
-                            if (iNewChillOrderId > 0) //if (dbPOS.Insert_Order(orders[1]))
-                            {
-                                ////////////////////////////////////////////////
-                                // Add the ordered item into datagrid view
-                                ////////////////////////////////////////////////
-                                iAmount = orders[orders.Count - 1].Amount; //Quantity * orders[1].OutUnitPrice;
-                                iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
-                                this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
-                                                                              orders[orders.Count-1].ProductName,
-                                                                              orders[orders.Count-1].Quantity.ToString(),
-                                                                              orders[orders.Count-1].OutUnitPrice.ToString("0.00"),
-                                                                              iAmount.ToString("0.00"),
-                                                                              "",
-                                                                              iNewChillOrderId.ToString(),
-                                                                              orders[orders.Count-1].Id.ToString(),
-                                                                              orders[orders.Count-1].BarCode,""
-                                   });
-                                // Reduce the row height
-                                dgv_Orders.Rows[dgv_Orders.Rows.Count - 1].Height = 20;
-                                dgv_Orders.Refresh();
-                            }
-                        } //if (orders[0].ChillCharge > 0)
-                    }
-                    else
-                    {
-                        //Error insert order
-                        util.Logger("Error insert order : InvNo = " + iNewInvNo.ToString() + ", barCode = " + strBarCode);
-                        MessageBox.Show("Error insert order : InvNo = " + iNewInvNo.ToString() + ", barCode = " + strBarCode);
-                        return false;
-                    }
-                    this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView_By_BarCode(strBarCode);
-                    this.dgv_Orders.Rows[Get_OrderedItem_Index_of_GridView_By_BarCode(strBarCode)].Selected = true;
-                }
-                if (divmodPromo.iMod > 0)
-                {
-                    Add_Promo_RemainingOrder_As_OriginalPrice(prods[0], orders[0], divmodPromo.iMod);
-                }
+                Add_Order_Manually(prods[0].Id, strBarCode);
             }
             else // Product for the tag not exits
             {
@@ -4741,17 +4320,6 @@ namespace SDCafeSales.Views
                 txtBarCode.Text = "";   //Bug #2551
                 return false;
             }
-            Consolidate_Fixed_Promo_Orders();
-            //Feature #3707 QTY promotion have higher priority than assorted promotion
-            if (iQTYPromotionIndex == 0) Check_Assorted_Promotions();
-            if (m_iSelectedRow > -1)
-            {
-                // unselect all
-                dgv_Orders.ClearSelection();
-                dgv_Orders.Rows[m_iSelectedRow].Selected = true;
-                dgv_Orders.FirstDisplayedScrollingRowIndex = m_iSelectedRow;
-            }
-            Calculate_Total_Due();
             //
             return true;
         }
@@ -4997,7 +4565,8 @@ namespace SDCafeSales.Views
             {
                 using (var FrmCardPay = new frmCardPayment(this))
                 {
-                    FrmCardPay.Set_TenderAmt(Convert.ToDouble(txt_TotalDue.Text.Replace("$", "")));
+                    //FrmCardPay.Set_TenderAmt(Convert.ToDouble(txt_TotalDue.Text.Replace("$", "")));
+                    FrmCardPay.Set_TenderAmt(iTotalDue);
                     FrmCardPay.Set_InvoiceNo(iNewInvNo);
                     FrmCardPay.Set_Station(strStation);
                     FrmCardPay.Set_UserName(strUserName);
@@ -5883,7 +5452,7 @@ namespace SDCafeSales.Views
         private void txtQTY_Click(object sender, EventArgs e)
         {
             //run on screen keyboard
-            proc = Process.Start("osk.exe");
+            //proc = Process.Start("osk.exe");
             txtQTY.SelectAll();
         }
 
@@ -6604,7 +6173,6 @@ namespace SDCafeSales.Views
                             iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                             txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                             e1.Graphics.DrawString(strContent, fntCard, brsBlack, (RectangleF)txtRect, format2);
-
                             //////////////////////////////////////////////////////////////////////////
                             // Print a Line ------------------------------------------------------
                             //strTemp1 = " = TOTAL PAID";
@@ -7030,6 +6598,21 @@ namespace SDCafeSales.Views
                     lblChange.Left = 0;
                     pnlReceipt.Controls.Add(lblChange);
                     iLastBottom = lblChange.Bottom;
+                }
+                if (cols.Sum(col => col.TotalTip) != 0)
+                {
+                    Label lblTip = new Label();
+                    lblTip.Name = "Tip";
+                    lblTip.Text = "Total Tips : " + cols.Sum(col => col.TotalTip).ToString("C2");
+                    lblTip.Font = new Font("Arial", 12, FontStyle.Regular);
+                    lblTip.ForeColor = Color.WhiteSmoke;
+                    lblTip.TextAlign = ContentAlignment.MiddleCenter;
+                    lblTip.Width = pnlReceipt.Width;
+                    lblTip.Height = 30;
+                    lblTip.Top = iLastBottom;
+                    lblTip.Left = 0;
+                    pnlReceipt.Controls.Add(lblTip);
+                    iLastBottom = lblTip.Bottom;
                 }
                 if (cols.Sum(col => (col.TotalPaid)) != 0)
                 {
@@ -8856,6 +8439,7 @@ namespace SDCafeSales.Views
             using (var FrmCashPay = new frmCashPayment(this))
             {
                 //FrmCashPay.Set_TenderAmt(Convert.ToDouble(txt_TotalDue.Text.Replace("$", "")));
+                //FrmCashPay.Set_TenderAmt(iTotalDue);
                 FrmCashPay.Set_TenderAmt(iTotalDue);
                 FrmCashPay.Set_InvoiceNo(iNewInvNo);
                 FrmCashPay.Set_Station(strStation);

@@ -57,5 +57,6 @@ namespace SDCafeCommon.Model
 
         public bool IsFixedOrder { get; set; } //Feature #3705
         public int PromoId { get; set; } //Feature #3705
+        public int PromoIndex { get; set; } //Feature #3705
     }
 }

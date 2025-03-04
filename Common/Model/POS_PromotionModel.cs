@@ -11,9 +11,11 @@ namespace SDCafeCommon.Model
         public int Id { get; set; }
         public string PromoName { get; set; }
         public int PromoType { get; set; }
-        public float PromoValue { get; set; }
-        public int PromoQTY { get; set; }
-        public DateTime PromoStartDttm { get; set; }
-        public DateTime PromoEndDttm { get; set; }
+        public float PromoValue1 { get; set; }
+        public int PromoQTY1 { get; set; }
+        public float PromoValue2 { get; set; }
+        public int PromoQTY2 { get; set; }
+        public DateTime? PromoStartDttm { get; set; }
+        public DateTime? PromoEndDttm { get; set; }
     }
 }

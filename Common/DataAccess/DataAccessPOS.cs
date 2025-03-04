@@ -118,8 +118,9 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                string query = "UPDATE Promotion SET PromoName = @PromoName, PromoType=@PromoType, PromoValue=CAST(@PromoValue as decimal(10,2)), " +
-                                "PromoQTY=@PromoQTY, PromoStartDttm=@PromoStartDttm, PromoEndDttm = @PromoEndDttm " +
+                string query = "UPDATE Promotion SET PromoName = @PromoName, PromoType=@PromoType, PromoValue1=CAST(@PromoValue1 as decimal(10,2)), PromoQTY1=@PromoQTY1, " +
+                                "PromoValue2=CAST(@PromoValue2 as decimal(10,2)), PromoQTY2=@PromoQTY2, " +
+                                "PromoStartDttm=@PromoStartDttm, PromoEndDttm = @PromoEndDttm " +
                                 "WHERE Id=@Id";
                 var count = connection.Execute(query, pOS_PromotionModel);
                 return count;
@@ -174,8 +175,9 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                string query = "INSERT INTO Promotion (PromoName, PromoType, PromoValue, PromoQTY, PromoStartDttm, PromoEndDttm) " +
-                                    "VALUES (@PromoName, @PromoType, CAST(@PromoValue as decimal(10,2)), @PromoQTY, @PromoStartDttm, @PromoEndDttm);" +
+                string query = "INSERT INTO Promotion (PromoName, PromoType, PromoValue1, PromoQTY1,PromoValue2, PromoQTY2, PromoStartDttm, PromoEndDttm) " +
+                                    "VALUES (@PromoName, @PromoType, CAST(@PromoValue1 as decimal(10,2)), @PromoQTY1, CAST(@PromoValue2 as decimal(10,2)), @PromoQTY2, " +
+                                    "@PromoStartDttm, @PromoEndDttm);" +
                                     "SELECT CAST(SCOPE_IDENTITY() as int)";
                 //var id = connection.Execute(query, pOS_PromotionModel);
                 var id = connection.QuerySingle<int>(query, pOS_PromotionModel);
@@ -846,6 +848,14 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
+        public List<POS_OrdersModel> Get_NonRFID_Fixed_Order_By_ProdId(int iNewInvNo, int productId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_OrdersModel>($"select * from Orders where ProductId = {productId} and InvoiceNo = {iNewInvNo} and RFTagId < 1 and IsFixedOrder = 1").ToList();
+                return output;
+            }
+        }
         public List<POS_OrdersModel> Get_NonRFID_Order_By_OrderId(int iNewInvNo, int iOrderId)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
@@ -902,7 +912,7 @@ namespace SDCafeCommon.DataAccess
                                 "Tax3Rate	,Tax1	,Tax2	,Tax3	,InvoiceNo	,IsPaidComplete	,CompleteDate	, " +
                                 "CompleteTime	,CreateDate	,CreateTime	,CreateUserId	,CreateUserName	,CreateStation	, " +
                                 "LastModDate	,LastModTime	,LastModUserId	,LastModUserName	,LastModStation, RFTagID, " +
-                                "ParentId, OrderCategoryId, IsDiscounted, BarCode, IsFixedOrder , PromoId) " +
+                                "ParentId, OrderCategoryId, IsDiscounted, BarCode, IsFixedOrder , PromoId, PromoIndex) " +
                                 " OUTPUT INSERTED.[Id] " +
                                 "VALUES (@TranType	,@ProductId	,@ProductName	,@SecondName	,@ProductTypeId	,  " +
                                 "CAST(@InUnitPrice as decimal(10,2)), CAST(@OutUnitPrice as decimal(10,3))	,@IsTax1	,@IsTax2	,@IsTax3	,@UnitCategoryId	, " +
@@ -911,7 +921,7 @@ namespace SDCafeCommon.DataAccess
                                 "CAST(@Tax3Rate as decimal(10,2))	,CAST(@Tax1 as decimal(10,2))	,CAST(@Tax2 as decimal(10,2))	,CAST(@Tax3 as decimal(10,2))	,@InvoiceNo	,@IsPaidComplete	,@CompleteDate	, " +
                                 "@CompleteTime	,@CreateDate	,@CreateTime	,@CreateUserId	,@CreateUserName	,@CreateStation	, " +
                                 "@LastModDate	,@LastModTime	,@LastModUserId	,@LastModUserName	,@LastModStation, @RFTagID, " +
-                                "@ParentId, @OrderCategoryId, @IsDiscounted, @BarCode, @IsFixedOrder , @PromoId) ";
+                                "@ParentId, @OrderCategoryId, @IsDiscounted, @BarCode, @IsFixedOrder , @PromoId, @PromoIndex) ";
                 //var count = connection.Execute(query, pos_OrdersModel);
                 //if (count == 1) return true;
                 //return false;
@@ -1496,16 +1506,24 @@ namespace SDCafeCommon.DataAccess
             }
         }
 
-        public int Delete_Promotion_Discount_Orders(string strStation, int p_PromoId)
+        public int Delete_Promotion_Discount_Orders(string strStation, int p_PromoId, int p_PromoIndex)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                string query = $"DELETE from Orders WHERE OrderCategoryId=4 And IsDiscounted=1 And CreateStation = '" + strStation + $"' And PromoId = {p_PromoId}";
+                string query = $"DELETE from Orders WHERE OrderCategoryId=4 And IsDiscounted=1 And CreateStation = '" + strStation + $"' And PromoId = {p_PromoId} And PromoIndex = {p_PromoIndex}";
                 var count = connection.Execute(query);
                 return count;
             }
         }
-
+        public int Delete_ALL_Promotion_Discount_Orders(string strStation, int p_PromoId)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                string query = $"DELETE from Orders WHERE OrderCategoryId=4 And IsDiscounted=1 And CreateStation = '" + strStation + $"' And PromoId = {p_PromoId} ";
+                var count = connection.Execute(query);
+                return count;
+            }
+        }
         public List<POS_OrdersModel> Get_Order_By_OrderId(int iSelectedOrderId)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))

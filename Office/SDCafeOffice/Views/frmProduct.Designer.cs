@@ -460,7 +460,7 @@
             // 
             // txt_PromPrice2
             // 
-            this.txt_PromPrice2.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.txt_PromPrice2.BackColor = System.Drawing.Color.White;
             this.txt_PromPrice2.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_PromPrice2.Location = new System.Drawing.Point(549, 76);
             this.txt_PromPrice2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
@@ -468,7 +468,6 @@
             this.txt_PromPrice2.Size = new System.Drawing.Size(140, 25);
             this.txt_PromPrice2.TabIndex = 38;
             this.txt_PromPrice2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txt_PromPrice2.Visible = false;
             // 
             // label30
             // 
@@ -486,7 +485,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.label9.BackColor = System.Drawing.Color.Transparent;
             this.label9.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.Location = new System.Drawing.Point(578, 17);
             this.label9.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
@@ -494,11 +493,10 @@
             this.label9.Size = new System.Drawing.Size(80, 20);
             this.label9.TabIndex = 36;
             this.label9.Text = "Condition 2";
-            this.label9.Visible = false;
             // 
             // cb_PromDay2
             // 
-            this.cb_PromDay2.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.cb_PromDay2.BackColor = System.Drawing.Color.White;
             this.cb_PromDay2.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cb_PromDay2.FormattingEnabled = true;
             this.cb_PromDay2.Location = new System.Drawing.Point(549, 41);
@@ -506,7 +504,6 @@
             this.cb_PromDay2.Name = "cb_PromDay2";
             this.cb_PromDay2.Size = new System.Drawing.Size(140, 28);
             this.cb_PromDay2.TabIndex = 35;
-            this.cb_PromDay2.Visible = false;
             this.cb_PromDay2.TextChanged += new System.EventHandler(this.cb_PromDay2_TextChanged);
             // 
             // label8

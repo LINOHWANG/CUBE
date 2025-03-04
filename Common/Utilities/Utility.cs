@@ -17,9 +17,11 @@ namespace SDCafeCommon.Utilities
 {
     public class Utility
     {
+        public bool m_bln_IsDebugging = false;
         private string strmsg = "";
         public void Logger(String msg)
         {
+            if (!m_bln_IsDebugging) return;
             // Set a variable to the Documents path.
             string logPath = Directory.GetCurrentDirectory() + "\\Logs\\";
             // Determine whether the directory exists.

@@ -208,8 +208,10 @@ namespace SDCafeOffice.Views
                 txt_PromoID.Text = ppromos[0].Id.ToString();
                 txt_PromoName.Text = ppromos[0].PromoName;
                 cb_PromoType.SelectedIndex = cb_PromoType.FindStringExact(dbPOS.Get_PromoTypelkupName_By_Id(ppromos[0].PromoType));
-                txt_PromoValue.Text = ppromos[0].PromoValue.ToString();
-                txt_PromoQTY.Text = ppromos[0].PromoQTY.ToString();
+                txt_PromoValue1.Text = ppromos[0].PromoValue1.ToString();
+                txt_PromoQTY1.Text = ppromos[0].PromoQTY1.ToString();
+                txt_PromoValue2.Text = ppromos[0].PromoValue2.ToString();
+                txt_PromoQTY2.Text = ppromos[0].PromoQTY2.ToString();
                 dttm_PromoStart.Text = ppromos[0].PromoStartDttm.ToString();
                 dttm_PromoEnd.Text = ppromos[0].PromoEndDttm.ToString();
                 bt_AddOne.Enabled = true;
@@ -241,8 +243,10 @@ namespace SDCafeOffice.Views
         }
         private void Update_Promotion_From_View()
         {
-            float fValuePrice = 0;
-            int iQTY = 0;
+            float fValuePrice1 = 0;
+            int iQTY1 = 0;
+            float fValuePrice2 = 0;
+            int iQTY2 = 0;
             DataAccessPOS dbPOS = new DataAccessPOS();
 
             //if (String.IsNullOrEmpty(txt_ConfigName.Text)) txt_ConfigName.Text = "";
@@ -258,19 +262,27 @@ namespace SDCafeOffice.Views
                 }
             }
             ppromos.Clear();
-            if (txt_PromoValue.Text != "")
+            if (txt_PromoValue1.Text != "")
             {
-                fValuePrice = float.Parse(txt_PromoValue.Text);
+                fValuePrice1 = float.Parse(txt_PromoValue1.Text);
             }
-            if (txt_PromoQTY.Text != "")
-                iQTY = int.Parse(txt_PromoQTY.Text);
+            if (txt_PromoQTY1.Text != "")
+                iQTY1 = int.Parse(txt_PromoQTY1.Text);
+            if (txt_PromoValue2.Text != "")
+            {
+                fValuePrice2 = float.Parse(txt_PromoValue2.Text);
+            }
+            if (txt_PromoQTY2.Text != "")
+                iQTY2 = int.Parse(txt_PromoQTY2.Text);
             ppromos.Add(new POS_PromotionModel()
             {
                 Id = int.Parse(txt_PromoID.Text),
                 PromoName = txt_PromoName.Text,
                 PromoType = ipTypeId,
-                PromoValue = (float)Math.Round(fValuePrice,2),
-                PromoQTY = iQTY,
+                PromoValue1 = (float)Math.Round(fValuePrice1,2),
+                PromoQTY1 = iQTY1,
+                PromoValue2 = (float)Math.Round(fValuePrice2, 2),
+                PromoQTY2 = iQTY2,
                 PromoStartDttm = dttm_PromoStart.Value,
                 PromoEndDttm = dttm_PromoEnd.Value
             });
@@ -297,8 +309,10 @@ namespace SDCafeOffice.Views
         private void Insert_Promotion_From_View()
         {
             DataAccessPOS dbPOS = new DataAccessPOS();
-            float fValuePrice = 0;
-            int iQTY = 0;
+            float fValuePrice1 = 0;
+            int iQTY1 = 0;
+            float fValuePrice2 = 0;
+            int iQTY2 = 0;
             //if (String.IsNullOrEmpty(txt_ConfigName.Text)) txt_ConfigName.Text = "";
             //if (String.IsNullOrEmpty(txt_ConfigValue.Text)) txt_ConfigValue.Text = "";
             //if (String.IsNullOrEmpty(txt_ConfigDesc.Text)) txt_ConfigDesc.Text = "";
@@ -312,19 +326,27 @@ namespace SDCafeOffice.Views
                 }
             }
             ppromos.Clear();
-            if (txt_PromoValue.Text != "")
+            if (txt_PromoValue1.Text != "")
             {
-                fValuePrice = float.Parse(txt_PromoValue.Text);
+                fValuePrice1 = float.Parse(txt_PromoValue1.Text);
             }
-            if (txt_PromoQTY.Text != "")
-                iQTY = int.Parse(txt_PromoQTY.Text);
+            if (txt_PromoQTY1.Text != "")
+                iQTY1 = int.Parse(txt_PromoQTY1.Text);
+            if (txt_PromoValue2.Text != "")
+            {
+                fValuePrice2 = float.Parse(txt_PromoValue2.Text);
+            }
+            if (txt_PromoQTY2.Text != "")
+                iQTY2 = int.Parse(txt_PromoQTY2.Text);
             ppromos.Add(new POS_PromotionModel()
             {
                 Id = 0,
                 PromoName = txt_PromoName.Text,
                 PromoType = ipTypeId,
-                PromoValue = (float)Math.Round(fValuePrice,2),
-                PromoQTY = iQTY,
+                PromoValue1 = (float)Math.Round(fValuePrice1,2),
+                PromoQTY1 = iQTY1,
+                PromoValue2 = (float)Math.Round(fValuePrice2, 2),
+                PromoQTY2 = iQTY2,
                 PromoStartDttm = dttm_PromoStart.Value,
                 PromoEndDttm = dttm_PromoEnd.Value
             });
@@ -625,15 +647,14 @@ namespace SDCafeOffice.Views
                 {
                     Search_All_Products();
                 }
+                txtMessage.Text = "Search results of " + txt_ProdSearch.Text;
+                txt_ProdSearch.Text = "";
             }
-            txtMessage.Text = "Search results of " + txt_ProdSearch.Text;
-            txt_ProdSearch.Text = "";
-
         }
 
         private void txt_PromoValue_TextChanged(object sender, EventArgs e)
         {
-            if (double.TryParse(txt_PromoValue.Text, out double result))
+            if (double.TryParse(txt_PromoValue1.Text, out double result))
             {
                 m_dblPromoUnitPrice = result;
             }
@@ -641,6 +662,11 @@ namespace SDCafeOffice.Views
             {
                 m_dblPromoUnitPrice = 0; // or handle the error as needed
             }
+        }
+
+        private void frmPromotion_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
