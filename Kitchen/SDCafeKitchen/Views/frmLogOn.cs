@@ -131,11 +131,21 @@ namespace SDCafeKitchen
             }
 
             DataAccessPOS dbPOS = new DataAccessPOS();
-            sysConfigs = dbPOS.Get_SysConfig_By_Name("SCREEN_LOGO_IMAGE");
-            if (sysConfigs.Count > 0)
+            try
             {
-                pictureBoxLogo.Image = Image.FromFile(sysConfigs[0].ConfigValue);
+                sysConfigs = dbPOS.Get_SysConfig_By_Name("SCREEN_LOGO_IMAGE");
+                if (sysConfigs.Count > 0)
+                {
+                    pictureBoxLogo.Image = Image.FromFile(sysConfigs[0].ConfigValue);
+                }
             }
+            catch (Exception ex)
+            {
+                util.Logger("frmLogOn_Load Error: " + ex.Message);
+                MessageBox.Show("Error: " + ex.Message);
+            }
+
+
 
             txtPassCode.Focus();
             pnlNums.Enabled = true; // not need now to this button now 

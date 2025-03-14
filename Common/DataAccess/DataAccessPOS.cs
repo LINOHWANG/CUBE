@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace SDCafeCommon.DataAccess
 {
@@ -147,19 +148,28 @@ namespace SDCafeCommon.DataAccess
 
         public List<POS_SysConfigModel> Get_SysConfig_By_Name(string strConfigName)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            try
             {
-                var output = connection.Query<POS_SysConfigModel>($"select * from SysConfig where ConfigName = '{strConfigName}'").ToList();
-                if (output.Count == 0)
+                using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
                 {
-                    if (strConfigName.Contains("IS_"))
-                        Insert_SysConfig(new POS_SysConfigModel { ConfigName = strConfigName, ConfigValue = "TRUE", ConfigDesc = "", IsActive = true });
-                    else
-                        Insert_SysConfig(new POS_SysConfigModel { ConfigName = strConfigName, ConfigValue = "99", ConfigDesc = "", IsActive = true });
-                    output = connection.Query<POS_SysConfigModel>($"select * from SysConfig where ConfigName = '{strConfigName}'").ToList();
+                    var output = connection.Query<POS_SysConfigModel>($"select * from SysConfig where ConfigName = '{strConfigName}'").ToList();
+                    if (output.Count == 0)
+                    {
+                        if (strConfigName.Contains("IS_"))
+                            Insert_SysConfig(new POS_SysConfigModel { ConfigName = strConfigName, ConfigValue = "TRUE", ConfigDesc = "", IsActive = true });
+                        else
+                            Insert_SysConfig(new POS_SysConfigModel { ConfigName = strConfigName, ConfigValue = "99", ConfigDesc = "", IsActive = true });
+                        output = connection.Query<POS_SysConfigModel>($"select * from SysConfig where ConfigName = '{strConfigName}'").ToList();
+                    }
+                    return output;
                 }
-                return output;
             }
+            catch (Exception ex)
+            {
+                util.Logger(ex.Message);
+                MessageBox.Show("Error: " + ex.Message);
+            }
+            return null;
         }
         public List<POS_SysConfigModel> Get_SysConfig_By_NamePart(string strConfigName)
         {
@@ -1404,7 +1414,7 @@ namespace SDCafeCommon.DataAccess
                                 "ParentId, OrderCategoryId, IsDiscounted, BarCode) " +
                                 "VALUES (" +
                                 "@TranType, @ProductId, @ProductName, @SecondName, @ProductTypeId, CAST(@InUnitPrice as decimal(10,2)), CAST(@OutUnitPrice as decimal(10,2))," +
-                                "@IsTax1, @IsTax2, @IsTax3, @UnitCategoryId, @Deposit, @RecyclingFee, @ChillCharge, @IsPointException," +
+                                "@IsTax1, @IsTax2, @IsTax3, @UnitCategoryId, CAST(@Deposit as decimal(10,2)), CAST(@RecyclingFee as decimal(10,2)), CAST(@ChillCharge as decimal(10,2)), @IsPointException," +
                                 "@IsManualPrice, @IsTaxInverseCalculation, @Tare, @Quantity, CAST(@Amount as decimal(10,2)), CAST(@Tax1Rate as decimal(10,2)), CAST(@Tax2Rate as decimal(10,2)), CAST(@Tax3Rate as decimal(10,2))," +
                                 "CAST(@Tax1 as decimal(10,2)),CAST(@Tax2 as decimal(10,2)),CAST(@Tax3 as decimal(10,2)), @InvoiceNo, @IsPaidComplete, @CompleteDate, @CompleteTime, @CreateDate, @CreateTime," +
                                 "@CreateUserId, @CreateUserName, @CreateStation, @LastModDate, @LastModTime, @LastModUserId, @LastModUserName, @LastModStation, @RFTagID," +

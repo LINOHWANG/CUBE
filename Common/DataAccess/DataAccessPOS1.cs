@@ -26,7 +26,7 @@ namespace SDCafeCommon.DataAccess
                                 "ParentId, OrderCategoryId, IsDiscounted, BarCode) " +
                                 "VALUES (" +
                                 "@OrderId, @TranType, @ProductId, @ProductName, @SecondName, @ProductTypeId, CAST(@InUnitPrice as decimal(10,2)), CAST(@OutUnitPrice as decimal(10,2))," +
-                                "@IsTax1, @IsTax2, @IsTax3, @UnitCategoryId, @Deposit, @RecyclingFee, @ChillCharge, @IsPointException,"+
+                                "@IsTax1, @IsTax2, @IsTax3, @UnitCategoryId, CAST(@Deposit as decimal(10,2)), CAST(@RecyclingFee as decimal(10,2)), CAST(@ChillCharge as decimal(10,2)), @IsPointException," +
                                 "@IsManualPrice, @IsTaxInverseCalculation, @Tare, @Quantity, CAST(@Amount as decimal(10,2)), CAST(@Tax1Rate as decimal(10,2)), CAST(@Tax2Rate as decimal(10,2)), CAST(@Tax3Rate as decimal(10,2))," +
                                 "CAST(@Tax1 as decimal(10,2)),CAST(@Tax2 as decimal(10,2)),CAST(@Tax3 as decimal(10,2)), @InvoiceNo, @IsPaidComplete, @CompleteDate, @CompleteTime, @CreateDate, @CreateTime," +
                                 "@CreateUserId, @CreateUserName, @CreateStation, @LastModDate, @LastModTime, @LastModUserId, @LastModUserName, @LastModStation, @RFTagID,"+

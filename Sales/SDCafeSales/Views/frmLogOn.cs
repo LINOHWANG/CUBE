@@ -54,6 +54,7 @@ namespace SDCafeSales
         private ImageList m_ImageList;
         private string m_strStationName;
         private bool m_bIsLicensed;
+        private bool m_bln_DBConnection;
 
         public frmLogOn()
         {
@@ -66,9 +67,9 @@ namespace SDCafeSales
             //this.Left = Screen.PrimaryScreen.WorkingArea.Size.Width / 2 - (this.Width / 2);
             //lbl_Titie.Text = "Welcom to AB SD Cafeteria Office Module";
             Load_ImageList();
+            Load_Configuration();
             Initialize_Buttons();
             Initialize_ClockInOut_List();
-            Load_Configuration();
             Check_License();
             txtPassCode.Focus();
 
@@ -76,19 +77,32 @@ namespace SDCafeSales
 
         private void Load_Configuration()
         {
+            m_bln_DBConnection = true;
             DataAccessPOS dbPOS = new DataAccessPOS();
             sysConfigs = dbPOS.Get_SysConfig_By_Name("SCREEN_LOGO_IMAGE");
-            if (sysConfigs.Count > 0)
+            if (sysConfigs != null)
             {
-                pictureBoxLogo.Image = Image.FromFile(sysConfigs[0].ConfigValue);
+                if (sysConfigs.Count > 0)
+                {
+                    pictureBoxLogo.Image = Image.FromFile(sysConfigs[0].ConfigValue);
+                }
             }
             sysConfigs = dbPOS.Get_SysConfig_By_Name("BIZ_TITLE");
-            if (sysConfigs.Count > 0)
+            if (sysConfigs != null)
             {
-                textBoxBizTitle.Text = sysConfigs[0].ConfigValue;
+                if (sysConfigs.Count > 0)
+                {
+                    textBoxBizTitle.Text = sysConfigs[0].ConfigValue;
+                }
+            }
+            else
+            {
+                textBoxBizTitle.Text = "DB OR CONFIG ERROR !";
+                m_bln_DBConnection = false;
+                return;
             }
 
-            txtMessage.Text = "Please press Pass Code & OK to login!";
+                txtMessage.Text = "Please press Pass Code & OK to login!";
 
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BringToFront();
@@ -172,7 +186,12 @@ namespace SDCafeSales
                 btnNums[n].Top = yPos;
                 // Add buttons to a Panel: 
                 pnlNums.Controls.Add(btnNums[n]);  // Let panel hold the Buttons 
-                xPos = xPos + btnNums[n].Width + iSpace;    // Left of next button 
+                if (!m_bln_DBConnection)
+                {
+                    btnNums[n].Enabled = false;
+                }
+
+                    xPos = xPos + btnNums[n].Width + iSpace;    // Left of next button 
                                                             // Write English Character: 
                 /* **************************************************************** 
                     Menu item button text
@@ -185,6 +204,10 @@ namespace SDCafeSales
                     btnNums[n].Text = "OK";
                     btnNums[n].BackColor = Color.ForestGreen;
                     btnNums[n].ForeColor = Color.White;
+                    if (!m_bln_DBConnection)
+                    {
+                        btnNums[n].Enabled = false;
+                    }
                 }
                 if (n + 1 == 11)
                 {
@@ -204,6 +227,8 @@ namespace SDCafeSales
                     btnNums[n].ImageList = m_ImageList;
                     btnNums[n].ImageIndex = 1;
                     btnNums[n].ImageAlign = ContentAlignment.MiddleLeft;
+
+                    btnNums[n].Enabled = true;
                 }
                 // the Event of click Button 
                 btnNums[n].Click += new System.EventHandler(ClickNumberButton);
