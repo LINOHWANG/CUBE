@@ -329,6 +329,10 @@ namespace SDCafeSales.Views
 
         private void timer_AdImg_Tick(object sender, EventArgs e)
         {
+            if (strAdImageFiles.Count() == 0)
+            {
+                return;
+            }
             pb_Instruction.Image = Image.FromFile(strAdImageFiles[iCurrentAdImageFilesIndex]);
             iCurrentAdImageFilesIndex++;
             if (iCurrentAdImageFilesIndex >= strAdImageFiles.Length)

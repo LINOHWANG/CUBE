@@ -629,13 +629,13 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                if (pos_ProductModel.ProductName.Length > 30)
+                if (pos_ProductModel.ProductName.Length > 100)
                 {
-                    pos_ProductModel.ProductName = pos_ProductModel.ProductName.Substring(0, 30);
+                    pos_ProductModel.ProductName = pos_ProductModel.ProductName.Substring(0, 100);
                 }
-                if (pos_ProductModel.SecondName.Length > 30)
+                if (pos_ProductModel.SecondName.Length > 100)
                 {
-                    pos_ProductModel.SecondName = pos_ProductModel.SecondName.Substring(0, 30);
+                    pos_ProductModel.SecondName = pos_ProductModel.SecondName.Substring(0, 100);
                 }
                 string query = "INSERT INTO Product (ProductName, SecondName, ProductTypeId, " +
                             "InUnitPrice, OutUnitPrice, IsTax1, IsTax2, IsTax3, IsTaxInverseCalculation, " +
@@ -662,13 +662,13 @@ namespace SDCafeCommon.DataAccess
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
-                if (pos_ProductModel.ProductName.Length > 30)
+                if (pos_ProductModel.ProductName.Length > 100)
                 {
-                    pos_ProductModel.ProductName = pos_ProductModel.ProductName.Substring(0, 30);
+                    pos_ProductModel.ProductName = pos_ProductModel.ProductName.Substring(0, 100);
                 }
-                if (pos_ProductModel.SecondName.Length > 30)
+                if (pos_ProductModel.SecondName.Length > 100)
                 {
-                    pos_ProductModel.SecondName = pos_ProductModel.SecondName.Substring(0, 30);
+                    pos_ProductModel.SecondName = pos_ProductModel.SecondName.Substring(0, 100);
                 }
                 string query = "UPDATE Product SET ProductName = @ProductName, SecondName=@SecondName, ProductTypeId=@ProductTypeId, " +
                                 "InUnitPrice=CAST(@InUnitPrice as decimal(10,2)),OutUnitPrice=CAST(@OutUnitPrice as decimal(10,2)), IsTax1=@IsTax1, IsTax2=@IsTax2, IsTax3=@IsTax3, IsTaxInverseCalculation=@IsTaxInverseCalculation, " +
@@ -1278,6 +1278,8 @@ namespace SDCafeCommon.DataAccess
         //public List<POS_ProductModel> Get_All_Products_By_ProdName(string p_strProdName, bool p_bIsManual, bool p_bIsMainSales, bool p_bIsSales)
         public List<POS_ProductModel> Get_All_Products_By_ProdName(string p_strProdName, bool p_bIsManual)
         {
+            // find any single quote in the string and replace it with two single quotes
+            p_strProdName = p_strProdName.Replace("'", "''");
             p_strProdName = '%' + p_strProdName.Trim() + '%';
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {

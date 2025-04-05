@@ -135,9 +135,20 @@ namespace SDCafeOffice
             sysConfigs = dbPOS.Get_SysConfig_By_Name("SCREEN_OFFICE_LOGO_IMAGE");
             if (sysConfigs.Count > 0)
             {
-                pictureBoxLogo.Image = Image.FromFile(sysConfigs[0].ConfigValue);
+                try
+                {
+                    pictureBoxLogo.Image = Image.FromFile(sysConfigs[0].ConfigValue);
+                }
+                catch (Exception ex)
+                {
+                    util.Logger("Error loading logo image: " + ex.Message);
+                    pictureBoxLogo.Image = null;
+                }
             }
-
+            else
+            {
+                pictureBoxLogo.Image = null;
+            }
             txtPassCode.Focus();
             pnlNums.Enabled = true; // not need now to this button now 
         }

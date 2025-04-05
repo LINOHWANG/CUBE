@@ -497,6 +497,8 @@ namespace SDCafeOffice
 
         private bool IsProductPromotion(POS_ProductModel p_Product)
         {
+            if (p_Product.PromoStartDate == null) return false;
+            if (p_Product.PromoEndDate == null) return false;
             // Check weather p_Product is promotion product
             if (p_Product.PromoStartDate != "" && p_Product.PromoEndDate != "")
             {

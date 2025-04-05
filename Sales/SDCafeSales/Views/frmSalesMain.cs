@@ -2712,15 +2712,29 @@ namespace SDCafeSales.Views
                         iLines = 1;
                     }
                     //btnTypeArray[n].BackColor = btTypeColor[iLines];
-                    iColor = int.TryParse(ptype.BackColor.ToString(), out iColor) ? iColor : 0;
-                    if (iColor != 0)
+                    if (ptype.BackColor == null || ptype.BackColor == "")
                     {
-                        btnTypeArray[n].BackColor = Color.FromArgb(iColor);
+                        btnTypeArray[n].BackColor = Color.White;
                     }
-                    iColor = int.TryParse(ptype.ForeColor.ToString(), out iColor) ? iColor : 0;
-                    if (iColor != 0)
+                    else
                     {
-                        btnTypeArray[n].ForeColor = Color.FromArgb(iColor);
+                        iColor = int.TryParse(ptype.BackColor.ToString(), out iColor) ? iColor : 0;
+                        if (iColor != 0)
+                        {
+                            btnTypeArray[n].BackColor = Color.FromArgb(iColor);
+                        }
+                    }
+                    if (ptype.ForeColor == null || ptype.ForeColor == "")
+                    {
+                        btnTypeArray[n].BackColor = Color.Black;
+                    }
+                    else
+                    {
+                        iColor = int.TryParse(ptype.ForeColor.ToString(), out iColor) ? iColor : 0;
+                        if (iColor != 0)
+                        {
+                            btnTypeArray[n].ForeColor = Color.FromArgb(iColor);
+                        }
                     }
 
                     // Location of button: 
