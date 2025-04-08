@@ -79,6 +79,7 @@ namespace SDCafeOffice
         private bool _stopLoop;
         private bool bProdExist;
         private string strSelCategoryId;
+        private frmLabels FrmLabels;
 
         //private bool isSystem = false;
         public frmMain()
@@ -185,6 +186,7 @@ namespace SDCafeOffice
                     bt_SalesReport.Enabled = false;
                 }
             }
+            util.m_bln_IsDebugging = dbPOS.Get_SysConfig_By_Name("IS_DEBUG")[0].ConfigValue == "TRUE" ? true : false;
         }
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -261,7 +263,7 @@ namespace SDCafeOffice
             this.dgvData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgvData.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvData.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            this.dgvData.ColumnCount = 16;
+            this.dgvData.ColumnCount = 17;
             this.dgvData.Columns[0].Name = "Id";
             this.dgvData.Columns[0].Width = 50;
             this.dgvData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -290,28 +292,32 @@ namespace SDCafeOffice
             this.dgvData.Columns[8].Name = dbPOS.Get_SysConfig_By_Name("Tax3")[0].ConfigValue; // "Tax3";
             this.dgvData.Columns[8].Width = 50;
             this.dgvData.Columns[8].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[9].Name = "InPrice";
+            this.dgvData.Columns[9].Name = "Tax Code";
             this.dgvData.Columns[9].Width = 80;
             this.dgvData.Columns[9].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[10].Name = "QTY";
+
+            this.dgvData.Columns[10].Name = "InPrice";
             this.dgvData.Columns[10].Width = 80;
             this.dgvData.Columns[10].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[11].Name = "BarCode";
-            this.dgvData.Columns[11].Width = 100;
+            this.dgvData.Columns[11].Name = "QTY";
+            this.dgvData.Columns[11].Width = 80;
             this.dgvData.Columns[11].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
-            this.dgvData.Columns[12].Name = "Promo Start";
+            this.dgvData.Columns[12].Name = "BarCode";
             this.dgvData.Columns[12].Width = 100;
             this.dgvData.Columns[12].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[13].Name = "Promo End";
+
+            this.dgvData.Columns[13].Name = "Promo Start";
             this.dgvData.Columns[13].Width = 100;
             this.dgvData.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[14].Name = "Promo QTY";
-            this.dgvData.Columns[14].Width = 80;
+            this.dgvData.Columns[14].Name = "Promo End";
+            this.dgvData.Columns[14].Width = 100;
             this.dgvData.Columns[14].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            this.dgvData.Columns[15].Name = "Promo Unit Price";
+            this.dgvData.Columns[15].Name = "Promo QTY";
             this.dgvData.Columns[15].Width = 80;
             this.dgvData.Columns[15].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            this.dgvData.Columns[16].Name = "Promo Unit Price";
+            this.dgvData.Columns[16].Width = 80;
+            this.dgvData.Columns[16].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             this.dgvData.DefaultCellStyle.Font = new Font("Arial", 12F, GraphicsUnit.Pixel);
 
@@ -423,6 +429,7 @@ namespace SDCafeOffice
                                                          prod.IsTax1.ToString(),
                                                          prod.IsTax2.ToString(),
                                                          prod.IsTax3.ToString(),
+                                                         prod.TaxCode,
                                                          prod.InUnitPrice.ToString("C2"),
                                                          prod.Balance.ToString(),
                                                          prod.BarCode,
@@ -1085,7 +1092,7 @@ namespace SDCafeOffice
                     FrmProd.m_strStation = strStation;
                     FrmProd.m_strUserPass =  strUserPass;
                     FrmProd.ShowDialog();
-                    bt_Product.PerformClick();
+                    //bt_Product.PerformClick();
                 }
                 if (isSysConfig)
                 {
@@ -1539,7 +1546,8 @@ namespace SDCafeOffice
                 {
                     // cells format to text
                     worksheet.Cells[i + 2, j + 1].NumberFormat = "@";
-                    worksheet.Cells[i + 2, j + 1] = dgvData.Rows[i].Cells[j].Value.ToString();
+                    if (dgvData.Rows[i].Cells[j].Value != null)
+                        worksheet.Cells[i + 2, j + 1] = dgvData.Rows[i].Cells[j].Value.ToString();
                     // Set the same background color on worksheet as dgvData's colume
                     //worksheet.Rows[i + 2].Interior.Color = dgvData.Rows[i].Cells[j].Style.BackColor;
                     Color cellColor = dgvData.Rows[i].Cells[j].Style.BackColor;
@@ -1833,25 +1841,27 @@ namespace SDCafeOffice
                 prod.IsTax3 = bool.Parse(xlRange.Cells[i, 9].Value2.ToString());
                 strTemp = xlRange.Cells[i, 10].Value2.ToString();
                 if (strTemp != "")
-                    prod.InUnitPrice = float.Parse(strTemp.Replace("$", ""));
+                    prod.TaxCode = strTemp;
+                else prod.TaxCode = "";
                 strTemp = xlRange.Cells[i, 11].Value2.ToString();
                 if (strTemp != "")
-                    prod.Balance = int.Parse(xlRange.Cells[i, 11].Value2.ToString());
-
+                    prod.InUnitPrice = float.Parse(strTemp.Replace("$", ""));
                 strTemp = xlRange.Cells[i, 12].Value2.ToString();
                 if (strTemp != "")
-                    prod.BarCode = xlRange.Cells[i, 12].Value2.ToString();
-
+                    prod.Balance = int.Parse(xlRange.Cells[i, 12].Value2.ToString());
                 strTemp = xlRange.Cells[i, 13].Value2.ToString();
                 if (strTemp != "")
-                    prod.PromoStartDate = strTemp;
+                    prod.BarCode = xlRange.Cells[i, 13].Value2.ToString();
                 strTemp = xlRange.Cells[i, 14].Value2.ToString();
                 if (strTemp != "")
-                    prod.PromoEndDate = strTemp; // DateTime.Parse(xlRange.Cells[i, 13].Value2.ToString());
+                    prod.PromoStartDate = strTemp;
                 strTemp = xlRange.Cells[i, 15].Value2.ToString();
                 if (strTemp != "")
-                    prod.PromoDay1 = int.Parse(xlRange.Cells[i, 15].Value2.ToString());
+                    prod.PromoEndDate = strTemp; // DateTime.Parse(xlRange.Cells[i, 13].Value2.ToString());
                 strTemp = xlRange.Cells[i, 16].Value2.ToString();
+                if (strTemp != "")
+                    prod.PromoDay1 = int.Parse(xlRange.Cells[i, 16].Value2.ToString());
+                strTemp = xlRange.Cells[i, 17].Value2.ToString();
                 if (strTemp != "")
                     prod.PromoPrice1 = float.Parse(strTemp.Replace("$", ""));
 
@@ -2110,6 +2120,12 @@ namespace SDCafeOffice
             bt_ProductExport.Enabled = false;
             FrmSalesButton = new frmSalesButton();
             FrmSalesButton.ShowDialog();
+        }
+
+        private void bt_Labels_Click(object sender, EventArgs e)
+        {
+            FrmLabels = new frmLabels();
+            FrmLabels.ShowDialog();
         }
     }
 }

@@ -254,13 +254,23 @@ namespace SDCafeOffice.Views
                 checkSoldOut.Checked = prods[0].IsSoldOut;
                 try
                 {
-                    dttm_PromStart.Value = DateTime.ParseExact(prods[0].PromoStartDate.ToString(), "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                    dttm_PromEnd.Value = DateTime.ParseExact(prods[0].PromoEndDate.ToString(), "yyyy-MM-dd", CultureInfo.InvariantCulture); //prods[0].PromoEndDate.ToString("yyyy-MM-dd");
+                    if ((prods[0].PromoStartDate != null) && (prods[0].PromoStartDate != null))
+                    {
+                        dttm_PromStart.Value = DateTime.ParseExact(prods[0].PromoStartDate.ToString(), "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                        dttm_PromEnd.Value = DateTime.ParseExact(prods[0].PromoEndDate.ToString(), "yyyy-MM-dd", CultureInfo.InvariantCulture); //prods[0].PromoEndDate.ToString("yyyy-MM-dd");
+                    }
+                    else
+                    {
+                        // if PromoStartDate and PromoEndDate are null, set them to current date - 1
+                        dttm_PromStart.Value = DateTime.Now.AddDays(-1);
+                        dttm_PromEnd.Value = DateTime.Now.AddDays(-1);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    dttm_PromStart.Value = DateTime.Now;
-                    dttm_PromEnd.Value = DateTime.Now;
+                    // if PromoStartDate and PromoEndDate are null, set them to current date - 1
+                    dttm_PromStart.Value = DateTime.Now.AddDays(-1);
+                    dttm_PromEnd.Value = DateTime.Now.AddDays(-1);
                 }
 
                 txt_Deposit.Text = prods[0].Deposit.ToString();
@@ -712,6 +722,12 @@ namespace SDCafeOffice.Views
             object misValue = System.Reflection.Missing.Value;
 
             // --------------------------------------- Open Excel File Name -------------------------------------
+            // check if the file exists
+            if (!File.Exists(strExcelLabelFile))
+            {
+                MessageBox.Show("Label Template file not found: " + strExcelLabelFile);
+                return;
+            }
             xlWorkBook = xlApp.Workbooks.Open(strExcelLabelFile);
             xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
 

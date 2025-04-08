@@ -316,9 +316,11 @@ namespace SDCafeSales.Views
                     }
                     else
                     {
+                        if (this.dgv_Orders.RowCount > 0)
                         this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = null;
                     }
-                    this.dgv_Orders.FirstDisplayedScrollingRowIndex = dgv_Orders.RowCount - 1;
+                    if (dgv_Orders.RowCount > 0)
+                        this.dgv_Orders.FirstDisplayedScrollingRowIndex = dgv_Orders.RowCount - 1;
                     //this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView(order.RFTagId);
                     //this.dgv_Orders.Rows[Get_OrderedItem_Index_of_GridView(order.RFTagId)].Selected = true;
                     // this.dgv_Orders.Rows[dgv_Orders.RowCount - 1].Selected = true;

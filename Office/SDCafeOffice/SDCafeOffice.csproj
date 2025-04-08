@@ -95,6 +95,12 @@
     <Compile Include="Views\frmBIB.Designer.cs">
       <DependentUpon>frmBIB.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\frmLabels.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\frmLabels.Designer.cs">
+      <DependentUpon>frmLabels.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\frmLoginUser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -190,6 +196,9 @@
     <Compile Include="Views\UserComboboxItem.cs" />
     <EmbeddedResource Include="Views\frmBIB.resx">
       <DependentUpon>frmBIB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\frmLabels.resx">
+      <DependentUpon>frmLabels.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\frmLoginUser.resx">
       <DependentUpon>frmLoginUser.cs</DependentUpon>

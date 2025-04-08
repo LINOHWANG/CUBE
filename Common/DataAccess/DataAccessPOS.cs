@@ -145,7 +145,14 @@ namespace SDCafeCommon.DataAccess
                 return output;
             }
         }
-
+        public List<POS_SysConfigModel> Get_SysConfig_By_NameContains(string strConfigName)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_SysConfigModel>($"select * from SysConfig where ConfigName like '%{strConfigName}%'").ToList();
+                return output;
+            }
+        }
         public List<POS_SysConfigModel> Get_SysConfig_By_Name(string strConfigName)
         {
             try
@@ -1949,6 +1956,15 @@ namespace SDCafeCommon.DataAccess
                     return true;
                 else
                     return false;
+            }
+        }
+
+        public List<POS_SysConfigModel> Get_SysConfig_By_Desc(string p_strFormat)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_SysConfigModel>($"select * from SysConfig where ConfigDesc  = '{p_strFormat}'").ToList();
+                return output;
             }
         }
     }

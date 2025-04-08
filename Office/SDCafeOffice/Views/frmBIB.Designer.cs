@@ -44,6 +44,8 @@
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.label2 = new System.Windows.Forms.Label();
             this.txt_PTypeName = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txt_ProdSearch = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDataTo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDataFrom)).BeginInit();
             this.SuspendLayout();
@@ -241,12 +243,38 @@
             this.txt_PTypeName.TabIndex = 104;
             this.txt_PTypeName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label8.Location = new System.Drawing.Point(195, 134);
+            this.label8.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(63, 23);
+            this.label8.TabIndex = 107;
+            this.label8.Text = "Search";
+            // 
+            // txt_ProdSearch
+            // 
+            this.txt_ProdSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.txt_ProdSearch.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_ProdSearch.Location = new System.Drawing.Point(257, 131);
+            this.txt_ProdSearch.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_ProdSearch.Name = "txt_ProdSearch";
+            this.txt_ProdSearch.Size = new System.Drawing.Size(212, 29);
+            this.txt_ProdSearch.TabIndex = 106;
+            this.txt_ProdSearch.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_ProdSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_ProdSearch_KeyDown);
+            // 
             // frmBIB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1025, 608);
             this.ControlBox = false;
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.txt_ProdSearch);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txt_PTypeName);
             this.Controls.Add(this.bt_Exit);
@@ -290,5 +318,7 @@
         private SDCafeCommon.Utilities.CustomButton bt_Exit;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txt_PTypeName;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txt_ProdSearch;
     }
 }

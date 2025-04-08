@@ -1949,10 +1949,18 @@ namespace SDCafeSales.Views
             DataAccessPOS1 dbPOS1 = new DataAccessPOS1();
             strTenderTypes = dbPOS1.Get_TenderList_FromCollection();
             // Add All string to the string array.
-            strTenderTypes = strTenderTypes.Prepend("All").ToArray();
-            if (strTenderTypes.Length > 0)
+            if (strTenderTypes != null)
             {
-                cb_Tender.DataSource = strTenderTypes;
+
+                strTenderTypes = strTenderTypes.Prepend("All").ToArray();
+                if (strTenderTypes.Length > 0)
+                {
+                    cb_Tender.DataSource = strTenderTypes;
+                }
+            }
+            else
+            {
+                cb_Tender.DataSource = null;
             }
             DataAccessPOS dbPOS = new DataAccessPOS();
             m_strTax1Name = dbPOS.Get_SysConfig_By_Name("TAX1")[0].ConfigValue;

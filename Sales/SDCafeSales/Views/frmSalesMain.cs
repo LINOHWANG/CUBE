@@ -836,8 +836,9 @@ namespace SDCafeSales.Views
                     }
                     else
                     {
-                        this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = null;
+                        if (this.dgv_Orders.RowCount > 0)   this.dgv_Orders.Rows[this.dgv_Orders.RowCount - 1].Tag = null;
                     }
+                    if (dgv_Orders.RowCount > 0)
                     this.dgv_Orders.FirstDisplayedScrollingRowIndex = dgv_Orders.RowCount - 1;
                     //this.dgv_Orders.FirstDisplayedScrollingRowIndex = Get_OrderedItem_Index_of_GridView(order.RFTagId);
                     //this.dgv_Orders.Rows[Get_OrderedItem_Index_of_GridView(order.RFTagId)].Selected = true;
@@ -2915,15 +2916,21 @@ namespace SDCafeSales.Views
                     pts = dbPOS.Get_ProductType_By_ID(iTypeId);
                     if (pts.Count > 0)
                     {
-                        iColor = int.TryParse(pts[0].BackColor.ToString(), out iColor) ? iColor : 0;
-                        if (iColor != 0)
+                        if (pts[0].BackColor != null)
                         {
-                            selectedBTN.BackColor = Color.FromArgb(iColor);
+                            iColor = int.TryParse(pts[0].BackColor.ToString(), out iColor) ? iColor : 0;
+                            if (iColor != 0)
+                            {
+                                selectedBTN.BackColor = Color.FromArgb(iColor);
+                            }
                         }
-                        iColor = int.TryParse(pts[0].ForeColor.ToString(), out iColor) ? iColor : 0;
-                        if (iColor != 0)
+                        if (pts[0].ForeColor != null)
                         {
-                            selectedBTN.ForeColor = Color.FromArgb(iColor);
+                            iColor = int.TryParse(pts[0].ForeColor.ToString(), out iColor) ? iColor : 0;
+                            if (iColor != 0)
+                            {
+                                selectedBTN.ForeColor = Color.FromArgb(iColor);
+                            }
                         }
                     }
                 }
@@ -4208,21 +4215,24 @@ namespace SDCafeSales.Views
         private int Check_QTY_Promotion_Product(POS_ProductModel p_Product, float p_OrderQty)
         {
             int iIndex = 0;
-            // Check weather p_Product is promotion product
-            if (p_Product.PromoStartDate != "" && p_Product.PromoEndDate != "")
+            if ((p_Product.PromoStartDate != null) && (p_Product.PromoEndDate != null))
             {
-                DateTime dtStartDate = DateTime.Parse(p_Product.PromoStartDate);
-                DateTime dtEndDate = DateTime.Parse(p_Product.PromoEndDate);
-                DateTime dtNow = DateTime.Now;
-                if (dtNow >= dtStartDate && dtNow <= dtEndDate)
+                // Check weather p_Product is promotion product
+                if (p_Product.PromoStartDate != "" && p_Product.PromoEndDate != "")
                 {
-                    // Check ordered qty is greater or equal than promotion qty
-                    if ((p_Product.PromoDay1 <= p_OrderQty) && (p_Product.PromoPrice1 > 0))
-                        iIndex = 1;
-                    if ((p_Product.PromoDay2 <= p_OrderQty) && (p_Product.PromoPrice2 > 0))
-                        iIndex = 2;
-                    if ((p_Product.PromoDay3 <= p_OrderQty) && (p_Product.PromoPrice3 > 0))
-                        iIndex = 3;
+                    DateTime dtStartDate = DateTime.Parse(p_Product.PromoStartDate);
+                    DateTime dtEndDate = DateTime.Parse(p_Product.PromoEndDate);
+                    DateTime dtNow = DateTime.Now;
+                    if (dtNow >= dtStartDate && dtNow <= dtEndDate)
+                    {
+                        // Check ordered qty is greater or equal than promotion qty
+                        if ((p_Product.PromoDay1 <= p_OrderQty) && (p_Product.PromoPrice1 > 0))
+                            iIndex = 1;
+                        if ((p_Product.PromoDay2 <= p_OrderQty) && (p_Product.PromoPrice2 > 0))
+                            iIndex = 2;
+                        if ((p_Product.PromoDay3 <= p_OrderQty) && (p_Product.PromoPrice3 > 0))
+                            iIndex = 3;
+                    }
                 }
             }
             return iIndex;
@@ -8937,6 +8947,21 @@ namespace SDCafeSales.Views
                         }
                         else if ((orders.Count == 1) && (orders[0].Quantity == 1) && (orders[0].ParentId == 0))
                         {
+                            // delete child orders
+                            childOrders.Clear();
+                            childOrders = dbPOS.Get_Child_Order_By_OrderId(iNewInvNo, orders[0].Id);
+                            if (childOrders.Count > 0)
+                            {
+                                foreach (var childOrder in childOrders)
+                                {
+                                    int rowIndex = Get_OrderedItem_Index_of_GridView_By_OrderId(childOrder.Id, false);
+                                    if (rowIndex > -1) // found the product
+                                    {
+                                        dgv_Orders.Rows.RemoveAt(rowIndex);
+                                    }
+                                }
+                            }
+                            // delete main order
                             dbPOS.Delete_Order_By_OrderId(orders[0].InvoiceNo, orders[0].Id);
                             dgv_Orders.Rows.RemoveAt(row.Index);
                         }

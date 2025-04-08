@@ -397,6 +397,7 @@
             this.txt_ProdSearch.Size = new System.Drawing.Size(212, 29);
             this.txt_ProdSearch.TabIndex = 90;
             this.txt_ProdSearch.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_ProdSearch.TextChanged += new System.EventHandler(this.txt_ProdSearch_TextChanged);
             this.txt_ProdSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_ProdSearch_KeyDown);
             // 
             // label8

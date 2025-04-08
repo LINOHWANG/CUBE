@@ -51,8 +51,8 @@ namespace SDCafeOffice.Views
                     }
                 }
             }
-
-            Load_Products_DataGrid();
+            Search_Products(txt_ProdSearch.Text);
+            //Load_Products_DataGrid(prods);
             Load_BIBProducts_DataGrid();
         }
         private void dgvDataFrom_Initialize()
@@ -158,24 +158,15 @@ namespace SDCafeOffice.Views
             }
         }
 
-        private void Load_Products_DataGrid()
+        private void Load_Products_DataGrid(List<POS_ProductModel> p_prods)
         {
             dgvDataFrom_Initialize();
-
-
             DataAccessPOS dbPOS = new DataAccessPOS();
-            if (p_int_PTypeId == 0)
+
+            lbl_AllProds.Text = "Products ( " + p_prods.Count.ToString() + " )";
+            if (p_prods.Count > 0)
             {
-                prods = dbPOS.Get_All_Products_NonBIB();
-            }
-            else
-            {
-                prods = dbPOS.Get_All_Products_By_ProdType_NonBIB(p_int_PTypeId);
-            }
-            lbl_AllProds.Text = "Products ( " + prods.Count.ToString() + " )";
-            if (prods.Count > 0)
-            {
-                foreach (var prod in prods)
+                foreach (var prod in p_prods)
                 {
                     //if (!prod.IsManualItem)
                     //{
@@ -188,6 +179,33 @@ namespace SDCafeOffice.Views
                     //}
 
                 }
+            }
+        }
+        private void Search_Products(string p_strText)
+        {
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            List<POS_ProductModel> nonBIBprods = new List<POS_ProductModel>();
+
+            if (p_int_PTypeId == 0)
+            {
+                nonBIBprods = dbPOS.Get_All_Products_NonBIB();
+            }
+            else
+            {
+                nonBIBprods = dbPOS.Get_All_Products_By_ProdType_NonBIB(p_int_PTypeId);
+            }
+
+            if (prods.Count > 0)
+            {
+                prods.Clear();
+                prods = nonBIBprods.Where(x => x.ProductName.ToLower().Contains(p_strText.ToLower())).ToList();
+                Load_Products_DataGrid(prods);
+            }
+            else
+            {
+                prods.Clear();
+                prods = dbPOS.Get_All_Products_By_BarCode(p_strText, false);
+                Load_Products_DataGrid(prods);
             }
         }
 
@@ -291,6 +309,22 @@ namespace SDCafeOffice.Views
                 dgvDataTo.Rows.Remove(row);
             }
 
+        }
+
+        private void txt_ProdSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            // if enter key is pressed, search with the product name
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (txt_ProdSearch.Text.Length >= 2)
+                    Search_Products(txt_ProdSearch.Text);
+                else
+                {
+                    Search_Products("");
+                }
+                //txtMessage.Text = "Search results of " + txt_ProdSearch.Text;
+                txt_ProdSearch.Text = "";
+            }
         }
     }
 }

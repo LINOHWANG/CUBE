@@ -668,5 +668,10 @@ namespace SDCafeOffice.Views
         {
 
         }
+
+        private void txt_ProdSearch_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
