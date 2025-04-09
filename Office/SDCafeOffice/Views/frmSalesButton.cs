@@ -166,13 +166,15 @@ namespace SDCafeOffice.Views
                     btnArray[iButtonCount].ForeColor = Color.White;
                     btnArray[iButtonCount].BackColor = Color.DimGray;
                 }
-
-                if (prod.IsButtonInButton)
+                if (prod != null)
                 {
-                    btnArray[iButtonCount].ImageList = m_ImageList;
-                    btnArray[iButtonCount].ImageIndex = 0;
-                    btnArray[iButtonCount].ImageAlign = ContentAlignment.MiddleLeft;
-                    btnArray[iButtonCount].TextAlign = ContentAlignment.MiddleRight;
+                    if (prod.IsButtonInButton)
+                    {
+                        btnArray[iButtonCount].ImageList = m_ImageList;
+                        btnArray[iButtonCount].ImageIndex = 0;
+                        btnArray[iButtonCount].ImageAlign = ContentAlignment.MiddleLeft;
+                        btnArray[iButtonCount].TextAlign = ContentAlignment.MiddleRight;
+                    }
                 }
                 pnlMenu.Controls.Add(btnArray[iButtonCount]);
                 iButtonCount++;
@@ -224,11 +226,21 @@ namespace SDCafeOffice.Views
             {
                 DataAccessPOS dbPOS = new DataAccessPOS();
                 POS_ProductModel prod = dbPOS.Get_One_Product_By_ID(iProdId);
-                txt_ProdName.Text = prod.ProductName;
-                txt_ProdName.BackColor = Color.White;
-                bt_Unlink.Enabled = true;
+                if (prod != null)
+                {
+                    txt_ProdName.Text = prod.ProductName;
+                    txt_ProdName.BackColor = Color.White;
+                    bt_Unlink.Enabled = true;
 
-                m_intSelectedProdId = iProdId;
+                    m_intSelectedProdId = iProdId;
+                }
+                else
+                {
+                    txt_ProdName.Text = "No Product";
+                    txt_ProdName.BackColor = Color.DimGray;
+                    bt_Unlink.Enabled = false;
+                    m_intSelectedProdId = 0;
+                }
             }
             else
             {
