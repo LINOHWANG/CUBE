@@ -645,13 +645,13 @@ namespace SDCafeCommon.DataAccess
                     pos_ProductModel.SecondName = pos_ProductModel.SecondName.Substring(0, 100);
                 }
                 string query = "INSERT INTO Product (ProductName, SecondName, ProductTypeId, " +
-                            "InUnitPrice, OutUnitPrice, IsTax1, IsTax2, IsTax3, IsTaxInverseCalculation, " +
+                            "InUnitPrice, OutUnitPrice, IsTax1, IsTax2, IsTax3, IsTaxInverseCalculation, Unit, " +
                             "PromoStartDate, PromoEndDate, PromoDay1, PromoDay2, PromoDay3, " +
                             "IsPrinter1, IsPrinter2, IsPrinter3, IsPrinter4, IsPrinter5, " +
                             "PromoPrice1, PromoPrice2, PromoPrice3, IsSoldOut, Deposit, RecyclingFee, ChillCharge, MemoText, BarCode, TaxCode, " +
                             "IsManualItem, Balance,IsMainSalesButton, IsSalesButton, ForeColor, BackColor, " +
                             "CategoryId, IsButtonInButton, Brand, Size, IsPromoExactQty ) " +
-                            "VALUES(@ProductName,@SecondName,@ProductTypeId,CAST(@OutUnitPrice as decimal(10,2)),CAST(@OutUnitPrice as decimal(10,2)),@IsTax1,@IsTax2,@IsTax3,@IsTaxInverseCalculation, " +
+                            "VALUES(@ProductName,@SecondName,@ProductTypeId,CAST(@InUnitPrice as decimal(10,3)),CAST(@OutUnitPrice as decimal(10,3)),@IsTax1,@IsTax2,@IsTax3,@IsTaxInverseCalculation,@Unit," +
                             "@PromoStartDate,@PromoEndDate,@PromoDay1,@PromoDay2,@PromoDay3,@IsPrinter1,@IsPrinter2,@IsPrinter3,@IsPrinter4,@IsPrinter5," +
                             "CAST(@PromoPrice1 as decimal(10,3)),CAST(@PromoPrice2 as decimal(10,3)),CAST(@PromoPrice3 as decimal(10,3)),@IsSoldOut," +
                             "CAST(@Deposit as decimal(10,2)),CAST(@RecyclingFee as decimal(10,2)),CAST(@ChillCharge as decimal(10,2)), @MemoText, @BarCode, @TaxCode, " +
@@ -678,7 +678,7 @@ namespace SDCafeCommon.DataAccess
                     pos_ProductModel.SecondName = pos_ProductModel.SecondName.Substring(0, 100);
                 }
                 string query = "UPDATE Product SET ProductName = @ProductName, SecondName=@SecondName, ProductTypeId=@ProductTypeId, " +
-                                "InUnitPrice=CAST(@InUnitPrice as decimal(10,2)),OutUnitPrice=CAST(@OutUnitPrice as decimal(10,2)), IsTax1=@IsTax1, IsTax2=@IsTax2, IsTax3=@IsTax3, IsTaxInverseCalculation=@IsTaxInverseCalculation, " +
+                                "InUnitPrice=CAST(@InUnitPrice as decimal(10,3)),OutUnitPrice=CAST(@OutUnitPrice as decimal(10,3)), IsTax1=@IsTax1, IsTax2=@IsTax2, IsTax3=@IsTax3, IsTaxInverseCalculation=@IsTaxInverseCalculation, Unit=@Unit," +
                                 "PromoStartDate=@PromoStartDate, PromoEndDate=@PromoEndDate, PromoDay1=@PromoDay1, PromoDay2=@PromoDay2, PromoDay3=@PromoDay3, " +
                                 "IsPrinter1=@IsPrinter1, IsPrinter2=@IsPrinter2, IsPrinter3=@IsPrinter3, IsPrinter4=@IsPrinter4, IsPrinter5=@IsPrinter5, " +
                                 "PromoPrice1=CAST(@PromoPrice1 as decimal(10,3)), PromoPrice2=CAST(@PromoPrice2 as decimal(10,3)), PromoPrice3=CAST(@PromoPrice3 as decimal(10,3)), IsSoldOut=@IsSoldOut, " +
@@ -1700,7 +1700,8 @@ namespace SDCafeCommon.DataAccess
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 int bIsTax3IncTax = pos_Tax.IsTax3IncTax1 ? 1 : 0;
-                string query = $"UPDATE Tax SET Tax1 = {pos_Tax.Tax1}, Tax2 = {pos_Tax.Tax2}, Tax3 = {pos_Tax.Tax3}, IsTax3IncTax1 = {bIsTax3IncTax.ToString()} " +
+                string query = $"UPDATE Tax SET Tax1 = {pos_Tax.Tax1}, Tax2 = {pos_Tax.Tax2}, Tax3 = {pos_Tax.Tax3}, IsTax3IncTax1 = {bIsTax3IncTax.ToString()}, " +
+                                $"Tax1Name = '{pos_Tax.Tax1Name}', Tax2Name = '{pos_Tax.Tax2Name}', Tax3Name = '{pos_Tax.Tax3Name}' " + 
                                 $"WHERE Code = '" + pos_Tax.Code + "'";
                 var count = connection.Execute(query);
                 return count;
@@ -1712,8 +1713,8 @@ namespace SDCafeCommon.DataAccess
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 int bIsTax3IncTax = pos_Tax.IsTax3IncTax1 ? 1 : 0;
-                string query = $"INSERT INTO Tax (Code, Tax1, Tax2, Tax3, IsTax3IncTax1) VALUES " +
-                                $"('{pos_Tax.Code}', {pos_Tax.Tax1},{pos_Tax.Tax2},{pos_Tax.Tax3}, {bIsTax3IncTax} );";
+                string query = $"INSERT INTO Tax (Code, Tax1, Tax2, Tax3, IsTax3IncTax1, Tax1Name, Tax2Name, Tax3Name) VALUES " +
+                                $"('{pos_Tax.Code}', {pos_Tax.Tax1},{pos_Tax.Tax2},{pos_Tax.Tax3}, {bIsTax3IncTax} ,'{pos_Tax.Tax1Name}','{pos_Tax.Tax2Name}','{pos_Tax.Tax3Name}');";
                 var count = connection.Execute(query);
                 return count;
             }
@@ -1964,6 +1965,15 @@ namespace SDCafeCommon.DataAccess
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
             {
                 var output = connection.Query<POS_SysConfigModel>($"select * from SysConfig where ConfigDesc  = '{p_strFormat}'").ToList();
+                return output;
+            }
+        }
+
+        public List<POS_ProductModel> Get_Product_By_TaxCode(string p_TaxCode)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(Helper.CnnVal("POS")))
+            {
+                var output = connection.Query<POS_ProductModel>($"select * from Product where TaxCode = '{p_TaxCode}'").ToList();
                 return output;
             }
         }

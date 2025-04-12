@@ -20,6 +20,8 @@ namespace SDCafeCommon.Model
         public bool IsTax2 { get; set; }
         public bool IsTax3 { get; set; }
         public bool IsTaxInverseCalculation { get; set; }
+
+        public string Unit { get; set; }
         public bool IsPrinter1 { get; set; }
         public bool IsPrinter2 { get; set; }
         public bool IsPrinter3 { get; set; }

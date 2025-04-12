@@ -109,6 +109,10 @@ namespace SDCafeSales.Views
         private float m_TaxRate1 = 0;
         private float m_TaxRate2 = 0;
         private float m_TaxRate3 = 0;
+        private string m_TaxName1;
+        private string m_TaxName2;
+        private string m_TaxName3;
+
         private bool m_bIsTax3IncTax1 = false;
         private int iPpleCount = 0;
 
@@ -239,6 +243,8 @@ namespace SDCafeSales.Views
 
         public bool m_blnPrintTaxDetails { get; set; }
         public string m_strProdBtnSortOrder { get; set; }
+
+        private List<TaxSummaryModel> taxSumList = new List<TaxSummaryModel>();
 
         public struct structDivMod
         {
@@ -4416,6 +4422,9 @@ namespace SDCafeSales.Views
                     m_TaxRate1 = tax.Tax1;
                     m_TaxRate2 = tax.Tax2;
                     m_TaxRate3 = tax.Tax3;
+                    m_TaxName1 = tax.Tax1Name;
+                    m_TaxName2 = tax.Tax2Name;
+                    m_TaxName3 = tax.Tax3Name;
                     return;
                 }
             }
@@ -5562,6 +5571,7 @@ namespace SDCafeSales.Views
             List<POS1_TranCollectionModel> cols = new List<POS1_TranCollectionModel>();
             List<POS1_OrderCompleteModel> orderComItems = new List<POS1_OrderCompleteModel>();
             List<CCardReceipt> cardReceipts = new List<CCardReceipt>();
+            List<TaxSummaryModel> taxSumList = new List<TaxSummaryModel>();
 
             string strHeader = "header";
             string strFooter = "footer";
@@ -5830,7 +5840,7 @@ namespace SDCafeSales.Views
                             e1.Graphics.DrawString(strContent, fntContents, brsBlack, (RectangleF)txtRect, format2);
                         }
                     }
-                    else
+                    else // Receipt
                     {
                         if (orderComItems.Count > 0)
                         {
@@ -5928,12 +5938,26 @@ namespace SDCafeSales.Views
                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                             //////////////////////////////////////////////////////////////////////////
                             // Print a Line ------------------------------------------------------
-                            strContent = String.Format("{0,25}", "Tax :") + String.Format("{0,15}", iTaxTot.ToString("0.00"));
+                            strContent = String.Format("{0,25}", "Tax Total :") + String.Format("{0,15}", iTaxTot.ToString("0.00"));
                             iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                             txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                             e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                             if (m_blnPrintTaxDetails)
                             {
+                                //Feature #3763
+                                taxSumList = GetTaxSummaryList(orderComItems);
+
+                                foreach(var tax in taxSumList)
+                                {
+                                    if (tax.TaxSum != 0)
+                                    {
+                                        strContent = String.Format("{0,25}", tax.TaxName + " :") + String.Format("{0,15}", tax.TaxSum.ToString("0.00"));
+                                        iNextLineYPoint = iNextLineYPoint + iheaderHeight;
+                                        txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
+                                        e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                                    }
+                                }
+                                /*
                                 if (fTax1Tot > 0)
                                 {
                                     strContent = String.Format("{0,25}", strTax1Name + " :") + String.Format("{0,15}", fTax1Tot.ToString("0.00"));
@@ -5955,6 +5979,7 @@ namespace SDCafeSales.Views
                                     txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
                                     e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
                                 }
+                                */
                             }
                             cols = dbPOS1.Get_TranCollection_by_InvoiceNo(p_iInvoiceNo);
 
@@ -6310,6 +6335,73 @@ namespace SDCafeSales.Views
             }
         }
 
+        private List<TaxSummaryModel> GetTaxSummaryList(List<POS1_OrderCompleteModel> orderComItems)
+        {
+            List<TaxSummaryModel> taxSumList = new List<TaxSummaryModel>();
+            List<POS_TaxModel> taxList = new List<POS_TaxModel>();
+            List<POS_ProductModel> prodsAll = new List<POS_ProductModel>();
+            List<POS_ProductModel> prodsTax = new List<POS_ProductModel>();
+            List<POS1_OrderCompleteModel> orderTax = new List<POS1_OrderCompleteModel>();
+            
+
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            taxList = dbPOS.Get_All_Tax();
+            
+            taxSumList.Clear();
+
+            prods = dbPOS.Get_All_Products();
+            prodsTax = prods.FindAll(item => String.IsNullOrEmpty(item.TaxCode));
+            // find all orderComItems related with prodsTax products
+            orderTax = orderComItems.Where(x => prodsTax.Select(p => p.Id).Contains(x.ProductId)).ToList();
+            if (orderTax.Count > 0)
+            {
+                TaxSummaryModel taxSum1 = new TaxSummaryModel();
+                taxSum1.TaxName = strTax1Name;
+                taxSum1.TaxSum = orderTax.Sum(item => item.Tax1);
+                taxSumList.Add(taxSum1);
+                TaxSummaryModel taxSum2 = new TaxSummaryModel();
+                taxSum2.TaxName = strTax2Name;
+                taxSum2.TaxSum = orderTax.Sum(item => item.Tax2);
+                taxSumList.Add(taxSum2);
+                TaxSummaryModel taxSum3 = new TaxSummaryModel();
+                taxSum3.TaxName = strTax3Name;
+                taxSum3.TaxSum = orderTax.Sum(item => item.Tax3);
+                taxSumList.Add(taxSum3);
+            }
+            // Get all the products in the order
+            foreach (var tax in taxList)
+            {
+                prodsTax = prods.FindAll(item => item.TaxCode == tax.Code);
+                orderTax = orderComItems.Where(x => prodsTax.Select(p => p.Id).Contains(x.ProductId)).ToList();
+                if (orderTax.Count > 0)
+                {
+                    TaxSummaryModel taxSum1 = new TaxSummaryModel();
+                    taxSum1.TaxName = tax.Tax1Name;
+                    taxSum1.TaxSum = orderTax.Sum(item => item.Tax1);
+                    taxSumList.Add(taxSum1);
+                    TaxSummaryModel taxSum2 = new TaxSummaryModel();
+                    taxSum2.TaxName = tax.Tax2Name;
+                    taxSum2.TaxSum = orderTax.Sum(item => item.Tax2);
+                    taxSumList.Add(taxSum2);
+                    TaxSummaryModel taxSum3 = new TaxSummaryModel();
+                    taxSum3.TaxName = tax.Tax3Name;
+                    taxSum3.TaxSum = orderTax.Sum(item => item.Tax3);
+                    taxSumList.Add(taxSum3);
+                }
+            }
+            // Consolidate duplicate TaxName into one
+            List<TaxSummaryModel> taxSumListGroup = new List<TaxSummaryModel>();
+            taxSumListGroup = taxSumList.GroupBy(x => x.TaxName)
+                                            .Select(g => new TaxSummaryModel
+            {
+                TaxName = g.Key,
+                TaxSum = g.Sum(x => x.TaxSum)
+            }).ToList();
+
+
+            return taxSumListGroup;
+        }
+
         private void ShowReceiptInfoOnScreen(List<POS1_TranCollectionModel> cols, List<POS1_OrderCompleteModel> orderComItems, List<CCardReceipt> cardReceipts)
         {
             int iLastBottom = 0;
@@ -6391,7 +6483,30 @@ namespace SDCafeSales.Views
                 pnlReceipt.Controls.Add(lblSubTotal);
                 iLastBottom = lblSubTotal.Bottom;
 
+                //Feature #3763
+                taxSumList.Clear();
+                taxSumList = GetTaxSummaryList(orderComItems);
+
+                foreach (var tax in taxSumList)
+                {
+                    if (tax.TaxSum != 0)
+                    {
+                        Label lblTax1 = new Label();
+                        lblTax1.Name = tax.TaxName;
+                        lblTax1.Text = tax.TaxName + " : " + tax.TaxSum.ToString("C2");
+                        lblTax1.Font = new Font("Arial", 12, FontStyle.Bold);
+                        lblTax1.ForeColor = Color.LightGray;
+                        lblTax1.TextAlign = ContentAlignment.MiddleCenter;
+                        lblTax1.Width = pnlReceipt.Width;
+                        lblTax1.Height = 30;
+                        lblTax1.Top = iLastBottom;
+                        lblTax1.Left = 0;
+                        pnlReceipt.Controls.Add(lblTax1);
+                        iLastBottom = lblTax1.Bottom;
+                    }
+                }
                 // Add a label to pnlReceipt panel
+                /*
                 if (cols.Sum(col => col.Tax1) != 0)
                 {
                     Label lblTax1 = new Label();
@@ -6437,6 +6552,7 @@ namespace SDCafeSales.Views
                     pnlReceipt.Controls.Add(lblTax3);
                     iLastBottom = lblTax3.Bottom;
                 }
+                */
                 if (cols.Sum(col => (col.Tax1 + col.Tax2 + col.Tax3)) != 0)
                 {
                     Label lblTaxSum = new Label();
@@ -6452,6 +6568,7 @@ namespace SDCafeSales.Views
                     pnlReceipt.Controls.Add(lblTaxSum);
                     iLastBottom = lblTaxSum.Bottom;
                 }
+
                 if (cols.Sum(col => (col.Amount + col.Tax1 + col.Tax2 + col.Tax3)) != 0)
                 {
                     Label lblTotAmt = new Label();

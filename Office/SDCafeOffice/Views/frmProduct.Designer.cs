@@ -114,6 +114,8 @@
             this.bt_Add = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Exit = new SDCafeCommon.Utilities.CustomButton();
             this.bt_Save = new SDCafeCommon.Utilities.CustomButton();
+            this.label7 = new System.Windows.Forms.Label();
+            this.txt_Unit = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -411,7 +413,7 @@
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.groupBox1.Location = new System.Drawing.Point(15, 491);
+            this.groupBox1.Location = new System.Drawing.Point(15, 534);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(6, 5, 6, 5);
@@ -597,7 +599,7 @@
             this.txtMessage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.txtMessage.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMessage.ForeColor = System.Drawing.SystemColors.Info;
-            this.txtMessage.Location = new System.Drawing.Point(1, 608);
+            this.txtMessage.Location = new System.Drawing.Point(1, 648);
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.Size = new System.Drawing.Size(881, 32);
             this.txtMessage.TabIndex = 33;
@@ -695,7 +697,7 @@
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(12, 409);
+            this.label17.Location = new System.Drawing.Point(11, 442);
             this.label17.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(67, 22);
@@ -706,11 +708,11 @@
             // 
             this.txt_Memo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.txt_Memo.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Memo.Location = new System.Drawing.Point(80, 406);
+            this.txt_Memo.Location = new System.Drawing.Point(80, 442);
             this.txt_Memo.Multiline = true;
             this.txt_Memo.Name = "txt_Memo";
             this.txt_Memo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txt_Memo.Size = new System.Drawing.Size(364, 77);
+            this.txt_Memo.Size = new System.Drawing.Size(364, 90);
             this.txt_Memo.TabIndex = 46;
             // 
             // label18
@@ -841,7 +843,7 @@
             this.groupBox2.Controls.Add(this.txt_Receiving);
             this.groupBox2.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.ForeColor = System.Drawing.Color.Black;
-            this.groupBox2.Location = new System.Drawing.Point(456, 391);
+            this.groupBox2.Location = new System.Drawing.Point(456, 434);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(249, 104);
             this.groupBox2.TabIndex = 59;
@@ -942,7 +944,7 @@
             this.groupBox3.Controls.Add(this.picBackColor);
             this.groupBox3.Controls.Add(this.picForeColor);
             this.groupBox3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold);
-            this.groupBox3.Location = new System.Drawing.Point(713, 364);
+            this.groupBox3.Location = new System.Drawing.Point(713, 407);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(158, 131);
             this.groupBox3.TabIndex = 66;
@@ -1070,9 +1072,9 @@
             this.label29.Location = new System.Drawing.Point(400, 345);
             this.label29.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(126, 22);
+            this.label29.Size = new System.Drawing.Size(49, 22);
             this.label29.TabIndex = 75;
-            this.label29.Text = "Serving Size";
+            this.label29.Text = "Size";
             // 
             // txt_Size
             // 
@@ -1158,12 +1160,35 @@
             this.bt_Save.Text = "Save";
             this.bt_Save.Click += new System.EventHandler(this.bt_Save_Click);
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(400, 379);
+            this.label7.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(46, 22);
+            this.label7.TabIndex = 77;
+            this.label7.Text = "Unit";
+            // 
+            // txt_Unit
+            // 
+            this.txt_Unit.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Unit.Location = new System.Drawing.Point(530, 376);
+            this.txt_Unit.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.txt_Unit.Name = "txt_Unit";
+            this.txt_Unit.Size = new System.Drawing.Size(172, 29);
+            this.txt_Unit.TabIndex = 76;
+            this.txt_Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // frmProduct
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 643);
+            this.ClientSize = new System.Drawing.Size(884, 681);
             this.ControlBox = false;
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.txt_Unit);
             this.Controls.Add(this.label29);
             this.Controls.Add(this.txt_Size);
             this.Controls.Add(this.label28);
@@ -1329,5 +1354,7 @@
         private System.Windows.Forms.ComboBox cb_PromDay3;
         private System.Windows.Forms.TextBox txt_PromPrice2;
         private System.Windows.Forms.CheckBox checkPromoExactQTY;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox txt_Unit;
     }
 }

@@ -70,6 +70,9 @@ namespace SDCafeOffice.Views
                 txt_Tax3.Text = taxes[0].Tax3.ToString();
                 chkTax3IncTax1.Checked = taxes[0].IsTax3IncTax1;
                 chkTax3IncTax1.Text = lalTax1.Text + " include " + lalTax1.Text + "?";
+                txt_Tax1Name.Text = taxes[0].Tax1Name;
+                txt_Tax2Name.Text = taxes[0].Tax2Name;
+                txt_Tax3Name.Text = taxes[0].Tax3Name;
             }
         }
 
@@ -135,7 +138,10 @@ namespace SDCafeOffice.Views
                 Tax1 = fT1,
                 Tax2 = fT2,
                 Tax3 = fT3,
-                IsTax3IncTax1 = chkTax3IncTax1.Checked
+                IsTax3IncTax1 = chkTax3IncTax1.Checked,
+                Tax1Name = txt_Tax1Name.Text,
+                Tax2Name = txt_Tax2Name.Text,
+                Tax3Name = txt_Tax3Name.Text
             });
             int iTaxCnt = dbPOS.Update_Tax(taxes[0]);
         }
@@ -192,7 +198,10 @@ namespace SDCafeOffice.Views
                 Tax1 = fT1,
                 Tax2 = fT2,
                 Tax3 = fT3,
-                IsTax3IncTax1 = chkTax3IncTax1.Checked
+                IsTax3IncTax1 = chkTax3IncTax1.Checked,
+                Tax1Name = txt_Tax1Name.Text,
+                Tax2Name = txt_Tax2Name.Text,
+                Tax3Name = txt_Tax3Name.Text
             });
             int iTaxCnt = dbPOS.Insert_Tax(taxes[0]);
         }
@@ -239,6 +248,9 @@ namespace SDCafeOffice.Views
                         txt_Tax2.Text = "";
                         txt_Tax3.Text = "";
                         chkTax3IncTax1.Checked = false;
+                        txt_Tax1Name.Text = "";
+                        txt_Tax2Name.Text = "";
+                        txt_Tax3Name.Text = "";
                     }
                     else
                     {

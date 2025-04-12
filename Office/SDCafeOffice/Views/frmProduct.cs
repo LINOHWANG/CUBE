@@ -251,6 +251,7 @@ namespace SDCafeOffice.Views
                 checkPRT4.Checked = prods[0].IsPrinter4;
                 checkPRT5.Checked = prods[0].IsPrinter5;
                 checkTaxInv.Checked = prods[0].IsTaxInverseCalculation;
+                txt_Unit.Text = prods[0].Unit;
                 checkSoldOut.Checked = prods[0].IsSoldOut;
                 try
                 {
@@ -458,7 +459,7 @@ namespace SDCafeOffice.Views
             }
             if (String.IsNullOrEmpty(txt_IUnitPrice.Text)) txt_IUnitPrice.Text = "0";
             if (String.IsNullOrEmpty(txt_OUnitPrice.Text)) txt_OUnitPrice.Text = "0";
-
+            if (String.IsNullOrEmpty(txt_Unit.Text)) txt_Unit.Text = "EA";
             if (String.IsNullOrEmpty(cb_PromDay1.Text)) cb_PromDay1.Text = "0";
             if (String.IsNullOrEmpty(cb_PromDay2.Text)) cb_PromDay2.Text = "0";
             if (String.IsNullOrEmpty(cb_PromDay3.Text)) cb_PromDay3.Text = "0";
@@ -510,6 +511,7 @@ namespace SDCafeOffice.Views
                 IsTax2 = checkTax2.Checked,
                 IsTax3 = checkTax3.Checked,
                 IsTaxInverseCalculation = checkTaxInv.Checked,
+                Unit = txt_Unit.Text,
                 IsPrinter1 = checkPRT1.Checked,
                 IsPrinter2 = checkPRT2.Checked,
                 IsPrinter3 = checkPRT3.Checked,
@@ -575,6 +577,7 @@ namespace SDCafeOffice.Views
                 IsTax2 = checkTax2.Checked,
                 IsTax3 = checkTax3.Checked,
                 IsTaxInverseCalculation = checkTaxInv.Checked,
+                Unit = txt_Unit.Text,
                 IsPrinter1 = checkPRT1.Checked,
                 IsPrinter2 = checkPRT2.Checked,
                 IsPrinter3 = checkPRT3.Checked,

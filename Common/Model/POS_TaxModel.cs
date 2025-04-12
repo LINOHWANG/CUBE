@@ -14,5 +14,9 @@ namespace SDCafeCommon.Model
         public float Tax3 { get; set; }
 
         public bool IsTax3IncTax1 { get; set; }
+
+        public string Tax1Name { get; set; }
+        public string Tax2Name { get; set; }
+        public string Tax3Name { get; set; }
     }
 }

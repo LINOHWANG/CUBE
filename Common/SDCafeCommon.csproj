@@ -83,6 +83,7 @@
     <Compile Include="Model\POS_TaxModel.cs" />
     <Compile Include="Model\POS_TimeTableModel.cs" />
     <Compile Include="Model\PromoDiscOrderModel.cs" />
+    <Compile Include="Model\TaxSummaryModel.cs" />
     <Compile Include="PinPad\CCardProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PinPad\CCardTranConst.cs" />

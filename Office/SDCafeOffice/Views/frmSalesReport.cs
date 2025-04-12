@@ -17,6 +17,7 @@ using Font = Microsoft.Office.Interop.Excel.Font;
 using SDCafeCommon.Utilities;
 using System.Drawing.Printing;
 using System.Windows.Forms.DataVisualization.Charting;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace SDCafeOffice.Views
 {
@@ -34,6 +35,8 @@ namespace SDCafeOffice.Views
         private int retryLimit;
         private bool docPrinterChanged;
         private bool appPrinterChanged;
+
+        private bool m_bln_ShowTaxByProfile; //Feature #3762
 
         public frmSalesReport()
         {
@@ -58,6 +61,9 @@ namespace SDCafeOffice.Views
             m_strTax1Name = dbPOS.Get_SysConfig_By_Name("TAX1")[0].ConfigValue;
             m_strTax2Name = dbPOS.Get_SysConfig_By_Name("TAX2")[0].ConfigValue;
             m_strTax3Name = dbPOS.Get_SysConfig_By_Name("TAX3")[0].ConfigValue;
+
+            //Feature #3762
+            m_bln_ShowTaxByProfile = dbPOS.Get_SysConfig_By_Name("REPORT_SHOW_TAX_BY_PROFILE")[0].ConfigValue.ToUpper().Contains("TRUE");
 
             dgvData_Initialize();
         }
@@ -1382,7 +1388,20 @@ namespace SDCafeOffice.Views
                 xlWorkSheet.Cells[iStartRow, 4] = iSumTax3.ToString("0.00");
                 //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
-                //iStartRow++;
+                // --------------------------------------- Set Boder on Total ---------------------------------
+                Excel.Range formatRangeB;
+                formatRangeB = xlWorkSheet.get_Range("A" + (iStartRow - 3).ToString(), "D" + (iStartRow).ToString());
+                formatRangeB.EntireRow.Font.Bold = true;
+                formatRangeB.BorderAround(Excel.XlLineStyle.xlContinuous,
+                Excel.XlBorderWeight.xlMedium, Excel.XlColorIndex.xlColorIndexAutomatic,
+                Excel.XlColorIndex.xlColorIndexAutomatic);
+
+                iStartRow++;
+                // Show Tax Amount by Tax Profile
+                if (m_bln_ShowTaxByProfile)
+                {
+                    iStartRow = Generate_Summary_By_TaxProfile(xlWorkSheet, ordercomps, iStartRow);
+                }
             }
             // --------------------------------------- Set Boder ---------------------------------
             Excel.Range formatRange;
@@ -1402,17 +1421,99 @@ namespace SDCafeOffice.Views
             Excel.XlBorderWeight.xlMedium, Excel.XlColorIndex.xlColorIndexAutomatic,
             Excel.XlColorIndex.xlColorIndexAutomatic);
 
-            // --------------------------------------- Set Boder on Total ---------------------------------
-            formatRange = xlWorkSheet.get_Range("A" + (iStartRow - 3).ToString(), "D" + (iStartRow).ToString());
-            formatRange.EntireRow.Font.Bold = true;
-            formatRange.BorderAround(Excel.XlLineStyle.xlContinuous,
-            Excel.XlBorderWeight.xlMedium, Excel.XlColorIndex.xlColorIndexAutomatic,
-            Excel.XlColorIndex.xlColorIndexAutomatic);
+
 
 
             iStartRow++;
             return iStartRow;
         }
+
+        private int Generate_Summary_By_TaxProfile(Worksheet xlWorkSheet, List<POS1_OrderCompleteModel> ordercomps, int iStartRow)
+        {
+            float iSumTax1 = 0;
+            float iSumTax2 = 0;
+            float iSumTax3 = 0;
+            List<POS1_OrderCompleteModel> ordercompsTax = new List<POS1_OrderCompleteModel>();
+            List<POS_TaxModel> taxs = new List<POS_TaxModel>();
+            List<POS_ProductModel> products = new List<POS_ProductModel>();
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            taxs = dbPOS.Get_All_Tax();
+
+            if (taxs != null)
+            {
+                iStartRow++;
+                xlWorkSheet.Cells[iStartRow, 1] = "Tax By Profile";
+
+                iStartRow++;
+                // taxcode = null or empty
+                products = dbPOS.Get_All_Products();
+                products = products.Where(x => string.IsNullOrEmpty(x.TaxCode)).ToList();
+                // Add Header for Tax Profile
+                xlWorkSheet.Cells[iStartRow, 1] = "";
+                xlWorkSheet.Cells[iStartRow, 2] = m_strTax1Name;
+                xlWorkSheet.Cells[iStartRow, 3] = m_strTax2Name;
+                xlWorkSheet.Cells[iStartRow, 4] = m_strTax3Name;
+                iStartRow++;
+
+                iSumTax1 = 0;
+                iSumTax2 = 0;
+                iSumTax3 = 0;
+                //
+                ordercompsTax = ordercomps.Where(x => products.Select(p => p.Id).Contains(x.ProductId)).ToList();
+                foreach (var ordcomp in ordercompsTax)
+                {
+                    iSumTax1 = iSumTax1 + ordcomp.Tax1;
+                    iSumTax2 = iSumTax2 + ordcomp.Tax2;
+                    iSumTax3 = iSumTax3 + ordcomp.Tax3;
+                }
+                // --------------------------------------- Tax Summary ---------------------------------
+                xlWorkSheet.Cells[iStartRow, 1] = "Default";
+                xlWorkSheet.Cells[iStartRow, 2] = iSumTax1.ToString("0.00");
+                xlWorkSheet.Cells[iStartRow, 3] = iSumTax2.ToString("0.00");
+                xlWorkSheet.Cells[iStartRow, 4] = iSumTax3.ToString("0.00");
+                iStartRow++;
+                // All others 
+                foreach (var tax in taxs)
+                {
+                    products = dbPOS.Get_Product_By_TaxCode(tax.Code);
+                    if (products == null)
+                    {
+                        continue;
+                    }
+                    // Add Header for Tax Profile
+                    xlWorkSheet.Cells[iStartRow, 1] = "";
+                    xlWorkSheet.Cells[iStartRow, 2] = tax.Tax1Name;
+                    xlWorkSheet.Cells[iStartRow, 3] = tax.Tax2Name;
+                    xlWorkSheet.Cells[iStartRow, 4] = tax.Tax3Name;
+                    iStartRow++;
+
+                    iSumTax1 = 0;
+                    iSumTax2 = 0;
+                    iSumTax3 = 0;
+                    //
+                    ordercompsTax = ordercomps.Where(x => products.Select(p => p.Id).Contains(x.ProductId)).ToList();
+                    if (ordercompsTax == null)
+                    {
+                        continue;
+                    }
+                    foreach (var ordcomp in ordercompsTax)
+                    {
+                        iSumTax1 = iSumTax1 + ordcomp.Tax1;
+                        iSumTax2 = iSumTax2 + ordcomp.Tax2;
+                        iSumTax3 = iSumTax3 + ordcomp.Tax3;
+                    }
+                    // --------------------------------------- Tax Summary ---------------------------------
+                    xlWorkSheet.Cells[iStartRow, 1] = tax.Code;
+                    xlWorkSheet.Cells[iStartRow, 2] = iSumTax1.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 3] = iSumTax2.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = iSumTax3.ToString("0.00");
+                    iStartRow++;
+                }
+            }
+
+            return iStartRow;
+        }
+
         private int Generate_Tender_Summary_Data(Worksheet xlWorkSheet, int iStartRow)
         {
             // --------------------------------------- Summary Header ---------------------------------

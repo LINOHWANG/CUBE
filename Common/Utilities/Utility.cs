@@ -216,6 +216,7 @@ namespace SDCafeCommon.Utilities
             // Get Mac Address
             string macAddress = "";
             macAddress = GetMacAddress();
+            m_bln_IsDebugging = true;
             Logger("Mac Address: " + macAddress);
             // Check if the license file exists
             //string licenseFile = Directory.GetCurrentDirectory() + "\\License\\License.dat";
