@@ -11,6 +11,8 @@ using SDCafeCommon.Utilities;
 using SDCafeCommon.DataAccess;
 using SDCafeCommon.Model;
 using System.IO;
+using static System.Net.Mime.MediaTypeNames;
+using System.IO.Ports;
 
 namespace SDCafeSales.Views
 {
@@ -44,6 +46,9 @@ namespace SDCafeSales.Views
         private float m_fCashDue;
         private float m_fCashRounding;
 
+        private int m_int_FadeOut = 0;
+        private Color colToFadeTo;
+
         public frmSalesCustomer(frmSalesMain _FrmSalesMain)
         {
             InitializeComponent();
@@ -57,14 +62,15 @@ namespace SDCafeSales.Views
             sysConfigs = dbPOS.Get_SysConfig_By_Name("SCREEN_LOGO_IMAGE");
             if (sysConfigs.Count > 0)
             {
-                pb_Instruction.Image = Image.FromFile(sysConfigs[0].ConfigValue);
+                pb_Instruction.Image = System.Drawing.Image.FromFile(sysConfigs[0].ConfigValue);
             }
             sysConfigs = dbPOS.Get_SysConfig_By_Name("AD_IMAGE_ROTATION_INTERVAL");
             if (sysConfigs.Count > 0)
             {
                 timer_AdImg.Interval = int.Parse(sysConfigs[0].ConfigValue);
             }
-
+            colToFadeTo = Color.FromArgb(0, 250, 250, 250); //create color object with alpha value 0
+            m_int_FadeOut = 0;//50;
         }
 
         private void LoadAdImageFiles()
@@ -335,12 +341,64 @@ namespace SDCafeSales.Views
             {
                 return;
             }
-            pb_Instruction.Image = Image.FromFile(strAdImageFiles[iCurrentAdImageFilesIndex]);
+            // wait until timerFadeOut is finished
+            if (timerFadeOut.Enabled)
+            {
+                return;
+            }
+            else
+            {
+                m_int_FadeOut = 50;
+                timerFadeOut.Start();
+                while (timerFadeOut.Enabled)
+                {
+                    System.Windows.Forms.Application.DoEvents();
+                }
+            }
+
+            pb_Instruction.Image = System.Drawing.Image.FromFile(strAdImageFiles[iCurrentAdImageFilesIndex]);
             iCurrentAdImageFilesIndex++;
             if (iCurrentAdImageFilesIndex >= strAdImageFiles.Length)
             {
                 iCurrentAdImageFilesIndex = 0;
             }
         }
+        private void timerFadeOut_Tick(object sender, EventArgs e)
+        {
+
+            if (m_int_FadeOut == 80)
+            {
+                //if m_int_FadeOut was incremented up to 102, the picture was faded 
+                //and the buttons can be enabled again
+                m_int_FadeOut = 50;
+                timerFadeOut.Stop();
+                return;
+            }
+            else
+            {
+                //pass incremented m_int_FadeOut, and chosen color to function 
+                //Lighter and set modified image as second picture box image
+                pb_Instruction.Image = Lighter(pb_Instruction.Image, m_int_FadeOut++, colToFadeTo.R,
+                                       colToFadeTo.G, colToFadeTo.B);
+
+            }
+        }
+        private System.Drawing.Image Lighter(System.Drawing.Image imgLight, int level, int nRed, int nGreen, int nBlue)
+        {
+            //convert image to graphics object
+            Graphics graphics = Graphics.FromImage(imgLight);
+            int conversion = (5 * (level - 50)); //calculate new alpha value
+                                                 //create mask with blended alpha value and chosen color as pen 
+            Pen pLight = new Pen(Color.FromArgb(conversion, nRed,
+                                 nGreen, nBlue), imgLight.Width * 2);
+            //apply created mask to graphics object
+            graphics.DrawLine(pLight, -1, -1, imgLight.Width, imgLight.Height);
+            //save created graphics object and modify image object by that
+            graphics.Save();
+            graphics.Dispose(); //dispose graphics object
+            return imgLight; //return modified image
+        }
+
+
     }
 }

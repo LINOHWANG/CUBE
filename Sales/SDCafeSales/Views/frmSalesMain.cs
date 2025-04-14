@@ -5728,7 +5728,7 @@ namespace SDCafeSales.Views
                                     strContent = String.Format("{0,-20}", strProd) + String.Format("{0,5}", order.Quantity.ToString()) +
                                                  String.Format("{0,7}", order.OutUnitPrice.ToString("0.00")) + String.Format("{0,8}", iAmount.ToString("0.00"));
                                 }
-                                else if (order.OrderCategoryId > 0) // Discount = 4, Deposit, Return = 5
+                                else if (order.OrderCategoryId > 0) // Discount = 4, Deposit, Return = 5, Rounding = 6
                                 {
                                     iAmount = order.Amount;
                                     iSubTot = iSubTot + iAmount;
@@ -5743,8 +5743,8 @@ namespace SDCafeSales.Views
                                         strProd = order.ProductName.Substring(0, 20);
                                     }
 
-                                    strContent = String.Format("{0,-20}", strProd) + String.Format("{0,6}", order.Quantity.ToString()) +
-                                                 String.Format("{0,6}", order.Amount.ToString("0.00")) + String.Format("{0,8}", iAmount.ToString("0.00"));
+                                    strContent = String.Format("{0,-20}", strProd) + String.Format("{0,5}", order.Quantity.ToString()) +
+                                                 String.Format("{0,7}", order.Amount.ToString("0.00")) + String.Format("{0,8}", iAmount.ToString("0.00"));
 
                                 }
                                 //////////////////////////////////////////////////////////////////////////
@@ -5878,7 +5878,7 @@ namespace SDCafeSales.Views
 
                                     }
                                 }
-                                else if (order.OrderCategoryId > 0) // Discount
+                                else if (order.OrderCategoryId > 0) // Discount // Discount = 4, Deposit, Return = 5, Rounding = 6
                                 {
                                     iAmount = order.Amount;
                                     iSubTot = iSubTot + iAmount;
@@ -5889,15 +5889,15 @@ namespace SDCafeSales.Views
                                     strProd = order.ProductName;
                                     if (strProd.Length < 21)
                                     {
-                                        strContent = String.Format("{0,-20}", strProd) + String.Format("{0,6}", order.Quantity.ToString()) +
-                                                     String.Format("{0,6}", order.OutUnitPrice.ToString("0.00")) + String.Format("{0,8}", iAmount.ToString("0.00"));
+                                        strContent = String.Format("{0,-20}", strProd) + String.Format("{0,5}", order.Quantity.ToString()) +
+                                                     String.Format("{0,7}", order.OutUnitPrice.ToString("0.00")) + String.Format("{0,8}", iAmount.ToString("0.00"));
 
                                     }
                                     else
                                     {
 
-                                        strContent = String.Format("{0,-20}", strProd.Substring(0, 20)) + String.Format("{0,6}", order.Quantity.ToString()) +
-                                                 String.Format("{0,6}", order.Amount.ToString("0.00")) + String.Format("{0,8}", iAmount.ToString("0.00"));
+                                        strContent = String.Format("{0,-20}", strProd.Substring(0, 20)) + String.Format("{0,5}", order.Quantity.ToString()) +
+                                                 String.Format("{0,7}", order.Amount.ToString("0.00")) + String.Format("{0,8}", iAmount.ToString("0.00"));
                                     }
                                 }
                                 //////////////////////////////////////////////////////////////////////////

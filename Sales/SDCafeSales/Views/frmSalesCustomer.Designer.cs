@@ -52,6 +52,7 @@
             this.timer_AdImg = new System.Windows.Forms.Timer(this.components);
             this.label5 = new System.Windows.Forms.Label();
             this.txt_CashDue = new System.Windows.Forms.TextBox();
+            this.timerFadeOut = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_Orders)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pb_Instruction)).BeginInit();
             this.SuspendLayout();
@@ -340,6 +341,11 @@
             this.txt_CashDue.Text = "0.00";
             this.txt_CashDue.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
+            // timerFadeOut
+            // 
+            this.timerFadeOut.Interval = 1;
+            this.timerFadeOut.Tick += new System.EventHandler(this.timerFadeOut_Tick);
+            // 
             // frmSalesCustomer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -400,5 +406,6 @@
         private System.Windows.Forms.Timer timer_AdImg;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txt_CashDue;
+        private System.Windows.Forms.Timer timerFadeOut;
     }
 }
