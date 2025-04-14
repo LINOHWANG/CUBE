@@ -49,6 +49,7 @@
             this.txt_Tax1Name = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label10
@@ -65,7 +66,7 @@
             // txt_TaxCode
             // 
             this.txt_TaxCode.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_TaxCode.Location = new System.Drawing.Point(191, 16);
+            this.txt_TaxCode.Location = new System.Drawing.Point(149, 16);
             this.txt_TaxCode.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_TaxCode.Name = "txt_TaxCode";
             this.txt_TaxCode.Size = new System.Drawing.Size(249, 29);
@@ -76,7 +77,7 @@
             // 
             this.lalTax1.AutoSize = true;
             this.lalTax1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lalTax1.Location = new System.Drawing.Point(42, 90);
+            this.lalTax1.Location = new System.Drawing.Point(7, 107);
             this.lalTax1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lalTax1.Name = "lalTax1";
             this.lalTax1.Size = new System.Drawing.Size(50, 22);
@@ -87,7 +88,7 @@
             // 
             this.lalTax2.AutoSize = true;
             this.lalTax2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lalTax2.Location = new System.Drawing.Point(42, 129);
+            this.lalTax2.Location = new System.Drawing.Point(7, 146);
             this.lalTax2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lalTax2.Name = "lalTax2";
             this.lalTax2.Size = new System.Drawing.Size(50, 22);
@@ -98,7 +99,7 @@
             // 
             this.lalTax3.AutoSize = true;
             this.lalTax3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lalTax3.Location = new System.Drawing.Point(42, 168);
+            this.lalTax3.Location = new System.Drawing.Point(7, 185);
             this.lalTax3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lalTax3.Name = "lalTax3";
             this.lalTax3.Size = new System.Drawing.Size(50, 22);
@@ -119,7 +120,7 @@
             // txt_Tax1
             // 
             this.txt_Tax1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Tax1.Location = new System.Drawing.Point(192, 87);
+            this.txt_Tax1.Location = new System.Drawing.Point(149, 104);
             this.txt_Tax1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Tax1.Name = "txt_Tax1";
             this.txt_Tax1.Size = new System.Drawing.Size(162, 29);
@@ -129,7 +130,7 @@
             // txt_Tax2
             // 
             this.txt_Tax2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Tax2.Location = new System.Drawing.Point(192, 126);
+            this.txt_Tax2.Location = new System.Drawing.Point(149, 143);
             this.txt_Tax2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Tax2.Name = "txt_Tax2";
             this.txt_Tax2.Size = new System.Drawing.Size(162, 29);
@@ -139,7 +140,7 @@
             // txt_Tax3
             // 
             this.txt_Tax3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Tax3.Location = new System.Drawing.Point(192, 165);
+            this.txt_Tax3.Location = new System.Drawing.Point(149, 182);
             this.txt_Tax3.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Tax3.Name = "txt_Tax3";
             this.txt_Tax3.Size = new System.Drawing.Size(162, 29);
@@ -151,7 +152,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label1.Location = new System.Drawing.Point(360, 90);
+            this.label1.Location = new System.Drawing.Point(307, 107);
             this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(81, 22);
@@ -163,7 +164,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label2.Location = new System.Drawing.Point(360, 129);
+            this.label2.Location = new System.Drawing.Point(307, 146);
             this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(81, 22);
@@ -175,7 +176,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label3.Location = new System.Drawing.Point(360, 168);
+            this.label3.Location = new System.Drawing.Point(307, 185);
             this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(81, 22);
@@ -186,7 +187,7 @@
             // 
             this.chkTax3IncTax1.AutoSize = true;
             this.chkTax3IncTax1.Font = new System.Drawing.Font("Arial", 14.25F);
-            this.chkTax3IncTax1.Location = new System.Drawing.Point(192, 203);
+            this.chkTax3IncTax1.Location = new System.Drawing.Point(149, 220);
             this.chkTax3IncTax1.Name = "chkTax3IncTax1";
             this.chkTax3IncTax1.Size = new System.Drawing.Size(197, 26);
             this.chkTax3IncTax1.TabIndex = 51;
@@ -240,7 +241,7 @@
             // txt_Tax3Name
             // 
             this.txt_Tax3Name.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Tax3Name.Location = new System.Drawing.Point(453, 165);
+            this.txt_Tax3Name.Location = new System.Drawing.Point(426, 182);
             this.txt_Tax3Name.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Tax3Name.Name = "txt_Tax3Name";
             this.txt_Tax3Name.Size = new System.Drawing.Size(162, 29);
@@ -250,7 +251,7 @@
             // txt_Tax2Name
             // 
             this.txt_Tax2Name.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Tax2Name.Location = new System.Drawing.Point(453, 126);
+            this.txt_Tax2Name.Location = new System.Drawing.Point(426, 143);
             this.txt_Tax2Name.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Tax2Name.Name = "txt_Tax2Name";
             this.txt_Tax2Name.Size = new System.Drawing.Size(162, 29);
@@ -260,7 +261,7 @@
             // txt_Tax1Name
             // 
             this.txt_Tax1Name.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Tax1Name.Location = new System.Drawing.Point(453, 87);
+            this.txt_Tax1Name.Location = new System.Drawing.Point(426, 104);
             this.txt_Tax1Name.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_Tax1Name.Name = "txt_Tax1Name";
             this.txt_Tax1Name.Size = new System.Drawing.Size(162, 29);
@@ -271,7 +272,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(188, 60);
+            this.label4.Location = new System.Drawing.Point(145, 77);
             this.label4.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(84, 22);
@@ -282,12 +283,23 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(449, 60);
+            this.label5.Location = new System.Drawing.Point(422, 77);
             this.label5.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(94, 22);
             this.label5.TabIndex = 56;
             this.label5.Text = "Tax Name";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(7, 77);
+            this.label6.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(125, 22);
+            this.label6.TabIndex = 57;
+            this.label6.Text = "Default Name";
             // 
             // frmTax
             // 
@@ -295,6 +307,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 411);
             this.ControlBox = false;
+            this.Controls.Add(this.txt_Tax3);
+            this.Controls.Add(this.txt_Tax2);
+            this.Controls.Add(this.txt_Tax1);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txt_Tax3Name);
@@ -307,11 +323,8 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtMessage);
             this.Controls.Add(this.lalTax3);
-            this.Controls.Add(this.txt_Tax3);
             this.Controls.Add(this.lalTax2);
-            this.Controls.Add(this.txt_Tax2);
             this.Controls.Add(this.lalTax1);
-            this.Controls.Add(this.txt_Tax1);
             this.Controls.Add(this.bt_Exit);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.txt_TaxCode);
@@ -346,5 +359,6 @@
         private System.Windows.Forms.TextBox txt_Tax1Name;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
     }
 }

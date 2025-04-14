@@ -5951,10 +5951,11 @@ namespace SDCafeSales.Views
                                 {
                                     if (tax.TaxSum != 0)
                                     {
-                                        strContent = String.Format("{0,25}", tax.TaxName + " :") + String.Format("{0,15}", tax.TaxSum.ToString("0.00"));
+                                        strContent = String.Format("{0,25}", tax.TaxName + " (" + (tax.TaxRate * 100) + "%) :") + String.Format("{0,15}", tax.TaxSum.ToString("0.00"));
                                         iNextLineYPoint = iNextLineYPoint + iheaderHeight;
                                         txtRect = new Rectangle(new Point(0, iNextLineYPoint), new Size((int)p.DefaultPageSettings.PrintableArea.Width, itxtHeight));
-                                        e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                                        //e1.Graphics.DrawString(strContent, fntTotals, brsBlack, (RectangleF)txtRect, format2);
+                                        e1.Graphics.DrawString(strContent, fntSubItem, brsBlack, (RectangleF)txtRect, format2);
                                     }
                                 }
                                 /*
@@ -6358,14 +6359,17 @@ namespace SDCafeSales.Views
                 TaxSummaryModel taxSum1 = new TaxSummaryModel();
                 taxSum1.TaxName = strTax1Name;
                 taxSum1.TaxSum = orderTax.Sum(item => item.Tax1);
+                taxSum1.TaxRate = orderTax.First().Tax1Rate;
                 taxSumList.Add(taxSum1);
                 TaxSummaryModel taxSum2 = new TaxSummaryModel();
                 taxSum2.TaxName = strTax2Name;
                 taxSum2.TaxSum = orderTax.Sum(item => item.Tax2);
+                taxSum2.TaxRate = orderTax.First().Tax2Rate;
                 taxSumList.Add(taxSum2);
                 TaxSummaryModel taxSum3 = new TaxSummaryModel();
                 taxSum3.TaxName = strTax3Name;
                 taxSum3.TaxSum = orderTax.Sum(item => item.Tax3);
+                taxSum3.TaxRate = orderTax.First().Tax3Rate;
                 taxSumList.Add(taxSum3);
             }
             // Get all the products in the order
@@ -6378,14 +6382,17 @@ namespace SDCafeSales.Views
                     TaxSummaryModel taxSum1 = new TaxSummaryModel();
                     taxSum1.TaxName = tax.Tax1Name;
                     taxSum1.TaxSum = orderTax.Sum(item => item.Tax1);
+                    taxSum1.TaxRate = orderTax.First().Tax1Rate;
                     taxSumList.Add(taxSum1);
                     TaxSummaryModel taxSum2 = new TaxSummaryModel();
                     taxSum2.TaxName = tax.Tax2Name;
                     taxSum2.TaxSum = orderTax.Sum(item => item.Tax2);
+                    taxSum2.TaxRate = orderTax.First().Tax2Rate;
                     taxSumList.Add(taxSum2);
                     TaxSummaryModel taxSum3 = new TaxSummaryModel();
                     taxSum3.TaxName = tax.Tax3Name;
                     taxSum3.TaxSum = orderTax.Sum(item => item.Tax3);
+                    taxSum3.TaxRate = orderTax.First().Tax3Rate;
                     taxSumList.Add(taxSum3);
                 }
             }
@@ -6395,8 +6402,9 @@ namespace SDCafeSales.Views
                                             .Select(g => new TaxSummaryModel
             {
                 TaxName = g.Key,
-                TaxSum = g.Sum(x => x.TaxSum)
-            }).ToList();
+                TaxSum = g.Sum(x => x.TaxSum),
+                TaxRate = g.First().TaxRate
+                                            }).ToList();
 
 
             return taxSumListGroup;
@@ -6493,7 +6501,7 @@ namespace SDCafeSales.Views
                     {
                         Label lblTax1 = new Label();
                         lblTax1.Name = tax.TaxName;
-                        lblTax1.Text = tax.TaxName + " : " + tax.TaxSum.ToString("C2");
+                        lblTax1.Text = tax.TaxName + " (" + (tax.TaxRate * 100)+ "%) : " + tax.TaxSum.ToString("C2");
                         lblTax1.Font = new Font("Arial", 12, FontStyle.Bold);
                         lblTax1.ForeColor = Color.LightGray;
                         lblTax1.TextAlign = ContentAlignment.MiddleCenter;

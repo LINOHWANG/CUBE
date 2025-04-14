@@ -18,6 +18,7 @@ using SDCafeCommon.Utilities;
 using System.Drawing.Printing;
 using System.Windows.Forms.DataVisualization.Charting;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using OpenFoodFacts4Net.Json.Data;
 
 namespace SDCafeOffice.Views
 {
@@ -37,6 +38,7 @@ namespace SDCafeOffice.Views
         private bool appPrinterChanged;
 
         private bool m_bln_ShowTaxByProfile; //Feature #3762
+        private List<POS_ProductModel> prods;
 
         public frmSalesReport()
         {
@@ -845,8 +847,10 @@ namespace SDCafeOffice.Views
             }
             strExcelFullFileName = strExcelFullFileName + "\\SalesReport_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
             // --------------------------------------- Set Width and Page Margin -------------------------------------
-            xlWorkSheet.Columns["A:A"].ColumnWidth = 12;
-            xlWorkSheet.Columns["B:D"].ColumnWidth = 7;
+            //xlWorkSheet.Columns["A:A"].ColumnWidth = 12;
+            //xlWorkSheet.Columns["B:D"].ColumnWidth = 7;
+            xlWorkSheet.Columns["A:A"].ColumnWidth = 9;
+            xlWorkSheet.Columns["B:D"].ColumnWidth = 8; // increase width due to adding comma on the amount
 
             xlWorkSheet.PageSetup.TopMargin = 0.3;
             xlWorkSheet.PageSetup.BottomMargin = 1;
@@ -1132,9 +1136,9 @@ namespace SDCafeOffice.Views
                                 }
                                 // --------------------------------------- Type Summary ---------------------------------
                                 xlWorkSheet.Cells[iStartRow, 1] = strTypeName;
-                                xlWorkSheet.Cells[iStartRow, 2] = iTypeAmount.ToString("0.00");
-                                xlWorkSheet.Cells[iStartRow, 3] = (iTypeTax1 + iTypeTax2 + iTypeTax3).ToString("0.00");
-                                xlWorkSheet.Cells[iStartRow, 4] = iTypeTotal.ToString("0.00");
+                                xlWorkSheet.Cells[iStartRow, 2] = iTypeAmount.ToString("#,##0.00");
+                                xlWorkSheet.Cells[iStartRow, 3] = (iTypeTax1 + iTypeTax2 + iTypeTax3).ToString("#,##0.00");
+                                xlWorkSheet.Cells[iStartRow, 4] = iTypeTotal.ToString("#,##0.00");
                                 xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightGray;
                                 xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightGray;
                                 xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightGray;
@@ -1142,10 +1146,10 @@ namespace SDCafeOffice.Views
                                 //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
                                 iStartRow++;
-                                ;
+
                                 xlWorkSheet.Cells[iStartRow, 2] = "( " + iTypeQTY.ToString("0") + " Ea)";
-                                xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("0.00");
-                                xlWorkSheet.Cells[iStartRow, 4] = (iTypeTax2 + iTypeTax3).ToString("0.00");
+                                xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("#,##0.00");
+                                xlWorkSheet.Cells[iStartRow, 4] = (iTypeTax2 + iTypeTax3).ToString("#,##0.00");
                                 //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
                                 iStartRow++;
@@ -1176,9 +1180,9 @@ namespace SDCafeOffice.Views
                                 }
                                 // --------------------------------------- Type Summary ---------------------------------
                                 xlWorkSheet.Cells[iStartRow, 1] = strTypeName;
-                                xlWorkSheet.Cells[iStartRow, 2] = iTypeAmount.ToString("0.00");
-                                xlWorkSheet.Cells[iStartRow, 3] = (iTypeTax1 + iTypeTax2 + iTypeTax3).ToString("0.00");
-                                xlWorkSheet.Cells[iStartRow, 4] = iTypeTotal.ToString("0.00");
+                                xlWorkSheet.Cells[iStartRow, 2] = iTypeAmount.ToString("#,##0.00");
+                                xlWorkSheet.Cells[iStartRow, 3] = (iTypeTax1 + iTypeTax2 + iTypeTax3).ToString("#,##0.00");
+                                xlWorkSheet.Cells[iStartRow, 4] = iTypeTotal.ToString("#,##0.00");
                                 xlWorkSheet.Cells[iStartRow,1].Interior.Color = Excel.XlRgbColor.rgbLightGray;
                                 xlWorkSheet.Cells[iStartRow,2].Interior.Color = Excel.XlRgbColor.rgbLightGray;
                                 xlWorkSheet.Cells[iStartRow,3].Interior.Color = Excel.XlRgbColor.rgbLightGray;
@@ -1188,8 +1192,8 @@ namespace SDCafeOffice.Views
                                 iStartRow++;
                                 xlWorkSheet.Cells[iStartRow, 1] = "> " + dbPOS.Get_ProductName_By_Id(iTempProdId); // ordcomp.ProductName;
                                 xlWorkSheet.Cells[iStartRow, 2] = "( " + iTypeQTY.ToString("0") + " Ea)";
-                                xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("0.00");
-                                xlWorkSheet.Cells[iStartRow, 4] = (iTypeTax2 + iTypeTax3).ToString("0.00");
+                                xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("#,##0.00");
+                                xlWorkSheet.Cells[iStartRow, 4] = (iTypeTax2 + iTypeTax3).ToString("#,##0.00");
                                 xlWorkSheet.Rows[iStartRow].WrapText = true;
                                 //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
@@ -1217,20 +1221,6 @@ namespace SDCafeOffice.Views
                     iTax3 = ordcomp.Tax3;
                     iTotal = iAmount + iTax1 + iTax2 + iTax3;
 
-                    iTypeQTY = iTypeQTY + iQTY;
-                    iTypeAmount = iTypeAmount + iAmount;
-                    iTypeTax1 = iTypeTax1 + iTax1;
-                    iTypeTax2 = iTypeTax2 + iTax2;
-                    iTypeTax3 = iTypeTax3 + iTax3;
-                    iTypeTotal = iTypeTotal + iTotal;
-
-                    iSumQTY = iSumQTY + iQTY;
-                    iSumAmount = iSumAmount + iAmount;
-                    iSumTax1 = iSumTax1 + iTax1;
-                    iSumTax2 = iSumTax2 + iTax2;
-                    iSumTax3 = iSumTax3 + iTax3;
-                    iSumTotal = iSumTotal + iTotal;
-
                     /*Public Const CON_TRAN_CATEGORY_NAME_0 As String = "General"
                     Public Const CON_TRAN_CATEGORY_NAME_1 As String = "Deposit"
                     Public Const CON_TRAN_CATEGORY_NAME_2 As String = "Recycling Fee"
@@ -1257,6 +1247,23 @@ namespace SDCafeOffice.Views
                         iDiscountTax3 = iDiscountTax3 + iTax3;
                         iDiscountTotal = iDiscountTotal + iTotal;
                     }
+                    else
+                    {
+                        iTypeQTY = iTypeQTY + iQTY;
+                        iTypeAmount = iTypeAmount + iAmount;
+                        iTypeTax1 = iTypeTax1 + iTax1;
+                        iTypeTax2 = iTypeTax2 + iTax2;
+                        iTypeTax3 = iTypeTax3 + iTax3;
+                        iTypeTotal = iTypeTotal + iTotal;
+                    }
+                    
+                    iSumQTY = iSumQTY + iQTY;
+                    iSumAmount = iSumAmount + iAmount;
+                    iSumTax1 = iSumTax1 + iTax1;
+                    iSumTax2 = iSumTax2 + iTax2;
+                    iSumTax3 = iSumTax3 + iTax3;
+                    iSumTotal = iSumTotal + iTotal;
+
                     n++;
                 }
                 if (rbRptType.Checked)
@@ -1268,9 +1275,9 @@ namespace SDCafeOffice.Views
                     }
                     // --------------------------------------- Type Summary ---------------------------------
                     xlWorkSheet.Cells[iStartRow, 1] = strTypeName;
-                    xlWorkSheet.Cells[iStartRow, 2] = iTypeAmount.ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 3] = (iTypeTax1 + iTypeTax2 + iTypeTax3).ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 4] = iTypeTotal.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 2] = iTypeAmount.ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 3] = (iTypeTax1 + iTypeTax2 + iTypeTax3).ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = iTypeTotal.ToString("#,##0.00");
                     xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightGray;
                     xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightGray;
                     xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightGray;
@@ -1280,8 +1287,8 @@ namespace SDCafeOffice.Views
                     iStartRow++;
                     ;
                     xlWorkSheet.Cells[iStartRow, 2] = "( " + iTypeQTY.ToString("0") + " Ea)";
-                    xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 4] = (iTypeTax2 + iTypeTax3).ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = (iTypeTax2 + iTypeTax3).ToString("#,##0.00");
                     //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
                     iStartRow++;
@@ -1295,9 +1302,9 @@ namespace SDCafeOffice.Views
                     }
                     // --------------------------------------- Type Summary ---------------------------------
                     xlWorkSheet.Cells[iStartRow, 1] = strTypeName;
-                    xlWorkSheet.Cells[iStartRow, 2] = iTypeAmount.ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 3] = (iTypeTax1 + iTypeTax2 + iTypeTax3).ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 4] = iTypeTotal.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 2] = iTypeAmount.ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 3] = (iTypeTax1 + iTypeTax2 + iTypeTax3).ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = iTypeTotal.ToString("#,##0.00");
                     xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightGray;
                     xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightGray;
                     xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightGray;
@@ -1307,8 +1314,8 @@ namespace SDCafeOffice.Views
                     iStartRow++;
                     xlWorkSheet.Cells[iStartRow, 1] = "> " + dbPOS.Get_ProductName_By_Id(iTempProdId); // ordcomp.ProductName;
                     xlWorkSheet.Cells[iStartRow, 2] = "( " + iTypeQTY.ToString("0") + " Ea)";
-                    xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 4] = (iTypeTax2 + iTypeTax3).ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 3] = iTypeTax1.ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = (iTypeTax2 + iTypeTax3).ToString("#,##0.00");
                     xlWorkSheet.Rows[iStartRow].WrapText = true;
                     //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
@@ -1319,9 +1326,9 @@ namespace SDCafeOffice.Views
                 {
                     // ---------------------------------------  Deposit Summary ---------------------------------
                     xlWorkSheet.Cells[iStartRow, 1] = "Deposit";
-                    xlWorkSheet.Cells[iStartRow, 2] = iDepositAmount.ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 3] = (iDepositTax1 + iDepositTax2 + iDepositTax3).ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 4] = iDepositTotal.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 2] = iDepositAmount.ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 3] = (iDepositTax1 + iDepositTax2 + iDepositTax3).ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = iDepositTotal.ToString("#,##0.00");
                     //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
                     xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightGreen;
                     xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightGreen;
@@ -1331,8 +1338,8 @@ namespace SDCafeOffice.Views
                     iStartRow++;
 
                     xlWorkSheet.Cells[iStartRow, 2] = "( " + iDepositQTY.ToString("0") + " Ea)";
-                    xlWorkSheet.Cells[iStartRow, 3] = iDepositTax1.ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 4] = iDepositTax2.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 3] = iDepositTax1.ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = iDepositTax2.ToString("#,##0.00");
                     //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
                     iStartRow++;
@@ -1342,9 +1349,9 @@ namespace SDCafeOffice.Views
                 {
                     // ---------------------------------------  Discount Summary  ---------------------------------
                     xlWorkSheet.Cells[iStartRow, 1] = "Discount";
-                    xlWorkSheet.Cells[iStartRow, 2] = iDiscountAmount.ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 3] = (iDiscountTax1 + iDiscountTax2 + iDiscountTax3).ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 4] = iDiscountTotal.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 2] = iDiscountAmount.ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 3] = (iDiscountTax1 + iDiscountTax2 + iDiscountTax3).ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = iDiscountTotal.ToString("#,##0.00");
                     xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightPink;
                     xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightPink;
                     xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightPink;
@@ -1354,17 +1361,17 @@ namespace SDCafeOffice.Views
                     iStartRow++;
 
                     xlWorkSheet.Cells[iStartRow, 2] = "( " + iDiscountQTY.ToString("0") + " Ea)";
-                    xlWorkSheet.Cells[iStartRow, 3] = iDiscountTax1.ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 4] = iDiscountTax2.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 3] = iDiscountTax1.ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = iDiscountTax2.ToString("#,##0.00");
                     //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
 
                     iStartRow++;
                 }
                 // --------------------------------------- TOTAL ---------------------------------
                 xlWorkSheet.Cells[iStartRow, 1] = "TOTAL";
-                xlWorkSheet.Cells[iStartRow, 2] = iSumAmount.ToString("0.00");
-                xlWorkSheet.Cells[iStartRow, 3] = (iSumTax1 + iSumTax2 + iSumTax3).ToString("0.00");
-                xlWorkSheet.Cells[iStartRow, 4] = iSumTotal.ToString("0.00");
+                xlWorkSheet.Cells[iStartRow, 2] = iSumAmount.ToString("#,##0.00");
+                xlWorkSheet.Cells[iStartRow, 3] = (iSumTax1 + iSumTax2 + iSumTax3).ToString("#,##0.00");
+                xlWorkSheet.Cells[iStartRow, 4] = iSumTotal.ToString("#,##0.00");
                 xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
                 xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
                 xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
@@ -1373,11 +1380,11 @@ namespace SDCafeOffice.Views
                 iStartRow++;
 
                 xlWorkSheet.Cells[iStartRow, 2] = "( " + iSumQTY.ToString("0") + " Ea)";
-                xlWorkSheet.Cells[iStartRow, 3] = iSumTax1.ToString("0.00");
-                xlWorkSheet.Cells[iStartRow, 4] = (iSumTax2 + iSumTax3).ToString("0.00");
-
-                // Tax2
+                xlWorkSheet.Cells[iStartRow, 3] = iSumTax1.ToString("#,##0.00");
+                xlWorkSheet.Cells[iStartRow, 4] = (iSumTax2 + iSumTax3).ToString("#,##0.00");
                 iStartRow++;
+                /* 
+                // Tax2
                 xlWorkSheet.Cells[iStartRow, 2] = m_strTax2Name;
                 xlWorkSheet.Cells[iStartRow, 3] = "";
                 xlWorkSheet.Cells[iStartRow, 4] = iSumTax2.ToString("0.00");
@@ -1386,7 +1393,7 @@ namespace SDCafeOffice.Views
                 xlWorkSheet.Cells[iStartRow, 2] = m_strTax3Name;
                 xlWorkSheet.Cells[iStartRow, 3] = "";
                 xlWorkSheet.Cells[iStartRow, 4] = iSumTax3.ToString("0.00");
-                //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
+                //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);*/
 
                 // --------------------------------------- Set Boder on Total ---------------------------------
                 Excel.Range formatRangeB;
@@ -1396,11 +1403,11 @@ namespace SDCafeOffice.Views
                 Excel.XlBorderWeight.xlMedium, Excel.XlColorIndex.xlColorIndexAutomatic,
                 Excel.XlColorIndex.xlColorIndexAutomatic);
 
-                iStartRow++;
                 // Show Tax Amount by Tax Profile
                 if (m_bln_ShowTaxByProfile)
                 {
                     iStartRow = Generate_Summary_By_TaxProfile(xlWorkSheet, ordercomps, iStartRow);
+
                 }
             }
             // --------------------------------------- Set Boder ---------------------------------
@@ -1427,88 +1434,134 @@ namespace SDCafeOffice.Views
             iStartRow++;
             return iStartRow;
         }
+        private List<TaxSummaryModel> GetTaxSummaryList(List<POS1_OrderCompleteModel> orderComItems)
+        {
+            List<TaxSummaryModel> taxSumList = new List<TaxSummaryModel>();
+            List<POS_TaxModel> taxList = new List<POS_TaxModel>();
+            List<POS_ProductModel> prodsAll = new List<POS_ProductModel>();
+            List<POS_ProductModel> prodsTax = new List<POS_ProductModel>();
+            List<POS1_OrderCompleteModel> orderTax = new List<POS1_OrderCompleteModel>();
 
+
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            taxList = dbPOS.Get_All_Tax();
+
+            taxSumList.Clear();
+
+            prods = dbPOS.Get_All_Products();
+            prodsTax = prods.FindAll(item => String.IsNullOrEmpty(item.TaxCode));
+            // find all orderComItems related with prodsTax products
+            orderTax = orderComItems.Where(x => prodsTax.Select(p => p.Id).Contains(x.ProductId)).ToList();
+            // Also Add orderComItems with productId = 0 and CategoryId ==4 which is Discount Order into orderTax
+            orderTax.AddRange(orderComItems.Where(x => (x.ProductId == 0 && x.OrderCategoryId ==4)).ToList());
+
+            if (orderTax.Count > 0)
+            {
+                TaxSummaryModel taxSum1 = new TaxSummaryModel();
+                taxSum1.TaxName = m_strTax1Name;
+                taxSum1.TaxSum = orderTax.Sum(item => item.Tax1);
+                taxSum1.TaxRate = orderTax.First().Tax1Rate;
+                taxSumList.Add(taxSum1);
+                TaxSummaryModel taxSum2 = new TaxSummaryModel();
+                taxSum2.TaxName = m_strTax2Name;
+                taxSum2.TaxSum = orderTax.Sum(item => item.Tax2);
+                taxSum2.TaxRate = orderTax.First().Tax2Rate;
+                taxSumList.Add(taxSum2);
+                TaxSummaryModel taxSum3 = new TaxSummaryModel();
+                taxSum3.TaxName = m_strTax3Name;
+                taxSum3.TaxSum = orderTax.Sum(item => item.Tax3);
+                taxSum3.TaxRate = orderTax.First().Tax3Rate;
+                taxSumList.Add(taxSum3);
+            }
+            // Get all the products in the order
+            foreach (var tax in taxList)
+            {
+                prodsTax = prods.FindAll(item => item.TaxCode == tax.Code);
+                orderTax = orderComItems.Where(x => prodsTax.Select(p => p.Id).Contains(x.ProductId)).ToList();
+                if (orderTax.Count > 0)
+                {
+                    TaxSummaryModel taxSum1 = new TaxSummaryModel();
+                    taxSum1.TaxName = tax.Tax1Name;
+                    taxSum1.TaxSum = orderTax.Sum(item => item.Tax1);
+                    taxSum1.TaxRate = orderTax.First().Tax1Rate;
+                    taxSumList.Add(taxSum1);
+                    TaxSummaryModel taxSum2 = new TaxSummaryModel();
+                    taxSum2.TaxName = tax.Tax2Name;
+                    taxSum2.TaxSum = orderTax.Sum(item => item.Tax2);
+                    taxSum2.TaxRate = orderTax.First().Tax2Rate;
+                    taxSumList.Add(taxSum2);
+                    TaxSummaryModel taxSum3 = new TaxSummaryModel();
+                    taxSum3.TaxName = tax.Tax3Name;
+                    taxSum3.TaxSum = orderTax.Sum(item => item.Tax3);
+                    taxSum3.TaxRate = orderTax.First().Tax3Rate;
+                    taxSumList.Add(taxSum3);
+                }
+            }
+            // Consolidate duplicate TaxName into one
+            List<TaxSummaryModel> taxSumListGroup = new List<TaxSummaryModel>();
+            taxSumListGroup = taxSumList.GroupBy(x => x.TaxName)
+                                            .Select(g => new TaxSummaryModel
+                                            {
+                                                TaxName = g.Key,
+                                                TaxSum = g.Sum(x => x.TaxSum),
+                                                TaxRate = g.First().TaxRate
+                                            }).ToList();
+
+
+            return taxSumListGroup;
+        }
+        //Feature #3762
         private int Generate_Summary_By_TaxProfile(Worksheet xlWorkSheet, List<POS1_OrderCompleteModel> ordercomps, int iStartRow)
         {
-            float iSumTax1 = 0;
-            float iSumTax2 = 0;
-            float iSumTax3 = 0;
-            List<POS1_OrderCompleteModel> ordercompsTax = new List<POS1_OrderCompleteModel>();
-            List<POS_TaxModel> taxs = new List<POS_TaxModel>();
-            List<POS_ProductModel> products = new List<POS_ProductModel>();
-            DataAccessPOS dbPOS = new DataAccessPOS();
-            taxs = dbPOS.Get_All_Tax();
+            float fTotalTax = 0;
 
-            if (taxs != null)
+            List<TaxSummaryModel> taxSumList = new List<TaxSummaryModel>();
+            DataAccessPOS dbPOS = new DataAccessPOS();
+            taxSumList = GetTaxSummaryList(ordercomps);
+            if (taxSumList != null)
             {
                 iStartRow++;
-                xlWorkSheet.Cells[iStartRow, 1] = "Tax By Profile";
-
+                xlWorkSheet.Cells[iStartRow, 1] = "TAX DETAILS";
+                xlWorkSheet.Cells[iStartRow, 2] = "RATE";
+                xlWorkSheet.Cells[iStartRow, 3] = "SUM";
+                // Bold font
+                xlWorkSheet.Cells[iStartRow, 1].Font.Bold = true;
+                // Set backcolor light gray
+                xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightGray;
+                xlWorkSheet.Cells[iStartRow, 4].Interior.Color = Excel.XlRgbColor.rgbLightGray;
                 iStartRow++;
-                // taxcode = null or empty
-                products = dbPOS.Get_All_Products();
-                products = products.Where(x => string.IsNullOrEmpty(x.TaxCode)).ToList();
-                // Add Header for Tax Profile
-                xlWorkSheet.Cells[iStartRow, 1] = "";
-                xlWorkSheet.Cells[iStartRow, 2] = m_strTax1Name;
-                xlWorkSheet.Cells[iStartRow, 3] = m_strTax2Name;
-                xlWorkSheet.Cells[iStartRow, 4] = m_strTax3Name;
-                iStartRow++;
 
-                iSumTax1 = 0;
-                iSumTax2 = 0;
-                iSumTax3 = 0;
-                //
-                ordercompsTax = ordercomps.Where(x => products.Select(p => p.Id).Contains(x.ProductId)).ToList();
-                foreach (var ordcomp in ordercompsTax)
+                foreach (var tax in taxSumList)
                 {
-                    iSumTax1 = iSumTax1 + ordcomp.Tax1;
-                    iSumTax2 = iSumTax2 + ordcomp.Tax2;
-                    iSumTax3 = iSumTax3 + ordcomp.Tax3;
-                }
-                // --------------------------------------- Tax Summary ---------------------------------
-                xlWorkSheet.Cells[iStartRow, 1] = "Default";
-                xlWorkSheet.Cells[iStartRow, 2] = iSumTax1.ToString("0.00");
-                xlWorkSheet.Cells[iStartRow, 3] = iSumTax2.ToString("0.00");
-                xlWorkSheet.Cells[iStartRow, 4] = iSumTax3.ToString("0.00");
-                iStartRow++;
-                // All others 
-                foreach (var tax in taxs)
-                {
-                    products = dbPOS.Get_Product_By_TaxCode(tax.Code);
-                    if (products == null)
+                    if (tax.TaxSum != 0)
                     {
-                        continue;
-                    }
-                    // Add Header for Tax Profile
-                    xlWorkSheet.Cells[iStartRow, 1] = "";
-                    xlWorkSheet.Cells[iStartRow, 2] = tax.Tax1Name;
-                    xlWorkSheet.Cells[iStartRow, 3] = tax.Tax2Name;
-                    xlWorkSheet.Cells[iStartRow, 4] = tax.Tax3Name;
-                    iStartRow++;
+                        // --------------------------------------- Tax Summary ---------------------------------
+                        xlWorkSheet.Cells[iStartRow, 1] = tax.TaxName;
+                        // right align
+                        xlWorkSheet.Cells[iStartRow, 1].HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
+                        xlWorkSheet.Cells[iStartRow, 2] = (tax.TaxRate * 100) + "%";
+                        xlWorkSheet.Cells[iStartRow, 3] = tax.TaxSum.ToString("#,##0.00");
 
-                    iSumTax1 = 0;
-                    iSumTax2 = 0;
-                    iSumTax3 = 0;
-                    //
-                    ordercompsTax = ordercomps.Where(x => products.Select(p => p.Id).Contains(x.ProductId)).ToList();
-                    if (ordercompsTax == null)
-                    {
-                        continue;
+                        iStartRow++;
                     }
-                    foreach (var ordcomp in ordercompsTax)
-                    {
-                        iSumTax1 = iSumTax1 + ordcomp.Tax1;
-                        iSumTax2 = iSumTax2 + ordcomp.Tax2;
-                        iSumTax3 = iSumTax3 + ordcomp.Tax3;
-                    }
-                    // --------------------------------------- Tax Summary ---------------------------------
-                    xlWorkSheet.Cells[iStartRow, 1] = tax.Code;
-                    xlWorkSheet.Cells[iStartRow, 2] = iSumTax1.ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 3] = iSumTax2.ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 4] = iSumTax3.ToString("0.00");
-                    iStartRow++;
                 }
+                // --------------------------------------- TOTAL ---------------------------------
+                xlWorkSheet.Cells[iStartRow, 1] = "TAX TOTAL";
+                xlWorkSheet.Cells[iStartRow, 1].HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
+                xlWorkSheet.Cells[iStartRow, 2] = "";
+                xlWorkSheet.Cells[iStartRow, 3] = taxSumList.Sum(item => item.TaxSum).ToString("#,##0.00");
+                // set row color to light blue
+                xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
+                // bold
+                xlWorkSheet.Cells[iStartRow, 1].Font.Bold = true;
+                xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
+                xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
+                xlWorkSheet.Cells[iStartRow, 3].Font.Bold = true;
+                xlWorkSheet.Cells[iStartRow, 4].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
+
+                //iStartRow++;
             }
 
             return iStartRow;
@@ -1723,9 +1776,9 @@ namespace SDCafeOffice.Views
                 {
                     // --------------------------------------- Tender ---------------------------------
                     xlWorkSheet.Cells[iStartRow, 1] = strColTypeName[i] + " ( " + iQTY[i].ToString() + " )";
-                    xlWorkSheet.Cells[iStartRow, 2] = iNetAmount[i].ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 3] = iTip[i].ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 4] = iTotal[i].ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 2] = iNetAmount[i].ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 3] = iTip[i].ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = iTotal[i].ToString("#,##0.00");
                     //xlWorkSheet.get_Range("c" + iStartRow.ToString(), "d" + iStartRow.ToString()).Merge(false);
                     iStartRow++;
                 }
@@ -1733,9 +1786,9 @@ namespace SDCafeOffice.Views
                 {
                     // --------------------------------------- Tender ---------------------------------
                     xlWorkSheet.Cells[iStartRow, 1] = "CARD TOTAL" + " (" + iCardTotalQTY.ToString() + " )";
-                    xlWorkSheet.Cells[iStartRow, 2] = iCardTotalNetAmount.ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 3] = iCardTotalTip.ToString("0.00");
-                    xlWorkSheet.Cells[iStartRow, 4] = iCardTotalTotal.ToString("0.00");
+                    xlWorkSheet.Cells[iStartRow, 2] = iCardTotalNetAmount.ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 3] = iCardTotalTip.ToString("#,##0.00");
+                    xlWorkSheet.Cells[iStartRow, 4] = iCardTotalTotal.ToString("#,##0.00");
                     xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightGray;
                     xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightGray;
                     xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightGray;
@@ -1746,9 +1799,9 @@ namespace SDCafeOffice.Views
 
             // --------------------------------------- Tender ---------------------------------
             xlWorkSheet.Cells[iStartRow, 1] = "GRAND TOTAL" + " (" + iTotalQTY.ToString() + " )";
-            xlWorkSheet.Cells[iStartRow, 2] = iTotalNetAmount.ToString("0.00");
-            xlWorkSheet.Cells[iStartRow, 3] = iTotalTip.ToString("0.00");
-            xlWorkSheet.Cells[iStartRow, 4] = iTotalTotal.ToString("0.00");
+            xlWorkSheet.Cells[iStartRow, 2] = iTotalNetAmount.ToString("#,##0.00");
+            xlWorkSheet.Cells[iStartRow, 3] = iTotalTip.ToString("#,##0.00");
+            xlWorkSheet.Cells[iStartRow, 4] = iTotalTotal.ToString("#,##0.00");
             xlWorkSheet.Cells[iStartRow, 1].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
             xlWorkSheet.Cells[iStartRow, 2].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
             xlWorkSheet.Cells[iStartRow, 3].Interior.Color = Excel.XlRgbColor.rgbLightBlue;
@@ -1786,15 +1839,15 @@ namespace SDCafeOffice.Views
             iStartSummaryRow = iStartRow;
             // --------------------------------------- Void ---------------------------------
             xlWorkSheet.Cells[iStartRow, 1] = "VOID TOTAL" + " (" + iVoidQTY.ToString() + " )";
-            xlWorkSheet.Cells[iStartRow, 2] = iVoidNetAmount.ToString("0.00");
-            xlWorkSheet.Cells[iStartRow, 3] = iVoidTip.ToString("0.00");
-            xlWorkSheet.Cells[iStartRow, 4] = iVoidTotal.ToString("0.00");
+            xlWorkSheet.Cells[iStartRow, 2] = iVoidNetAmount.ToString("#,##0.00");
+            xlWorkSheet.Cells[iStartRow, 3] = iVoidTip.ToString("#,##0.00");
+            xlWorkSheet.Cells[iStartRow, 4] = iVoidTotal.ToString("#,##0.00");
             iStartRow++;
             // --------------------------------------- Refund ---------------------------------
             xlWorkSheet.Cells[iStartRow, 1] = "REFUND TOTAL" + " (" + iRefundQTY.ToString() + " )";
-            xlWorkSheet.Cells[iStartRow, 2] = iRefundNetAmount.ToString("0.00");
-            xlWorkSheet.Cells[iStartRow, 3] = iRefundTip.ToString("0.00");
-            xlWorkSheet.Cells[iStartRow, 4] = iRefundTotal.ToString("0.00");
+            xlWorkSheet.Cells[iStartRow, 2] = iRefundNetAmount.ToString("#,##0.00");
+            xlWorkSheet.Cells[iStartRow, 3] = iRefundTip.ToString("#,##0.00");
+            xlWorkSheet.Cells[iStartRow, 4] = iRefundTotal.ToString("#,##0.00");
             // --------------------------------------- Set Boder ---------------------------------
             Excel.Range formatRange2;
             formatRange2 = xlWorkSheet.get_Range("A" + iStartSummaryRow.ToString(), "D" + iStartRow.ToString());

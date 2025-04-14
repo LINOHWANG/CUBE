@@ -10,5 +10,6 @@ namespace SDCafeCommon.Model
     {
         public string TaxName { get; set; }
         public float TaxSum { get; set; }
+        public float TaxRate { get; set; }
     }
 }

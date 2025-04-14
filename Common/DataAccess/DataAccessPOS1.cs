@@ -218,7 +218,7 @@ namespace SDCafeCommon.DataAccess
             {
                 string query = "select * from TranCollection where CreateDate >= '" + strStartDate + "' and CreateDate <= '" + strEndDate + "' " +
                                " And CreateTime >= '" + strStartTime + "' and CreateTime <= '" + strEndTime + "' " +
-                               " And (Isvoid < 1 or IsVoid Is NULL) " +
+                               " And (IsNull(IsVoid, 0) = 0)  " +
                                "order by CreateDate, CreateTime ";
                 var output = connection.Query<POS1_TranCollectionModel>(query).ToList();
                 return output;
@@ -242,7 +242,7 @@ namespace SDCafeCommon.DataAccess
             {
                 string query = "select * from OrderComplete where CompleteDate >= '" + strStartDate + "' and CompleteDate <= '" + strEndDate + "' " +
                                                                            " And CompleteTime >= '" + strStartTime + "' and CompleteTime <= '" + strEndTime + "' " +
-                                                                           " And (Isvoid < 1 or IsVoid Is NULL) " +
+                                                                           " And (IsNull(IsVoid, 0) = 0)  " +
                                                                            " order by ProductTypeId";
                 var output = connection.Query<POS1_OrderCompleteModel>(query).ToList();
                 return output;
@@ -254,7 +254,7 @@ namespace SDCafeCommon.DataAccess
             {
                 string query = "select * from OrderComplete where CompleteDate >= '" + strStartDate + "' and CompleteDate <= '" + strEndDate + "' " +
                                                                            " And CompleteTime >= '" + strStartTime + "' and CompleteTime <= '" + strEndTime + "' " +
-                                                                           " And (Isvoid < 1 or IsVoid Is NULL) " +
+                                                                           " And (IsNull(IsVoid, 0) = 0) " +
                                                                            " order by ProductTypeId, ProductId";
                 var output = connection.Query<POS1_OrderCompleteModel>(query).ToList();
                 return output;
