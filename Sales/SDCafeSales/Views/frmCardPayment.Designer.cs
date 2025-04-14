@@ -50,6 +50,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.timerBlinkStatus = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_CardData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -279,6 +280,10 @@
             this.timer1.Interval = 10000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // timerBlinkStatus
+            // 
+            this.timerBlinkStatus.Tick += new System.EventHandler(this.timerBlinkStatus_Tick);
+            // 
             // frmCardPayment
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -345,5 +350,6 @@
         private System.Windows.Forms.Label lblUerName;
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Timer timerBlinkStatus;
     }
 }

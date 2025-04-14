@@ -817,7 +817,7 @@ namespace SDCafeSales.Views
 
                 lblStatus.Text = "Card Transaction requested... Please follow instruction on PINPAD!";
                 //lblAmount.Text = "Amount : " + text_Data2Send.Text.Substring(0, 2) + "." + text_Data2Send.Text.Substring(2, 2);
-                BlinkStatusLabel();
+                timerBlinkStatus.Start();
                 util.Logger("------------------ Card Transaction Started ------------------");
                 util.Logger("Send Data To PinPad Terminal : (" + sendBytes.Length.ToString() + ") " + Encoding.ASCII.GetString(sendBytes, 0, sendBytes.Length));
                 this.dgv_CardData.Rows.Add(new String[] { DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), "Send Data To Terminal : (" + sendBytes.Length.ToString() + ") " + Encoding.ASCII.GetString(sendBytes, 0, sendBytes.Length) });
@@ -878,7 +878,7 @@ namespace SDCafeSales.Views
 
             lblStatus.Text = "Paymentree Card Transaction requested... Please follow instruction on PINPAD!";
             //lblAmount.Text = "Amount : " + text_Data2Send.Text.Substring(0, 2) + "." + text_Data2Send.Text.Substring(2, 2);
-            BlinkStatusLabel();
+            timerBlinkStatus.Start();
             util.Logger("------------------ Paymentree Card Transaction Started ------------------");
             util.Logger("Paymentree : Send Data To PinPad Terminal : (" + sendBytes.Length.ToString() + ") " + utf8.GetString(sendBytes));
             this.dgv_CardData.Rows.Add(new String[] { DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), "Send Data To Terminal : (" + sendBytes.Length.ToString() + ") " + utf8.GetString(sendBytes) });
@@ -921,7 +921,7 @@ namespace SDCafeSales.Views
 
             lblStatus.Text = "Paymentree Void Transaction requested... Please follow instruction on PINPAD!";
             //lblAmount.Text = "Amount : " + text_Data2Send.Text.Substring(0, 2) + "." + text_Data2Send.Text.Substring(2, 2);
-            BlinkStatusLabel();
+            timerBlinkStatus.Start();
             util.Logger("------------------ Paymentree Void Transaction Started ------------------");
             util.Logger("Paymentree : Send Data To PinPad Terminal : (" + sendBytes.Length.ToString() + ") " + utf8.GetString(sendBytes));
             this.dgv_CardData.Rows.Add(new String[] { DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), "Send Data To Terminal : (" + sendBytes.Length.ToString() + ") " + utf8.GetString(sendBytes) });
@@ -961,7 +961,7 @@ namespace SDCafeSales.Views
 
             lblStatus.Text = "Paymentree Refund Transaction requested... Please follow instruction on PINPAD!";
             //lblAmount.Text = "Amount : " + text_Data2Send.Text.Substring(0, 2) + "." + text_Data2Send.Text.Substring(2, 2);
-            BlinkStatusLabel();
+            timerBlinkStatus.Start();
             util.Logger("------------------ Paymentree Refund Transaction Started ------------------");
             util.Logger("Paymentree : Send Data To PinPad Terminal : (" + sendBytes.Length.ToString() + ") " + utf8.GetString(sendBytes));
             this.dgv_CardData.Rows.Add(new String[] { DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), "Send Data To Terminal : (" + sendBytes.Length.ToString() + ") " + utf8.GetString(sendBytes) });
@@ -1021,21 +1021,24 @@ namespace SDCafeSales.Views
                 bt_Exit.PerformClick();
             }
         }
-        private async void BlinkStatusLabel()
+        //private async void BlinkStatusLabel()
+        //{
+        //    while (true)
+        //    {
+        //        await Task.Delay(500);
+        //        lblStatus.ForeColor = lblStatus.ForeColor == Color.Red ? Color.Green : Color.Red;
+        //    }
+        //}
+        private void timerBlinkStatus_Tick(object sender, EventArgs e)
         {
-            while (true)
-            {
-                await Task.Delay(500);
-                lblStatus.ForeColor = lblStatus.ForeColor == Color.Red ? Color.Green : Color.Red;
-            }
+            lblStatus.ForeColor = lblStatus.ForeColor == Color.Red ? Color.Green : Color.Red;
         }
-
         private void bt_PayCash_Click(object sender, EventArgs e)
         {
             lblStatus.Text = "Please make a Cash payment at the Cashier!";
             FrmSalesMain.SetCashPayment(true);
             bCashPayment = true;
-            BlinkStatusLabel();
+            timerBlinkStatus.Start();
             strPaymentType = "Cash";
             timer2.Interval = 1000;
             timer2.Enabled = true;
@@ -1045,6 +1048,8 @@ namespace SDCafeSales.Views
         {
             bt_Exit.PerformClick();
         }
+
+
     }
     /// <summary>
     /// Server receive state
