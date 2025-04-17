@@ -109,7 +109,7 @@
             this.lbl_SubTotal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.lbl_SubTotal.Font = new System.Drawing.Font("Bookman Old Style", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_SubTotal.ForeColor = System.Drawing.Color.DarkBlue;
-            this.lbl_SubTotal.Location = new System.Drawing.Point(223, 520);
+            this.lbl_SubTotal.Location = new System.Drawing.Point(381, 518);
             this.lbl_SubTotal.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbl_SubTotal.Name = "lbl_SubTotal";
             this.lbl_SubTotal.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -117,6 +117,7 @@
             this.lbl_SubTotal.TabIndex = 85;
             this.lbl_SubTotal.Text = "00000000";
             this.lbl_SubTotal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lbl_SubTotal.Visible = false;
             // 
             // lbl_TaxTotal
             // 
@@ -126,7 +127,7 @@
             this.lbl_TaxTotal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.lbl_TaxTotal.Font = new System.Drawing.Font("Bookman Old Style", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_TaxTotal.ForeColor = System.Drawing.Color.Purple;
-            this.lbl_TaxTotal.Location = new System.Drawing.Point(223, 561);
+            this.lbl_TaxTotal.Location = new System.Drawing.Point(380, 561);
             this.lbl_TaxTotal.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbl_TaxTotal.Name = "lbl_TaxTotal";
             this.lbl_TaxTotal.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -134,6 +135,7 @@
             this.lbl_TaxTotal.TabIndex = 86;
             this.lbl_TaxTotal.Text = "00000000";
             this.lbl_TaxTotal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lbl_TaxTotal.Visible = false;
             // 
             // lbl_TotalDue
             // 
@@ -143,7 +145,7 @@
             this.lbl_TotalDue.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.lbl_TotalDue.Font = new System.Drawing.Font("Bookman Old Style", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_TotalDue.ForeColor = System.Drawing.Color.Red;
-            this.lbl_TotalDue.Location = new System.Drawing.Point(223, 600);
+            this.lbl_TotalDue.Location = new System.Drawing.Point(380, 600);
             this.lbl_TotalDue.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbl_TotalDue.Name = "lbl_TotalDue";
             this.lbl_TotalDue.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -151,6 +153,7 @@
             this.lbl_TotalDue.TabIndex = 87;
             this.lbl_TotalDue.Text = "00000000";
             this.lbl_TotalDue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lbl_TotalDue.Visible = false;
             // 
             // lbl_ItemCount
             // 
@@ -160,7 +163,7 @@
             this.lbl_ItemCount.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.lbl_ItemCount.Font = new System.Drawing.Font("Bookman Old Style", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_ItemCount.ForeColor = System.Drawing.Color.Blue;
-            this.lbl_ItemCount.Location = new System.Drawing.Point(223, 459);
+            this.lbl_ItemCount.Location = new System.Drawing.Point(381, 466);
             this.lbl_ItemCount.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbl_ItemCount.Name = "lbl_ItemCount";
             this.lbl_ItemCount.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -168,6 +171,7 @@
             this.lbl_ItemCount.TabIndex = 88;
             this.lbl_ItemCount.Text = "00000000";
             this.lbl_ItemCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lbl_ItemCount.Visible = false;
             // 
             // label1
             // 
@@ -280,16 +284,16 @@
             // 
             // bt_Start
             // 
-            this.bt_Start.BackColor = System.Drawing.Color.RoyalBlue;
+            this.bt_Start.BackColor = System.Drawing.Color.LightSlateGray;
             this.bt_Start.CornerRadius = 5;
             this.bt_Start.Font = new System.Drawing.Font("Arial Black", 18F, System.Drawing.FontStyle.Bold);
             this.bt_Start.ForeColor = System.Drawing.Color.White;
             this.bt_Start.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bt_Start.Location = new System.Drawing.Point(396, 438);
+            this.bt_Start.Location = new System.Drawing.Point(398, 438);
             this.bt_Start.Name = "bt_Start";
             this.bt_Start.RoundCorners = ((SDCafeCommon.Utilities.Corners)(((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft)));
-            this.bt_Start.Size = new System.Drawing.Size(600, 257);
+            this.bt_Start.Size = new System.Drawing.Size(602, 257);
             this.bt_Start.TabIndex = 79;
             this.bt_Start.Text = "THANK YOU FOR VISITING!";
             this.bt_Start.Click += new System.EventHandler(this.bt_Start_Click);
@@ -357,10 +361,6 @@
             this.Controls.Add(this.txt_TaxTotal);
             this.Controls.Add(this.txt_SubTotal);
             this.Controls.Add(this.txt_ItemCount);
-            this.Controls.Add(this.lbl_SubTotal);
-            this.Controls.Add(this.lbl_TaxTotal);
-            this.Controls.Add(this.lbl_TotalDue);
-            this.Controls.Add(this.lbl_ItemCount);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
@@ -371,6 +371,10 @@
             this.Controls.Add(this.bt_Payment);
             this.Controls.Add(this.txtMessages);
             this.Controls.Add(this.dgv_Orders);
+            this.Controls.Add(this.lbl_SubTotal);
+            this.Controls.Add(this.lbl_TaxTotal);
+            this.Controls.Add(this.lbl_TotalDue);
+            this.Controls.Add(this.lbl_ItemCount);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;

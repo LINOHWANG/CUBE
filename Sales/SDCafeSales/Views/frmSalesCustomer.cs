@@ -13,6 +13,7 @@ using SDCafeCommon.Model;
 using System.IO;
 using static System.Net.Mime.MediaTypeNames;
 using System.IO.Ports;
+using OpenFoodFacts4Net.Json.Converters;
 
 namespace SDCafeSales.Views
 {
@@ -48,6 +49,13 @@ namespace SDCafeSales.Views
 
         private int m_int_FadeOut = 0;
         private Color colToFadeTo;
+        private List<POS_ProductModel> prods = new List<POS_ProductModel>();
+        private float m_TaxRate1;
+        private float m_TaxRate2;
+        private float m_TaxRate3;
+        private string m_TaxName1;
+        private string m_TaxName2;
+        private string m_TaxName3;
 
         public frmSalesCustomer(frmSalesMain _FrmSalesMain)
         {
@@ -209,6 +217,23 @@ namespace SDCafeSales.Views
             dgv_Orders.RowTemplate.Height = 40;
             dgv_Orders.AllowUserToAddRows = false;
         }
+        private void SetTaxRates(string taxCode)
+        {
+            foreach (var tax in FrmSalesMain.allTaxs)
+            {
+                if (tax.Code == taxCode)
+                {
+                    m_TaxRate1 = tax.Tax1;
+                    m_TaxRate2 = tax.Tax2;
+                    m_TaxRate3 = tax.Tax3;
+                    m_TaxName1 = tax.Tax1Name;
+                    m_TaxName2 = tax.Tax2Name;
+                    m_TaxName3 = tax.Tax3Name;
+                    //m_bIsTax3IncTax1 = tax.IsTax3IncTax1;
+                    return;
+                }
+            }
+        }
         private void Load_Existing_Orders()
         {
             int iIndex = 0;
@@ -230,12 +255,37 @@ namespace SDCafeSales.Views
                     float iAmount = 0;
                     if (order.OrderCategoryId == 0)
                     {
-                        iAmount = order.Quantity * order.OutUnitPrice;
+                        prods = dbPOS.Get_Product_By_ID(order.ProductId);
+                        if (prods != null)
+                        {
+                            if (prods[0].TaxCode != null)
+                            {
+                                if (prods[0].TaxCode != "")
+                                {
+                                    SetTaxRates(prods[0].TaxCode);
+                                }
+                                else
+                                {
+                                    SetTaxRates(FrmSalesMain.m_strDefaultTaxCode);
+                                }
+                            }
+                            else
+                            {
+                                SetTaxRates(FrmSalesMain.m_strDefaultTaxCode);
+                            }
+                        }
+                        else
+                        {
+                            SetTaxRates(FrmSalesMain.m_strDefaultTaxCode);
+                        }
                         iAmount = order.Quantity * order.OutUnitPrice;
                         strTaxShort = "";
-                        strTaxShort += order.IsTax1 ? FrmSalesMain.strTax1Name.Substring(0, 1) : "";
-                        strTaxShort += order.IsTax2 ? FrmSalesMain.strTax2Name.Substring(0, 1) : "";
-                        strTaxShort += order.IsTax3 ? FrmSalesMain.strTax3Name.Substring(0, 1) : "";
+                        //strTaxShort += order.IsTax1 ? FrmSalesMain.strTax1Name.Substring(0, 1) : "";
+                        //strTaxShort += order.IsTax2 ? FrmSalesMain.strTax2Name.Substring(0, 1) : "";
+                        //strTaxShort += order.IsTax3 ? FrmSalesMain.strTax3Name.Substring(0, 1) : "";
+                        strTaxShort += order.IsTax1 ? m_TaxName1.Substring(0, 1) : "";
+                        strTaxShort += order.IsTax2 ? m_TaxName2.Substring(0, 1) : "";
+                        strTaxShort += order.IsTax3 ? m_TaxName3.Substring(0, 1) : "";
                         this.dgv_Orders.Rows.Add(new String[] { iIndex.ToString(),
                                                                                    order.ProductName,
                                                                                    order.Quantity.ToString(),

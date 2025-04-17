@@ -172,8 +172,8 @@ namespace SDCafeOffice.Views
                     {
                         btnArray[iButtonCount].ImageList = m_ImageList;
                         btnArray[iButtonCount].ImageIndex = 0;
-                        btnArray[iButtonCount].ImageAlign = ContentAlignment.MiddleLeft;
-                        btnArray[iButtonCount].TextAlign = ContentAlignment.MiddleRight;
+                        btnArray[iButtonCount].ImageAlign = ContentAlignment.TopLeft;
+                        btnArray[iButtonCount].TextAlign = ContentAlignment.MiddleCenter;
                     }
                 }
                 pnlMenu.Controls.Add(btnArray[iButtonCount]);

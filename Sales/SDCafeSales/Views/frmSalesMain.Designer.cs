@@ -140,7 +140,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.label1.BackColor = System.Drawing.Color.Black;
             this.label1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.Gold;
             this.label1.Location = new System.Drawing.Point(10, 532);
@@ -176,7 +176,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.label2.BackColor = System.Drawing.Color.Black;
             this.label2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.NavajoWhite;
             this.label2.Location = new System.Drawing.Point(64, 570);
@@ -202,7 +202,7 @@
             // lblTotalDue
             // 
             this.lblTotalDue.AutoSize = true;
-            this.lblTotalDue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.lblTotalDue.BackColor = System.Drawing.Color.Black;
             this.lblTotalDue.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTotalDue.ForeColor = System.Drawing.Color.Red;
             this.lblTotalDue.Location = new System.Drawing.Point(10, 609);
@@ -276,7 +276,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.label4.BackColor = System.Drawing.Color.Black;
             this.label4.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
             this.label4.Location = new System.Drawing.Point(9, 491);
@@ -470,7 +470,7 @@
             // 
             // bt_ManualPrice
             // 
-            this.bt_ManualPrice.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.bt_ManualPrice.BackColor = System.Drawing.Color.Beige;
             this.bt_ManualPrice.CornerRadius = 20;
             this.bt_ManualPrice.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Bold);
             this.bt_ManualPrice.ForeColor = System.Drawing.Color.Black;
@@ -486,7 +486,7 @@
             // 
             // panel2
             // 
-            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.panel2.BackColor = System.Drawing.Color.Black;
             this.panel2.Location = new System.Drawing.Point(4, 483);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(222, 158);
@@ -535,12 +535,12 @@
             this.bt_ClockOut.CornerRadius = 5;
             this.bt_ClockOut.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
             this.bt_ClockOut.ForeColor = System.Drawing.Color.Black;
-            this.bt_ClockOut.Location = new System.Drawing.Point(13, 272);
+            this.bt_ClockOut.Location = new System.Drawing.Point(4, 272);
             this.bt_ClockOut.Name = "bt_ClockOut";
             this.bt_ClockOut.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_ClockOut.Size = new System.Drawing.Size(116, 47);
+            this.bt_ClockOut.Size = new System.Drawing.Size(135, 47);
             this.bt_ClockOut.TabIndex = 70;
             this.bt_ClockOut.Text = "Clock Out";
             this.bt_ClockOut.Click += new System.EventHandler(this.bt_ClockOut_Click);
@@ -552,12 +552,12 @@
             this.bt_ClockIn.CornerRadius = 5;
             this.bt_ClockIn.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
             this.bt_ClockIn.ForeColor = System.Drawing.Color.Black;
-            this.bt_ClockIn.Location = new System.Drawing.Point(13, 219);
+            this.bt_ClockIn.Location = new System.Drawing.Point(4, 219);
             this.bt_ClockIn.Name = "bt_ClockIn";
             this.bt_ClockIn.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_ClockIn.Size = new System.Drawing.Size(116, 47);
+            this.bt_ClockIn.Size = new System.Drawing.Size(135, 47);
             this.bt_ClockIn.TabIndex = 69;
             this.bt_ClockIn.Text = "Clock In";
             this.bt_ClockIn.Click += new System.EventHandler(this.bt_ClockIn_Click);
@@ -569,76 +569,76 @@
             this.bt_Office.CornerRadius = 5;
             this.bt_Office.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
             this.bt_Office.ForeColor = System.Drawing.Color.Black;
-            this.bt_Office.Location = new System.Drawing.Point(13, 325);
+            this.bt_Office.Location = new System.Drawing.Point(4, 325);
             this.bt_Office.Name = "bt_Office";
             this.bt_Office.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_Office.Size = new System.Drawing.Size(116, 47);
+            this.bt_Office.Size = new System.Drawing.Size(135, 47);
             this.bt_Office.TabIndex = 68;
             this.bt_Office.Text = "Back Office";
             this.bt_Office.Click += new System.EventHandler(this.bt_SalesReport_Click);
             // 
             // bt_RecallOrder
             // 
-            this.bt_RecallOrder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.bt_RecallOrder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
             this.bt_RecallOrder.CornerRadius = 5;
             this.bt_RecallOrder.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
             this.bt_RecallOrder.ForeColor = System.Drawing.Color.White;
-            this.bt_RecallOrder.Location = new System.Drawing.Point(13, 166);
+            this.bt_RecallOrder.Location = new System.Drawing.Point(4, 166);
             this.bt_RecallOrder.Name = "bt_RecallOrder";
             this.bt_RecallOrder.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_RecallOrder.Size = new System.Drawing.Size(116, 47);
+            this.bt_RecallOrder.Size = new System.Drawing.Size(135, 47);
             this.bt_RecallOrder.TabIndex = 67;
             this.bt_RecallOrder.Text = "Recall Order";
             this.bt_RecallOrder.Click += new System.EventHandler(this.bt_RecallOrder_Click);
             // 
             // bt_SaveOrder
             // 
-            this.bt_SaveOrder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.bt_SaveOrder.BackColor = System.Drawing.Color.DarkGreen;
             this.bt_SaveOrder.CornerRadius = 5;
             this.bt_SaveOrder.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
             this.bt_SaveOrder.ForeColor = System.Drawing.Color.White;
-            this.bt_SaveOrder.Location = new System.Drawing.Point(13, 113);
+            this.bt_SaveOrder.Location = new System.Drawing.Point(4, 113);
             this.bt_SaveOrder.Name = "bt_SaveOrder";
             this.bt_SaveOrder.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_SaveOrder.Size = new System.Drawing.Size(116, 47);
+            this.bt_SaveOrder.Size = new System.Drawing.Size(135, 47);
             this.bt_SaveOrder.TabIndex = 66;
             this.bt_SaveOrder.Text = "Save Order";
             this.bt_SaveOrder.Click += new System.EventHandler(this.bt_SaveOrder_Click);
             // 
             // bt_OpenCashDrawer
             // 
-            this.bt_OpenCashDrawer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.bt_OpenCashDrawer.BackColor = System.Drawing.SystemColors.ControlDark;
             this.bt_OpenCashDrawer.CornerRadius = 5;
             this.bt_OpenCashDrawer.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_OpenCashDrawer.ForeColor = System.Drawing.Color.Black;
-            this.bt_OpenCashDrawer.Location = new System.Drawing.Point(13, 60);
+            this.bt_OpenCashDrawer.Location = new System.Drawing.Point(4, 60);
             this.bt_OpenCashDrawer.Name = "bt_OpenCashDrawer";
             this.bt_OpenCashDrawer.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_OpenCashDrawer.Size = new System.Drawing.Size(116, 47);
+            this.bt_OpenCashDrawer.Size = new System.Drawing.Size(135, 47);
             this.bt_OpenCashDrawer.TabIndex = 65;
             this.bt_OpenCashDrawer.Text = "Open C/D";
             this.bt_OpenCashDrawer.Click += new System.EventHandler(this.bt_OpenCashDrawer_Click);
             // 
             // bt_SalesHistory
             // 
-            this.bt_SalesHistory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.bt_SalesHistory.BackColor = System.Drawing.Color.White;
             this.bt_SalesHistory.CornerRadius = 5;
             this.bt_SalesHistory.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_SalesHistory.ForeColor = System.Drawing.Color.Black;
-            this.bt_SalesHistory.Location = new System.Drawing.Point(13, 7);
+            this.bt_SalesHistory.Location = new System.Drawing.Point(4, 7);
             this.bt_SalesHistory.Name = "bt_SalesHistory";
             this.bt_SalesHistory.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_SalesHistory.Size = new System.Drawing.Size(116, 47);
+            this.bt_SalesHistory.Size = new System.Drawing.Size(135, 47);
             this.bt_SalesHistory.TabIndex = 64;
             this.bt_SalesHistory.Text = "Sales History";
             this.bt_SalesHistory.Click += new System.EventHandler(this.bt_SalesHistory_Click);
@@ -654,7 +654,7 @@
             this.bt_HideSideBar.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_HideSideBar.Size = new System.Drawing.Size(134, 40);
+            this.bt_HideSideBar.Size = new System.Drawing.Size(140, 40);
             this.bt_HideSideBar.TabIndex = 63;
             this.bt_HideSideBar.Text = "Hide Side Bar >>";
             this.bt_HideSideBar.Click += new System.EventHandler(this.bt_HideSideBar_Click_1);
@@ -666,12 +666,12 @@
             this.bt_Exit.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_Exit.ForeColor = System.Drawing.Color.White;
             this.bt_Exit.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bt_Exit.Location = new System.Drawing.Point(13, 637);
+            this.bt_Exit.Location = new System.Drawing.Point(4, 637);
             this.bt_Exit.Name = "bt_Exit";
             this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_Exit.Size = new System.Drawing.Size(116, 47);
+            this.bt_Exit.Size = new System.Drawing.Size(135, 47);
             this.bt_Exit.TabIndex = 61;
             this.bt_Exit.Text = "Exit";
             this.bt_Exit.Click += new System.EventHandler(this.bt_Exit_Click_1);
@@ -682,12 +682,12 @@
             this.bt_Start.CornerRadius = 5;
             this.bt_Start.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_Start.ForeColor = System.Drawing.Color.White;
-            this.bt_Start.Location = new System.Drawing.Point(12, 527);
+            this.bt_Start.Location = new System.Drawing.Point(4, 527);
             this.bt_Start.Name = "bt_Start";
             this.bt_Start.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_Start.Size = new System.Drawing.Size(116, 47);
+            this.bt_Start.Size = new System.Drawing.Size(135, 47);
             this.bt_Start.TabIndex = 59;
             this.bt_Start.Text = "Scan";
             this.bt_Start.Visible = false;
@@ -699,12 +699,12 @@
             this.bt_ShowAllMenuItem.CornerRadius = 5;
             this.bt_ShowAllMenuItem.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_ShowAllMenuItem.ForeColor = System.Drawing.Color.Black;
-            this.bt_ShowAllMenuItem.Location = new System.Drawing.Point(12, 578);
+            this.bt_ShowAllMenuItem.Location = new System.Drawing.Point(4, 578);
             this.bt_ShowAllMenuItem.Name = "bt_ShowAllMenuItem";
             this.bt_ShowAllMenuItem.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_ShowAllMenuItem.Size = new System.Drawing.Size(116, 47);
+            this.bt_ShowAllMenuItem.Size = new System.Drawing.Size(135, 47);
             this.bt_ShowAllMenuItem.TabIndex = 58;
             this.bt_ShowAllMenuItem.Text = "Show All Menu (Popularity)";
             this.bt_ShowAllMenuItem.Click += new System.EventHandler(this.bt_ShowAllMenuItem_Click_1);
@@ -787,7 +787,7 @@
             // 
             // bt_Plus
             // 
-            this.bt_Plus.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.bt_Plus.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.bt_Plus.CornerRadius = 20;
             this.bt_Plus.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_Plus.ForeColor = System.Drawing.Color.Blue;
@@ -803,7 +803,7 @@
             // 
             // bt_Minus
             // 
-            this.bt_Minus.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.bt_Minus.BackColor = System.Drawing.Color.Thistle;
             this.bt_Minus.CornerRadius = 20;
             this.bt_Minus.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_Minus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
@@ -885,7 +885,7 @@
             // 
             // bt_OpenCashDrawer1
             // 
-            this.bt_OpenCashDrawer1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.bt_OpenCashDrawer1.BackColor = System.Drawing.SystemColors.ControlDark;
             this.bt_OpenCashDrawer1.CornerRadius = 5;
             this.bt_OpenCashDrawer1.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_OpenCashDrawer1.ForeColor = System.Drawing.Color.Black;
@@ -901,11 +901,11 @@
             // 
             // bt_VoidAll
             // 
-            this.bt_VoidAll.BackColor = System.Drawing.Color.DarkRed;
+            this.bt_VoidAll.BackColor = System.Drawing.Color.LightSalmon;
             this.bt_VoidAll.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.bt_VoidAll.CornerRadius = 5;
             this.bt_VoidAll.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_VoidAll.ForeColor = System.Drawing.Color.White;
+            this.bt_VoidAll.ForeColor = System.Drawing.Color.Maroon;
             this.bt_VoidAll.Location = new System.Drawing.Point(110, 645);
             this.bt_VoidAll.Name = "bt_VoidAll";
             this.bt_VoidAll.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -918,7 +918,7 @@
             // 
             // bt_TypePageDown
             // 
-            this.bt_TypePageDown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.bt_TypePageDown.BackColor = System.Drawing.Color.Silver;
             this.bt_TypePageDown.CornerRadius = 20;
             this.bt_TypePageDown.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_TypePageDown.ForeColor = System.Drawing.Color.Black;
@@ -966,7 +966,7 @@
             // 
             // bt_TypePageUp
             // 
-            this.bt_TypePageUp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.bt_TypePageUp.BackColor = System.Drawing.Color.Silver;
             this.bt_TypePageUp.CornerRadius = 20;
             this.bt_TypePageUp.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_TypePageUp.ForeColor = System.Drawing.Color.Black;
@@ -1015,11 +1015,11 @@
             // 
             // bt_Void
             // 
-            this.bt_Void.BackColor = System.Drawing.Color.DarkRed;
+            this.bt_Void.BackColor = System.Drawing.Color.LightSalmon;
             this.bt_Void.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.bt_Void.CornerRadius = 5;
             this.bt_Void.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_Void.ForeColor = System.Drawing.Color.White;
+            this.bt_Void.ForeColor = System.Drawing.Color.Maroon;
             this.bt_Void.Location = new System.Drawing.Point(4, 646);
             this.bt_Void.Name = "bt_Void";
             this.bt_Void.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
@@ -1080,19 +1080,19 @@
             this.bt_NumTypeToggle.CornerRadius = 20;
             this.bt_NumTypeToggle.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_NumTypeToggle.ForeColor = System.Drawing.Color.Black;
-            this.bt_NumTypeToggle.Location = new System.Drawing.Point(810, 600);
+            this.bt_NumTypeToggle.Location = new System.Drawing.Point(819, 600);
             this.bt_NumTypeToggle.Name = "bt_NumTypeToggle";
             this.bt_NumTypeToggle.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_NumTypeToggle.Size = new System.Drawing.Size(193, 40);
+            this.bt_NumTypeToggle.Size = new System.Drawing.Size(184, 40);
             this.bt_NumTypeToggle.TabIndex = 77;
             this.bt_NumTypeToggle.Text = "Num";
             this.bt_NumTypeToggle.Click += new System.EventHandler(this.bt_NumTypeToggle_Click);
             // 
             // bt_LastReprint
             // 
-            this.bt_LastReprint.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.bt_LastReprint.BackColor = System.Drawing.SystemColors.ControlDark;
             this.bt_LastReprint.CornerRadius = 5;
             this.bt_LastReprint.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
             this.bt_LastReprint.ForeColor = System.Drawing.Color.Black;

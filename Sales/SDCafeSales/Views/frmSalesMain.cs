@@ -38,8 +38,8 @@ namespace SDCafeSales.Views
         List<POS_RFIDTagsModel> rfids = new List<POS_RFIDTagsModel>();
         List<POS_SysConfigModel> sysconfs = new List<POS_SysConfigModel>();
         List<POS_TaxModel> taxs = new List<POS_TaxModel>();
-        private string m_strDefaultTaxCode;
-        List<POS_TaxModel> allTaxs = new List<POS_TaxModel>();
+        public string m_strDefaultTaxCode;
+        public List<POS_TaxModel> allTaxs = new List<POS_TaxModel>();
         List<POS_StationModel> stations = new List<POS_StationModel>();
         List<POS_OrdersModel> orders = new List<POS_OrdersModel>();
         List<POS_OrdersModel> fixedorders = new List<POS_OrdersModel>();
@@ -245,6 +245,7 @@ namespace SDCafeSales.Views
         public string m_strProdBtnSortOrder { get; set; }
 
         private List<TaxSummaryModel> taxSumList = new List<TaxSummaryModel>();
+        private Color m_BackColor_NumPad;
 
         public struct structDivMod
         {
@@ -630,6 +631,24 @@ namespace SDCafeSales.Views
             {
                 util.m_bln_IsDebugging = sysconfs[0].ConfigValue == "TRUE" ? true : false;
             }
+
+            sysconfs = dbPOS.Get_SysConfig_By_Name("NUMPAD_BACKCOLOR_RGB");
+            if (sysconfs.Count > 0)
+            {
+                long lColorCode = 0;
+                try
+                {
+                    m_BackColor_NumPad = ColorTranslator.FromHtml(sysconfs[0].ConfigValue);
+                }
+                catch (Exception ex)
+                {
+                    m_BackColor_NumPad = Color.SlateGray;
+                }
+            }
+            else
+            {
+                m_BackColor_NumPad = Color.SlateGray;
+            }
             Show_AutoReceipt_Button();
         }
         private bool Get_PinPad_Information()
@@ -734,11 +753,37 @@ namespace SDCafeSales.Views
                     }
                     if (order.OrderCategoryId == 0)
                     {
+                        prods = dbPOS.Get_Product_By_ID(order.ProductId);
+                        if (prods != null)
+                        {
+                            if (prods[0].TaxCode != null)
+                            {
+                                if (prods[0].TaxCode != "")
+                                {
+                                    SetTaxRates(prods[0].TaxCode);
+                                }
+                                else
+                                {
+                                    SetTaxRates(m_strDefaultTaxCode);
+                                }
+                            }
+                            else
+                            {
+                                SetTaxRates(m_strDefaultTaxCode);
+                            }
+                        }
+                        else
+                        {
+                            SetTaxRates(m_strDefaultTaxCode);
+                        }
                         iAmount = order.Quantity * order.OutUnitPrice;
                         strTaxShort = "";
-                        strTaxShort += order.IsTax1 ? strTax1Name.Substring(0, 1) : "";
-                        strTaxShort += order.IsTax2 ? strTax2Name.Substring(0, 1) : "";
-                        strTaxShort += order.IsTax3 ? strTax3Name.Substring(0, 1) : "";
+                        //strTaxShort += order.IsTax1 ? strTax1Name.Substring(0, 1) : "";
+                        //strTaxShort += order.IsTax2 ? strTax2Name.Substring(0, 1) : "";
+                        //strTaxShort += order.IsTax3 ? strTax3Name.Substring(0, 1) : "";
+                        strTaxShort += order.IsTax1 ? m_TaxName1.Substring(0, 1) : "";
+                        strTaxShort += order.IsTax2 ? m_TaxName2.Substring(0, 1) : "";
+                        strTaxShort += order.IsTax3 ? m_TaxName3.Substring(0, 1) : "";
                         this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                    order.ProductName,
                                                                                    order.Quantity.ToString(),
@@ -1734,9 +1779,34 @@ namespace SDCafeSales.Views
                             ////////////////////////////////////////////////
                             float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
                             iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
-                            strTaxShort += prods[0].IsTax1 ? strTax1Name.Substring(0, 1) : "";
-                            strTaxShort += prods[0].IsTax2 ? strTax2Name.Substring(0, 1) : "";
-                            strTaxShort += prods[0].IsTax3 ? strTax3Name.Substring(0, 1) : "";
+                            if (prods != null)
+                            {
+                                if (prods[0].TaxCode != null)
+                                {
+                                    if (prods[0].TaxCode != "")
+                                    {
+                                        SetTaxRates(prods[0].TaxCode);
+                                    }
+                                    else
+                                    {
+                                        SetTaxRates(m_strDefaultTaxCode);
+                                    }
+                                }
+                                else
+                                {
+                                    SetTaxRates(m_strDefaultTaxCode);
+                                }
+                            }
+                            else
+                            {
+                                SetTaxRates(m_strDefaultTaxCode);
+                            }
+                            //strTaxShort += prods[0].IsTax1 ? strTax1Name.Substring(0, 1) : "";
+                            //strTaxShort += prods[0].IsTax2 ? strTax2Name.Substring(0, 1) : "";
+                            //strTaxShort += prods[0].IsTax3 ? strTax3Name.Substring(0, 1) : "";
+                            strTaxShort += prods[0].IsTax1 ? m_TaxName1.Substring(0, 1) : "";
+                            strTaxShort += prods[0].IsTax2 ? m_TaxName2.Substring(0, 1) : "";
+                            strTaxShort += prods[0].IsTax3 ? m_TaxName3.Substring(0, 1) : "";
 
                             this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                prods[0].ProductName,
@@ -2835,7 +2905,8 @@ namespace SDCafeSales.Views
                 {
                     iLines = 1;
                 }
-                btnNumArray[n].BackColor = btTypeColor[0]; //btTypeColor[iLines];
+                //btnNumArray[n].BackColor = btTypeColor[0]; //btTypeColor[iLines];
+                btnNumArray[n].BackColor = m_BackColor_NumPad;
                 // Location of button: 
                 btnNumArray[n].Left = xPos;
                 btnNumArray[n].Top = yPos;
@@ -2855,13 +2926,13 @@ namespace SDCafeSales.Views
                 {
                     btnNumArray[n].Text = "C";
                     btnNumArray[n].Tag = "C";
-                    btnNumArray[n].BackColor = btTypeColor[1];
+                    btnNumArray[n].BackColor = Color.IndianRed;//btTypeColor[1];
                 }
                 else if (n == 11)
                 {
                     btnNumArray[n].Text = "<";
                     btnNumArray[n].Tag = "<";
-                    btnNumArray[n].BackColor = btTypeColor[2];
+                    btnNumArray[n].BackColor = Color.DarkSlateGray;//btTypeColor[2];
                 }
 
                 // the Event of click Button 
@@ -3102,8 +3173,8 @@ namespace SDCafeSales.Views
                         //m_ImageList ?
                         btnArray[n].ImageList = m_ImageList;
                         btnArray[n].ImageIndex = 16; //menu
-                        btnArray[n].ImageAlign = ContentAlignment.MiddleLeft;
-                        btnArray[n].TextAlign = ContentAlignment.MiddleRight;
+                        btnArray[n].ImageAlign = ContentAlignment.TopLeft;// ContentAlignment.MiddleLeft;
+                        btnArray[n].TextAlign = ContentAlignment.MiddleCenter;
                         btnArray[n].Text = prod.ProductName;
                     }
                     //if (prod.ProductName.Length > 10)
@@ -3229,8 +3300,8 @@ namespace SDCafeSales.Views
                     //m_ImageList ?
                     btnArray[iButtonCount].ImageList = m_ImageList;
                     btnArray[iButtonCount].ImageIndex = 16; //menu
-                    btnArray[iButtonCount].ImageAlign = ContentAlignment.MiddleLeft;
-                    btnArray[iButtonCount].TextAlign = ContentAlignment.MiddleRight;
+                    btnArray[iButtonCount].ImageAlign = ContentAlignment.TopLeft; // ContentAlignment.MiddleLeft;
+                    btnArray[iButtonCount].TextAlign = ContentAlignment.MiddleCenter;
                     btnArray[iButtonCount].Text = prod.ProductName;
                 }
                 pnlMenu.Controls.Add(btnArray[iButtonCount]);
@@ -3591,9 +3662,14 @@ namespace SDCafeSales.Views
                         ////////////////////////////////////////////////
                         float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
                         iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
-                        strTaxShort += prods[0].IsTax1 ? strTax1Name.Substring(0, 1) : "";
-                        strTaxShort += prods[0].IsTax2 ? strTax2Name.Substring(0, 1) : "";
-                        strTaxShort += prods[0].IsTax3 ? strTax3Name.Substring(0, 1) : "";
+                        //strTaxShort += prods[0].IsTax1 ? strTax1Name.Substring(0, 1) : "";
+                        //strTaxShort += prods[0].IsTax2 ? strTax2Name.Substring(0, 1) : "";
+                        //strTaxShort += prods[0].IsTax3 ? strTax3Name.Substring(0, 1) : "";
+
+                        strTaxShort += prods[0].IsTax1 ? m_TaxName1.Substring(0, 1) : "";
+                        strTaxShort += prods[0].IsTax2 ? m_TaxName2.Substring(0, 1) : "";
+                        strTaxShort += prods[0].IsTax3 ? m_TaxName3.Substring(0, 1) : "";
+
                         this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                prods[0].ProductName,
                                                                                orders[0].Quantity.ToString("0"),
@@ -3959,9 +4035,13 @@ namespace SDCafeSales.Views
                 ////////////////////////////////////////////////
                 float iAmount = posOrders.Quantity * posOrders.OutUnitPrice;
                 iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
-                strTaxShort += posProduct.IsTax1 ? strTax1Name.Substring(0, 1) : "";
-                strTaxShort += posProduct.IsTax2 ? strTax2Name.Substring(0, 1) : "";
-                strTaxShort += posProduct.IsTax3 ? strTax3Name.Substring(0, 1) : "";
+                //strTaxShort += posProduct.IsTax1 ? strTax1Name.Substring(0, 1) : "";
+                //strTaxShort += posProduct.IsTax2 ? strTax2Name.Substring(0, 1) : "";
+                //strTaxShort += posProduct.IsTax3 ? strTax3Name.Substring(0, 1) : "";
+                strTaxShort += posProduct.IsTax1 ? m_TaxName1.Substring(0, 1) : "";
+                strTaxShort += posProduct.IsTax2 ? m_TaxName2.Substring(0, 1) : "";
+                strTaxShort += posProduct.IsTax3 ? m_TaxName3.Substring(0, 1) : "";
+
                 this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                posProduct.ProductName,
                                                                                posOrders.Quantity.ToString("0"),
@@ -4425,6 +4505,7 @@ namespace SDCafeSales.Views
                     m_TaxName1 = tax.Tax1Name;
                     m_TaxName2 = tax.Tax2Name;
                     m_TaxName3 = tax.Tax3Name;
+                    //m_bIsTax3IncTax1 = tax.IsTax3IncTax1;
                     return;
                 }
             }
@@ -8481,9 +8562,13 @@ namespace SDCafeSales.Views
                     ////////////////////////////////////////////////
                     float iAmount = orders[0].Quantity * orders[0].OutUnitPrice;
                     iSeq = dbPOS.Get_Orders_Count_by_InvoiceNo(iNewInvNo);
-                    strTaxShort += orders[0].IsTax1 ? strTax1Name.Substring(0, 1) : "";
-                    strTaxShort += orders[0].IsTax2 ? strTax2Name.Substring(0, 1) : "";
-                    strTaxShort += orders[0].IsTax3 ? strTax3Name.Substring(0, 1) : "";
+                    //strTaxShort += orders[0].IsTax1 ? strTax1Name.Substring(0, 1) : "";
+                    //strTaxShort += orders[0].IsTax2 ? strTax2Name.Substring(0, 1) : "";
+                    //strTaxShort += orders[0].IsTax3 ? strTax3Name.Substring(0, 1) : "";
+                    strTaxShort += orders[0].IsTax1 ? m_TaxName1.Substring(0, 1) : "";
+                    strTaxShort += orders[0].IsTax2 ? m_TaxName2.Substring(0, 1) : "";
+                    strTaxShort += orders[0].IsTax3 ? m_TaxName3.Substring(0, 1) : "";
+
                     this.dgv_Orders.Rows.Add(new String[] { iSeq.ToString(),
                                                                                strManualName,
                                                                                orders[0].Quantity.ToString("0"),
@@ -8750,6 +8835,11 @@ namespace SDCafeSales.Views
 
         private void timerExtendBar_Tick(object sender, EventArgs e)
         {
+            // if mouse point on the plnSideBar, skip hiding
+            if (pnlSideBar.ClientRectangle.Contains(pnlSideBar.PointToClient(Cursor.Position)))
+            {
+                return;
+            }
             pnlSideBar.Hide();
             timerExtendBar.Enabled = false;
             BarCode_Get_Focus();
@@ -9204,7 +9294,7 @@ namespace SDCafeSales.Views
             if (m_blnNumState)
             {
                 bt_NumTypeToggle.Text = "SHOW TYPES";
-                bt_NumTypeToggle.BackColor = Color.DarkRed;
+                bt_NumTypeToggle.BackColor = Color.DarkGray;
                 bt_NumTypeToggle.ForeColor = Color.White;
                 PopulateNumButtons();
             }
