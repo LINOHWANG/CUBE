@@ -506,7 +506,7 @@
             // 
             // pnlSideBar
             // 
-            this.pnlSideBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.pnlSideBar.BackColor = System.Drawing.Color.DimGray;
             this.pnlSideBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlSideBar.Controls.Add(this.bt_ClockOut);
             this.pnlSideBar.Controls.Add(this.bt_ClockIn);
@@ -522,10 +522,10 @@
             this.pnlSideBar.Controls.Add(this.bt_SalesCustomer);
             this.pnlSideBar.Controls.Add(this.bt_Stop);
             this.pnlSideBar.ForeColor = System.Drawing.Color.Black;
-            this.pnlSideBar.Location = new System.Drawing.Point(862, 4);
+            this.pnlSideBar.Location = new System.Drawing.Point(841, 4);
             this.pnlSideBar.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.pnlSideBar.Name = "pnlSideBar";
-            this.pnlSideBar.Size = new System.Drawing.Size(148, 689);
+            this.pnlSideBar.Size = new System.Drawing.Size(165, 689);
             this.pnlSideBar.TabIndex = 58;
             // 
             // bt_ClockOut
@@ -540,7 +540,7 @@
             this.bt_ClockOut.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_ClockOut.Size = new System.Drawing.Size(135, 47);
+            this.bt_ClockOut.Size = new System.Drawing.Size(153, 47);
             this.bt_ClockOut.TabIndex = 70;
             this.bt_ClockOut.Text = "Clock Out";
             this.bt_ClockOut.Click += new System.EventHandler(this.bt_ClockOut_Click);
@@ -557,7 +557,7 @@
             this.bt_ClockIn.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_ClockIn.Size = new System.Drawing.Size(135, 47);
+            this.bt_ClockIn.Size = new System.Drawing.Size(153, 47);
             this.bt_ClockIn.TabIndex = 69;
             this.bt_ClockIn.Text = "Clock In";
             this.bt_ClockIn.Click += new System.EventHandler(this.bt_ClockIn_Click);
@@ -574,7 +574,7 @@
             this.bt_Office.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_Office.Size = new System.Drawing.Size(135, 47);
+            this.bt_Office.Size = new System.Drawing.Size(153, 47);
             this.bt_Office.TabIndex = 68;
             this.bt_Office.Text = "Back Office";
             this.bt_Office.Click += new System.EventHandler(this.bt_SalesReport_Click);
@@ -590,7 +590,7 @@
             this.bt_RecallOrder.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_RecallOrder.Size = new System.Drawing.Size(135, 47);
+            this.bt_RecallOrder.Size = new System.Drawing.Size(153, 47);
             this.bt_RecallOrder.TabIndex = 67;
             this.bt_RecallOrder.Text = "Recall Order";
             this.bt_RecallOrder.Click += new System.EventHandler(this.bt_RecallOrder_Click);
@@ -606,14 +606,14 @@
             this.bt_SaveOrder.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_SaveOrder.Size = new System.Drawing.Size(135, 47);
+            this.bt_SaveOrder.Size = new System.Drawing.Size(153, 47);
             this.bt_SaveOrder.TabIndex = 66;
             this.bt_SaveOrder.Text = "Save Order";
             this.bt_SaveOrder.Click += new System.EventHandler(this.bt_SaveOrder_Click);
             // 
             // bt_OpenCashDrawer
             // 
-            this.bt_OpenCashDrawer.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.bt_OpenCashDrawer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.bt_OpenCashDrawer.CornerRadius = 5;
             this.bt_OpenCashDrawer.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_OpenCashDrawer.ForeColor = System.Drawing.Color.Black;
@@ -622,14 +622,14 @@
             this.bt_OpenCashDrawer.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_OpenCashDrawer.Size = new System.Drawing.Size(135, 47);
+            this.bt_OpenCashDrawer.Size = new System.Drawing.Size(153, 47);
             this.bt_OpenCashDrawer.TabIndex = 65;
             this.bt_OpenCashDrawer.Text = "Open C/D";
             this.bt_OpenCashDrawer.Click += new System.EventHandler(this.bt_OpenCashDrawer_Click);
             // 
             // bt_SalesHistory
             // 
-            this.bt_SalesHistory.BackColor = System.Drawing.Color.White;
+            this.bt_SalesHistory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.bt_SalesHistory.CornerRadius = 5;
             this.bt_SalesHistory.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_SalesHistory.ForeColor = System.Drawing.Color.Black;
@@ -638,7 +638,7 @@
             this.bt_SalesHistory.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_SalesHistory.Size = new System.Drawing.Size(135, 47);
+            this.bt_SalesHistory.Size = new System.Drawing.Size(153, 47);
             this.bt_SalesHistory.TabIndex = 64;
             this.bt_SalesHistory.Text = "Sales History";
             this.bt_SalesHistory.Click += new System.EventHandler(this.bt_SalesHistory_Click);
@@ -649,12 +649,12 @@
             this.bt_HideSideBar.CornerRadius = 20;
             this.bt_HideSideBar.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_HideSideBar.ForeColor = System.Drawing.Color.Black;
-            this.bt_HideSideBar.Location = new System.Drawing.Point(3, 391);
+            this.bt_HideSideBar.Location = new System.Drawing.Point(4, 394);
             this.bt_HideSideBar.Name = "bt_HideSideBar";
             this.bt_HideSideBar.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_HideSideBar.Size = new System.Drawing.Size(140, 40);
+            this.bt_HideSideBar.Size = new System.Drawing.Size(153, 40);
             this.bt_HideSideBar.TabIndex = 63;
             this.bt_HideSideBar.Text = "Hide Side Bar >>";
             this.bt_HideSideBar.Click += new System.EventHandler(this.bt_HideSideBar_Click_1);
@@ -671,7 +671,7 @@
             this.bt_Exit.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_Exit.Size = new System.Drawing.Size(135, 47);
+            this.bt_Exit.Size = new System.Drawing.Size(153, 47);
             this.bt_Exit.TabIndex = 61;
             this.bt_Exit.Text = "Exit";
             this.bt_Exit.Click += new System.EventHandler(this.bt_Exit_Click_1);
@@ -687,7 +687,7 @@
             this.bt_Start.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_Start.Size = new System.Drawing.Size(135, 47);
+            this.bt_Start.Size = new System.Drawing.Size(153, 47);
             this.bt_Start.TabIndex = 59;
             this.bt_Start.Text = "Scan";
             this.bt_Start.Visible = false;
@@ -704,7 +704,7 @@
             this.bt_ShowAllMenuItem.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_ShowAllMenuItem.Size = new System.Drawing.Size(135, 47);
+            this.bt_ShowAllMenuItem.Size = new System.Drawing.Size(153, 47);
             this.bt_ShowAllMenuItem.TabIndex = 58;
             this.bt_ShowAllMenuItem.Text = "Show All Menu (Popularity)";
             this.bt_ShowAllMenuItem.Click += new System.EventHandler(this.bt_ShowAllMenuItem_Click_1);
@@ -764,7 +764,7 @@
             this.txtBarCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.txtBarCode.Location = new System.Drawing.Point(578, 401);
             this.txtBarCode.Name = "txtBarCode";
-            this.txtBarCode.Size = new System.Drawing.Size(267, 35);
+            this.txtBarCode.Size = new System.Drawing.Size(254, 35);
             this.txtBarCode.TabIndex = 68;
             this.txtBarCode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtBarCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBarCode_KeyPress);
@@ -1035,13 +1035,13 @@
             this.bt_ShowSideBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.bt_ShowSideBar.CornerRadius = 20;
             this.bt_ShowSideBar.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_ShowSideBar.ForeColor = System.Drawing.Color.White;
-            this.bt_ShowSideBar.Location = new System.Drawing.Point(862, 398);
+            this.bt_ShowSideBar.ForeColor = System.Drawing.Color.Gainsboro;
+            this.bt_ShowSideBar.Location = new System.Drawing.Point(846, 399);
             this.bt_ShowSideBar.Name = "bt_ShowSideBar";
             this.bt_ShowSideBar.RoundCorners = ((SDCafeCommon.Utilities.Corners)((((SDCafeCommon.Utilities.Corners.TopLeft | SDCafeCommon.Utilities.Corners.TopRight) 
             | SDCafeCommon.Utilities.Corners.BottomLeft) 
             | SDCafeCommon.Utilities.Corners.BottomRight)));
-            this.bt_ShowSideBar.Size = new System.Drawing.Size(134, 40);
+            this.bt_ShowSideBar.Size = new System.Drawing.Size(153, 40);
             this.bt_ShowSideBar.TabIndex = 60;
             this.bt_ShowSideBar.Text = "<< Show Side Bar";
             this.bt_ShowSideBar.Click += new System.EventHandler(this.bt_ShowSideBar_Click_1);

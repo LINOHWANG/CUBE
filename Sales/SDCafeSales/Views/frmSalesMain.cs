@@ -537,9 +537,16 @@ namespace SDCafeSales.Views
             bt_ShowSideBar.ImageList = m_ImageList;
             bt_ShowSideBar.ImageIndex = 20;
             bt_ShowSideBar.ImageAlign = ContentAlignment.MiddleLeft;
-            bt_ShowSideBar.Text = "Side Bar";
+            bt_ShowSideBar.Text = "<< SHOW";
             bt_ShowSideBar.TextAlign = ContentAlignment.MiddleRight;
 
+            bt_HideSideBar.ImageList = m_ImageList;
+            bt_HideSideBar.BackColor = bt_ShowSideBar.BackColor;
+            bt_HideSideBar.ForeColor = bt_ShowSideBar.ForeColor;
+            bt_HideSideBar.ImageIndex = 20;
+            bt_HideSideBar.ImageAlign = ContentAlignment.MiddleLeft;
+            bt_HideSideBar.Text = "HIDE >>";
+            bt_HideSideBar.TextAlign = ContentAlignment.MiddleRight;
 
             Check_AutoReceipt(false);
             Show_AutoReceipt_Button();
@@ -7147,7 +7154,9 @@ namespace SDCafeSales.Views
 
         private void bt_ShowSideBar_Click_1(object sender, EventArgs e)
         {
-            pnlSideBar.Location = new Point(861, 4);
+            // Move the pnlSideBar to the top right most
+            pnlSideBar.Location = new Point(this.Width - pnlSideBar.Width - 15, 4);
+            //pnlSideBar.Location = new Point(861, 4);
             pnlSideBar.Show();
             pnlSideBar.BringToFront();
             BarCode_Get_Focus();
